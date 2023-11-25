@@ -24,6 +24,9 @@ GUI                     = nil           -- instance, don't touch
 function create_gui()
     local GUI = arm.UIRadialMenu()
 
+    -- Override RadialMenu
+    GUI.bg:InitTexture("ui_ns_mode_background")
+
     -- Options
     local opt_speed = arm.OptionData("speed", "ui_ns_mode_speed")
     opt_speed:SetText({title = "Speed", description = "Speed mode"})
