@@ -1,0 +1,99 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 25/11/2023                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit mode selection UI.                                                         ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+GUI                     = nil           -- instance, don't touch
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Core Functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to build the Nanosuit mode selection UI.
+--- @return UIRadialMenu
+function create_gui()
+    local GUI = arm.UIRadialMenu()
+
+    -- Options
+    local opt_speed = arm.OptionData("speed", "ui_ns_mode_speed")
+    opt_speed:SetText({title = "Speed", description = "Speed mode"})
+
+    local opt_strength = arm.OptionData("strength", "ui_ns_mode_strength")
+    opt_strength:SetText({title = "Strength", description = "Strength mode"})
+
+    local opt_cloak = arm.OptionData("cloak", "ui_ns_mode_cloak")
+    opt_cloak:SetText({title = "Cloak", description = "Cloak mode"})
+
+    local opt_armor = arm.OptionData("armor", "ui_ns_mode_armor")
+    opt_armor:SetText({title = "Armor", description = "Armor mode"})
+
+    -- Add options to GUI
+    GUI:AddOption(opt_speed)
+    GUI:AddOption(opt_strength)
+    GUI:AddOption(opt_cloak)
+    GUI:AddOption(opt_armor)
+
+    -- Register callbacks
+    GUI:RegisterCallback("speed", function(flags)
+        nanosuit_utils.dbg_printf("[NS] DEBUG | Speed mode")
+        flags.close_gui = true
+    end)
+
+    GUI:RegisterCallback("strength", function(flags)
+        nanosuit_utils.dbg_printf("[NS] DEBUG | Strength mode")
+        flags.close_gui = true
+    end)
+
+    GUI:RegisterCallback("cloak", function(flags)
+        nanosuit_utils.dbg_printf("[NS] DEBUG | Cloak mode")
+        flags.close_gui = true
+    end)
+
+    GUI:RegisterCallback("armor", function(flags)
+        nanosuit_utils.dbg_printf("[NS] DEBUG | Armor mode")
+        flags.close_gui = true
+    end)
+
+    GUI:DrawOptions()
+
+    return GUI
+end
+
+--- Function called when pressing a key. If the correct key is pressed, it opens the radial menu and registers the UI.
+--- @return nil
+function open_radial_menu(dik)
+    if (dik ~= DIK_keys.DIK_V) then
+        return
+    end
+
+	hide_hud_inventory()
+    
+	if (not GUI) then
+        GUI = create_gui()
+	end
+    
+	if (GUI) and (not GUI:IsShown()) then
+		GUI:ShowDialog(true)
+		Register_UI("UIRadialMenu", "radial_menu")
+	end
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Callbacks registration
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to register callbacks.
+--- @return nil
+function on_game_start()
+    RegisterScriptCallback("on_key_press", open_radial_menu)
+end
