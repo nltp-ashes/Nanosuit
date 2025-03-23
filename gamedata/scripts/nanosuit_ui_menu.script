@@ -15,6 +15,8 @@
 
 GUI                     = nil           -- instance, don't touch
 
+armor_modes_enum        = nanosuit_core.armor_modes_enum
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Core Functions
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -28,16 +30,16 @@ function create_gui()
     GUI.bg:InitTexture("ui_ns_mode_background")
 
     -- Options
-    local opt_speed = arm.OptionData("speed", "ui_ns_mode_speed")
+    local opt_speed = arm.OptionData(armor_modes_enum.speed, "ui_ns_mode_" .. armor_modes_enum.speed)
     opt_speed:SetText({title = "Speed", description = "Speed mode"})
 
-    local opt_strength = arm.OptionData("strength", "ui_ns_mode_strength")
+    local opt_strength = arm.OptionData(armor_modes_enum.power, "ui_ns_mode_" .. armor_modes_enum.power)
     opt_strength:SetText({title = "Strength", description = "Strength mode"})
 
-    local opt_cloak = arm.OptionData("cloak", "ui_ns_mode_cloak")
+    local opt_cloak = arm.OptionData(armor_modes_enum.cloak, "ui_ns_mode_" .. armor_modes_enum.cloak)
     opt_cloak:SetText({title = "Cloak", description = "Cloak mode"})
 
-    local opt_armor = arm.OptionData("armor", "ui_ns_mode_armor")
+    local opt_armor = arm.OptionData(armor_modes_enum.armor, "ui_ns_mode_" .. armor_modes_enum.armor)
     opt_armor:SetText({title = "Armor", description = "Armor mode"})
 
     -- Add options to GUI
@@ -47,23 +49,27 @@ function create_gui()
     GUI:AddOption(opt_armor)
 
     -- Register callbacks
-    GUI:RegisterCallback("speed", function(flags)
-        nanosuit_utils.dbg_printf("[NS] DEBUG | Speed mode")
+    GUI:RegisterCallback(armor_modes_enum.speed, function(flags)
+        nanosuit_utils.dbg_printf("[NS] Menu UI | Speed mode")
+        nanosuit_core.change_mode(armor_modes_enum.speed)
         flags.close_gui = true
     end)
 
-    GUI:RegisterCallback("strength", function(flags)
-        nanosuit_utils.dbg_printf("[NS] DEBUG | Strength mode")
+    GUI:RegisterCallback(armor_modes_enum.power, function(flags)
+        nanosuit_utils.dbg_printf("[NS] Menu UI | Strength mode")
+        nanosuit_core.change_mode(armor_modes_enum.power)
         flags.close_gui = true
     end)
 
-    GUI:RegisterCallback("cloak", function(flags)
-        nanosuit_utils.dbg_printf("[NS] DEBUG | Cloak mode")
+    GUI:RegisterCallback(armor_modes_enum.cloak, function(flags)
+        nanosuit_utils.dbg_printf("[NS] Menu UI | Cloak mode")
+        nanosuit_core.change_mode(armor_modes_enum.cloak)
         flags.close_gui = true
     end)
 
-    GUI:RegisterCallback("armor", function(flags)
-        nanosuit_utils.dbg_printf("[NS] DEBUG | Armor mode")
+    GUI:RegisterCallback(armor_modes_enum.armor, function(flags)
+        nanosuit_utils.dbg_printf("[NS] Menu UI | Armor mode")
+        nanosuit_core.change_mode(armor_modes_enum.armor)
         flags.close_gui = true
     end)
 

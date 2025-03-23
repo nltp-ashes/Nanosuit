@@ -13,27 +13,23 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
-GUI                     = nil           -- instance, don't touch
-
-armor_modes_enum = {
-    armor = "armor",
-    power = "power",
-    speed = "speed",
-    cloak = "cloak"
-}
-
-armor_modes = {
-    [armor_modes_enum.armor] = nanosuit_mode_armor[armor_modes_enum.armor](),
-    [armor_modes_enum.power] = nanosuit_mode_power[armor_modes_enum.power](),
-    [armor_modes_enum.speed] = nanosuit_mode_speed[armor_modes_enum.speed](),
-    [armor_modes_enum.cloak] = nanosuit_mode_cloak[armor_modes_enum.cloak]()
-}
-
-current_mode = armor_modes[armor_modes_enum.armor]
-
 -- ---------------------------------------------------------------------------------------------------------------------
--- Core Functions
+-- Armor mode class
 -- ---------------------------------------------------------------------------------------------------------------------
+
+class "armor"
+
+function armor:__init()
+
+end
+
+function armor:apply_effects()
+
+end
+
+function armor:remove_effects()
+
+end
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Callbacks registration
@@ -42,10 +38,4 @@ current_mode = armor_modes[armor_modes_enum.armor]
 --- Function used to register callbacks.
 --- @return nil
 function on_game_start()
-end
-
-function change_mode(mode)
-    current_mode:remove_effects()
-    current_mode = armor_modes[mode]
-    current_mode:apply_effects()
 end
