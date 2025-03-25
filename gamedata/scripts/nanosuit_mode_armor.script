@@ -20,13 +20,20 @@
 class "armor"
 
 function armor:__init()
-
+    self.m_sounds = {
+        armor_voice = sound_object([[nanosuit\mode_armor_voice]]),
+        armor_on = sound_object([[nanosuit\mode_armor_on]]),
+        armor_off = sound_object([[nanosuit\mode_armor_off]])
+    }
 end
 
 function armor:apply_effects()
-
+    -- Play sounds
+    self.m_sounds.armor_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    self.m_sounds.armor_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
 end
 
 function armor:remove_effects()
-
+    -- Play sounds
+    self.m_sounds.armor_off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
 end

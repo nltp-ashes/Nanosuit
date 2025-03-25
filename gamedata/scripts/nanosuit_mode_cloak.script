@@ -20,50 +20,66 @@
 class "cloak"
 
 function cloak:__init()
-    self.cloak_texture = [[nanosuit\cloak_pattern]]
-    self.cloak_shader = [[models\window]] --[[models\xanomaly]] --[[models\pautina]]
-    self.saved_actor_shaders = {}
-    self.saved_item_shaders = {}
+    self.m_cloak_texture = [[nanosuit\cloak_pattern]]
+    self.m_cloak_shader = [[models\window]] --[[models\xanomaly]] --[[models\pautina]]
+    self.m_saved_actor_shaders = {}
+    self.m_saved_item_shaders = {}
+    self.m_sounds = {
+        cloak_voice = sound_object([[nanosuit\mode_cloak_voice]]),
+        cloak_loop = sound_object([[nanosuit\mode_cloak_loop]]),
+        cloak_shoot = sound_object([[nanosuit\mode_cloak_shoot]]),
+        cloak_on = sound_object([[nanosuit\mode_cloak_on]]),
+        cloak_off = sound_object([[nanosuit\mode_cloak_off]])
+    }
 end
 
 function cloak:apply_effects()
-    self.saved_actor_shaders = db.actor:get_shaders(true)
-    for idx,_ in pairs(self.saved_actor_shaders) do
-        db.actor:set_shader(idx, self.cloak_shader, self.cloak_texture, true)
+    -- Play sounds
+    self.m_sounds.cloak_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    self.m_sounds.cloak_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+
+    -- Set player invisible
+    self.m_saved_actor_shaders = db.actor:get_shaders(true)
+    for idx,_ in pairs(self.m_saved_actor_shaders) do
+        db.actor:set_shader(idx, self.m_cloak_shader, self.m_cloak_texture, true)
     end
 
     local active_item = db.actor:active_item()
     if active_item then
-        self.saved_item_shaders = active_item:get_shaders(true)
-        for idx,_ in pairs(self.saved_item_shaders) do
-            active_item:set_shader(idx, self.cloak_shader, self.cloak_texture, true)
+        self.m_saved_item_shaders = active_item:get_shaders(true)
+        for idx,_ in pairs(self.m_saved_item_shaders) do
+            active_item:set_shader(idx, self.m_cloak_shader, self.m_cloak_texture, true)
         end
     end
 
     local active_detector = db.actor:active_detector()
     if active_detector then
-        self.saved_item_shaders = active_detector:get_shaders(true)
-        for idx,_ in pairs(self.saved_item_shaders) do
-            active_detector:set_shader(idx, self.cloak_shader, self.cloak_texture, true)
+        self.m_saved_item_shaders = active_detector:get_shaders(true)
+        for idx,_ in pairs(self.m_saved_item_shaders) do
+            active_detector:set_shader(idx, self.m_cloak_shader, self.m_cloak_texture, true)
         end
     end
 end
 
 function cloak:remove_effects()
-    for idx,save in pairs(self.saved_actor_shaders) do
+    -- Play sounds
+    self.m_sounds.cloak_off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+
+    -- Restore player visibility
+    for idx,save in pairs(self.m_saved_actor_shaders) do
         db.actor:set_shader(idx, save.shader, save.texture, true)
     end
 
     local active_item = db.actor:active_item()
     if active_item then
-        for idx,save in pairs(self.saved_item_shaders) do
+        for idx,save in pairs(self.m_saved_item_shaders) do
             active_item:set_shader(idx, save.shader, save.texture, true)
         end
     end
 
     local active_detector = db.actor:active_detector()
     if active_detector then
-        for idx,save in pairs(self.saved_item_shaders) do
+        for idx,save in pairs(self.m_saved_item_shaders) do
             active_detector:set_shader(idx, save.shader, save.texture, true)
         end
     end

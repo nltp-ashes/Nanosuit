@@ -37,15 +37,7 @@ current_mode = armor_modes[armor_modes_enum.armor]
 -- Callbacks registration
 -- ---------------------------------------------------------------------------------------------------------------------
 
---- Function used to register callbacks.
---- @return nil
-function on_game_start()
-end
-
 function change_mode(mode)
-    if current_mode == armor_modes[mode] then
-        return
-    end
     current_mode:remove_effects()
     current_mode = armor_modes[mode]
     current_mode:apply_effects()

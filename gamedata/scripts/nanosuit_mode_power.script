@@ -20,13 +20,25 @@
 class "power"
 
 function power:__init()
-
+    self.m_sounds = {
+        power_voice = sound_object([[nanosuit\mode_power_voice]]),
+        power_jump = sound_object([[nanosuit\mode_power_jump]])
+    }
 end
 
 function power:apply_effects()
+    -- Play sounds
+    self.m_sounds.power_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
 
+    -- Register callbacks
+    RegisterScriptCallback("actor_on_jump", self)
 end
 
 function power:remove_effects()
+    -- Unregister callbacks
+    UnregisterScriptCallback("actor_on_jump", self)
+end
 
+function speed:actor_on_jump()
+    self.m_sounds.power_jump:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
 end

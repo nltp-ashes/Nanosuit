@@ -20,13 +20,40 @@
 class "speed"
 
 function speed:__init()
-
+    self.is_sprinting = false
+    self.m_sounds = {
+        speed_voice = sound_object([[nanosuit\mode_speed_voice]]),
+        speed_on = sound_object([[nanosuit\mode_speed_on]]),
+        speed_loop = sound_object([[nanosuit\mode_speed_loop]]),
+        speed_stop = sound_object([[nanosuit\mode_speed_stop]])
+    }
 end
 
 function speed:apply_effects()
+    -- Play sounds
+    self.m_sounds.speed_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    self.m_sounds.speed_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
 
+    -- Register callbacks
+    RegisterScriptCallback("actor_on_movement_changed", self)
 end
 
 function speed:remove_effects()
+    -- Unregister callbacks
+    UnregisterScriptCallback("actor_on_movement_changed", self)
+end
 
+function speed:actor_on_movement_changed(cmd)
+    if cmd == actor_move_states.mcSprint then
+        if not self.is_sprinting then
+            self.is_sprinting = true
+            self.m_sounds.speed_loop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
+        end
+    else
+        if self.is_sprinting then
+            self.is_sprinting = false
+            self.m_sounds.speed_loop:stop()
+            self.m_sounds.speed_stop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+        end
+    end
 end
