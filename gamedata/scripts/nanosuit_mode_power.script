@@ -2,10 +2,10 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/03/2025                                                                                             ---
+---    Date : 26/03/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
----    Script used to handle the core logic of the Nanosuit addon.                                                   ---
+---    Script used to handle the logic of strength mode of the Nanosuit addon.                                       ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -19,7 +19,9 @@
 
 class "power"
 
-function power:__init()
+function power:__init(core)
+    self.m_core = core
+    self.m_power_jump_energy_use = 20
     self.m_sounds = {
         power_voice = sound_object([[nanosuit\mode_power_voice]]),
         power_jump = sound_object([[nanosuit\mode_power_jump]])
@@ -39,6 +41,7 @@ function power:remove_effects()
     UnregisterScriptCallback("actor_on_jump", self)
 end
 
-function speed:actor_on_jump()
+function power:actor_on_jump()
     self.m_sounds.power_jump:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    self.m_core:use_energy(self.m_power_jump_energy_use)
 end

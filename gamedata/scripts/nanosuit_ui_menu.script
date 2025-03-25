@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 23/03/2025                                                                                             ---
+---    Date : 26/03/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit mode selection UI.                                                         ---
@@ -51,25 +51,25 @@ function create_gui()
     -- Register callbacks
     GUI:RegisterCallback(armor_modes_enum.speed, function(flags)
         nanosuit_utils.dbg_printf("[NS] Menu UI | Speed mode")
-        nanosuit_core.change_mode(armor_modes_enum.speed)
+        nanosuit_core.get():change_mode(armor_modes_enum.speed)
         flags.close_gui = true
     end)
 
     GUI:RegisterCallback(armor_modes_enum.power, function(flags)
         nanosuit_utils.dbg_printf("[NS] Menu UI | Strength mode")
-        nanosuit_core.change_mode(armor_modes_enum.power)
+        nanosuit_core.get():change_mode(armor_modes_enum.power)
         flags.close_gui = true
     end)
 
     GUI:RegisterCallback(armor_modes_enum.cloak, function(flags)
         nanosuit_utils.dbg_printf("[NS] Menu UI | Cloak mode")
-        nanosuit_core.change_mode(armor_modes_enum.cloak)
+        nanosuit_core.get():change_mode(armor_modes_enum.cloak)
         flags.close_gui = true
     end)
 
     GUI:RegisterCallback(armor_modes_enum.armor, function(flags)
         nanosuit_utils.dbg_printf("[NS] Menu UI | Armor mode")
-        nanosuit_core.change_mode(armor_modes_enum.armor)
+        nanosuit_core.get():change_mode(armor_modes_enum.armor)
         flags.close_gui = true
     end)
 

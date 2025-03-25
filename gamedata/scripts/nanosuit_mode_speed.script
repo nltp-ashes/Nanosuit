@@ -2,10 +2,10 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/03/2025                                                                                             ---
+---    Date : 26/03/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
----    Script used to handle the core logic of the Nanosuit addon.                                                   ---
+---    Script used to handle the logic of speed mode of the Nanosuit addon.                                          ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -19,8 +19,12 @@
 
 class "speed"
 
-function speed:__init()
-    self.is_sprinting = false
+function speed:__init(core)
+    self.m_core = core
+    self.m_is_sprinting = false
+    self.m_sprint_energy_use = 1
+    self.m_sprint_energy_last_use = 0
+    self.m_sprint_energy_rate = 50
     self.m_sounds = {
         speed_voice = sound_object([[nanosuit\mode_speed_voice]]),
         speed_on = sound_object([[nanosuit\mode_speed_on]]),
@@ -35,23 +39,32 @@ function speed:apply_effects()
     self.m_sounds.speed_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
 
     -- Register callbacks
+    RegisterScriptCallback("actor_on_update", self)
     RegisterScriptCallback("actor_on_movement_changed", self)
 end
 
 function speed:remove_effects()
     -- Unregister callbacks
+    UnregisterScriptCallback("actor_on_update", self)
     UnregisterScriptCallback("actor_on_movement_changed", self)
+end
+
+function speed:actor_on_update()
+    if self.m_is_sprinting and time_global() - self.m_sprint_energy_last_use > self.m_sprint_energy_rate then
+        self.m_core:use_energy(self.m_sprint_energy_use)
+        self.m_sprint_energy_last_use = time_global()
+    end
 end
 
 function speed:actor_on_movement_changed(cmd)
     if cmd == actor_move_states.mcSprint then
-        if not self.is_sprinting then
-            self.is_sprinting = true
+        if not self.m_is_sprinting then
+            self.m_is_sprinting = true
             self.m_sounds.speed_loop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
         end
     else
-        if self.is_sprinting then
-            self.is_sprinting = false
+        if self.m_is_sprinting then
+            self.m_is_sprinting = false
             self.m_sounds.speed_loop:stop()
             self.m_sounds.speed_stop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         end

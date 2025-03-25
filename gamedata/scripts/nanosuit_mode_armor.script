@@ -2,10 +2,10 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/03/2025                                                                                             ---
+---    Date : 26/03/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
----    Script used to handle the core logic of the Nanosuit addon.                                                   ---
+---    Script used to handle the logic of armor mode of the Nanosuit addon.                                          ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -19,7 +19,8 @@
 
 class "armor"
 
-function armor:__init()
+function armor:__init(core)
+    self.m_core = core
     self.m_sounds = {
         armor_voice = sound_object([[nanosuit\mode_armor_voice]]),
         armor_on = sound_object([[nanosuit\mode_armor_on]]),
@@ -30,10 +31,10 @@ end
 function armor:apply_effects()
     -- Play sounds
     self.m_sounds.armor_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
-    self.m_sounds.armor_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    --self.m_sounds.armor_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
 end
 
 function armor:remove_effects()
     -- Play sounds
-    self.m_sounds.armor_off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    --self.m_sounds.armor_off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
 end
