@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 23/03/2025                                                                                             ---
+---    Date : 25/03/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -12,8 +12,6 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
-
-GUI                     = nil           -- instance, don't touch
 
 armor_modes_enum = {
     armor = "armor",
@@ -45,6 +43,9 @@ function on_game_start()
 end
 
 function change_mode(mode)
+    if current_mode == armor_modes[mode] then
+        return
+    end
     current_mode:remove_effects()
     current_mode = armor_modes[mode]
     current_mode:apply_effects()

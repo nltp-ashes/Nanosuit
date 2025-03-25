@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 23/03/2025                                                                                             ---
+---    Date : 25/03/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -29,13 +29,4 @@ end
 
 function power:remove_effects()
 
-end
-
--- ---------------------------------------------------------------------------------------------------------------------
--- Callbacks registration
--- ---------------------------------------------------------------------------------------------------------------------
-
---- Function used to register callbacks.
---- @return nil
-function on_game_start()
 end

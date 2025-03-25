@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 23/03/2025                                                                                             ---
+---    Date : 25/03/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -21,14 +21,13 @@ class "cloak"
 
 function cloak:__init()
     self.cloak_texture = [[nanosuit\cloak_pattern]]
-    self.cloak_shader = [[models\xanomaly]] --[[models\window]] --[[models\pautina]]
+    self.cloak_shader = [[models\window]] --[[models\xanomaly]] --[[models\pautina]]
     self.saved_actor_shaders = {}
     self.saved_item_shaders = {}
 end
 
 function cloak:apply_effects()
     self.saved_actor_shaders = db.actor:get_shaders(true)
-    printf("[NS] Cloak Mode | Shaders table :\n%s", utils_data.print_table(self.saved_actor_shaders, false, true))
     for idx,_ in pairs(self.saved_actor_shaders) do
         db.actor:set_shader(idx, self.cloak_shader, self.cloak_texture, true)
     end
@@ -36,7 +35,6 @@ function cloak:apply_effects()
     local active_item = db.actor:active_item()
     if active_item then
         self.saved_item_shaders = active_item:get_shaders(true)
-        printf("[NS] Cloak Mode | Shaders table :\n%s", utils_data.print_table(self.saved_item_shaders, false, true))
         for idx,_ in pairs(self.saved_item_shaders) do
             active_item:set_shader(idx, self.cloak_shader, self.cloak_texture, true)
         end
@@ -45,7 +43,6 @@ function cloak:apply_effects()
     local active_detector = db.actor:active_detector()
     if active_detector then
         self.saved_item_shaders = active_detector:get_shaders(true)
-        printf("[NS] Cloak Mode | Shaders table :\n%s", utils_data.print_table(self.saved_item_shaders, false, true))
         for idx,_ in pairs(self.saved_item_shaders) do
             active_detector:set_shader(idx, self.cloak_shader, self.cloak_texture, true)
         end
@@ -53,14 +50,12 @@ function cloak:apply_effects()
 end
 
 function cloak:remove_effects()
-    printf("[NS] Cloak Mode | Shaders table :\n%s", utils_data.print_table(db.actor:get_shaders(), false, true))
     for idx,save in pairs(self.saved_actor_shaders) do
         db.actor:set_shader(idx, save.shader, save.texture, true)
     end
 
     local active_item = db.actor:active_item()
     if active_item then
-        printf("[NS] Cloak Mode | Shaders table :\n%s", utils_data.print_table(active_item:get_shaders(), false, true))
         for idx,save in pairs(self.saved_item_shaders) do
             active_item:set_shader(idx, save.shader, save.texture, true)
         end
@@ -68,18 +63,8 @@ function cloak:remove_effects()
 
     local active_detector = db.actor:active_detector()
     if active_detector then
-        printf("[NS] Cloak Mode | Shaders table :\n%s", utils_data.print_table(active_detector:get_shaders(), false, true))
         for idx,save in pairs(self.saved_item_shaders) do
             active_detector:set_shader(idx, save.shader, save.texture, true)
         end
     end
-end
-
--- ---------------------------------------------------------------------------------------------------------------------
--- Callbacks registration
--- ---------------------------------------------------------------------------------------------------------------------
-
---- Function used to register callbacks.
---- @return nil
-function on_game_start()
 end
