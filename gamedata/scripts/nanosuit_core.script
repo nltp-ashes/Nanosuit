@@ -66,7 +66,8 @@ function core:__init()
         [armor_modes_enum.speed] = nanosuit_mode_speed[armor_modes_enum.speed](self),
         [armor_modes_enum.cloak] = nanosuit_mode_cloak[armor_modes_enum.cloak](self)
     }
-    self.m_current_mode = self.m_modes[armor_modes_enum.armor]
+    self.m_default_mode = armor_modes_enum.armor
+    self.m_current_mode = self.m_modes[self.m_default_mode]
 
     RegisterScriptCallback("actor_on_update", self)
 end
