@@ -22,6 +22,7 @@ class "power"
 function power:__init(core)
     self.m_core = core
     self.m_power_jump_energy_use = 20
+    self.m_saved_jump_speed = db.actor:get_actor_jump_speed()
     self.m_sounds = {
         power_voice = sound_object([[nanosuit\mode_power_voice]]),
         power_jump = sound_object([[nanosuit\mode_power_jump]])
@@ -34,14 +35,27 @@ function power:apply_effects()
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_jump", self)
+
+    -- Save jump speed
+    self.m_saved_jump_speed = db.actor:get_actor_jump_speed()
 end
 
 function power:remove_effects()
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_jump", self)
+
+    -- Reset jump speed
+    db.actor:set_actor_jump_speed(self.m_saved_jump_speed)
 end
 
 function power:actor_on_jump()
-    self.m_sounds.power_jump:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    -- Play sounds
+    if (self.m_core.m_energy >= self.m_power_jump_energy_use) then
+        self.m_sounds.power_jump:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    end
     self.m_core:use_energy(self.m_power_jump_energy_use)
+
+    -- Set jump speed (inversely proportional to energy)
+    local jump_multiplier = 1 + self.m_core.m_energy / 100
+    db.actor:set_actor_jump_speed(self.m_saved_jump_speed * jump_multiplier)
 end

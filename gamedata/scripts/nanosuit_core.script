@@ -49,11 +49,11 @@ function core:__init()
     self.m_energy_last_use = 0
     self.m_energy_last_regen = 0
     self.m_energy_low_threshold = 20
-    self.m_energy_low_voiced = false
+    self.m_energy_low_voiced = true
     self.m_energy_off_threshold = 0
-    self.m_energy_off_voiced = false
+    self.m_energy_off_voiced = true
     self.m_energy_on_threshold = 0
-    self.m_energy_on_voiced = false
+    self.m_energy_on_voiced = true
     self.m_sounds = {
         energy_low = sound_object([[nanosuit\energy_low]]),
         energy_low_voice = sound_object([[nanosuit\energy_low_voice]]),
