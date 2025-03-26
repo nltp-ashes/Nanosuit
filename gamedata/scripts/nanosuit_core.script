@@ -52,9 +52,12 @@ function core:__init()
     self.m_energy_low_voiced = false
     self.m_energy_off_threshold = 0
     self.m_energy_off_voiced = false
+    self.m_energy_on_threshold = 0
+    self.m_energy_on_voiced = false
     self.m_sounds = {
         energy_low = sound_object([[nanosuit\energy_low]]),
         energy_low_voice = sound_object([[nanosuit\energy_low_voice]]),
+        energy_on = sound_object([[nanosuit\energy_on]]),
         energy_off = sound_object([[nanosuit\energy_off]])
     }
     self.m_modes = {
@@ -80,24 +83,34 @@ function core:actor_on_update()
         end
     end
 
-    -- Voice low energy
-    if self.m_energy < self.m_energy_low_threshold and not self.m_energy_low_voiced then
+    -- Energy low
+    if self.m_energy <= self.m_energy_low_threshold and not self.m_energy_low_voiced then
         self.m_sounds.energy_low:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
         self.m_sounds.energy_low_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         self.m_energy_low_voiced = true
     end
-    if self.m_energy >= self.m_energy_low_threshold then
+    if self.m_energy > self.m_energy_low_threshold then
         self.m_sounds.energy_low:stop()
         self.m_energy_low_voiced = false
     end
 
-    -- Voice off energy
+    -- Energy off
     if self.m_energy <= self.m_energy_off_threshold and not self.m_energy_off_voiced then
         self.m_sounds.energy_off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         self.m_energy_off_voiced = true
     end
     if self.m_energy > self.m_energy_off_threshold then
+        self.m_sounds.energy_off:stop()
         self.m_energy_off_voiced = false
+    end
+
+    -- Energy on
+    if self.m_energy > self.m_energy_on_threshold and not self.m_energy_on_voiced then
+        self.m_sounds.energy_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+        self.m_energy_on_voiced = true
+    end
+    if self.m_energy <= self.m_energy_on_threshold then
+        self.m_energy_on_voiced = false
     end
 
     actor_menu.set_msg(1, "Energy : " .. self.m_energy, 5)
