@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 26/03/2025                                                                                             ---
+---    Date : 29/03/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -73,8 +73,6 @@ function core:__init()
 end
 
 function core:actor_on_update()
-    printf("[NS] Regen m_energy %s/%s", time_global() - self.m_energy_last_use, self.m_energy_regen_delay)
-
     -- Delay energy regen 5s after last energy use
     if time_global() - self.m_energy_last_use > self.m_energy_regen_delay then
         -- Throttle energy regen once every 100ms

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/11/2023                                                                                             ---
+---    Date : 29/11/2023                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -13,7 +13,8 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
-local debug_mode = true
+debug_mode = true
+actor_slots = { knife = 1, pistol = 2, rifle = 3, grenade = 4, binoculars = 5, bolt = 6, outfit = 7, pda = 8, detector = 9, torch = 10, artefact = 11, helmet = 12, backpack = 13 }
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Debug Functions
