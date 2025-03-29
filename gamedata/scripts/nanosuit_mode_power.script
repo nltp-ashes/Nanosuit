@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 26/03/2025                                                                                             ---
+---    Date : 29/03/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of strength mode of the Nanosuit addon.                                       ---
@@ -21,8 +21,11 @@ class "power"
 
 function power:__init(core)
     self.m_core = core
-    self.m_power_jump_energy_use = 20
+    self.m_energy_use_shoot = 4
+    self.m_energy_use_power_jump = 20
     self.m_saved_jump_speed = db.actor:get_actor_jump_speed()
+    self.m_saved_wpn_dispersion = nil
+    self.m_saved_wpn_dispersion_zoom = nil
     self.m_sounds = {
         power_voice = sound_object([[nanosuit\mode_power_voice]]),
         power_jump = sound_object([[nanosuit\mode_power_jump]])
@@ -35,27 +38,53 @@ function power:apply_effects()
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_jump", self)
+    RegisterScriptCallback("actor_on_weapon_fired", self)
 
     -- Save jump speed
     self.m_saved_jump_speed = db.actor:get_actor_jump_speed()
+
+    -- Reduce recoil
+    -- FIXME : This only works if actor does not change weapons while power mode is active
+    local obj = db.actor:active_item()
+    if obj and IsWeapon(obj) then
+        local wpn_obj = obj:cast_Weapon()
+        self.m_saved_wpn_dispersion = wpn_obj:GetCamDispersion()
+        wpn_obj:SetCamDispersion(self.m_saved_wpn_dispersion * 0.1)
+        self.m_saved_wpn_dispersion_zoom = wpn_obj:GetZoomCamDispersion()
+        wpn_obj:SetZoomCamDispersion(self.m_saved_wpn_dispersion_zoom * 0.1)
+    end
 end
 
 function power:remove_effects()
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_jump", self)
+    UnregisterScriptCallback("actor_on_weapon_fired", self)
 
     -- Reset jump speed
     db.actor:set_actor_jump_speed(self.m_saved_jump_speed)
+
+    -- Reset recoil
+    -- FIXME : This only works if actor does not change weapons while power mode is active
+    local obj = db.actor:active_item()
+    if obj and IsWeapon(obj) and self.m_saved_wpn_dispersion and self.m_saved_wpn_dispersion_zoom then
+        local wpn_obj = obj:cast_Weapon()
+        wpn_obj:SetCamDispersion(self.m_saved_wpn_dispersion)
+        wpn_obj:SetZoomCamDispersion(self.m_saved_wpn_dispersion_zoom)
+    end
 end
 
 function power:actor_on_jump()
     -- Play sounds
-    if (self.m_core.m_energy >= self.m_power_jump_energy_use) then
+    if (self.m_core.m_energy >= self.m_energy_use_power_jump) then
         self.m_sounds.power_jump:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     end
-    self.m_core:use_energy(self.m_power_jump_energy_use)
+    self.m_core:use_energy(self.m_energy_use_power_jump)
 
     -- Set jump speed (inversely proportional to energy)
     local jump_multiplier = 1 + self.m_core.m_energy / 100
     db.actor:set_actor_jump_speed(self.m_saved_jump_speed * jump_multiplier)
+end
+
+function power:actor_on_weapon_fired()
+    self.m_core:use_energy(self.m_energy_use_shoot)
 end
