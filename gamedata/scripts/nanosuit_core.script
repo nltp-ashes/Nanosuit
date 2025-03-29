@@ -68,8 +68,20 @@ function core:__init()
     }
     self.m_default_mode = armor_modes_enum.armor
     self.m_current_mode = self.m_modes[self.m_default_mode]
+    self.m_current_mode:apply_effects()
 
     RegisterScriptCallback("actor_on_update", self)
+end
+
+function core:use_energy(amount)
+    self.m_energy = clamp(self.m_energy - round(amount), 0, 100)
+    self.m_energy_last_use = time_global()
+end
+
+function core:change_mode(mode)
+    self.m_current_mode:remove_effects()
+    self.m_current_mode = self.m_modes[mode]
+    self.m_current_mode:apply_effects()
 end
 
 function core:actor_on_update()
@@ -114,15 +126,4 @@ function core:actor_on_update()
     end
 
     actor_menu.set_msg(1, "Energy : " .. self.m_energy, 5)
-end
-
-function core:use_energy(amount)
-    self.m_energy = clamp(self.m_energy - amount, 0, 100)
-    self.m_energy_last_use = time_global()
-end
-
-function core:change_mode(mode)
-    self.m_current_mode:remove_effects()
-    self.m_current_mode = self.m_modes[mode]
-    self.m_current_mode:apply_effects()
 end
