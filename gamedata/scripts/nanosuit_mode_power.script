@@ -38,38 +38,44 @@ function power:apply_effects()
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_jump", self)
+    RegisterScriptCallback("actor_on_update", self)
     RegisterScriptCallback("actor_on_weapon_fired", self)
 
     -- Save jump speed
     self.m_saved_jump_speed = db.actor:get_actor_jump_speed()
-
-    -- Reduce recoil
-    -- FIXME : This only works if actor does not change weapons while power mode is active
-    local obj = db.actor:active_item()
-    if obj and IsWeapon(obj) then
-        local wpn_obj = obj:cast_Weapon()
-        self.m_saved_wpn_dispersion = wpn_obj:GetCamDispersion()
-        wpn_obj:SetCamDispersion(self.m_saved_wpn_dispersion * 0.1)
-        self.m_saved_wpn_dispersion_zoom = wpn_obj:GetZoomCamDispersion()
-        wpn_obj:SetZoomCamDispersion(self.m_saved_wpn_dispersion_zoom * 0.1)
-    end
 end
 
 function power:remove_effects()
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_jump", self)
+    UnregisterScriptCallback("actor_on_update", self)
     UnregisterScriptCallback("actor_on_weapon_fired", self)
 
     -- Reset jump speed
     db.actor:set_actor_jump_speed(self.m_saved_jump_speed)
+end
 
-    -- Reset recoil
+function power:actor_on_update()
+    local has_enough_energy = self.m_core.m_energy >= self.m_core.m_energy_low_threshold
+
     -- FIXME : This only works if actor does not change weapons while power mode is active
     local obj = db.actor:active_item()
-    if obj and IsWeapon(obj) and self.m_saved_wpn_dispersion and self.m_saved_wpn_dispersion_zoom then
-        local wpn_obj = obj:cast_Weapon()
+    if not obj or not IsWeapon(obj) then
+        return
+    end
+
+    local wpn_obj = obj:cast_Weapon()
+
+    if has_enough_energy and not self.m_saved_wpn_dispersion and not self.m_saved_wpn_dispersion_zoom then
+        self.m_saved_wpn_dispersion = wpn_obj:GetCamDispersion()
+        self.m_saved_wpn_dispersion_zoom = wpn_obj:GetZoomCamDispersion()
+        wpn_obj:SetCamDispersion(self.m_saved_wpn_dispersion * 0.1)
+        wpn_obj:SetZoomCamDispersion(self.m_saved_wpn_dispersion_zoom * 0.1)
+    elseif not has_enough_energy and self.m_saved_wpn_dispersion and self.m_saved_wpn_dispersion_zoom then
         wpn_obj:SetCamDispersion(self.m_saved_wpn_dispersion)
         wpn_obj:SetZoomCamDispersion(self.m_saved_wpn_dispersion_zoom)
+        self.m_saved_wpn_dispersion = nil
+        self.m_saved_wpn_dispersion_zoom = nil
     end
 end
 

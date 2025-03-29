@@ -119,6 +119,7 @@ function cloak:actor_on_update()
 
     -- Cloak energy use
     if time_global() - self.m_cloak_energy_last_use > self.m_cloak_energy_rate then
+        -- FIXME : This should use more or less energy according to player movement speed
         self.m_core:use_energy(self.m_cloak_energy_use)
         self.m_cloak_energy_last_use = time_global()
     end
