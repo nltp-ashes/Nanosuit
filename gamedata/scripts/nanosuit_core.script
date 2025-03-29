@@ -50,12 +50,14 @@ function core:__init()
     self.m_energy_last_regen = 0
     self.m_energy_low_threshold = 20
     self.m_energy_low_voiced = true
+    self.m_energy_very_low_threshold = 10
+    self.m_energy_very_low_voiced = true
     self.m_energy_off_threshold = 0
     self.m_energy_off_voiced = true
     self.m_energy_on_threshold = 0
     self.m_energy_on_voiced = true
     self.m_sounds = {
-        energy_low = sound_object([[nanosuit\energy_low]]),
+        energy_very_low = sound_object([[nanosuit\energy_very_low]]),
         energy_low_voice = sound_object([[nanosuit\energy_low_voice]]),
         energy_on = sound_object([[nanosuit\energy_on]]),
         energy_off = sound_object([[nanosuit\energy_off]])
@@ -96,13 +98,21 @@ function core:actor_on_update()
 
     -- Energy low
     if self.m_energy <= self.m_energy_low_threshold and not self.m_energy_low_voiced then
-        self.m_sounds.energy_low:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
         self.m_sounds.energy_low_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         self.m_energy_low_voiced = true
     end
     if self.m_energy > self.m_energy_low_threshold then
-        self.m_sounds.energy_low:stop()
         self.m_energy_low_voiced = false
+    end
+
+    -- Energy very low
+    if self.m_energy <= self.m_energy_very_low_threshold and not self.m_energy_very_low_voiced then
+        self.m_sounds.energy_very_low:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
+        self.m_energy_very_low_voiced = true
+    end
+    if self.m_energy > self.m_energy_very_low_threshold then
+        self.m_sounds.energy_very_low:stop()
+        self.m_energy_very_low_voiced = false
     end
 
     -- Energy off
