@@ -26,7 +26,7 @@ class "cloak"
 function cloak:__init(core)
     self.m_core = core
     self.m_energy_use_min = 0.1
-    self.m_energy_use_max = 2
+    self.m_energy_use_max = 1
     self.m_energy_last_use = 0
     self.m_energy_rate = 100
     self.m_cloak_texture = [[nanosuit\cloak_pattern]]
