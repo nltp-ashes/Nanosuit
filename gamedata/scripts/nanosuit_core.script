@@ -25,9 +25,11 @@ armor_modes_enum = {
 }
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Main functions
+-- General functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
+--- Function used to get an instance of the core class.
+--- @return core
 function get()
     if instance == nil then
         instance = core()
@@ -35,8 +37,20 @@ function get()
     return instance
 end
 
+--- Function used to instantiate the core class on first update.
+--- @return nil
+function actor_on_first_update()
+    get()
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Callbacks registration
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to register callbacks.
+--- @return nil
 function on_game_start()
-    RegisterScriptCallback("actor_on_first_update", get)
+    RegisterScriptCallback("actor_on_first_update", actor_on_first_update)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -46,6 +60,7 @@ end
 class "core"
 
 function core:__init()
+    -- Energy related variables
     self.m_energy = 100
     self.m_energy_regen_rate = 100
     self.m_energy_regen_delay = 5000
@@ -59,22 +74,29 @@ function core:__init()
     self.m_energy_off_voiced = true
     self.m_energy_on_threshold = 0
     self.m_energy_on_voiced = true
+
+    -- Sound effects
     self.m_sounds = {
         energy_very_low = sound_object([[nanosuit\energy_very_low]]),
         energy_low_voice = sound_object([[nanosuit\energy_low_voice]]),
         energy_on = sound_object([[nanosuit\energy_on]]),
         energy_off = sound_object([[nanosuit\energy_off]])
     }
+
+    -- Armor modes
     self.m_modes = {
         [armor_modes_enum.armor] = nanosuit_mode_armor[armor_modes_enum.armor](self),
         [armor_modes_enum.power] = nanosuit_mode_power[armor_modes_enum.power](self),
         [armor_modes_enum.speed] = nanosuit_mode_speed[armor_modes_enum.speed](self),
         [armor_modes_enum.cloak] = nanosuit_mode_cloak[armor_modes_enum.cloak](self)
     }
+
+    -- Default mode initialization
     self.m_default_mode = armor_modes_enum.armor
     self.m_current_mode = self.m_modes[self.m_default_mode]
     self.m_current_mode:apply_effects()
 
+    -- Register callbacks
     RegisterScriptCallback("actor_on_update", self)
 end
 
