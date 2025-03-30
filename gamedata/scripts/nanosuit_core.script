@@ -14,7 +14,7 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- Singleton
-instance = nil
+instance         = nil
 
 -- Enum
 armor_modes_enum = {
@@ -85,10 +85,10 @@ function core:__init()
 
     -- Armor modes
     self.m_modes = {
-        [armor_modes_enum.armor] = nanosuit_mode_armor[armor_modes_enum.armor](self),
-        [armor_modes_enum.power] = nanosuit_mode_power[armor_modes_enum.power](self),
-        [armor_modes_enum.speed] = nanosuit_mode_speed[armor_modes_enum.speed](self),
-        [armor_modes_enum.cloak] = nanosuit_mode_cloak[armor_modes_enum.cloak](self)
+        [armor_modes_enum.armor] = nanosuit_mode_armor[armor_modes_enum.armor](self, armor_modes_enum.armor),
+        [armor_modes_enum.power] = nanosuit_mode_power[armor_modes_enum.power](self, armor_modes_enum.power),
+        [armor_modes_enum.speed] = nanosuit_mode_speed[armor_modes_enum.speed](self, armor_modes_enum.speed),
+        [armor_modes_enum.cloak] = nanosuit_mode_cloak[armor_modes_enum.cloak](self, armor_modes_enum.cloak)
     }
 
     -- Default mode initialization
@@ -106,9 +106,11 @@ function core:use_energy(amount)
 end
 
 function core:change_mode(mode)
-    self.m_current_mode:remove_effects()
-    self.m_current_mode = self.m_modes[mode]
-    self.m_current_mode:apply_effects()
+    if self.m_current_mode ~= self.m_modes[mode] then
+        self.m_current_mode:remove_effects()
+        self.m_current_mode = self.m_modes[mode]
+        self.m_current_mode:apply_effects()
+    end
 end
 
 function core:actor_on_update()

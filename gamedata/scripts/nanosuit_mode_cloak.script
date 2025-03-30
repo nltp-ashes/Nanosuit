@@ -21,18 +21,16 @@ actor_slots             = nanosuit_utils.actor_slots
 -- Cloak mode class
 -- ---------------------------------------------------------------------------------------------------------------------
 
-class "cloak"
+class "cloak" (nanosuit_mode.abstract_mode)
 
-function cloak:__init(core)
-    self.m_core = core
+function cloak:__init(core, name) super(core, name)
+    -- Energy related variables
     self.m_energy_use_min = 0.1
     self.m_energy_use_max = 1
     self.m_energy_last_use = 0
     self.m_energy_rate = 100
-    self.m_cloak_texture = [[nanosuit\cloak_pattern]]
-    self.m_cloak_shader = [[models\window]] --[[models\xanomaly]] --[[models\pautina]]
-    self.m_saved_actor_shaders = {}
-    self.m_saved_items_shaders = {}
+
+    -- Cloak slots
     self.m_cloaked_slots = {
         [actor_slots.knife] = true,
         [actor_slots.pistol] = true,
@@ -43,13 +41,22 @@ function cloak:__init(core)
         [actor_slots.detector] = true,
         [actor_slots.torch] = true
     }
-    self.m_sounds = {
-        cloak_voice = sound_object([[nanosuit\mode_cloak_voice]]),
-        cloak_loop = sound_object([[nanosuit\mode_cloak_loop]]),
-        cloak_shoot = sound_object([[nanosuit\mode_cloak_shoot]]),
-        cloak_on = sound_object([[nanosuit\mode_cloak_on]]),
-        cloak_off = sound_object([[nanosuit\mode_cloak_off]])
-    }
+
+    -- Cloak related variables
+    self.m_cloak_texture = [[nanosuit\cloak_pattern]]
+    self.m_cloak_shader = [[models\window]] --[[models\xanomaly]] --[[models\pautina]]
+
+
+    -- Cache
+    self.m_cache["actor_shaders"] = {}
+    self.m_cache["items_shaders"] = {}
+
+    -- Sound effects
+    self.m_sounds["cloak_voice"] = sound_object([[nanosuit\mode_cloak_voice]])
+    self.m_sounds["cloak_loop"] = sound_object([[nanosuit\mode_cloak_loop]])
+    self.m_sounds["cloak_shoot"] = sound_object([[nanosuit\mode_cloak_shoot]])
+    self.m_sounds["cloak_on"] = sound_object([[nanosuit\mode_cloak_on]])
+    self.m_sounds["cloak_off"] = sound_object([[nanosuit\mode_cloak_off]])
 end
 
 function cloak:apply_effects()
@@ -63,7 +70,7 @@ function cloak:apply_effects()
     RegisterScriptCallback("actor_on_weapon_fired", self)
 
     -- Set player invisible
-    self.m_saved_actor_shaders = db.actor:get_shaders(true)
+    self.m_cache["actor_shaders"] = db.actor:get_shaders(true)
     db.actor:set_shader(-1, self.m_cloak_shader, self.m_cloak_texture, true)
 
     -- FIXME : This only works if actor does not change active item/detector while cloak mode is active
@@ -91,7 +98,7 @@ function cloak:remove_effects()
     UnregisterScriptCallback("actor_on_weapon_fired", self)
 
     -- Restore player visibility
-    for idx,save in pairs(self.m_saved_actor_shaders) do
+    for idx,save in pairs(self.m_cache["actor_shaders"]) do
         db.actor:set_shader(idx, save.shader, save.texture, true)
     end
 

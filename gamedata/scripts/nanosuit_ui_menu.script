@@ -14,7 +14,7 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- Singleton
-GUI = nil
+instance         = nil
 
 -- Imports
 armor_modes_enum = nanosuit_core.armor_modes_enum
@@ -32,12 +32,12 @@ function on_key_press(dik)
 
     hide_hud_inventory()
 
-    if not GUI then
-        GUI = UINanosuitMenu()
+    if not instance then
+        instance = UINanosuitMenu()
     end
 
-    if GUI and not GUI:IsShown() then
-        GUI:ShowDialog(true)
+    if instance and not instance:IsShown() then
+        instance:ShowDialog(true)
         Register_UI("UINanosuitMenu", "nanosuit_ui_menu")
         utils_obj.play_sound([[nanosuit\menu_show]])
     end

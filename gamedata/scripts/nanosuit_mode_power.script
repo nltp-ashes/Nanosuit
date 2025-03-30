@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 29/03/2025                                                                                             ---
+---    Date : 30/03/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of strength mode of the Nanosuit addon.                                       ---
@@ -17,19 +17,21 @@
 -- Strength mode class
 -- ---------------------------------------------------------------------------------------------------------------------
 
-class "power"
+class "power" (nanosuit_mode.abstract_mode)
 
-function power:__init(core)
-    self.m_core = core
+function power:__init(core, name) super(core, name)
+    -- Energy related variables
     self.m_energy_use_shoot = 4
     self.m_energy_use_power_jump = 20
-    self.m_saved_jump_speed = db.actor:get_actor_jump_speed()
-    self.m_saved_wpn_dispersion = nil
-    self.m_saved_wpn_dispersion_zoom = nil
-    self.m_sounds = {
-        power_voice = sound_object([[nanosuit\mode_power_voice]]),
-        power_jump = sound_object([[nanosuit\mode_power_jump]])
-    }
+
+    -- Cache
+    self.m_cache["jump_speed"] = db.actor:get_actor_jump_speed()
+    self.m_cache["wpn_dispersion"] = nil
+    self.m_cache["wpn_dispersion_zoom"] = nil
+
+    -- Sound effects
+    self.m_sounds["power_voice"] = sound_object([[nanosuit\mode_power_voice]])
+    self.m_sounds["power_jump"] = sound_object([[nanosuit\mode_power_jump]])
 end
 
 function power:apply_effects()
@@ -42,7 +44,7 @@ function power:apply_effects()
     RegisterScriptCallback("actor_on_weapon_fired", self)
 
     -- Save jump speed
-    self.m_saved_jump_speed = db.actor:get_actor_jump_speed()
+    self.m_cache["jump_speed"] = db.actor:get_actor_jump_speed()
 end
 
 function power:remove_effects()
@@ -52,7 +54,7 @@ function power:remove_effects()
     UnregisterScriptCallback("actor_on_weapon_fired", self)
 
     -- Reset jump speed
-    db.actor:set_actor_jump_speed(self.m_saved_jump_speed)
+    db.actor:set_actor_jump_speed(self.m_cache["jump_speed"])
 end
 
 function power:actor_on_update()
@@ -66,16 +68,16 @@ function power:actor_on_update()
 
     local wpn_obj = obj:cast_Weapon()
 
-    if has_enough_energy and not self.m_saved_wpn_dispersion and not self.m_saved_wpn_dispersion_zoom then
-        self.m_saved_wpn_dispersion = wpn_obj:GetCamDispersion()
-        self.m_saved_wpn_dispersion_zoom = wpn_obj:GetZoomCamDispersion()
-        wpn_obj:SetCamDispersion(self.m_saved_wpn_dispersion * 0.1)
-        wpn_obj:SetZoomCamDispersion(self.m_saved_wpn_dispersion_zoom * 0.1)
-    elseif not has_enough_energy and self.m_saved_wpn_dispersion and self.m_saved_wpn_dispersion_zoom then
-        wpn_obj:SetCamDispersion(self.m_saved_wpn_dispersion)
-        wpn_obj:SetZoomCamDispersion(self.m_saved_wpn_dispersion_zoom)
-        self.m_saved_wpn_dispersion = nil
-        self.m_saved_wpn_dispersion_zoom = nil
+    if has_enough_energy and not self.m_cache["wpn_dispersion"] and not self.m_cache["wpn_dispersion_zoom"] then
+        self.m_cache["wpn_dispersion"] = wpn_obj:GetCamDispersion()
+        self.m_cache["wpn_dispersion_zoom"] = wpn_obj:GetZoomCamDispersion()
+        wpn_obj:SetCamDispersion(self.m_cache["wpn_dispersion"] * 0.1)
+        wpn_obj:SetZoomCamDispersion(self.m_cache["wpn_dispersion_zoom"] * 0.1)
+    elseif not has_enough_energy and self.m_cache["wpn_dispersion"] and self.m_cache["wpn_dispersion_zoom"] then
+        wpn_obj:SetCamDispersion(self.m_cache["wpn_dispersion"])
+        wpn_obj:SetZoomCamDispersion(self.m_cache["wpn_dispersion_zoom"])
+        self.m_cache["wpn_dispersion"] = nil
+        self.m_cache["wpn_dispersion_zoom"] = nil
     end
 end
 
@@ -88,7 +90,7 @@ function power:actor_on_jump()
 
     -- Set jump speed (inversely proportional to energy)
     local jump_multiplier = 1 + self.m_core.m_energy / 100
-    db.actor:set_actor_jump_speed(self.m_saved_jump_speed * jump_multiplier)
+    db.actor:set_actor_jump_speed(self.m_cache["jump_speed"] * jump_multiplier)
 end
 
 function power:actor_on_weapon_fired()
