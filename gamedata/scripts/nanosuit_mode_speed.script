@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 26/03/2025                                                                                             ---
+---    Date : 30/03/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of speed mode of the Nanosuit addon.                                          ---
@@ -24,6 +24,7 @@ function speed:__init(core)
     self.m_sprint_energy_use = 1
     self.m_sprint_energy_last_use = 0
     self.m_sprint_energy_rate = 50
+    self.m_sprint_energy_low_rate = 250
     self.m_saved_run_coef = db.actor:get_actor_run_coef()
     self.m_saved_sprint_coef = db.actor:get_actor_sprint_koef()
     self.m_sounds = {
@@ -57,13 +58,14 @@ function speed:remove_effects()
 end
 
 function speed:actor_on_update()
+    local has_enough_energy = self.m_core.m_energy >= self.m_core.m_energy_very_low_threshold
+
     -- Use energy
-    if IsMoveState("mcSprint") and time_global() - self.m_sprint_energy_last_use > self.m_sprint_energy_rate then
+    local energy_rate = has_enough_energy and self.m_sprint_energy_rate or self.m_sprint_energy_low_rate
+    if IsMoveState("mcSprint") and time_global() - self.m_sprint_energy_last_use > energy_rate then
         self.m_core:use_energy(self.m_sprint_energy_use)
         self.m_sprint_energy_last_use = time_global()
     end
-
-    local has_enough_energy = self.m_core.m_energy >= self.m_core.m_energy_low_threshold
 
     -- Play sounds
     if has_enough_energy and IsMoveState("mcSprint") and not self.m_sounds.speed_loop:playing() then
