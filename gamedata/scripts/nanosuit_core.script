@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 29/03/2025                                                                                             ---
+---    Date : 30/03/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -13,13 +13,16 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
+-- Singleton
+instance = nil
+
+-- Enum
 armor_modes_enum = {
     armor = "armor",
     power = "power",
     speed = "speed",
     cloak = "cloak"
 }
-instance = nil
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Main functions
@@ -76,7 +79,7 @@ function core:__init()
 end
 
 function core:use_energy(amount)
-    self.m_energy = clamp(self.m_energy - round(amount), 0, 100)
+    self.m_energy = clamp(self.m_energy - amount, 0, 100)
     self.m_energy_last_use = time_global()
 end
 
@@ -135,5 +138,5 @@ function core:actor_on_update()
         self.m_energy_on_voiced = false
     end
 
-    actor_menu.set_msg(1, "Energy : " .. self.m_energy, 5)
+    actor_menu.set_msg(1, "Energy : " .. round(self.m_energy), 5)
 end

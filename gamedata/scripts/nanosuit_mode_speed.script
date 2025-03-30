@@ -58,29 +58,30 @@ function speed:remove_effects()
 end
 
 function speed:actor_on_update()
-    local has_enough_energy = self.m_core.m_energy >= self.m_core.m_energy_very_low_threshold
+    local has_enough_energy_low = self.m_core.m_energy >= self.m_core.m_energy_low_threshold
+    local has_enough_energy_very_low = self.m_core.m_energy >= self.m_core.m_energy_very_low_threshold
 
     -- Use energy
-    local energy_rate = has_enough_energy and self.m_sprint_energy_rate or self.m_sprint_energy_low_rate
+    local energy_rate = has_enough_energy_very_low and self.m_sprint_energy_rate or self.m_sprint_energy_low_rate
     if IsMoveState("mcSprint") and time_global() - self.m_sprint_energy_last_use > energy_rate then
         self.m_core:use_energy(self.m_sprint_energy_use)
         self.m_sprint_energy_last_use = time_global()
     end
 
     -- Play sounds
-    if has_enough_energy and IsMoveState("mcSprint") and not self.m_sounds.speed_loop:playing() then
+    if has_enough_energy_low and IsMoveState("mcSprint") and not self.m_sounds.speed_loop:playing() then
         self.m_sounds.speed_stop:stop()
         self.m_sounds.speed_loop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
-    elseif has_enough_energy and not IsMoveState("mcSprint") and self.m_sounds.speed_loop:playing() then
+    elseif has_enough_energy_low and not IsMoveState("mcSprint") and self.m_sounds.speed_loop:playing() then
         self.m_sounds.speed_loop:stop()
         self.m_sounds.speed_stop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
-    elseif not has_enough_energy and self.m_sounds.speed_loop:playing() then
+    elseif not has_enough_energy_low and self.m_sounds.speed_loop:playing() then
         self.m_sounds.speed_loop:stop()
         self.m_sounds.speed_stop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     end
 
     -- Set run and sprint coefficients
-    if has_enough_energy then
+    if has_enough_energy_low then
         db.actor:set_actor_run_coef(self.m_saved_run_coef * 1.5)
         db.actor:set_actor_sprint_koef(self.m_saved_sprint_coef * 1.25)
     else

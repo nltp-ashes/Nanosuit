@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 26/03/2025                                                                                             ---
+---    Date : 30/03/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit mode selection UI.                                                         ---
@@ -13,8 +13,10 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
-GUI                     = nil           -- instance, don't touch
+-- Singleton
+GUI                     = nil
 
+-- Imports
 armor_modes_enum        = nanosuit_core.armor_modes_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
