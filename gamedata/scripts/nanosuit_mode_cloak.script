@@ -30,18 +30,6 @@ function cloak:__init(core, name) super(core, name)
     self.m_energy_last_use = 0
     self.m_energy_rate = 100
 
-    -- Cloak slots
-    self.m_cloaked_slots = {
-        [actor_slots.knife] = true,
-        [actor_slots.pistol] = true,
-        [actor_slots.rifle] = true,
-        [actor_slots.grenade] = true,
-        [actor_slots.binoculars] = true,
-        [actor_slots.pda] = true,
-        [actor_slots.detector] = true,
-        [actor_slots.torch] = true
-    }
-
     -- Cloak related variables
     self.m_cloak_npc_see_distance = 5
     self.m_cloak_texture = [[nanosuit\cloak_pattern]]
@@ -49,7 +37,17 @@ function cloak:__init(core, name) super(core, name)
 
     -- Cache
     self.m_cache["actor_shaders"] = {}
-    self.m_cache["items_shaders"] = {}
+    self.m_cache["items_shaders"] = {
+        [actor_slots.knife] = { cloaked = true, id = nil, shaders = nil },
+        [actor_slots.pistol] = { cloaked = true, id = nil, shaders = nil },
+        [actor_slots.rifle] = { cloaked = true, id = nil, shaders = nil },
+        [actor_slots.grenade] = { cloaked = true, id = nil, shaders = nil },
+        [actor_slots.binoculars] = { cloaked = true, id = nil, shaders = nil },
+        [actor_slots.bolt] = { cloaked = true, id = nil, shaders = nil },
+        [actor_slots.pda] = { cloaked = true, id = nil, shaders = nil },
+        [actor_slots.detector] = { cloaked = true, id = nil, shaders = nil },
+        [actor_slots.torch] = { cloaked = true, id = nil, shaders = nil }
+    }
 
     -- Sound effects
     self.m_sounds["cloak_voice"] = sound_object([[nanosuit\mode_cloak_voice]])
@@ -67,28 +65,25 @@ function cloak:apply_effects()
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_update", self)
+    RegisterScriptCallback("actor_item_to_slot", self)
+    RegisterScriptCallback("actor_item_to_ruck", self)
+    RegisterScriptCallback("actor_on_item_drop", self)
     RegisterScriptCallback("actor_on_weapon_fired", self)
-
-    -- Set player invisible
-    self.m_cache["actor_shaders"] = db.actor:get_shaders(true)
-    db.actor:set_shader(-1, self.m_cloak_shader, self.m_cloak_texture, true)
 
     -- Override visibility from NPCs
     self.m_cache["visibility_functor"] = visual_memory_manager.get_visible_value
     visual_memory_manager.get_visible_value = function(...) return self:get_visible_value(...) end
 
-    -- FIXME : This only works if actor does not change active item/detector while cloak mode is active
-    local active_item = db.actor:active_item()
-    if active_item then
-        self.m_cache["items_shaders"] = active_item:get_shaders(true)
-        active_item:set_shader(-1, self.m_cloak_shader, self.m_cloak_texture, true)
-    end
+    -- Set player invisible
+    self.m_cache["actor_shaders"] = db.actor:get_shaders(true)
+    db.actor:set_shader(-1, self.m_cloak_shader, self.m_cloak_texture, true)
 
-    -- FIXME : This only works if actor does not change active item/detector while cloak mode is active
-    local active_detector = db.actor:active_detector()
-    if active_detector then
-        self.m_cache["items_shaders"] = active_detector:get_shaders(true)
-        active_detector:set_shader(-1, self.m_cloak_shader, self.m_cloak_texture, true)
+    -- Set items invisible
+    for slot,_ in pairs(self.m_cache["items_shaders"]) do
+        local obj = db.actor:item_in_slot(slot)
+        if obj then
+            self:set_item_invisible(obj, slot)
+        end
     end
 end
 
@@ -99,6 +94,9 @@ function cloak:remove_effects()
 
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_update", self)
+    UnregisterScriptCallback("actor_item_to_slot", self)
+    UnregisterScriptCallback("actor_item_to_ruck", self)
+    UnregisterScriptCallback("actor_on_item_drop", self)
     UnregisterScriptCallback("actor_on_weapon_fired", self)
 
     -- Restore visibility from NPCs
@@ -109,21 +107,27 @@ function cloak:remove_effects()
         db.actor:set_shader(idx, save.shader, save.texture, true)
     end
 
-    -- FIXME : This only works if actor does not change active item/detector while cloak mode is active
-    local active_item = db.actor:active_item()
-    if active_item then
-        for idx,save in pairs(self.m_cache["items_shaders"]) do
-            active_item:set_shader(idx, save.shader, save.texture, true)
+    -- Restore items visibility
+    for slot,data in pairs(self.m_cache["items_shaders"]) do
+        local obj = db.actor:item_in_slot(slot)
+        if obj and data.id == obj:id() then
+            self:set_item_visible(obj, slot)
         end
     end
+end
 
-    -- FIXME : This only works if actor does not change active item/detector while cloak mode is active
-    local active_detector = db.actor:active_detector()
-    if active_detector then
-        for idx,save in pairs(self.m_cache["items_shaders"]) do
-            active_detector:set_shader(idx, save.shader, save.texture, true)
-        end
+function cloak:set_item_visible(obj, slot)
+    for idx,save in pairs(self.m_cache["items_shaders"][slot]["shaders"]) do
+        obj:set_shader(idx, save.shader, save.texture, true)
     end
+    self.m_cache["items_shaders"][slot]["id"] = nil
+    self.m_cache["items_shaders"][slot]["shaders"] = nil
+end
+
+function cloak:set_item_invisible(obj, slot)
+    self.m_cache["items_shaders"][slot]["id"] = obj:id()
+    self.m_cache["items_shaders"][slot]["shaders"] = obj:get_shaders(true)
+    obj:set_shader(-1, self.m_cloak_shader, self.m_cloak_texture, true)
 end
 
 -- FIXME : This fails if the NPC sees the actor before the cloak is applied, right now you need to break vision for this to take effect
@@ -162,4 +166,29 @@ function cloak:actor_on_weapon_fired()
     self.m_sounds.cloak_shoot:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_core:use_energy(100)
     self.m_core:change_mode(self.m_core.m_default_mode)
+end
+
+function cloak:actor_item_to_slot(obj)
+    for slot,_ in pairs(self.m_cache["items_shaders"]) do
+        local obj_in_slot = db.actor:item_in_slot(slot)
+        if obj_in_slot and obj_in_slot:id() == obj:id() then
+            self:set_item_invisible(obj, slot)
+        end
+    end
+end
+
+function cloak:actor_item_to_ruck(obj)
+    for slot,data in pairs(self.m_cache["items_shaders"]) do
+        if data.id == obj:id() then
+            self:set_item_visible(obj, slot)
+        end
+    end
+end
+
+function cloak:actor_on_item_drop(obj)
+    for slot,data in pairs(self.m_cache["items_shaders"]) do
+        if data.id == obj:id() then
+            self:set_item_visible(obj, slot)
+        end
+    end
 end
