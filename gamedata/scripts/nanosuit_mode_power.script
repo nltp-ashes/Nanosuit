@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/03/2025                                                                                             ---
+---    Date : 01/04/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of strength mode of the Nanosuit addon.                                       ---
@@ -26,6 +26,7 @@ function power:__init(core, name) super(core, name)
 
     -- Cache
     self.m_cache["jump_speed"] = db.actor:get_actor_jump_speed()
+    self.m_cache["wpn_id"] = nil
     self.m_cache["wpn_dispersion"] = nil
     self.m_cache["wpn_dispersion_zoom"] = nil
 
@@ -41,43 +42,79 @@ function power:apply_effects()
     -- Register callbacks
     RegisterScriptCallback("actor_on_jump", self)
     RegisterScriptCallback("actor_on_update", self)
+    RegisterScriptCallback("actor_item_to_slot", self)
+    RegisterScriptCallback("actor_item_to_ruck", self)
+    RegisterScriptCallback("actor_on_item_drop", self)
     RegisterScriptCallback("actor_on_weapon_fired", self)
+    RegisterScriptCallback("actor_on_changed_slot", self)
 
     -- Save jump speed
     self.m_cache["jump_speed"] = db.actor:get_actor_jump_speed()
+
+    -- Reduce recoil
+    local active_item = db.actor:active_item()
+    if active_item and IsWeapon(active_item) then
+        self:decrease_recoil(active_item)
+    end
 end
 
 function power:remove_effects()
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_jump", self)
     UnregisterScriptCallback("actor_on_update", self)
+    UnregisterScriptCallback("actor_item_to_slot", self)
+    UnregisterScriptCallback("actor_item_to_ruck", self)
+    UnregisterScriptCallback("actor_on_item_drop", self)
     UnregisterScriptCallback("actor_on_weapon_fired", self)
+    UnregisterScriptCallback("actor_on_changed_slot", self)
 
     -- Reset jump speed
     db.actor:set_actor_jump_speed(self.m_cache["jump_speed"])
+
+    -- Reset recoil
+    local active_item = db.actor:active_item()
+    if active_item and IsWeapon(active_item) then
+        self:increase_recoil(active_item)
+    end
+end
+
+function power:decrease_recoil(obj)
+    printf("[NS] Decreasing recoil for weapon %s", obj:id())
+    local wpn_obj = obj:cast_Weapon()
+
+    self.m_cache["wpn_id"] = obj:id()
+    self.m_cache["wpn_dispersion"] = wpn_obj:GetCamDispersion()
+    self.m_cache["wpn_dispersion_zoom"] = wpn_obj:GetZoomCamDispersion()
+
+    wpn_obj:SetCamDispersion(self.m_cache["wpn_dispersion"] * 0.1)
+    wpn_obj:SetZoomCamDispersion(self.m_cache["wpn_dispersion_zoom"] * 0.1)
+end
+
+function power:increase_recoil(obj)
+    printf("[NS] Increasing recoil for weapon %s", obj:id())
+    local wpn_obj = obj:cast_Weapon()
+
+    wpn_obj:SetCamDispersion(self.m_cache["wpn_dispersion"])
+    wpn_obj:SetZoomCamDispersion(self.m_cache["wpn_dispersion_zoom"])
+
+    self.m_cache["wpn_id"] = nil
+    self.m_cache["wpn_dispersion"] = nil
+    self.m_cache["wpn_dispersion_zoom"] = nil
 end
 
 function power:actor_on_update()
-    local has_enough_energy = self.m_core.m_energy >= self.m_core.m_energy_low_threshold
-
-    -- FIXME : This only works if actor does not change weapons while power mode is active
     local obj = db.actor:active_item()
     if not obj or not IsWeapon(obj) then
         return
     end
 
-    local wpn_obj = obj:cast_Weapon()
+    local has_enough_energy = self.m_core.m_energy >= self.m_core.m_energy_low_threshold
 
-    if has_enough_energy and not self.m_cache["wpn_dispersion"] and not self.m_cache["wpn_dispersion_zoom"] then
-        self.m_cache["wpn_dispersion"] = wpn_obj:GetCamDispersion()
-        self.m_cache["wpn_dispersion_zoom"] = wpn_obj:GetZoomCamDispersion()
-        wpn_obj:SetCamDispersion(self.m_cache["wpn_dispersion"] * 0.1)
-        wpn_obj:SetZoomCamDispersion(self.m_cache["wpn_dispersion_zoom"] * 0.1)
-    elseif not has_enough_energy and self.m_cache["wpn_dispersion"] and self.m_cache["wpn_dispersion_zoom"] then
-        wpn_obj:SetCamDispersion(self.m_cache["wpn_dispersion"])
-        wpn_obj:SetZoomCamDispersion(self.m_cache["wpn_dispersion_zoom"])
-        self.m_cache["wpn_dispersion"] = nil
-        self.m_cache["wpn_dispersion_zoom"] = nil
+    -- FIXME : This breaks everything if the player switches armor mode while energy is low
+    if has_enough_energy and obj:id() ~= self.m_cache["wpn_id"] then
+        self:decrease_recoil(obj)
+    elseif not has_enough_energy and obj:id() == self.m_cache["wpn_id"] then
+        self:increase_recoil(obj)
     end
 end
 
@@ -95,4 +132,33 @@ end
 
 function power:actor_on_weapon_fired()
     self.m_core:use_energy(self.m_energy_use_shoot)
+end
+
+function power:actor_on_changed_slot(new_slot, new_obj, prev_slot, prev_obj)
+    if prev_obj and prev_obj:id() == self.m_cache["wpn_id"] then
+        self:increase_recoil(prev_obj)
+    end
+    local active_item = db.actor:active_item()
+    if new_obj and active_item and IsWeapon(active_item) and active_item == new_obj:id() then
+        self:decrease_recoil(new_obj)
+    end
+end
+
+function power:actor_item_to_slot(_)
+    local active_item = db.actor:active_item()
+    if active_item and IsWeapon(active_item) then
+        self:decrease_recoil(active_item)
+    end
+end
+
+function power:actor_item_to_ruck(obj)
+    if obj:id() == self.m_cache["wpn_id"] then
+        self:increase_recoil(obj)
+    end
+end
+
+function power:actor_on_item_drop(obj)
+    if obj:id() == self.m_cache["wpn_id"] then
+        self:increase_recoil(obj)
+    end
 end
