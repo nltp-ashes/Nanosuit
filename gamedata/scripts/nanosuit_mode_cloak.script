@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 31/03/2025                                                                                             ---
+---    Date : 01/04/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
@@ -38,15 +38,16 @@ function cloak:__init(core, name) super(core, name)
     -- Cache
     self.m_cache["actor_shaders"] = {}
     self.m_cache["items_shaders"] = {
-        [actor_slots.knife] = { cloaked = true, id = nil, shaders = nil },
-        [actor_slots.pistol] = { cloaked = true, id = nil, shaders = nil },
-        [actor_slots.rifle] = { cloaked = true, id = nil, shaders = nil },
-        [actor_slots.grenade] = { cloaked = true, id = nil, shaders = nil },
-        [actor_slots.binoculars] = { cloaked = true, id = nil, shaders = nil },
-        [actor_slots.bolt] = { cloaked = true, id = nil, shaders = nil },
-        [actor_slots.pda] = { cloaked = true, id = nil, shaders = nil },
-        [actor_slots.detector] = { cloaked = true, id = nil, shaders = nil },
-        [actor_slots.torch] = { cloaked = true, id = nil, shaders = nil }
+        [actor_slots.knife] = { id = nil, shaders = nil },
+        [actor_slots.pistol] = { id = nil, shaders = nil },
+        [actor_slots.rifle] = { id = nil, shaders = nil },
+        [actor_slots.grenade] = { id = nil, shaders = nil },
+        [actor_slots.binoculars] = { id = nil, shaders = nil },
+        [actor_slots.bolt] = { id = nil, shaders = nil },
+        [actor_slots.pda] = { id = nil, shaders = nil },
+        [actor_slots.detector] = { id = nil, shaders = nil },
+        [actor_slots.torch] = { id = nil, shaders = nil },
+        [actor_slots.animation] = { id = nil, shaders = nil }
     }
 
     -- Sound effects
