@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/03/2025                                                                                             ---
+---    Date : 31/03/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
@@ -16,6 +16,19 @@
 -- Imports
 armor_modes_enum        = nanosuit_core.armor_modes_enum
 actor_slots             = nanosuit_utils.actor_slots
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+local override_value = false
+
+visual_memory_manager_get_visible_value = visual_memory_manager.get_visible_value
+visual_memory_manager.get_visible_value = function(npc, who, time_delta, time_quant, luminosity, velocity_factor, velocity, distance, object_distance, always_visible_distance)
+    local result = visual_memory_manager_get_visible_value(npc, who, time_delta, time_quant, luminosity, velocity_factor, velocity, distance, object_distance, always_visible_distance)
+    printf("[NS] Cloak mode get_visible_value npc:%s, who:%s res:%s", npc and npc:name(), who and who:name(), result)
+    return override_value and 0 or result
+end
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Cloak mode class
@@ -85,6 +98,9 @@ function cloak:apply_effects()
         self.m_cache["items_shaders"] = active_detector:get_shaders(true)
         active_detector:set_shader(-1, self.m_cloak_shader, self.m_cloak_texture, true)
     end
+
+    -- Test
+    override_value = true
 end
 
 function cloak:remove_effects()
@@ -116,6 +132,9 @@ function cloak:remove_effects()
             active_detector:set_shader(idx, save.shader, save.texture, true)
         end
     end
+
+    -- Test
+    override_value = false
 end
 
 function cloak:actor_on_update()
