@@ -143,7 +143,7 @@ end
 function cloak:actor_on_update()
     -- Switch to armor mode when out of energy
     if self.m_core.m_energy <= 0 then
-        self.m_core:change_mode(armor_modes_enum.armor)
+        self.m_core:change_mode(self.m_core.m_default_mode)
         return
     end
 
@@ -161,5 +161,5 @@ end
 function cloak:actor_on_weapon_fired()
     self.m_sounds.cloak_shoot:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_core:use_energy(100)
-    self.m_core:change_mode(armor_modes_enum.armor)
+    self.m_core:change_mode(self.m_core.m_default_mode)
 end
