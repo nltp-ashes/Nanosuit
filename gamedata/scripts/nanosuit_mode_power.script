@@ -73,7 +73,7 @@ function power:remove_effects()
 
     -- Reset recoil
     local active_item = db.actor:active_item()
-    if active_item and IsWeapon(active_item) then
+    if active_item and IsWeapon(active_item) and active_item:id() == self.m_cache["wpn_id"] then
         self:increase_recoil(active_item)
     end
 end
@@ -110,7 +110,6 @@ function power:actor_on_update()
 
     local has_enough_energy = self.m_core.m_energy >= self.m_core.m_energy_low_threshold
 
-    -- FIXME : This breaks everything if the player switches armor mode while energy is low
     if has_enough_energy and obj:id() ~= self.m_cache["wpn_id"] then
         self:decrease_recoil(obj)
     elseif not has_enough_energy and obj:id() == self.m_cache["wpn_id"] then
