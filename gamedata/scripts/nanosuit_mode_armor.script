@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/03/2025                                                                                             ---
+---    Date : 08/04/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of armor mode of the Nanosuit addon.                                          ---
@@ -22,10 +22,6 @@ class "armor" (nanosuit_mode.abstract_mode)
 function armor:__init(core, name) super(core, name)
     -- Sound effects
     self.m_sounds["armor_voice"] = sound_object([[nanosuit\mode_armor_voice]])
-end
-
-function armor:__eq(other)
-    return self.m_name == other.m_name
 end
 
 function armor:apply_effects()

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 01/04/2025                                                                                             ---
+---    Date : 08/04/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
@@ -56,6 +56,9 @@ function cloak:__init(core, name) super(core, name)
     self.m_sounds["cloak_shoot"] = sound_object([[nanosuit\mode_cloak_shoot]])
     self.m_sounds["cloak_on"] = sound_object([[nanosuit\mode_cloak_on]])
     self.m_sounds["cloak_off"] = sound_object([[nanosuit\mode_cloak_off]])
+
+    -- Prefetch textures
+    game.prefetch_texture(self.m_cloak_texture .. ".dds")
 end
 
 function cloak:apply_effects()
@@ -77,7 +80,11 @@ function cloak:apply_effects()
 
     -- Set player invisible
     self.m_cache["actor_shaders"] = db.actor:get_shaders(true)
-    db.actor:set_shader(-1, self.m_cloak_shader, self.m_cloak_texture, true)
+    -- FIXME set_shader(-1, ...) is about 20x more costly than iterating through the meshes manually
+    -- db.actor:set_shader(-1, self.m_cloak_shader, self.m_cloak_texture, true)
+    for idx,_ in pairs(self.m_cache["actor_shaders"]) do
+        db.actor:set_shader(idx, self.m_cloak_shader, self.m_cloak_texture, true)
+    end
 
     -- Set items invisible
     for slot,_ in pairs(self.m_cache["items_shaders"]) do
@@ -128,7 +135,11 @@ end
 function cloak:set_item_invisible(obj, slot)
     self.m_cache["items_shaders"][slot]["id"] = obj:id()
     self.m_cache["items_shaders"][slot]["shaders"] = obj:get_shaders(true)
-    obj:set_shader(-1, self.m_cloak_shader, self.m_cloak_texture, true)
+    -- FIXME set_shader(-1, ...) is about 20x more costly than iterating through the meshes manually
+    -- obj:set_shader(-1, self.m_cloak_shader, self.m_cloak_texture, true)
+    for idx,_ in pairs(self.m_cache["items_shaders"][slot]["shaders"]) do
+        obj:set_shader(idx, self.m_cloak_shader, self.m_cloak_texture, true)
+    end
 end
 
 -- FIXME : This fails if the NPC sees the actor before the cloak is applied, right now you need to break vision for this to take effect

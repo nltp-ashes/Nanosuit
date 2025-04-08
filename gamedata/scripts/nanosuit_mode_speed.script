@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/03/2025                                                                                             ---
+---    Date : 08/04/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of speed mode of the Nanosuit addon.                                          ---
@@ -19,6 +19,7 @@
 
 class "speed" (nanosuit_mode.abstract_mode)
 
+-- FIXME : Speed mode should also increase reload speed
 function speed:__init(core, name) super(core, name)
     -- Energy related variables
     self.m_energy_use = 1
