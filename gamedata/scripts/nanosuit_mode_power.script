@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 01/04/2025                                                                                             ---
+---    Date : 10/04/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of strength mode of the Nanosuit addon.                                       ---
@@ -33,11 +33,13 @@ function power:__init(core, name) super(core, name)
     -- Sound effects
     self.m_sounds["power_voice"] = sound_object([[nanosuit\mode_power_voice]])
     self.m_sounds["power_jump"] = sound_object([[nanosuit\mode_power_jump]])
+    self.m_sounds["power_on"] = sound_object([[nanosuit\mode_power_on]])
 end
 
 function power:apply_effects()
     -- Play sounds
     self.m_sounds.power_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    self.m_sounds.power_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_jump", self)
@@ -79,7 +81,7 @@ function power:remove_effects()
 end
 
 function power:decrease_recoil(obj)
-    printf("[NS] Decreasing recoil for weapon %s", obj:id())
+    printf("[NS] Strength Mode | Decreasing recoil for weapon %s", obj:id())
     local wpn_obj = obj:cast_Weapon()
 
     self.m_cache["wpn_id"] = obj:id()
@@ -91,7 +93,7 @@ function power:decrease_recoil(obj)
 end
 
 function power:increase_recoil(obj)
-    printf("[NS] Increasing recoil for weapon %s", obj:id())
+    printf("[NS] Strength Mode | Increasing recoil for weapon %s", obj:id())
     local wpn_obj = obj:cast_Weapon()
 
     wpn_obj:SetCamDispersion(self.m_cache["wpn_dispersion"])
