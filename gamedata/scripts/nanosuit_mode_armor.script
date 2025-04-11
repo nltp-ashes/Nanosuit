@@ -1,0 +1,52 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 10/04/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the logic of armor mode of the Nanosuit addon.                                          ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Armor mode class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "armor" (nanosuit_mode.abstract_mode)
+
+function armor:__init(core, name) super(core, name)
+    -- Sound effects
+    self.m_sounds["armor_voice"] = sound_object([[nanosuit\mode_armor_voice]])
+    self.m_sounds["armor_on"] = sound_object([[nanosuit\mode_armor_on]])
+end
+
+function armor:apply_effects()
+    -- Play sounds
+    self.m_sounds.armor_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    self.m_sounds.armor_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+
+    -- Register callbacks
+    RegisterScriptCallback("actor_on_before_hit", self)
+end
+
+function armor:remove_effects()
+    -- Unregister callbacks
+    UnregisterScriptCallback("actor_on_before_hit", self)
+end
+
+function armor:actor_on_before_hit(shit, bone_id, flags)
+    -- Calculate energy to use and damage to absorb
+    local absorb_energy_req = 100 * shit.power
+    local damage_to_absorb = math.min(self.m_core.m_energy, absorb_energy_req)
+
+    -- Use energy
+    self.m_core:use_energy(damage_to_absorb)
+
+    -- Absorb hit
+    shit.power = shit.power - (damage_to_absorb / 100)
+end

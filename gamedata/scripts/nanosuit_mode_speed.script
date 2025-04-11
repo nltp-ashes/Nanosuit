@@ -1,0 +1,94 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 08/04/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the logic of speed mode of the Nanosuit addon.                                          ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Speed mode class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "speed" (nanosuit_mode.abstract_mode)
+
+-- FIXME : Speed mode should also increase reload speed
+function speed:__init(core, name) super(core, name)
+    -- Energy related variables
+    self.m_energy_use = 1
+    self.m_energy_last_use = 0
+    self.m_energy_rate = 50
+    self.m_energy_low_rate = 250
+
+    -- Cache
+    self.m_cache["run_coef"] = db.actor:get_actor_run_coef()
+    self.m_cache["sprint_coef"] = db.actor:get_actor_sprint_koef()
+
+    -- Sound effects
+    self.m_sounds["speed_voice"] = sound_object([[nanosuit\mode_speed_voice]])
+    self.m_sounds["speed_on"] = sound_object([[nanosuit\mode_speed_on]])
+    self.m_sounds["speed_loop"] = sound_object([[nanosuit\mode_speed_loop]])
+    self.m_sounds["speed_stop"] = sound_object([[nanosuit\mode_speed_stop]])
+end
+
+function speed:apply_effects()
+    -- Play sounds
+    self.m_sounds.speed_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    self.m_sounds.speed_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+
+    -- Register callbacks
+    RegisterScriptCallback("actor_on_update", self)
+
+    -- Set run and sprint coefficients
+    self.m_cache["run_coef"] = db.actor:get_actor_run_coef()
+    self.m_cache["sprint_coef"] = db.actor:get_actor_sprint_koef()
+end
+
+function speed:remove_effects()
+    -- Unregister callbacks
+    UnregisterScriptCallback("actor_on_update", self)
+
+    -- Reset run and sprint coefficients
+    db.actor:set_actor_run_coef(self.m_cache["run_coef"])
+    db.actor:set_actor_sprint_koef(self.m_cache["sprint_coef"])
+end
+
+function speed:actor_on_update()
+    local has_enough_energy_low = self.m_core.m_energy >= self.m_core.m_energy_low_threshold
+    local has_enough_energy_very_low = self.m_core.m_energy >= self.m_core.m_energy_very_low_threshold
+
+    -- Use energy
+    local energy_rate = has_enough_energy_very_low and self.m_energy_rate or self.m_energy_low_rate
+    if IsMoveState("mcSprint") and time_global() - self.m_energy_last_use > energy_rate then
+        self.m_core:use_energy(self.m_energy_use)
+        self.m_energy_last_use = time_global()
+    end
+
+    -- Play sounds
+    if has_enough_energy_low and IsMoveState("mcSprint") and not self.m_sounds.speed_loop:playing() then
+        self.m_sounds.speed_stop:stop()
+        self.m_sounds.speed_loop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
+    elseif has_enough_energy_low and not IsMoveState("mcSprint") and self.m_sounds.speed_loop:playing() then
+        self.m_sounds.speed_loop:stop()
+        self.m_sounds.speed_stop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    elseif not has_enough_energy_low and self.m_sounds.speed_loop:playing() then
+        self.m_sounds.speed_loop:stop()
+        self.m_sounds.speed_stop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    end
+
+    -- Set run and sprint coefficients
+    if has_enough_energy_low then
+        db.actor:set_actor_run_coef(self.m_cache["run_coef"] * 1.5)
+        db.actor:set_actor_sprint_koef(self.m_cache["sprint_coef"] * 1.25)
+    else
+        db.actor:set_actor_run_coef(self.m_cache["run_coef"])
+        db.actor:set_actor_sprint_koef(self.m_cache["sprint_coef"])
+    end
+end

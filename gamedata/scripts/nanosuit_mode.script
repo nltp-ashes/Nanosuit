@@ -1,0 +1,37 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 30/03/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the logic of an abstract suit mode of the Nanosuit addon.                               ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Mode class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "abstract_mode"
+
+function abstract_mode:__init(core, name)
+    self.m_core = core
+    self.m_name = name
+    self.m_sounds = {}
+    self.m_cache = {}
+end
+
+function abstract_mode:__eq(other)
+    return self.m_name == other.m_name
+end
+
+function abstract_mode:apply_effects()
+end
+
+function abstract_mode:remove_effects()
+end

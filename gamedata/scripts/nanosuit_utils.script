@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/11/2023                                                                                             ---
+---    Date : 01/04/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -13,16 +13,28 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
-local debug_mode = true
+-- Variable
+debug_mode = true
+
+-- Enum
+actor_slots = { knife = 1, pistol = 2, rifle = 3, grenade = 4, binoculars = 5, bolt = 6, outfit = 7, pda = 8, detector = 9, torch = 10, artefact = 11, helmet = 12, backpack = 13, animation = 14 }
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Debug Functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
---- Function used to print information into the console/log file only when Western Goods' debug mode is enabled.
+--- Function used to print information into the console/log file only when Nanosuit' debug mode is enabled.
 --- @return nil
 function dbg_printf(...)
     if debug_mode then
         printf(...)
     end
+end
+
+--- Function used to get the magnitude of a vector on the XZ plane.
+--- @param vec vector
+--- @return number
+function vec_magnitude_xz(vec)
+    local vec_xz = vector():set(vec.x, 0, vec.z)
+    return vec_xz:magnitude()
 end
