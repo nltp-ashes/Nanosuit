@@ -1,0 +1,129 @@
+# Nanosuit [![License](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+[![Latest Stable Build](https://img.shields.io/github/v/release/nltp-ashes/Nanosuit?label=Latest%20Stable%20Build&color=brightgreen)](https://github.com/nltp-ashes/Nanosuit/releases/latest) [![Latest Test Build](https://img.shields.io/github/v/release/nltp-ashes/Nanosuit?include_prereleases&filter=*rc*&display_name=tag&label=Latest%20Test%20Build&color=yellow)]() [![Total Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/total.svg?label=Downloads%20(All%20Time))](https://github.com/nltp-ashes/Nanosuit/releases) [![Latest Release Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/latest/total.svg?label=Downloads%20(Latest%20Release))](https://github.com/nltp-ashes/Nanosuit/releases/latest)
+
+---
+
+Fend off the Zone's dangers with the Nanosuit, a powerful and extremely versatile combat armor from Crysis.
+
+---
+
+### ABOUT
+
+This addon adds a fully operational Nanosuit from Crysis. Bellow is a list of features that are currently available in the addon :
+
+General :
+- The nanosuit menu allows you to switch from one mode to another
+- The menu opens when pressing V
+
+Armor mode :
+- Absorbs all incoming damage as long as the suit has energy
+- The more powerful is the impact, the more energy it consumes
+- When the suit is out of energy, all incoming damage is transferred to the player
+
+Speed mode :
+- Increases walk speed by 50%, does not consume energy
+- Increases run speed by 25%, running consumes energy
+- When low on energy, the bonuses get temporarily disabled
+
+Strength mode :
+- Increases melee damage by up to 100%, proportionally to the suit's energy level
+- Increases jump height by 100%, proportionally to the suit's energy level
+- Lowers weapon recoil by a factor of 10, for as long as the suit has energy
+- Shooting while in strength mode consumes energy
+- When low on energy, recoil goes back to normal
+
+Cloak mode :
+- Visually cloaks the player's hands and items while active
+- Moving while in cloak mode consumes energy. The faster you move the faster the energy gets consumed
+- Shooting while in cloak mode completely depletes the suit's energy
+- The player is cloaked from NPC's vision while cloak mode is active
+- When getting too close to an NPC while in cloak mode, they will start to notice you
+
+---
+
+### REQUIREMENTS
+
+These addons are **absolutely required** in order for Nanosuit to work :
+1. [S.T.A.L.K.E.R. Anomaly 1.5.3](https://www.moddb.com/mods/stalker-anomaly/downloads/stalker-anomaly-153).
+
+---
+
+### INSTALLATION
+
+To **install** the addon :
+1. Download and install the requirements;
+2. Download this addon;
+3. Using MO2, click the "Install a mod from an archive" button;
+4. Follow the instructions.
+
+To **update** the addon :
+1. In MO2, disable and delete the previous version of the addon;
+2. Make sure to update the requirements;
+3. Make sure to check the changelog for extra steps;
+4. Follow the installation instructions.
+
+To **uninstall** the addon :
+1. Start your game and open the MCM settings;
+2. Enable the "Addon removal" option;
+3. Load your save-game. Once loaded, save again;
+4. Close your game, disable and delete the addon from MO2.
+
+---
+
+### CHANGELOG
+
+You can check out the changelog of the last update in the [CHANGELOG.md](CHANGELOG.md) file.
+
+For past updates, please refer to the description of each release, in the [releases tab](https://github.com/nltp-ashes/Nanosuit/releases).
+
+---
+
+### KNOWN ISSUES
+
+- Cloak mode does not work if the NPC sees the actor before the cloak is applied, right now you need to break vision for it to work
+- The suit is permanent and cannot be removed. It should be a wearable outfit
+- The suit's energy level is displayed as a message on the HUD. It should have a custom UI
+- The key-bind to open the suit menu is not configurable. It should be configurable
+- When wearing the suit, the player footsteps do not change. They should use custom sounds
+- The shader and textures used for cloak mode are not the best. They should be improved
+
+If you truly believe your problem is new, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).
+
+---
+
+### SUPPORT & SUGGESTIONS
+
+If you need help with anything, or if you have any suggestions, you can :
+- ✅ Message me on [ModDB](https://www.moddb.com/members/nltp-ashes) (recommended);
+- ✅ Message me on Discord : @nltp_ashes (formerly NLTP_ASHES#0117) (recommended);
+- ✅ Message me on my [Discord](https://discord.gg/7Z8S2qg) server (recommended);
+
+---
+
+### SPECIAL THANKS & CREDITS
+
+Credit goes to these people for their work contained in this addon :
+
+|      Name       |                      Motive                      |   License   |
+|:---------------:|:------------------------------------------------:|:-----------:|
+| **Crytek GmbH** | Various assets (textures, sound effects, models) | Proprietary |
+
+Special thanks to these people for their help in the making of this addon :
+
+|                      Name                      |                                                     Motive                                                     |
+|:----------------------------------------------:|:--------------------------------------------------------------------------------------------------------------:|
+| **[Lucy](https://www.moddb.com/members/r3zy)** | For adding engine support to change, at runtime and using scripts, the textures and shaders of any game_object |
+
+---
+
+### LICENSE
+
+Everything contained in Nanosuit and made by me, NLTP_ASHES, is licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+
+This means you're allowed to redistribute and/or adapt the work, as long as you respect the following criteria :
+- **Attribution** — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+- **NonCommercial** — You may not use the material for commercial purposes (this includes donations).
+- **ShareAlike** — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
+
+For the work that wasn't made by me, unless a licence is specified in the [Credits](#special-thanks--credits) or in the files themselves, consider these works proprietary. If you want to reuse those, please get in touch with their original authors.

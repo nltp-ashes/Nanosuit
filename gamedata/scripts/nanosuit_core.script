@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/11/2023                                                                                             ---
+---    Date : 30/03/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -13,11 +13,35 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
-GUI                     = nil           -- instance, don't touch
+-- Singleton
+instance         = nil
+
+-- Enum
+armor_modes_enum = {
+    armor = "armor",
+    power = "power",
+    speed = "speed",
+    cloak = "cloak"
+}
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Core Functions
+-- General functions
 -- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to get an instance of the core class.
+--- @return core
+function get()
+    if instance == nil then
+        instance = core()
+    end
+    return instance
+end
+
+--- Function used to instantiate the core class on first update.
+--- @return nil
+function actor_on_first_update()
+    get()
+end
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Callbacks registration
@@ -26,4 +50,117 @@ GUI                     = nil           -- instance, don't touch
 --- Function used to register callbacks.
 --- @return nil
 function on_game_start()
+    RegisterScriptCallback("actor_on_first_update", actor_on_first_update)
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Core class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "core"
+
+function core:__init()
+    -- Energy related variables
+    self.m_energy = 100
+    self.m_energy_regen_rate = 100
+    self.m_energy_regen_delay = 5000
+    self.m_energy_last_use = 0
+    self.m_energy_last_regen = 0
+    self.m_energy_low_threshold = 20
+    self.m_energy_low_voiced = true
+    self.m_energy_very_low_threshold = 10
+    self.m_energy_very_low_voiced = true
+    self.m_energy_off_threshold = 0
+    self.m_energy_off_voiced = true
+    self.m_energy_on_threshold = 0
+    self.m_energy_on_voiced = true
+
+    -- Sound effects
+    self.m_sounds = {
+        energy_very_low = sound_object([[nanosuit\energy_very_low]]),
+        energy_low_voice = sound_object([[nanosuit\energy_low_voice]]),
+        energy_on = sound_object([[nanosuit\energy_on]]),
+        energy_off = sound_object([[nanosuit\energy_off]])
+    }
+
+    -- Armor modes
+    self.m_modes = {
+        [armor_modes_enum.armor] = nanosuit_mode_armor[armor_modes_enum.armor](self, armor_modes_enum.armor),
+        [armor_modes_enum.power] = nanosuit_mode_power[armor_modes_enum.power](self, armor_modes_enum.power),
+        [armor_modes_enum.speed] = nanosuit_mode_speed[armor_modes_enum.speed](self, armor_modes_enum.speed),
+        [armor_modes_enum.cloak] = nanosuit_mode_cloak[armor_modes_enum.cloak](self, armor_modes_enum.cloak)
+    }
+
+    -- Default mode initialization
+    self.m_default_mode = armor_modes_enum.armor
+    self.m_current_mode = self.m_modes[self.m_default_mode]
+    self.m_current_mode:apply_effects()
+
+    -- Register callbacks
+    RegisterScriptCallback("actor_on_update", self)
+end
+
+function core:use_energy(amount)
+    self.m_energy = clamp(self.m_energy - amount, 0, 100)
+    self.m_energy_last_use = time_global()
+end
+
+function core:change_mode(mode)
+    if self.m_current_mode ~= self.m_modes[mode] then
+        self.m_current_mode:remove_effects()
+        self.m_current_mode = self.m_modes[mode]
+        self.m_current_mode:apply_effects()
+    end
+end
+
+function core:actor_on_update()
+    -- Delay energy regen 5s after last energy use
+    if time_global() - self.m_energy_last_use > self.m_energy_regen_delay then
+        -- Throttle energy regen once every 100ms
+        if time_global() - self.m_energy_last_regen > self.m_energy_regen_rate then
+            self.m_energy = clamp(self.m_energy + 1, 0, 100)
+            self.m_energy_last_regen = time_global()
+        end
+    end
+
+    -- Energy low
+    if self.m_energy <= self.m_energy_low_threshold and not self.m_energy_low_voiced then
+        self.m_sounds.energy_low_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+        self.m_energy_low_voiced = true
+    end
+    if self.m_energy > self.m_energy_low_threshold then
+        self.m_energy_low_voiced = false
+    end
+
+    -- Energy very low
+    if self.m_energy <= self.m_energy_very_low_threshold and not self.m_energy_very_low_voiced then
+        self.m_sounds.energy_very_low:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
+        self.m_energy_very_low_voiced = true
+    end
+    if self.m_energy > self.m_energy_very_low_threshold then
+        self.m_sounds.energy_very_low:stop()
+        self.m_energy_very_low_voiced = false
+    end
+
+    -- Energy off
+    if self.m_energy <= self.m_energy_off_threshold and not self.m_energy_off_voiced then
+        self.m_sounds.energy_off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+        self.m_energy_off_voiced = true
+    end
+    if self.m_energy > self.m_energy_off_threshold then
+        self.m_sounds.energy_off:stop()
+        self.m_energy_off_voiced = false
+    end
+
+    -- Energy on
+    if self.m_energy > self.m_energy_on_threshold and not self.m_energy_on_voiced then
+        self.m_sounds.energy_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+        self.m_energy_on_voiced = true
+    end
+    if self.m_energy <= self.m_energy_on_threshold then
+        self.m_sounds.energy_on:stop()
+        self.m_energy_on_voiced = false
+    end
+
+    actor_menu.set_msg(1, "Energy : " .. round(self.m_energy), 5)
 end
