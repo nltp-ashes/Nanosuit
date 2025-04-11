@@ -19,7 +19,6 @@
 
 class "power" (nanosuit_mode.abstract_mode)
 
--- FIXME : Power mode should also increase melee damage
 function power:__init(core, name) super(core, name)
     -- Energy related variables
     self.m_energy_use_shoot = 4
