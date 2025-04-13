@@ -1,0 +1,36 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 21/04/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit energy UI.                                                                 ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Menu UI Class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "ui_energy"
+
+function ui_energy:__init(core)
+    self.m_core = core
+
+    -- Register callbacks
+    RegisterScriptCallback("actor_on_update", self)
+end
+
+function ui_energy:destroy()
+    -- Unregister callbacks
+    UnregisterScriptCallback("actor_on_update", self)
+end
+
+function ui_energy:actor_on_update()
+    actor_menu.set_msg(1, "Energy : " .. round(self.m_core.m_energy), 1)
+end

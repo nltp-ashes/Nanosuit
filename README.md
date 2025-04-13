@@ -82,11 +82,16 @@ For past updates, please refer to the description of each release, in the [relea
 ### KNOWN ISSUES
 
 - Cloak mode does not work if the NPC sees the actor before the cloak is applied, right now you need to break vision for it to work
-- The suit is permanent and cannot be removed. It should be a wearable outfit
 - The suit's energy level is displayed as a message on the HUD. It should have a custom UI
 - The key-bind to open the suit menu is not configurable. It should be configurable
 - When wearing the suit, the player footsteps do not change. They should use custom sounds
 - The shader and textures used for cloak mode are not the best. They should be improved
+- Strength mode should reduce fall damage
+- Strength mode should decrease weapon sway
+- Strength mode should increase carry weight
+- Speed mode should increase reload speed
+- Speed mode should decrease ADS time
+- Armor mode should protect the player against radiation
 
 If you truly believe your problem is new, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).
 
@@ -105,9 +110,10 @@ If you need help with anything, or if you have any suggestions, you can :
 
 Credit goes to these people for their work contained in this addon :
 
-|      Name       |                      Motive                      |   License   |
-|:---------------:|:------------------------------------------------:|:-----------:|
-| **Crytek GmbH** | Various assets (textures, sound effects, models) | Proprietary |
+|                               Name                                |                              Motive                              |   License   |
+|:-----------------------------------------------------------------:|:----------------------------------------------------------------:|:-----------:|
+| **[_Paramonov Alexander_](https://users.playground.ru/1997780/)** | Port of the Nanosuit first person, third person and world models | Proprietary |
+|            **[Crytek GmbH](https://www.crytek.com/)**             |         Various assets (textures, sound effects, models)         | Proprietary |
 
 Special thanks to these people for their help in the making of this addon :
 

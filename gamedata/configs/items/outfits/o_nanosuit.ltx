@@ -1,0 +1,74 @@
+;;====================================================================================================================;;
+;;                                                                                                                    ;;
+;;    Original Author(s) : NLTP_ASHES                                                                                 ;;
+;;    Edited : N/A                                                                                                    ;;
+;;    Date : 21/04/2025                                                                                               ;;
+;;    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)             ;;
+;;                                                                                                                    ;;
+;;    Config file used to add new a new outfit : the Nanosuit.                                                        ;;
+;;                                                                                                                    ;;
+;;====================================================================================================================;;
+
+[outfit_nanosuit]:outfit_base,outfit_restrictions_2
+$spawn                        = "outfit\novice_outfit"
+class                         = EQU_STLK
+ef_equipment_type             = 3
+visual                        = nanosuit\nanosuit_world
+actor_visual                  = nanosuit\nanosuit_tp
+npc_visual                    = nanosuit\nanosuit_tp
+player_hud_section            = actor_hud_nanosuit
+character_portrait            = ui_nanosuit_portrait
+full_icon_name                = npc_icon_outfit_nanosuit
+full_scale_icon               = 0, 11
+
+inv_name                      = st_nanosuit_outfit_name
+inv_name_short                = st_nanosuit_outfit_name_s
+description                   = st_nanosuit_outfit_name_descr
+kind                          = o_heavy
+cost                          = 419000
+inv_weight                    = 120
+inv_grid_x                    = 0
+inv_grid_y                    = 0
+inv_grid_width                = 2
+inv_grid_height               = 3
+icons_texture                 = nanosuit\ui\icons
+
+upgr_icon_path                = nanosuit\ui\icons
+upgr_icon_x                   = 0
+upgr_icon_y                   = 0
+upgr_icon_width               = 100
+upgr_icon_height              = 150
+upgrades                      = ; no upgrades
+installed_upgrades            = ; no upgrades
+upgrade_scheme                = ; no upgrades
+
+additional_inventory_weight   = 150
+additional_inventory_weight2  = 150
+artefact_count                = 0
+immunities_sect               = sect_nanosuit_outfit_immunities
+repair_type                   = outfit_exo
+hit_fraction_actor            = 0.9
+bones_koeff_protection        = actor_armor_novice
+control_inertion_factor       = 1.16
+power_loss                    = 0.05
+
+burn_protection               = 0.0
+shock_protection              = 0.0
+radiation_protection          = 0.0
+chemical_burn_protection      = 0.0
+telepatic_protection          = 0.0
+strike_protection             = 0.0
+explosion_protection          = 0.0
+wound_protection              = 0.0
+fire_wound_protection         = 0.0
+
+[sect_nanosuit_outfit_immunities]
+burn_immunity                 = 0.0
+chemical_burn_immunity        = 0.0
+explosion_immunity            = 0.0
+fire_wound_immunity           = 0.0
+radiation_immunity            = 0.0
+shock_immunity                = 0.0
+strike_immunity               = 0.0
+telepatic_immunity            = 0.0
+wound_immunity                = 0.0
