@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/03/2025                                                                                             ---
+---    Date : 21/04/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -12,6 +12,9 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+actor_slots             = nanosuit_utils.actor_slots
 
 -- Singleton
 instance         = nil
@@ -28,19 +31,27 @@ armor_modes_enum = {
 -- General functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
---- Function used to get an instance of the core class.
---- @return core
-function get()
-    if instance == nil then
+function actor_item_to_slot(_)
+    local outfit = db.actor:item_in_slot(actor_slots.outfit)
+    if outfit ~= nil and outfit:section() == "outfit_nanosuit" and instance == nil then
         instance = core()
     end
-    return instance
 end
 
---- Function used to instantiate the core class on first update.
---- @return nil
-function actor_on_first_update()
-    get()
+function actor_item_to_ruck(_)
+    local outfit = db.actor:item_in_slot(actor_slots.outfit)
+    if (outfit == nil or outfit:section() ~= "outfit_nanosuit") and instance ~= nil then
+        instance:destroy()
+        instance = nil
+    end
+end
+
+function actor_on_item_drop(_)
+    local outfit = db.actor:item_in_slot(actor_slots.outfit)
+    if (outfit == nil or outfit:section() ~= "outfit_nanosuit") and instance ~= nil then
+        instance:destroy()
+        instance = nil
+    end
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -50,7 +61,9 @@ end
 --- Function used to register callbacks.
 --- @return nil
 function on_game_start()
-    RegisterScriptCallback("actor_on_first_update", actor_on_first_update)
+    RegisterScriptCallback("actor_item_to_slot", actor_item_to_slot)
+    RegisterScriptCallback("actor_item_to_ruck", actor_item_to_ruck)
+    RegisterScriptCallback("actor_on_item_drop", actor_on_item_drop)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -91,6 +104,11 @@ function core:__init()
         [armor_modes_enum.cloak] = nanosuit_mode_cloak[armor_modes_enum.cloak](self, armor_modes_enum.cloak)
     }
 
+    self.m_uis = {
+        menu = nanosuit_ui_menu.ui_menu(self),
+        energy = nanosuit_ui_energy.ui_energy(self)
+    }
+
     -- Default mode initialization
     self.m_default_mode = armor_modes_enum.armor
     self.m_current_mode = self.m_modes[self.m_default_mode]
@@ -98,6 +116,22 @@ function core:__init()
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_update", self)
+end
+
+function core:destroy()
+    self.m_current_mode:remove_effects()
+
+    UnregisterScriptCallback("actor_on_update", self)
+
+    self.m_modes = {
+        [armor_modes_enum.armor] = nil,
+        [armor_modes_enum.power] = nil,
+        [armor_modes_enum.speed] = nil,
+        [armor_modes_enum.cloak] = nil
+    }
+
+    self.m_uis.menu:destroy()
+    self.m_uis.energy:destroy()
 end
 
 function core:use_energy(amount)
@@ -161,6 +195,4 @@ function core:actor_on_update()
         self.m_sounds.energy_on:stop()
         self.m_energy_on_voiced = false
     end
-
-    actor_menu.set_msg(1, "Energy : " .. round(self.m_energy), 5)
 end
