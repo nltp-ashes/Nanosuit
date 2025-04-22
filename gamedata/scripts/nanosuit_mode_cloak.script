@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 20/04/2025                                                                                             ---
+---    Date : 22/04/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
@@ -37,6 +37,7 @@ function cloak:__init(core, name) super(core, name)
 
     -- Cache
     self.m_cache["actor_shaders"] = {}
+    self.m_cache["legs_shaders"] = {}
     self.m_cache["items_shaders"] = {
         [actor_slots.knife] = { id = nil, shaders = nil },
         [actor_slots.pistol] = { id = nil, shaders = nil },
@@ -73,6 +74,8 @@ function cloak:apply_effects()
     RegisterScriptCallback("actor_item_to_ruck", self)
     RegisterScriptCallback("actor_on_item_drop", self)
     RegisterScriptCallback("actor_on_weapon_fired", self)
+    RegisterScriptCallback("game_object_on_net_spawn", self)
+    RegisterScriptCallback("game_object_on_net_destroy", self)
 
     -- Override visibility from NPCs
     self.m_cache["visibility_functor"] = visual_memory_manager.get_visible_value
@@ -80,8 +83,6 @@ function cloak:apply_effects()
 
     -- Set player invisible
     self.m_cache["actor_shaders"] = db.actor:get_shaders(true)
-    -- FIXME set_shader(-1, ...) is about 20x more costly than iterating through the meshes manually
-    -- db.actor:set_shader(-1, self.m_cloak_shader, self.m_cloak_texture, true)
     for idx,_ in pairs(self.m_cache["actor_shaders"]) do
         db.actor:set_shader(idx, self.m_cloak_shader, self.m_cloak_texture, true)
     end
@@ -91,6 +92,15 @@ function cloak:apply_effects()
         local obj = db.actor:item_in_slot(slot)
         if obj then
             self:set_item_invisible(obj, slot)
+        end
+    end
+
+    -- Set legs invisible
+    if se_legs then
+        local legs_id = se_legs.LegsTbl[level.name()]
+        local legs_obj = legs_id and level.object_by_id(legs_id)
+        if legs_obj then
+            self:set_legs_invisible(legs_obj)
         end
     end
 end
@@ -106,6 +116,8 @@ function cloak:remove_effects()
     UnregisterScriptCallback("actor_item_to_ruck", self)
     UnregisterScriptCallback("actor_on_item_drop", self)
     UnregisterScriptCallback("actor_on_weapon_fired", self)
+    UnregisterScriptCallback("game_object_on_net_spawn", self)
+    UnregisterScriptCallback("game_object_on_net_destroy", self)
 
     -- Restore visibility from NPCs
     visual_memory_manager.get_visible_value = self.m_cache["visibility_functor"]
@@ -122,23 +134,14 @@ function cloak:remove_effects()
             self:set_item_visible(obj, slot)
         end
     end
-end
 
-function cloak:set_item_visible(obj, slot)
-    for idx,save in pairs(self.m_cache["items_shaders"][slot]["shaders"]) do
-        obj:set_shader(idx, save.shader, save.texture, true)
-    end
-    self.m_cache["items_shaders"][slot]["id"] = nil
-    self.m_cache["items_shaders"][slot]["shaders"] = nil
-end
-
-function cloak:set_item_invisible(obj, slot)
-    self.m_cache["items_shaders"][slot]["id"] = obj:id()
-    self.m_cache["items_shaders"][slot]["shaders"] = obj:get_shaders(true)
-    -- FIXME set_shader(-1, ...) is about 20x more costly than iterating through the meshes manually
-    -- obj:set_shader(-1, self.m_cloak_shader, self.m_cloak_texture, true)
-    for idx,_ in pairs(self.m_cache["items_shaders"][slot]["shaders"]) do
-        obj:set_shader(idx, self.m_cloak_shader, self.m_cloak_texture, true)
+    -- Restore legs visibility
+    if se_legs then
+        local legs_id = se_legs.LegsTbl[level.name()]
+        local legs_obj = legs_id and level.object_by_id(legs_id)
+        if legs_obj then
+            self:set_legs_visible(legs_obj)
+        end
     end
 end
 
@@ -154,6 +157,54 @@ function cloak:get_visible_value(npc, who, time_delta, time_quant, luminosity, v
 
     local distance_factor = 1 - (object_distance / self.m_cloak_npc_see_distance)
     return original_value * distance_factor
+end
+
+function cloak:set_item_visible(obj, slot)
+    for idx,save in pairs(self.m_cache["items_shaders"][slot]["shaders"]) do
+        obj:set_shader(idx, save.shader, save.texture, true)
+    end
+    self.m_cache["items_shaders"][slot]["id"] = nil
+    self.m_cache["items_shaders"][slot]["shaders"] = nil
+end
+
+function cloak:set_item_invisible(obj, slot)
+    self.m_cache["items_shaders"][slot]["id"] = obj:id()
+    self.m_cache["items_shaders"][slot]["shaders"] = obj:get_shaders(true)
+    for idx,_ in pairs(self.m_cache["items_shaders"][slot]["shaders"]) do
+        obj:set_shader(idx, self.m_cloak_shader, self.m_cloak_texture, true)
+    end
+end
+
+function cloak:set_legs_visible(legs_obj)
+    for idx,save in pairs(self.m_cache["legs_shaders"]) do
+        legs_obj:set_shader(idx, save.shader, save.texture)
+    end
+    self.m_cache["legs_shaders"] = nil
+end
+
+function cloak:set_legs_invisible(legs_obj)
+    self.m_cache["legs_shaders"] = legs_obj:get_shaders()
+    for idx,_ in pairs(self.m_cache["legs_shaders"]) do
+        legs_obj:set_shader(idx, self.m_cloak_shader, self.m_cloak_texture)
+    end
+end
+
+function cloak:game_object_on_net_spawn(obj)
+    if se_legs and obj:section() == "outfit_nanosuit_legs" then
+        CreateTimeEvent("nanosuit_legs_spawn", obj:name(), 0, function(id)
+            local obj_now = level.object_by_id(id)
+            if obj_now then
+                self:set_legs_invisible(obj_now)
+            end
+            return true
+        end, obj:id())
+    end
+end
+
+function cloak:game_object_on_net_destroy(obj)
+    if se_legs and obj:section() == "outfit_nanosuit_legs" then
+        self:set_legs_visible(obj)
+    end
 end
 
 function cloak:actor_on_update()
