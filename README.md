@@ -110,10 +110,11 @@ If you need help with anything, or if you have any suggestions, you can :
 
 Credit goes to these people for their work contained in this addon :
 
-|                               Name                                |                              Motive                              |   License   |
-|:-----------------------------------------------------------------:|:----------------------------------------------------------------:|:-----------:|
-| **[_Paramonov Alexander_](https://users.playground.ru/1997780/)** | Port of the Nanosuit first person, third person and world models | Proprietary |
-|            **[Crytek GmbH](https://www.crytek.com/)**             |         Various assets (textures, sound effects, models)         | Proprietary |
+|                                Name                                |                                          Motive                                           |   License   |
+|:------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:-----------:|
+| **[Blackgrowl](https://www.moddb.com/members/strogglet15/addons)** | Greatly improved the texture quality of the first and third person models of the Nanosuit | Proprietary |
+| **[_Paramonov Alexander_](https://users.playground.ru/1997780/)**  |             Port of the Nanosuit first person, third person and world models              | Proprietary |
+|             **[Crytek GmbH](https://www.crytek.com/)**             |                     Various assets (textures, sound effects, models)                      | Proprietary |
 
 Special thanks to these people for their help in the making of this addon :
 
