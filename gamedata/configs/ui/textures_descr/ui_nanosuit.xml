@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 21/04/2025                                                                                            -->
+<!--    Date : 25/04/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Texture description file for the Nanosuit addon's UI textures.                                               -->
@@ -11,15 +11,18 @@
 <w>
     <!-- Modes -->
     <file name="nanosuit\ui\modes.dds">
-        <texture id="ui_ns_mode_background"    x="0"      y="0"    width="1"      height="1"     />
-        <texture id="ui_ns_mode_armor"         x="0"      y="0"    width="128"    height="128" />
-        <texture id="ui_ns_mode_speed"         x="128"    y="0"    width="128"    height="128" />
-        <texture id="ui_ns_mode_power"         x="256"    y="0"    width="128"    height="128" />
-        <texture id="ui_ns_mode_cloak"         x="384"    y="0"    width="128"    height="128" />
+        <texture id="ui_ns_mode_background"      x="0"      y="0"      width="1"      height="1"   />
+        <texture id="ui_ns_mode_armor"           x="0"      y="0"      width="128"    height="128" />
+        <texture id="ui_ns_mode_speed"           x="128"    y="0"      width="128"    height="128" />
+        <texture id="ui_ns_mode_power"           x="256"    y="0"      width="128"    height="128" />
+        <texture id="ui_ns_mode_cloak"           x="384"    y="0"      width="128"    height="128" />
     </file>
 
     <!-- Portraits -->
     <file name="nanosuit\ui\portraits.dds">
-        <texture id="ui_nanosuit_portrait"     x="0"      y="0"    width="165"    height="108" />
+        <texture id="ui_nanosuit_portrait_1"     x="0"      y="0"      width="165"    height="108" />
+        <texture id="ui_nanosuit_portrait_2"     x="165"    y="0"      width="165"    height="108" />
+        <texture id="ui_nanosuit_portrait_3"     x="0"      y="108"    width="165"    height="108" />
+        <texture id="ui_nanosuit_portrait_4"     x="165"    y="108"    width="165"    height="108" />
     </file>
 </w>
