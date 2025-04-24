@@ -110,11 +110,12 @@ If you need help with anything, or if you have any suggestions, you can :
 
 Credit goes to these people for their work contained in this addon :
 
-|                                Name                                |                                          Motive                                           |   License   |
-|:------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:-----------:|
-| **[Blackgrowl](https://www.moddb.com/members/strogglet15/addons)** | Greatly improved the texture quality of the first and third person models of the Nanosuit | Proprietary |
-| **[_Paramonov Alexander_](https://users.playground.ru/1997780/)**  |             Port of the Nanosuit first person, third person and world models              | Proprietary |
-|             **[Crytek GmbH](https://www.crytek.com/)**             |                     Various assets (textures, sound effects, models)                      | Proprietary |
+|                               Name                                |                                          Motive                                           |         License         |
+|:-----------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:-----------------------:|
+|        **[Crepis](https://www.moddb.com/members/cr3pis)**         | Greatly improved the quality of the inventory icon, upgrade icon and character portraits  |       Proprietary       |
+|    **[Blackgrowl](https://www.moddb.com/members/strogglet15)**    | Greatly improved the texture quality of the first and third person models of the Nanosuit | See [LICENSE](#license) |
+| **[_Paramonov Alexander_](https://users.playground.ru/1997780/)** |             Port of the Nanosuit first person, third person and world models              |       Proprietary       |
+|            **[Crytek GmbH](https://www.crytek.com/)**             |                     Various assets (textures, sound effects, models)                      |       Proprietary       |
 
 Special thanks to these people for their help in the making of this addon :
 
@@ -132,5 +133,7 @@ This means you're allowed to redistribute and/or adapt the work, as long as you 
 - **Attribution** — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
 - **NonCommercial** — You may not use the material for commercial purposes (this includes donations).
 - **ShareAlike** — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
+
+Content made by Blackgrowl can be reused, as long as you credit him for the work he did in this addon (texture work, model fixes).
 
 For the work that wasn't made by me, unless a licence is specified in the [Credits](#special-thanks--credits) or in the files themselves, consider these works proprietary. If you want to reuse those, please get in touch with their original authors.
