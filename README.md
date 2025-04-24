@@ -110,12 +110,12 @@ If you need help with anything, or if you have any suggestions, you can :
 
 Credit goes to these people for their work contained in this addon :
 
-|                               Name                                |                                          Motive                                           |         License         |
-|:-----------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:-----------------------:|
-|        **[Crepis](https://www.moddb.com/members/cr3pis)**         | Greatly improved the quality of the inventory icon, upgrade icon and character portraits  |       Proprietary       |
-|    **[Blackgrowl](https://www.moddb.com/members/strogglet15)**    | Greatly improved the texture quality of the first and third person models of the Nanosuit | See [LICENSE](#license) |
-| **[_Paramonov Alexander_](https://users.playground.ru/1997780/)** |             Port of the Nanosuit first person, third person and world models              |       Proprietary       |
-|            **[Crytek GmbH](https://www.crytek.com/)**             |                     Various assets (textures, sound effects, models)                      |       Proprietary       |
+|                                Name                                 |                                          Motive                                           |         License         |
+|:-------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:-----------------------:|
+|         **[Crepis](https://www.moddb.com/members/cr3pis)**          | Greatly improved the quality of the inventory icon, upgrade icon and character portraits  |       Proprietary       |
+|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     | Greatly improved the texture quality of the first and third person models of the Nanosuit | See [LICENSE](#license) |
+| **[\_Paramonov Alexander\_](https://users.playground.ru/1997780/)** |             Port of the Nanosuit first person, third person and world models              |       Proprietary       |
+|             **[Crytek GmbH](https://www.crytek.com/)**              |                     Various assets (textures, sound effects, models)                      |       Proprietary       |
 
 Special thanks to these people for their help in the making of this addon :
 
