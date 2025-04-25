@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 13/04/2025                                                                                             ---
+---    Date : 25/04/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of armor mode of the Nanosuit addon.                                          ---
@@ -22,8 +22,8 @@ class "armor" (nanosuit_mode.abstract_mode)
 -- FIXME : Armor mode should also protect the player against radiation
 function armor:__init(core, name) super(core, name)
     -- Sound effects
-    self.m_sounds["armor_voice"] = sound_object([[nanosuit\mode_armor_voice]])
-    self.m_sounds["armor_on"] = sound_object([[nanosuit\mode_armor_on]])
+    self.m_sounds.armor_voice = sound_object([[nanosuit\mode_armor_voice]])
+    self.m_sounds.armor_on = sound_object([[nanosuit\mode_armor_on]])
 end
 
 function armor:apply_effects()

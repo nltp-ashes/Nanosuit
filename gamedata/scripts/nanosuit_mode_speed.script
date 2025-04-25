@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 13/04/2025                                                                                             ---
+---    Date : 25/04/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of speed mode of the Nanosuit addon.                                          ---
@@ -29,14 +29,14 @@ function speed:__init(core, name) super(core, name)
     self.m_energy_low_rate = 250
 
     -- Cache
-    self.m_cache["run_coef"] = db.actor:get_actor_run_coef()
-    self.m_cache["sprint_coef"] = db.actor:get_actor_sprint_koef()
+    self.m_cache.run_coef = db.actor:get_actor_run_coef()
+    self.m_cache.sprint_coef = db.actor:get_actor_sprint_koef()
 
     -- Sound effects
-    self.m_sounds["speed_voice"] = sound_object([[nanosuit\mode_speed_voice]])
-    self.m_sounds["speed_on"] = sound_object([[nanosuit\mode_speed_on]])
-    self.m_sounds["speed_loop"] = sound_object([[nanosuit\mode_speed_loop]])
-    self.m_sounds["speed_stop"] = sound_object([[nanosuit\mode_speed_stop]])
+    self.m_sounds.speed_voice = sound_object([[nanosuit\mode_speed_voice]])
+    self.m_sounds.speed_on = sound_object([[nanosuit\mode_speed_on]])
+    self.m_sounds.speed_loop = sound_object([[nanosuit\mode_speed_loop]])
+    self.m_sounds.speed_stop = sound_object([[nanosuit\mode_speed_stop]])
 end
 
 function speed:apply_effects()
@@ -48,8 +48,8 @@ function speed:apply_effects()
     RegisterScriptCallback("actor_on_update", self)
 
     -- Set run and sprint coefficients
-    self.m_cache["run_coef"] = db.actor:get_actor_run_coef()
-    self.m_cache["sprint_coef"] = db.actor:get_actor_sprint_koef()
+    self.m_cache.run_coef = db.actor:get_actor_run_coef()
+    self.m_cache.sprint_coef = db.actor:get_actor_sprint_koef()
 end
 
 function speed:remove_effects()
@@ -57,8 +57,8 @@ function speed:remove_effects()
     UnregisterScriptCallback("actor_on_update", self)
 
     -- Reset run and sprint coefficients
-    db.actor:set_actor_run_coef(self.m_cache["run_coef"])
-    db.actor:set_actor_sprint_koef(self.m_cache["sprint_coef"])
+    db.actor:set_actor_run_coef(self.m_cache.run_coef)
+    db.actor:set_actor_sprint_koef(self.m_cache.sprint_coef)
 end
 
 function speed:actor_on_update()
@@ -86,10 +86,10 @@ function speed:actor_on_update()
 
     -- Set run and sprint coefficients
     if has_enough_energy_low then
-        db.actor:set_actor_run_coef(self.m_cache["run_coef"] * 1.5)
-        db.actor:set_actor_sprint_koef(self.m_cache["sprint_coef"] * 1.25)
+        db.actor:set_actor_run_coef(self.m_cache.run_coef * 1.5)
+        db.actor:set_actor_sprint_koef(self.m_cache.sprint_coef * 1.25)
     else
-        db.actor:set_actor_run_coef(self.m_cache["run_coef"])
-        db.actor:set_actor_sprint_koef(self.m_cache["sprint_coef"])
+        db.actor:set_actor_run_coef(self.m_cache.run_coef)
+        db.actor:set_actor_sprint_koef(self.m_cache.sprint_coef)
     end
 end
