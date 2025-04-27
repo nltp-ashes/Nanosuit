@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/04/2025                                                                                             ---
+---    Date : 27/04/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of strength mode of the Nanosuit addon.                                       ---
@@ -13,6 +13,9 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
+-- Imports
+actor_slots_enum        = nanosuit_utils.actor_slots_enum
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Strength mode class
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -21,15 +24,16 @@ class "power" (nanosuit_mode.abstract_mode)
 
 -- FIXME : Strength mode should also reduce fall damage
 -- FIXME : Strength mode should also decrease weapon sway
--- FIXME : Strength mode should also increase carry weight
 function power:__init(core, name) super(core, name)
     -- Energy related variables
     self.m_energy_use_shoot = 4
     self.m_energy_use_melee = 10
     self.m_energy_use_power_jump = 20
 
+    -- Strength related variables
     self.m_power_bonus = 1
     self.m_impulse_bonus = 2000
+    self.m_carry_weight_bonus = 25
 
     -- Cache
     self.m_cache.jump_speed = db.actor:get_actor_jump_speed()
@@ -61,6 +65,9 @@ function power:apply_effects()
     -- Save jump speed
     self.m_cache.jump_speed = db.actor:get_actor_jump_speed()
 
+    -- Set carry weight
+    self:set_carry_capacity("increase")
+
     -- Reduce recoil
     local active_item = db.actor:active_item()
     if active_item and IsWeapon(active_item) then
@@ -81,6 +88,9 @@ function power:remove_effects()
 
     -- Reset jump speed
     db.actor:set_actor_jump_speed(self.m_cache.jump_speed)
+
+    -- Reset carry weight
+    self:set_carry_capacity("decrease")
 
     -- Reset recoil
     local active_item = db.actor:active_item()
@@ -111,6 +121,24 @@ function power:increase_recoil(obj)
     self.m_cache.wpn_id = nil
     self.m_cache.wpn_dispersion = nil
     self.m_cache.wpn_dispersion_zoom = nil
+end
+
+function power:set_carry_capacity(mode)
+    local suit_obj = level.object_by_id(self.m_core.m_suit_id)
+    if not suit_obj then
+        return
+    end
+
+    local max_weight = suit_obj:get_additional_max_weight()
+    local max_walk_weight = suit_obj:get_additional_max_walk_weight()
+
+    if mode == "increase" then
+        suit_obj:set_additional_max_weight(max_weight + self.m_carry_weight_bonus)
+        suit_obj:set_additional_max_walk_weight(max_walk_weight + self.m_carry_weight_bonus)
+    elseif mode == "decrease" then
+        suit_obj:set_additional_max_weight(max_weight - self.m_carry_weight_bonus)
+        suit_obj:set_additional_max_walk_weight(max_walk_weight - self.m_carry_weight_bonus)
+    end
 end
 
 function power:actor_on_update()

@@ -29,6 +29,7 @@ Speed mode :
 Strength mode :
 - Increases melee damage by up to 100%, proportionally to the suit's energy level
 - Increases jump height by 100%, proportionally to the suit's energy level
+- Increases carrying capacity by 25kg
 - Lowers weapon recoil by a factor of 10, for as long as the suit has energy
 - Shooting while in strength mode consumes energy
 - When low on energy, recoil goes back to normal
