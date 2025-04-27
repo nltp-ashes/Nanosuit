@@ -16,19 +16,6 @@
 -- Imports
 localized_sound_object  = nanosuit_utils.localized_sound_object
 hit_types_enum          = nanosuit_utils.hit_types_enum
-hit_types_names_enum   = {
-    [0] = "burn",
-    [1] = "shock",
-    [2] = "chemical_burn",
-    [3] = "radiation",
-    [4] = "telepathic",
-    [5] = "wound",
-    [6] = "fire_wound",
-    [7] = "strike",
-    [8] = "explosion",
-    [9] = "wound_2",
-    [10] = "light_burn"
-}
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Armor mode class

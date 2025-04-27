@@ -19,6 +19,7 @@ debug_mode = true
 -- Enum
 actor_slots_enum = { knife = 1, pistol = 2, rifle = 3, grenade = 4, binoculars = 5, bolt = 6, outfit = 7, pda = 8, detector = 9, torch = 10, artefact = 11, helmet = 12, backpack = 13, animation = 14 }
 hit_types_enum   = { burn = 0, shock = 1, chemical_burn = 2, radiation = 3, telepathic = 4, wound = 5, fire_wound = 6, strike = 7, explosion = 8, wound_2 = 9, light_burn = 10 }
+hit_types_names_enum   = { [0] = "burn", [1] = "shock", [2] = "chemical_burn", [3] = "radiation", [4] = "telepathic", [5] = "wound", [6] = "fire_wound", [7] = "strike", [8] = "explosion", [9] = "wound_2", [10] = "light_burn" }
 armor_modes_enum = { armor = "armor", power = "power", speed = "speed", cloak = "cloak" }
 
 -- ---------------------------------------------------------------------------------------------------------------------
