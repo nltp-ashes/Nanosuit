@@ -22,7 +22,7 @@ Armor mode :
 - When the suit is out of energy, all incoming damage is transferred to the player
 
 Speed mode :
-- Increases walk speed by 50%, does not consume energy
+- Increases walk speed by 25%, does not consume energy
 - Increases run speed by 25%, running consumes energy
 - When low on energy, the bonuses get temporarily disabled
 

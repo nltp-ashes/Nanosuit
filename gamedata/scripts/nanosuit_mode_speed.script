@@ -28,6 +28,10 @@ function speed:__init(core, name) super(core, name)
     self.m_energy_rate = 50
     self.m_energy_low_rate = 250
 
+    -- Cloak related variables
+    self.m_speed_run_coef = 1.25
+    self.m_speed_sprint_coef = 1.25
+
     -- Cache
     self.m_cache.run_coef = db.actor:get_actor_run_coef()
     self.m_cache.sprint_coef = db.actor:get_actor_sprint_koef()
@@ -53,6 +57,12 @@ function speed:apply_effects()
 end
 
 function speed:remove_effects()
+    -- Play sounds
+    if self.m_core.m_energy >= self.m_core.m_energy_low_threshold and self.m_sounds.speed_loop:playing() then
+        self.m_sounds.speed_loop:stop()
+        self.m_sounds.speed_stop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    end
+
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_update", self)
 
@@ -73,7 +83,6 @@ function speed:actor_on_update()
     end
 
     -- Play sounds
-    -- FIXME : Speed loop keeps playing if player switches mode while sprinting
     if has_enough_energy_low and IsMoveState("mcSprint") and not self.m_sounds.speed_loop:playing() then
         self.m_sounds.speed_stop:stop()
         self.m_sounds.speed_loop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
@@ -87,8 +96,8 @@ function speed:actor_on_update()
 
     -- Set run and sprint coefficients
     if has_enough_energy_low then
-        db.actor:set_actor_run_coef(self.m_cache.run_coef * 1.5)
-        db.actor:set_actor_sprint_koef(self.m_cache.sprint_coef * 1.25)
+        db.actor:set_actor_run_coef(self.m_cache.run_coef * self.m_speed_run_coef)
+        db.actor:set_actor_sprint_koef(self.m_cache.sprint_coef * self.m_speed_sprint_coef)
     else
         db.actor:set_actor_run_coef(self.m_cache.run_coef)
         db.actor:set_actor_sprint_koef(self.m_cache.sprint_coef)
