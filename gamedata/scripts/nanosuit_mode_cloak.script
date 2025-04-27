@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 24/04/2025                                                                                             ---
+---    Date : 27/04/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
@@ -14,8 +14,8 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- Imports
-armor_modes_enum        = nanosuit_core.armor_modes_enum
-actor_slots             = nanosuit_utils.actor_slots
+armor_modes_enum        = nanosuit_utils.armor_modes_enum
+actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Cloak mode class
@@ -40,16 +40,16 @@ function cloak:__init(core, name) super(core, name)
     self.m_cache.legs_shaders = { world = nil }
     self.m_cache.actor_shaders = { hud = nil, world = nil }
     self.m_cache.items_shaders = {
-        [actor_slots.knife] = { id = nil, hud = nil, world = nil },
-        [actor_slots.pistol] = { id = nil, hud = nil, world = nil },
-        [actor_slots.rifle] = { id = nil, hud = nil, world = nil },
-        [actor_slots.grenade] = { id = nil, hud = nil, world = nil },
-        [actor_slots.binoculars] = { id = nil, hud = nil, world = nil },
-        [actor_slots.bolt] = { id = nil, hud = nil, world = nil },
-        [actor_slots.pda] = { id = nil, hud = nil, world = nil },
-        [actor_slots.detector] = { id = nil, hud = nil, world = nil },
-        [actor_slots.torch] = { id = nil, hud = nil, world = nil },
-        [actor_slots.animation] = { id = nil, hud = nil, world = nil }
+        [actor_slots_enum.knife] = { id = nil, hud = nil, world = nil },
+        [actor_slots_enum.pistol] = { id = nil, hud = nil, world = nil },
+        [actor_slots_enum.rifle] = { id = nil, hud = nil, world = nil },
+        [actor_slots_enum.grenade] = { id = nil, hud = nil, world = nil },
+        [actor_slots_enum.binoculars] = { id = nil, hud = nil, world = nil },
+        [actor_slots_enum.bolt] = { id = nil, hud = nil, world = nil },
+        [actor_slots_enum.pda] = { id = nil, hud = nil, world = nil },
+        [actor_slots_enum.detector] = { id = nil, hud = nil, world = nil },
+        [actor_slots_enum.torch] = { id = nil, hud = nil, world = nil },
+        [actor_slots_enum.animation] = { id = nil, hud = nil, world = nil }
     }
 
     -- Sound effects

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/04/2025                                                                                             ---
+---    Date : 27/04/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of armor mode of the Nanosuit addon.                                          ---
@@ -13,14 +13,44 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
+-- Imports
+hit_types_enum          = nanosuit_utils.hit_types_enum
+hit_types_names_enum   = {
+    [0] = "burn",
+    [1] = "shock",
+    [2] = "chemical_burn",
+    [3] = "radiation",
+    [4] = "telepathic",
+    [5] = "wound",
+    [6] = "fire_wound",
+    [7] = "strike",
+    [8] = "explosion",
+    [9] = "wound_2",
+    [10] = "light_burn"
+}
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Armor mode class
 -- ---------------------------------------------------------------------------------------------------------------------
 
 class "armor" (nanosuit_mode.abstract_mode)
 
--- FIXME : Armor mode should also protect the player against radiation
 function armor:__init(core, name) super(core, name)
+    -- Protection variables (value is hit power armor can absorb)
+    self.m_protection_map = {
+        [hit_types_enum.burn] = 5.0,
+        [hit_types_enum.shock] = 1.0,
+        [hit_types_enum.chemical_burn] = 2.0,
+        [hit_types_enum.radiation] = 0.5,
+        [hit_types_enum.telepathic] = nil,
+        [hit_types_enum.wound] = 2.0,
+        [hit_types_enum.fire_wound] = 1.0,
+        [hit_types_enum.strike] = 0.5,
+        [hit_types_enum.explosion] = 1.0,
+        [hit_types_enum.wound_2] = 1.0,
+        [hit_types_enum.light_burn] = 5.0
+    }
+
     -- Sound effects
     self.m_sounds.armor_voice = sound_object([[nanosuit\mode_armor_voice]])
     self.m_sounds.armor_on = sound_object([[nanosuit\mode_armor_on]])
@@ -40,14 +70,26 @@ function armor:remove_effects()
     UnregisterScriptCallback("actor_on_before_hit", self)
 end
 
-function armor:actor_on_before_hit(shit, bone_id, flags)
+function armor:actor_on_before_hit(scripted_hit, bone_id, flags)
+    -- Get amount of damage suit can absorb (if any)
+    local max_absorb_power = self.m_protection_map[scripted_hit.type]
+    if not max_absorb_power then
+        return
+    end
+
     -- Calculate energy to use and damage to absorb
-    local absorb_energy_req = 100 * shit.power
-    local damage_to_absorb = math.min(self.m_core.m_energy, absorb_energy_req)
+    local absorb_energy_req = scripted_hit.power / max_absorb_power * 100
+    local absorb_energy_use = math.min(self.m_core.m_energy, absorb_energy_req)
+    local absorb_power = absorb_energy_use / 100 * max_absorb_power
 
     -- Use energy
-    self.m_core:use_energy(damage_to_absorb)
+    self.m_core:use_energy(absorb_energy_use)
 
     -- Absorb hit
-    shit.power = shit.power - (damage_to_absorb / 100)
+    scripted_hit.power = scripted_hit.power - absorb_power
+
+    -- Game is stupid and still registers damage sometimes even with power set to 0
+    if self.m_core.m_energy > 0 then
+        flags.ret_value = false
+    end
 end

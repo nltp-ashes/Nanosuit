@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/04/2025                                                                                             ---
+---    Date : 27/04/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of speed mode of the Nanosuit addon.                                          ---
@@ -73,6 +73,7 @@ function speed:actor_on_update()
     end
 
     -- Play sounds
+    -- FIXME : Speed loop keeps playing if player switches mode while sprinting
     if has_enough_energy_low and IsMoveState("mcSprint") and not self.m_sounds.speed_loop:playing() then
         self.m_sounds.speed_stop:stop()
         self.m_sounds.speed_loop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
