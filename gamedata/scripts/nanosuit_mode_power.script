@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 27/04/2025                                                                                             ---
+---    Date : 28/04/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of strength mode of the Nanosuit addon.                                       ---
@@ -14,6 +14,7 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- Imports
+localized_sound_object  = nanosuit_utils.localized_sound_object
 actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -42,7 +43,7 @@ function power:__init(core, name) super(core, name)
     self.m_cache.wpn_dispersion_zoom = nil
 
     -- Sound effects
-    self.m_sounds.power_voice = sound_object([[nanosuit\mode_power_voice]])
+    self.m_sounds.power_voice = localized_sound_object([[nanosuit\mode_power_voice]])
     self.m_sounds.power_jump = sound_object([[nanosuit\mode_power_jump]])
     self.m_sounds.power_on = sound_object([[nanosuit\mode_power_on]])
 end

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 27/04/2025                                                                                             ---
+---    Date : 28/04/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of speed mode of the Nanosuit addon.                                          ---
@@ -12,6 +12,9 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+localized_sound_object  = nanosuit_utils.localized_sound_object
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Speed mode class
@@ -37,7 +40,7 @@ function speed:__init(core, name) super(core, name)
     self.m_cache.sprint_coef = db.actor:get_actor_sprint_koef()
 
     -- Sound effects
-    self.m_sounds.speed_voice = sound_object([[nanosuit\mode_speed_voice]])
+    self.m_sounds.speed_voice = localized_sound_object([[nanosuit\mode_speed_voice]])
     self.m_sounds.speed_on = sound_object([[nanosuit\mode_speed_on]])
     self.m_sounds.speed_loop = sound_object([[nanosuit\mode_speed_loop]])
     self.m_sounds.speed_stop = sound_object([[nanosuit\mode_speed_stop]])

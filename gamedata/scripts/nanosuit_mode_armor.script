@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 27/04/2025                                                                                             ---
+---    Date : 28/04/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of armor mode of the Nanosuit addon.                                          ---
@@ -14,6 +14,7 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- Imports
+localized_sound_object  = nanosuit_utils.localized_sound_object
 hit_types_enum          = nanosuit_utils.hit_types_enum
 hit_types_names_enum   = {
     [0] = "burn",
@@ -52,7 +53,7 @@ function armor:__init(core, name) super(core, name)
     }
 
     -- Sound effects
-    self.m_sounds.armor_voice = sound_object([[nanosuit\mode_armor_voice]])
+    self.m_sounds.armor_voice = localized_sound_object([[nanosuit\mode_armor_voice]])
     self.m_sounds.armor_on = sound_object([[nanosuit\mode_armor_on]])
 end
 

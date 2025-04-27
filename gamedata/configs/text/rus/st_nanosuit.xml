@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
-<!--    Date : 27/04/2025                                                                                            -->
+<!--    Date : 28/04/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -61,6 +61,30 @@
 
     <string id="st_nanosuit_ui_menu_speed_descr">
         <text>Режим ускорения</text>
+    </string>
+
+    <!--=============================================================================================================-->
+    <!--    Nanosuit voice lines                                                                                     -->
+    <!--=============================================================================================================-->
+
+    <string id="nanosuit\mode_armor_voice">
+        <text>nanosuit\mode_armor_voice_rus</text>
+    </string>
+
+    <string id="nanosuit\mode_cloak_voice">
+        <text>nanosuit\mode_cloak_voice_rus</text>
+    </string>
+
+    <string id="nanosuit\mode_power_voice">
+        <text>nanosuit\mode_power_voice_rus</text>
+    </string>
+
+    <string id="nanosuit\mode_speed_voice">
+        <text>nanosuit\mode_speed_voice_rus</text>
+    </string>
+
+    <string id="nanosuit\energy_low_voice">
+        <text>nanosuit\energy_low_voice_rus</text>
     </string>
 
 </string_table>
