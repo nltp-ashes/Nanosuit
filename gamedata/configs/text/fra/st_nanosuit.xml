@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="windows-1252" standalone="yes" ?>
+<!--=================================================================================================================-->
+<!--                                                                                                                 -->
+<!--    Original Author(s) : NLTP_ASHES                                                                              -->
+<!--    Edited : N/A                                                                                                 -->
+<!--    Date : 27/04/2025                                                                                            -->
+<!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
+<!--                                                                                                                 -->
+<!--    Translation file for the Nanosuit addon.                                                                     -->
+<!--                                                                                                                 -->
+<!--=================================================================================================================-->
+<string_table>
+
+    <!--=============================================================================================================-->
+    <!--    Nanosuit item                                                                                            -->
+    <!--=============================================================================================================-->
+
+    <string id="st_nanosuit_outfit_name">
+        <text>CryNet Nanocombinaison 1.0</text>
+    </string>
+
+    <string id="st_nanosuit_outfit_name_s">
+        <text>Nanocombinaison</text>
+    </string>
+
+    <string id="st_nanosuit_outfit_name_descr">
+        <text>La Nanocombinaison (aussi connue sous le nom combinaison nano-muscle) est un ensemble tactique puissant et extrêmement polyvalent initialement conçu pour combattre la menace [CLASSIFIÉ] et minimiser l'écart technologique entre l'humanité et les [CLASSIFIÉ]. Rétro-ingénierée à partir de technologies [CLASSIFIÉ], les fibres musculaires CryFibril de la combinaison peuvent être programmés pour diverses applications (comme la rigidité, force accrue ou encore camouflage optique), permettant de dramatiquement augmenter les capacités de combat et physiques, rendant possible des exploits surhumains à son opérateur.\n \n</text>
+    </string>
+
+    <!--=============================================================================================================-->
+    <!--    Nanosuit menu UI                                                                                         -->
+    <!--=============================================================================================================-->
+
+    <string id="st_nanosuit_ui_menu_armor_title">
+        <text>Armure</text>
+    </string>
+
+    <string id="st_nanosuit_ui_menu_armor_descr">
+        <text>Mode armure</text>
+    </string>
+
+    <string id="st_nanosuit_ui_menu_cloak_title">
+        <text>Camouflage</text>
+    </string>
+
+    <string id="st_nanosuit_ui_menu_cloak_descr">
+        <text>Mode camouflage</text>
+    </string>
+
+    <string id="st_nanosuit_ui_menu_power_title">
+        <text>Force</text>
+    </string>
+
+    <string id="st_nanosuit_ui_menu_power_descr">
+        <text>Mode force</text>
+    </string>
+
+    <string id="st_nanosuit_ui_menu_speed_title">
+        <text>Vitesse</text>
+    </string>
+
+    <string id="st_nanosuit_ui_menu_speed_descr">
+        <text>Mode vitesse</text>
+    </string>
+
+</string_table>
