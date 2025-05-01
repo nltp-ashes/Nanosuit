@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 28/04/2025                                                                                             ---
+---    Date : 02/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of armor mode of the Nanosuit addon.                                          ---
@@ -23,7 +23,6 @@ hit_types_enum          = nanosuit_utils.hit_types_enum
 
 class "armor" (nanosuit_mode.abstract_mode)
 
--- FIXME : The suit should emit a custom sound effect when impacted by bullets
 function armor:__init(core, name) super(core, name)
     -- Protection variables (value is hit power armor can absorb)
     self.m_protection_map = {
@@ -33,7 +32,7 @@ function armor:__init(core, name) super(core, name)
         [hit_types_enum.radiation] = 0.5,
         [hit_types_enum.telepathic] = nil,
         [hit_types_enum.wound] = 2.0,
-        [hit_types_enum.fire_wound] = 1.0,
+        [hit_types_enum.fire_wound] = 2.0,
         [hit_types_enum.strike] = 0.5,
         [hit_types_enum.explosion] = 1.0,
         [hit_types_enum.wound_2] = 1.0,
@@ -41,8 +40,15 @@ function armor:__init(core, name) super(core, name)
     }
 
     -- Sound effects
-    self.m_sounds.armor_voice = localized_sound_object([[nanosuit\mode_armor_voice]])
-    self.m_sounds.armor_on = sound_object([[nanosuit\mode_armor_on]])
+    self.m_sounds.armor_voice = localized_sound_object([[nanosuit\voice\mode_armor_voice]])
+    self.m_sounds.armor_on = sound_object([[nanosuit\modes\armor\mode_armor_on]])
+    self.m_sounds.impacts = {
+        sound_object([[nanosuit\modes\armor\mode_armor_hit_01]]),
+        sound_object([[nanosuit\modes\armor\mode_armor_hit_02]]),
+        sound_object([[nanosuit\modes\armor\mode_armor_hit_03]]),
+        sound_object([[nanosuit\modes\armor\mode_armor_hit_04]]),
+        sound_object([[nanosuit\modes\armor\mode_armor_hit_05]])
+    }
 end
 
 function armor:apply_effects()
@@ -77,8 +83,14 @@ function armor:actor_on_before_hit(scripted_hit, bone_id, flags)
     -- Absorb hit
     scripted_hit.power = scripted_hit.power - absorb_power
 
-    -- Game is stupid and still registers damage sometimes even with power set to 0
     if self.m_core.m_energy > 0 then
+        -- Play sound
+        if scripted_hit.type == hit_types_enum.fire_wound then
+            local sfx = self.m_sounds.impacts[math.random(1, #self.m_sounds.impacts)]
+            sfx:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+        end
+
+        -- Game is stupid and still registers damage sometimes even with power set to 0
         flags.ret_value = false
     end
 end

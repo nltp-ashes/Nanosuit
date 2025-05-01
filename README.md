@@ -92,7 +92,6 @@ For past updates, please refer to the description of each release, in the [relea
 - Strength mode should decrease weapon sway
 - Speed mode should increase reload speed
 - Speed mode should decrease ADS time
-- The suit should emit a custom sound effect when impacted by bullets
 
 If you truly believe your problem is new, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).
 

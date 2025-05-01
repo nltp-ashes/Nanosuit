@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 28/04/2025                                                                                             ---
+---    Date : 02/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -50,6 +50,6 @@ end
 -- Sound functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
-function localized_sound_object(name)
-    return sound_object(game.translate_string(name))
+function localized_sound_object(path)
+    return sound_object(game.translate_string(path))
 end

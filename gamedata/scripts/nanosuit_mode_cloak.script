@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 28/04/2025                                                                                             ---
+---    Date : 02/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
@@ -54,11 +54,11 @@ function cloak:__init(core, name) super(core, name)
     }
 
     -- Sound effects
-    self.m_sounds.cloak_voice = localized_sound_object([[nanosuit\mode_cloak_voice]])
-    self.m_sounds.cloak_loop = sound_object([[nanosuit\mode_cloak_loop]])
-    self.m_sounds.cloak_shoot = sound_object([[nanosuit\mode_cloak_shoot]])
-    self.m_sounds.cloak_on = sound_object([[nanosuit\mode_cloak_on]])
-    self.m_sounds.cloak_off = sound_object([[nanosuit\mode_cloak_off]])
+    self.m_sounds.cloak_voice = localized_sound_object([[nanosuit\voice\mode_cloak_voice]])
+    self.m_sounds.cloak_loop = sound_object([[nanosuit\modes\cloak\mode_cloak_loop]])
+    self.m_sounds.cloak_shoot = sound_object([[nanosuit\modes\cloak\mode_cloak_shoot]])
+    self.m_sounds.cloak_on = sound_object([[nanosuit\modes\cloak\mode_cloak_on]])
+    self.m_sounds.cloak_off = sound_object([[nanosuit\modes\cloak\mode_cloak_off]])
 
     -- Prefetch textures
     game.prefetch_texture(self.m_cloak_texture .. ".dds")
