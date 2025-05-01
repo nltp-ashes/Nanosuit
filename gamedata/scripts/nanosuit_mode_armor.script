@@ -23,6 +23,7 @@ hit_types_enum          = nanosuit_utils.hit_types_enum
 
 class "armor" (nanosuit_mode.abstract_mode)
 
+-- FIXME : The suit should emit a custom sound effect when impacted by bullets
 function armor:__init(core, name) super(core, name)
     -- Protection variables (value is hit power armor can absorb)
     self.m_protection_map = {

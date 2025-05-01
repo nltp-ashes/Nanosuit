@@ -19,6 +19,7 @@ General :
 Armor mode :
 - Absorbs all incoming damage as long as the suit has energy
 - The more powerful is the impact, the more energy it consumes
+- Some damage types consume more energy than others
 - When the suit is out of energy, all incoming damage is transferred to the player
 
 Speed mode :
@@ -89,10 +90,9 @@ For past updates, please refer to the description of each release, in the [relea
 - The shader and textures used for cloak mode are not the best. They should be improved
 - Strength mode should reduce fall damage
 - Strength mode should decrease weapon sway
-- Strength mode should increase carry weight
 - Speed mode should increase reload speed
 - Speed mode should decrease ADS time
-- Armor mode should protect the player against radiation
+- The suit should emit a custom sound effect when impacted by bullets
 
 If you truly believe your problem is new, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).
 
