@@ -24,20 +24,18 @@ hit_types_enum          = nanosuit_utils.hit_types_enum
 class "armor" (nanosuit_mode.abstract_mode)
 
 function armor:__init(core, name) super(core, name)
-    -- Protection variables (value is hit power armor can absorb)
-    self.m_protection_map = {
-        [hit_types_enum.burn] = 5.0,
-        [hit_types_enum.shock] = 1.0,
-        [hit_types_enum.chemical_burn] = 2.0,
-        [hit_types_enum.radiation] = 0.5,
-        [hit_types_enum.telepathic] = nil,
-        [hit_types_enum.wound] = 2.0,
-        [hit_types_enum.fire_wound] = 2.0,
-        [hit_types_enum.strike] = 0.5,
-        [hit_types_enum.explosion] = 1.0,
-        [hit_types_enum.wound_2] = 1.0,
-        [hit_types_enum.light_burn] = 5.0
-    }
+    -- Protection related variables (value is hit power armor can absorb)
+    self.m_protection_map[hit_types_enum.burn] = 5.0
+    self.m_protection_map[hit_types_enum.shock] = 1.0
+    self.m_protection_map[hit_types_enum.chemical_burn] = 2.0
+    self.m_protection_map[hit_types_enum.radiation] = 0.5
+    self.m_protection_map[hit_types_enum.telepathic] = nil
+    self.m_protection_map[hit_types_enum.wound] = 2.0
+    self.m_protection_map[hit_types_enum.fire_wound] = 2.0
+    self.m_protection_map[hit_types_enum.strike] = nil
+    self.m_protection_map[hit_types_enum.explosion] = 1.0
+    self.m_protection_map[hit_types_enum.wound_2] = 1.0
+    self.m_protection_map[hit_types_enum.light_burn] = 5.0
 
     -- Sound effects
     self.m_sounds.armor_voice = localized_sound_object([[nanosuit\voice\mode_armor_voice]])
@@ -52,6 +50,8 @@ function armor:__init(core, name) super(core, name)
 end
 
 function armor:apply_effects()
+    nanosuit_mode.abstract_mode.apply_effects(self)
+
     -- Play sounds
     self.m_sounds.armor_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_sounds.armor_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
@@ -61,36 +61,20 @@ function armor:apply_effects()
 end
 
 function armor:remove_effects()
+    nanosuit_mode.abstract_mode.remove_effects(self)
+
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_before_hit", self)
 end
 
 function armor:actor_on_before_hit(scripted_hit, bone_id, flags)
-    -- Get amount of damage suit can absorb (if any)
-    local max_absorb_power = self.m_protection_map[scripted_hit.type]
-    if not max_absorb_power then
-        return
-    end
+    nanosuit_mode.abstract_mode.actor_on_before_hit(self, scripted_hit, bone_id, flags)
 
-    -- Calculate energy to use and damage to absorb
-    local absorb_energy_req = scripted_hit.power / max_absorb_power * 100
-    local absorb_energy_use = math.min(self.m_core.m_energy, absorb_energy_req)
-    local absorb_power = absorb_energy_use / 100 * max_absorb_power
-
-    -- Use energy
-    self.m_core:use_energy(absorb_energy_use)
-
-    -- Absorb hit
-    scripted_hit.power = scripted_hit.power - absorb_power
-
+    -- Play sound
     if self.m_core.m_energy > 0 then
-        -- Play sound
         if scripted_hit.type == hit_types_enum.fire_wound then
             local sfx = self.m_sounds.impacts[math.random(1, #self.m_sounds.impacts)]
             sfx:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         end
-
-        -- Game is stupid and still registers damage sometimes even with power set to 0
-        flags.ret_value = false
     end
 end

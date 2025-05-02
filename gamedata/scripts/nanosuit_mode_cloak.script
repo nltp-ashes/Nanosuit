@@ -65,6 +65,8 @@ function cloak:__init(core, name) super(core, name)
 end
 
 function cloak:apply_effects()
+    nanosuit_mode.abstract_mode.apply_effects(self)
+
     -- Play sounds
     self.m_sounds.cloak_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_sounds.cloak_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
@@ -105,6 +107,8 @@ function cloak:apply_effects()
 end
 
 function cloak:remove_effects()
+    nanosuit_mode.abstract_mode.remove_effects(self)
+
     -- Play sounds
     self.m_sounds.cloak_off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_sounds.cloak_loop:stop()

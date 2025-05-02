@@ -47,6 +47,8 @@ function speed:__init(core, name) super(core, name)
 end
 
 function speed:apply_effects()
+    nanosuit_mode.abstract_mode.apply_effects(self)
+
     -- Play sounds
     self.m_sounds.speed_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_sounds.speed_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
@@ -60,6 +62,8 @@ function speed:apply_effects()
 end
 
 function speed:remove_effects()
+    nanosuit_mode.abstract_mode.remove_effects(self)
+
     -- Play sounds
     if self.m_core.m_energy >= self.m_core.m_energy_low_threshold and self.m_sounds.speed_loop:playing() then
         self.m_sounds.speed_loop:stop()
