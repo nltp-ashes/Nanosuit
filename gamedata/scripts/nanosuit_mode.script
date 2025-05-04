@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 02/05/2025                                                                                             ---
+---    Date : 04/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract suit mode of the Nanosuit addon.                               ---
@@ -12,6 +12,8 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
+
+actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Mode class
@@ -25,20 +27,35 @@ function abstract_mode:__init(core, name)
     self.m_sounds = {}
     self.m_cache = {}
     self.m_protection_map = {}
+    self.m_boosters = {}
 end
 
 function abstract_mode:__eq(other)
     return self.m_name == other.m_name
 end
 
-function abstract_mode:apply_effects()
+function abstract_mode:apply()
     -- Register callbacks
     RegisterScriptCallback("actor_on_before_hit", self)
 end
 
-function abstract_mode:remove_effects()
+function abstract_mode:remove()
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_before_hit", self)
+end
+
+function abstract_mode:apply_booster(booster, name)
+    if not self.m_boosters[name] then
+        self.m_boosters[name] = booster(self.m_core, name)
+        self.m_boosters[name]:apply()
+    end
+end
+
+function abstract_mode:remove_booster(name)
+    if self.m_boosters[name] then
+        self.m_boosters[name]:remove()
+        self.m_boosters[name] = nil
+    end
 end
 
 function abstract_mode:actor_on_before_hit(scripted_hit, bone_id, flags)

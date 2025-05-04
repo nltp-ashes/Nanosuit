@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 02/05/2025                                                                                             ---
+---    Date : 04/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of strength mode of the Nanosuit addon.                                       ---
@@ -51,8 +51,8 @@ function power:__init(core, name) super(core, name)
     self.m_sounds.power_on = sound_object([[nanosuit\modes\power\mode_power_on]])
 end
 
-function power:apply_effects()
-    nanosuit_mode.abstract_mode.apply_effects(self)
+function power:apply()
+    nanosuit_mode.abstract_mode.apply(self)
 
     -- Play sounds
     self.m_sounds.power_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
@@ -60,75 +60,35 @@ function power:apply_effects()
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_jump", self)
-    RegisterScriptCallback("actor_on_update", self)
-    RegisterScriptCallback("actor_item_to_slot", self)
-    RegisterScriptCallback("actor_item_to_ruck", self)
-    RegisterScriptCallback("actor_on_item_drop", self)
     RegisterScriptCallback("npc_on_before_hit", self)
     RegisterScriptCallback("actor_on_weapon_fired", self)
-    RegisterScriptCallback("actor_on_changed_slot", self)
+
+    -- Boosters
+    self:apply_booster(nanosuit_booster_recoil.recoil, "recoil")
 
     -- Save jump speed
     self.m_cache.jump_speed = db.actor:get_actor_jump_speed()
 
     -- Set carry weight
     self:set_carry_capacity("increase")
-
-    -- Reduce recoil
-    local active_item = db.actor:active_item()
-    if active_item and IsWeapon(active_item) then
-        self:decrease_recoil(active_item)
-    end
 end
 
-function power:remove_effects()
-    nanosuit_mode.abstract_mode.remove_effects(self)
+function power:remove()
+    nanosuit_mode.abstract_mode.remove(self)
 
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_jump", self)
-    UnregisterScriptCallback("actor_on_update", self)
-    UnregisterScriptCallback("actor_item_to_slot", self)
-    UnregisterScriptCallback("actor_item_to_ruck", self)
-    UnregisterScriptCallback("actor_on_item_drop", self)
     UnregisterScriptCallback("npc_on_before_hit", self)
     UnregisterScriptCallback("actor_on_weapon_fired", self)
-    UnregisterScriptCallback("actor_on_changed_slot", self)
+
+    -- Boosters
+    self:remove_booster("recoil")
 
     -- Reset jump speed
     db.actor:set_actor_jump_speed(self.m_cache.jump_speed)
 
     -- Reset carry weight
     self:set_carry_capacity("decrease")
-
-    -- Reset recoil
-    local active_item = db.actor:active_item()
-    if active_item and IsWeapon(active_item) and active_item:id() == self.m_cache.wpn_id then
-        self:increase_recoil(active_item)
-    end
-end
-
-function power:decrease_recoil(obj)
-    printf("[NS] Strength Mode | Decreasing recoil for weapon %s", obj:id())
-    local wpn_obj = obj:cast_Weapon()
-
-    self.m_cache.wpn_id = obj:id()
-    self.m_cache.wpn_dispersion = wpn_obj:GetCamDispersion()
-    self.m_cache.wpn_dispersion_zoom = wpn_obj:GetZoomCamDispersion()
-
-    wpn_obj:SetCamDispersion(self.m_cache.wpn_dispersion * 0.1)
-    wpn_obj:SetZoomCamDispersion(self.m_cache.wpn_dispersion_zoom * 0.1)
-end
-
-function power:increase_recoil(obj)
-    printf("[NS] Strength Mode | Increasing recoil for weapon %s", obj:id())
-    local wpn_obj = obj:cast_Weapon()
-
-    wpn_obj:SetCamDispersion(self.m_cache.wpn_dispersion)
-    wpn_obj:SetZoomCamDispersion(self.m_cache.wpn_dispersion_zoom)
-
-    self.m_cache.wpn_id = nil
-    self.m_cache.wpn_dispersion = nil
-    self.m_cache.wpn_dispersion_zoom = nil
 end
 
 function power:set_carry_capacity(mode)
@@ -146,21 +106,6 @@ function power:set_carry_capacity(mode)
     elseif mode == "decrease" then
         suit_obj:set_additional_max_weight(max_weight - self.m_carry_weight_bonus)
         suit_obj:set_additional_max_walk_weight(max_walk_weight - self.m_carry_weight_bonus)
-    end
-end
-
-function power:actor_on_update()
-    local obj = db.actor:active_item()
-    if not obj or not IsWeapon(obj) then
-        return
-    end
-
-    local has_enough_energy = self.m_core.m_energy >= self.m_core.m_energy_low_threshold
-
-    if has_enough_energy and obj:id() ~= self.m_cache.wpn_id then
-        self:decrease_recoil(obj)
-    elseif not has_enough_energy and obj:id() == self.m_cache.wpn_id then
-        self:increase_recoil(obj)
     end
 end
 
@@ -203,31 +148,3 @@ function power:actor_on_weapon_fired()
     self.m_core:use_energy(self.m_energy_use_shoot)
 end
 
-function power:actor_on_changed_slot(new_slot, new_obj, prev_slot, prev_obj)
-    if prev_obj and prev_obj:id() == self.m_cache.wpn_id then
-        self:increase_recoil(prev_obj)
-    end
-    local active_item = db.actor:active_item()
-    if new_obj and active_item and IsWeapon(active_item) and active_item == new_obj:id() then
-        self:decrease_recoil(new_obj)
-    end
-end
-
-function power:actor_item_to_slot(_)
-    local active_item = db.actor:active_item()
-    if active_item and IsWeapon(active_item) then
-        self:decrease_recoil(active_item)
-    end
-end
-
-function power:actor_item_to_ruck(obj)
-    if obj:id() == self.m_cache.wpn_id then
-        self:increase_recoil(obj)
-    end
-end
-
-function power:actor_on_item_drop(obj)
-    if obj:id() == self.m_cache.wpn_id then
-        self:increase_recoil(obj)
-    end
-end

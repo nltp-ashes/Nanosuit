@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 02/05/2025                                                                                             ---
+---    Date : 04/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -87,7 +87,7 @@ function core:__init(obj_id)
 
     -- Sound effects
     self.m_sounds = {
-        energy_low_voice = localized_sound_object([[nanosuit\energy\energy_low_voice]]),
+        energy_low_voice = localized_sound_object([[nanosuit\voice\energy_low_voice]]),
         energy_very_low = sound_object([[nanosuit\energy\energy_very_low]]),
         energy_on = sound_object([[nanosuit\energy\energy_on]]),
         energy_off = sound_object([[nanosuit\energy\energy_off]])
@@ -110,14 +110,14 @@ function core:__init(obj_id)
     -- Default mode initialization
     self.m_default_mode = armor_modes_enum.armor
     self.m_current_mode = self.m_modes[self.m_default_mode]
-    self.m_current_mode:apply_effects()
+    self.m_current_mode:apply()
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_update", self)
 end
 
 function core:destroy()
-    self.m_current_mode:remove_effects()
+    self.m_current_mode:remove()
 
     UnregisterScriptCallback("actor_on_update", self)
 
@@ -139,9 +139,9 @@ end
 
 function core:change_mode(mode)
     if self.m_current_mode ~= self.m_modes[mode] then
-        self.m_current_mode:remove_effects()
+        self.m_current_mode:remove()
         self.m_current_mode = self.m_modes[mode]
-        self.m_current_mode:apply_effects()
+        self.m_current_mode:apply()
     end
 end
 

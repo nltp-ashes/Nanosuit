@@ -1,0 +1,47 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 04/05/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the logic of a ADS (Aim Down Sights) booster usable by a Nanosuit mode.                 ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Speed mode class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "ads" (nanosuit_booster.abstract_booster)
+
+function ads:__init(core, name) super(core, name)
+    self.m_ads_factor = 0.6
+    self.m_cache.ads_time = nil
+end
+
+function ads:filter(obj)
+    if not nanosuit_booster.abstract_booster.filter(self, obj) then
+        return false
+    end
+    return IsWeapon(obj) and obj:cast_Weapon()
+end
+
+function ads:set(obj)
+    nanosuit_booster.abstract_booster.set(self, obj)
+
+    local wpn_obj = obj:cast_Weapon()
+    self.m_cache.ads_time = wpn_obj:GetZoomRotateTime()
+    wpn_obj:SetZoomRotateTime(self.m_cache.ads_time * self.m_ads_factor)
+end
+
+function ads:unset(obj)
+    local wpn_obj = obj:cast_Weapon()
+    wpn_obj:SetZoomRotateTime(self.m_cache.ads_time)
+
+    nanosuit_booster.abstract_booster.unset(self, obj)
+end

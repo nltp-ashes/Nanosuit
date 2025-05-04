@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 02/05/2025                                                                                             ---
+---    Date : 04/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of armor mode of the Nanosuit addon.                                          ---
@@ -49,8 +49,8 @@ function armor:__init(core, name) super(core, name)
     }
 end
 
-function armor:apply_effects()
-    nanosuit_mode.abstract_mode.apply_effects(self)
+function armor:apply()
+    nanosuit_mode.abstract_mode.apply(self)
 
     -- Play sounds
     self.m_sounds.armor_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
@@ -60,8 +60,8 @@ function armor:apply_effects()
     RegisterScriptCallback("actor_on_before_hit", self)
 end
 
-function armor:remove_effects()
-    nanosuit_mode.abstract_mode.remove_effects(self)
+function armor:remove()
+    nanosuit_mode.abstract_mode.remove(self)
 
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_before_hit", self)

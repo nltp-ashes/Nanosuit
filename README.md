@@ -21,17 +21,19 @@ Armor mode :
 - The more powerful is the impact, the more energy it consumes
 - Some damage types consume more energy than others
 - When the suit is out of energy, all incoming damage is transferred to the player
+- The suit does not protect against psi-emissions and blunt force (fall-damage, poltergeist throws, etc.)
 
 Speed mode :
 - Increases walk speed by 25%, does not consume energy
 - Increases run speed by 25%, running consumes energy
+- Decreases time to aim down sights by 40%, does not consume energy
 - When low on energy, the bonuses get temporarily disabled
 
 Strength mode :
 - Increases melee damage by up to 100%, proportionally to the suit's energy level
 - Increases jump height by 100%, proportionally to the suit's energy level
 - Increases carrying capacity by 25kg
-- Lowers weapon recoil by a factor of 10, for as long as the suit has energy
+- Decreases weapon recoil by a factor of 10, for as long as the suit has energy
 - Shooting while in strength mode consumes energy
 - When low on energy, recoil goes back to normal
 
@@ -89,8 +91,7 @@ For past updates, please refer to the description of each release, in the [relea
 - When wearing the suit, the player footsteps do not change. They should use custom sounds
 - The shader and textures used for cloak mode are not the best. They should be improved
 - Strength mode should decrease weapon sway
-- Speed mode should increase reload speed
-- Speed mode should decrease ADS time
+- Speed mode should increase reload speed. This is impossible due to engine limitations. Will probably never be fixed
 
 If you truly believe your problem is new, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).
 
