@@ -90,7 +90,6 @@ For past updates, please refer to the description of each release, in the [relea
 - The key-bind to open the suit menu is not configurable. It should be configurable
 - When wearing the suit, the player footsteps do not change. They should use custom sounds
 - The shader and textures used for cloak mode are not the best. They should be improved
-- Strength mode should decrease weapon sway
 - Speed mode should increase reload speed. This is impossible due to engine limitations. Will probably never be fixed
 
 If you truly believe your problem is new, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).

@@ -20,7 +20,7 @@
 class "recoil" (nanosuit_booster.abstract_booster)
 
 function recoil:__init(core, name) super(core, name)
-    self.m_cache.low_energy = false
+    self.m_cache.low_energy = core.m_energy <= core.m_energy_low_threshold
     self.m_cache.dispersion = nil
     self.m_cache.dispersion_zoom = nil
 end

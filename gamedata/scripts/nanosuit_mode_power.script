@@ -41,9 +41,6 @@ function power:__init(core, name) super(core, name)
 
     -- Cache
     self.m_cache.jump_speed = db.actor:get_actor_jump_speed()
-    self.m_cache.wpn_id = nil
-    self.m_cache.wpn_dispersion = nil
-    self.m_cache.wpn_dispersion_zoom = nil
 
     -- Sound effects
     self.m_sounds.power_voice = localized_sound_object([[nanosuit\voice\mode_power_voice]])

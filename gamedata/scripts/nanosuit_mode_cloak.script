@@ -40,18 +40,6 @@ function cloak:__init(core, name) super(core, name)
     self.m_cache.visibility_functor = nil
     self.m_cache.legs_shaders = { world = nil }
     self.m_cache.actor_shaders = { hud = nil, world = nil }
-    self.m_cache.items_shaders = {
-        [actor_slots_enum.knife] = { id = nil, hud = nil, world = nil },
-        [actor_slots_enum.pistol] = { id = nil, hud = nil, world = nil },
-        [actor_slots_enum.rifle] = { id = nil, hud = nil, world = nil },
-        [actor_slots_enum.grenade] = { id = nil, hud = nil, world = nil },
-        [actor_slots_enum.binoculars] = { id = nil, hud = nil, world = nil },
-        [actor_slots_enum.bolt] = { id = nil, hud = nil, world = nil },
-        [actor_slots_enum.pda] = { id = nil, hud = nil, world = nil },
-        [actor_slots_enum.detector] = { id = nil, hud = nil, world = nil },
-        [actor_slots_enum.torch] = { id = nil, hud = nil, world = nil },
-        [actor_slots_enum.animation] = { id = nil, hud = nil, world = nil }
-    }
 
     -- Sound effects
     self.m_sounds.cloak_voice = localized_sound_object([[nanosuit\voice\mode_cloak_voice]])

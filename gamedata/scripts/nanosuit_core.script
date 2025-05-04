@@ -160,7 +160,8 @@ function core:actor_on_update()
         self.m_sounds.energy_low_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         self.m_energy_low_voiced = true
     end
-    if self.m_energy > self.m_energy_low_threshold then
+    if self.m_energy > self.m_energy_low_threshold and self.m_energy_low_voiced then
+        self.m_sounds.energy_low_voice:stop()
         self.m_energy_low_voiced = false
     end
 
@@ -169,7 +170,7 @@ function core:actor_on_update()
         self.m_sounds.energy_very_low:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
         self.m_energy_very_low_voiced = true
     end
-    if self.m_energy > self.m_energy_very_low_threshold then
+    if self.m_energy > self.m_energy_very_low_threshold and self.m_energy_very_low_voiced then
         self.m_sounds.energy_very_low:stop()
         self.m_energy_very_low_voiced = false
     end
@@ -179,7 +180,7 @@ function core:actor_on_update()
         self.m_sounds.energy_off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         self.m_energy_off_voiced = true
     end
-    if self.m_energy > self.m_energy_off_threshold then
+    if self.m_energy > self.m_energy_off_threshold and self.m_energy_off_voiced then
         self.m_sounds.energy_off:stop()
         self.m_energy_off_voiced = false
     end
@@ -189,7 +190,7 @@ function core:actor_on_update()
         self.m_sounds.energy_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         self.m_energy_on_voiced = true
     end
-    if self.m_energy <= self.m_energy_on_threshold then
+    if self.m_energy <= self.m_energy_on_threshold and self.m_energy_on_voiced then
         self.m_sounds.energy_on:stop()
         self.m_energy_on_voiced = false
     end
