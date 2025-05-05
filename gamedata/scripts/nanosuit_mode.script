@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/03/2025                                                                                             ---
+---    Date : 04/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract suit mode of the Nanosuit addon.                               ---
@@ -12,6 +12,8 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
+
+actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Mode class
@@ -24,14 +26,58 @@ function abstract_mode:__init(core, name)
     self.m_name = name
     self.m_sounds = {}
     self.m_cache = {}
+    self.m_protection_map = {}
+    self.m_boosters = {}
 end
 
 function abstract_mode:__eq(other)
     return self.m_name == other.m_name
 end
 
-function abstract_mode:apply_effects()
+function abstract_mode:apply()
+    -- Register callbacks
+    RegisterScriptCallback("actor_on_before_hit", self)
 end
 
-function abstract_mode:remove_effects()
+function abstract_mode:remove()
+    -- Unregister callbacks
+    UnregisterScriptCallback("actor_on_before_hit", self)
+end
+
+function abstract_mode:apply_booster(booster, name)
+    if not self.m_boosters[name] then
+        self.m_boosters[name] = booster(self.m_core, name)
+        self.m_boosters[name]:apply()
+    end
+end
+
+function abstract_mode:remove_booster(name)
+    if self.m_boosters[name] then
+        self.m_boosters[name]:remove()
+        self.m_boosters[name] = nil
+    end
+end
+
+function abstract_mode:actor_on_before_hit(scripted_hit, bone_id, flags)
+    -- Get amount of damage suit can absorb (if any)
+    local max_absorb_power = self.m_protection_map[scripted_hit.type]
+    if not max_absorb_power then
+        return
+    end
+
+    -- Calculate energy to use and damage to absorb
+    local absorb_energy_req = scripted_hit.power / max_absorb_power * 100
+    local absorb_energy_use = math.min(self.m_core.m_energy, absorb_energy_req)
+    local absorb_power = absorb_energy_use / 100 * max_absorb_power
+
+    -- Use energy
+    self.m_core:use_energy(absorb_energy_use)
+
+    -- Absorb hit
+    scripted_hit.power = scripted_hit.power - absorb_power
+
+    if self.m_core.m_energy > 0 then
+        -- Game is stupid and still registers damage sometimes even with power set to 0
+        flags.ret_value = false
+    end
 end

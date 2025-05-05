@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 21/04/2025                                                                                             ---
+---    Date : 03/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit mode selection UI.                                                         ---
@@ -14,7 +14,7 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- Imports
-armor_modes_enum = nanosuit_core.armor_modes_enum
+armor_modes_enum        = nanosuit_utils.armor_modes_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Menu UI Class
@@ -24,61 +24,33 @@ class "ui_menu" (arm.UIRadialMenu)
 
 function ui_menu:__init(core) super()
     self.m_core = core
+    self.m_sounds = {
+        show = sound_object([[nanosuit\menu\menu_show]]),
+        hide = sound_object([[nanosuit\menu\menu_hide]])
+    }
+    self.m_selectable_modes = {
+        armor_modes_enum.speed,
+        armor_modes_enum.power,
+        armor_modes_enum.cloak,
+        armor_modes_enum.armor
+    }
 
-    -- Override RadialMenu
-    self.bg:InitTexture("ui_ns_mode_background")
+    -- Hide RadialMenu background
+    self.bg:Show(false)
 
     -- Options
-    local opt_speed = arm.OptionData(armor_modes_enum.speed, "ui_ns_mode_" .. armor_modes_enum.speed)
-    opt_speed:SetText({
-        title = game.translate_string("st_nanosuit_ui_menu_speed_title"),
-        description = game.translate_string("st_nanosuit_ui_menu_speed_descr")
-    })
-
-    local opt_strength = arm.OptionData(armor_modes_enum.power, "ui_ns_mode_" .. armor_modes_enum.power)
-    opt_strength:SetText({
-        title = game.translate_string("st_nanosuit_ui_menu_power_title"),
-        description = game.translate_string("st_nanosuit_ui_menu_power_descr")
-    })
-
-    local opt_cloak = arm.OptionData(armor_modes_enum.cloak, "ui_ns_mode_" .. armor_modes_enum.cloak)
-    opt_cloak:SetText({
-        title = game.translate_string("st_nanosuit_ui_menu_cloak_title"),
-        description = game.translate_string("st_nanosuit_ui_menu_cloak_descr")
-    })
-
-    local opt_armor = arm.OptionData(armor_modes_enum.armor, "ui_ns_mode_" .. armor_modes_enum.armor)
-    opt_armor:SetText({
-        title = game.translate_string("st_nanosuit_ui_menu_armor_title"),
-        description = game.translate_string("st_nanosuit_ui_menu_armor_descr")
-    })
-
-    -- Add options to GUI
-    self:AddOption(opt_speed)
-    self:AddOption(opt_strength)
-    self:AddOption(opt_cloak)
-    self:AddOption(opt_armor)
-
-    -- Register UI callbacks
-    self:RegisterCallback(armor_modes_enum.speed, function(flags)
-        self.m_core:change_mode(armor_modes_enum.speed)
-        flags.close_gui = true
-    end)
-
-    self:RegisterCallback(armor_modes_enum.power, function(flags)
-        self.m_core:change_mode(armor_modes_enum.power)
-        flags.close_gui = true
-    end)
-
-    self:RegisterCallback(armor_modes_enum.cloak, function(flags)
-        self.m_core:change_mode(armor_modes_enum.cloak)
-        flags.close_gui = true
-    end)
-
-    self:RegisterCallback(armor_modes_enum.armor, function(flags)
-        self.m_core:change_mode(armor_modes_enum.armor)
-        flags.close_gui = true
-    end)
+    for _,mode in ipairs(self.m_selectable_modes) do
+        local opt = arm.OptionData(mode, "ui_nanosuit_mode_" .. mode)
+        opt:SetText({
+            title = game.translate_string("st_nanosuit_ui_menu_" .. mode .. "_title"),
+            description = game.translate_string("st_nanosuit_ui_menu_" .. mode .. "_descr")
+        })
+        self:AddOption(opt)
+        self:RegisterCallback(mode, function(flags)
+            self.m_core:change_mode(mode)
+            flags.close_gui = true
+        end)
+    end
 
     -- Register callbacks
     RegisterScriptCallback("on_key_press", self)
@@ -93,7 +65,7 @@ end
 
 function ui_menu:Close()
     self:HideDialog()
-    utils_obj.play_sound([[nanosuit\menu_hide]])
+    self.m_sounds.hide:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     Unregister_UI("ui_menu")
 end
 
@@ -106,7 +78,7 @@ function ui_menu:on_key_press(dik)
 
     if not self:IsShown() then
         self:ShowDialog(true)
-        utils_obj.play_sound([[nanosuit\menu_show]])
+        self.m_sounds.show:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         Register_UI("ui_menu", "nanosuit_ui_menu")
     end
 end

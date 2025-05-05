@@ -1,0 +1,92 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 04/05/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the logic of an abstract booster usable by a Nanosuit mode.                             ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Speed mode class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "abstract_booster"
+
+function abstract_booster:__init(core, name)
+    self.m_core = core
+    self.m_name = name
+    self.m_cache = {}
+end
+
+function abstract_booster:__eq(other)
+    return self.m_name == other.m_name
+end
+
+function abstract_booster:apply()
+    local active_item = db.actor:active_item()
+    if active_item and self:filter(active_item) then
+        self:set(active_item)
+    end
+
+    RegisterScriptCallback("actor_item_to_slot", self)
+    RegisterScriptCallback("actor_item_to_ruck", self)
+    RegisterScriptCallback("actor_on_item_drop", self)
+    RegisterScriptCallback("actor_on_changed_slot", self)
+end
+
+function abstract_booster:remove()
+    local active_item = db.actor:active_item()
+    if active_item and self:filter(active_item) then
+        self:unset(active_item)
+    end
+
+    UnregisterScriptCallback("actor_item_to_slot", self)
+    UnregisterScriptCallback("actor_item_to_ruck", self)
+    UnregisterScriptCallback("actor_on_item_drop", self)
+    UnregisterScriptCallback("actor_on_changed_slot", self)
+end
+
+function abstract_booster:filter(obj)
+    return true
+end
+
+function abstract_booster:set(obj)
+end
+
+function abstract_booster:unset(obj)
+end
+
+function abstract_booster:actor_item_to_slot(obj)
+    local active_item = db.actor:active_item()
+    if active_item and active_item:id() == obj:id() and self:filter(obj) then
+        self:set(obj)
+    end
+end
+
+function abstract_booster:actor_item_to_ruck(obj)
+    if not db.actor:active_item() and self:filter(obj) then
+        self:unset(obj)
+    end
+end
+
+function abstract_booster:actor_on_item_drop(obj)
+    if not db.actor:active_item() and self:filter(obj) then
+        self:unset(obj)
+    end
+end
+
+function abstract_booster:actor_on_changed_slot(new_slot, new_obj, prev_slot, prev_obj)
+    if prev_slot ~= 0 and prev_obj and self:filter(prev_obj) then
+        self:unset(prev_obj)
+    end
+    if new_slot ~= 0 and new_obj and self:filter(new_obj) then
+        self:set(new_obj)
+    end
+end
