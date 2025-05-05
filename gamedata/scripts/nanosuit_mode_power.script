@@ -24,7 +24,6 @@ hit_types_enum          = nanosuit_utils.hit_types_enum
 
 class "power" (nanosuit_mode.abstract_mode)
 
--- FIXME : Strength mode should also decrease weapon sway
 function power:__init(core, name) super(core, name)
     -- Energy related variables
     self.m_energy_use_shoot = 4
