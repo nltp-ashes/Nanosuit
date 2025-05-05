@@ -111,7 +111,7 @@ Credit goes to these people for their work contained in this addon :
 
 |                                Name                                 |                                          Motive                                           |         License         |
 |:-------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:-----------------------:|
-|                          **Stalker_Boss**                           |                             Translated the addon into russian                             |       Proprietary       |
+|                          **Stalker_Boss**                           |                             Translated the addon into Russian                             |       Proprietary       |
 |         **[Crepis](https://www.moddb.com/members/cr3pis)**          | Greatly improved the quality of the inventory icon, upgrade icon and character portraits  |       Proprietary       |
 |     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     | Greatly improved the texture quality of the first and third person models of the Nanosuit | See [LICENSE](#license) |
 | **[\_Paramonov Alexander\_](https://users.playground.ru/1997780/)** |             Port of the Nanosuit first person, third person and world models              |       Proprietary       |
