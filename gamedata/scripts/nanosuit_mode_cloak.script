@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 20/04/2025                                                                                             ---
+---    Date : 04/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
@@ -14,8 +14,9 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- Imports
-armor_modes_enum        = nanosuit_core.armor_modes_enum
-actor_slots             = nanosuit_utils.actor_slots
+localized_sound_object  = nanosuit_utils.localized_sound_object
+armor_modes_enum        = nanosuit_utils.armor_modes_enum
+actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Cloak mode class
@@ -36,32 +37,24 @@ function cloak:__init(core, name) super(core, name)
     self.m_cloak_shader = [[models\xanomaly]] --[[models\window]] --[[models\pautina]]
 
     -- Cache
-    self.m_cache["actor_shaders"] = {}
-    self.m_cache["items_shaders"] = {
-        [actor_slots.knife] = { id = nil, shaders = nil },
-        [actor_slots.pistol] = { id = nil, shaders = nil },
-        [actor_slots.rifle] = { id = nil, shaders = nil },
-        [actor_slots.grenade] = { id = nil, shaders = nil },
-        [actor_slots.binoculars] = { id = nil, shaders = nil },
-        [actor_slots.bolt] = { id = nil, shaders = nil },
-        [actor_slots.pda] = { id = nil, shaders = nil },
-        [actor_slots.detector] = { id = nil, shaders = nil },
-        [actor_slots.torch] = { id = nil, shaders = nil },
-        [actor_slots.animation] = { id = nil, shaders = nil }
-    }
+    self.m_cache.visibility_functor = nil
+    self.m_cache.legs_shaders = { world = nil }
+    self.m_cache.actor_shaders = { hud = nil, world = nil }
 
     -- Sound effects
-    self.m_sounds["cloak_voice"] = sound_object([[nanosuit\mode_cloak_voice]])
-    self.m_sounds["cloak_loop"] = sound_object([[nanosuit\mode_cloak_loop]])
-    self.m_sounds["cloak_shoot"] = sound_object([[nanosuit\mode_cloak_shoot]])
-    self.m_sounds["cloak_on"] = sound_object([[nanosuit\mode_cloak_on]])
-    self.m_sounds["cloak_off"] = sound_object([[nanosuit\mode_cloak_off]])
+    self.m_sounds.cloak_voice = localized_sound_object([[nanosuit\voice\mode_cloak_voice]])
+    self.m_sounds.cloak_loop = sound_object([[nanosuit\modes\cloak\mode_cloak_loop]])
+    self.m_sounds.cloak_shoot = sound_object([[nanosuit\modes\cloak\mode_cloak_shoot]])
+    self.m_sounds.cloak_on = sound_object([[nanosuit\modes\cloak\mode_cloak_on]])
+    self.m_sounds.cloak_off = sound_object([[nanosuit\modes\cloak\mode_cloak_off]])
 
     -- Prefetch textures
     game.prefetch_texture(self.m_cloak_texture .. ".dds")
 end
 
-function cloak:apply_effects()
+function cloak:apply()
+    nanosuit_mode.abstract_mode.apply(self)
+
     -- Play sounds
     self.m_sounds.cloak_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_sounds.cloak_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
@@ -69,91 +62,129 @@ function cloak:apply_effects()
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_update", self)
-    RegisterScriptCallback("actor_item_to_slot", self)
-    RegisterScriptCallback("actor_item_to_ruck", self)
-    RegisterScriptCallback("actor_on_item_drop", self)
     RegisterScriptCallback("actor_on_weapon_fired", self)
+    RegisterScriptCallback("game_object_on_net_spawn", self)
+    RegisterScriptCallback("game_object_on_net_destroy", self)
+
+    -- Boosters
+    self:apply_booster(nanosuit_booster_cloak.cloak, "cloak")
 
     -- Override visibility from NPCs
-    self.m_cache["visibility_functor"] = visual_memory_manager.get_visible_value
+    self.m_cache.visibility_functor = visual_memory_manager.get_visible_value
     visual_memory_manager.get_visible_value = function(...) return self:get_visible_value(...) end
 
     -- Set player invisible
-    self.m_cache["actor_shaders"] = db.actor:get_shaders(true)
-    -- FIXME set_shader(-1, ...) is about 20x more costly than iterating through the meshes manually
-    -- db.actor:set_shader(-1, self.m_cloak_shader, self.m_cloak_texture, true)
-    for idx,_ in pairs(self.m_cache["actor_shaders"]) do
-        db.actor:set_shader(idx, self.m_cloak_shader, self.m_cloak_texture, true)
-    end
+    self:set_actor_invisible()
 
-    -- Set items invisible
-    for slot,_ in pairs(self.m_cache["items_shaders"]) do
-        local obj = db.actor:item_in_slot(slot)
-        if obj then
-            self:set_item_invisible(obj, slot)
+    -- Set legs invisible
+    if se_legs then
+        local legs_id = se_legs.LegsTbl[level.name()]
+        local legs_obj = legs_id and level.object_by_id(legs_id)
+        if legs_obj then
+            self:set_legs_invisible(legs_obj)
         end
     end
 end
 
-function cloak:remove_effects()
+function cloak:remove()
+    nanosuit_mode.abstract_mode.remove(self)
+
     -- Play sounds
     self.m_sounds.cloak_off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_sounds.cloak_loop:stop()
 
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_update", self)
-    UnregisterScriptCallback("actor_item_to_slot", self)
-    UnregisterScriptCallback("actor_item_to_ruck", self)
-    UnregisterScriptCallback("actor_on_item_drop", self)
     UnregisterScriptCallback("actor_on_weapon_fired", self)
+    UnregisterScriptCallback("game_object_on_net_spawn", self)
+    UnregisterScriptCallback("game_object_on_net_destroy", self)
 
-    -- Restore visibility from NPCs
-    visual_memory_manager.get_visible_value = self.m_cache["visibility_functor"]
+    -- Boosters
+    self:remove_booster("cloak")
 
-    -- Restore player visibility
-    for idx,save in pairs(self.m_cache["actor_shaders"]) do
-        db.actor:set_shader(idx, save.shader, save.texture, true)
-    end
+    -- Reset visibility from NPCs
+    visual_memory_manager.get_visible_value = self.m_cache.visibility_functor
 
-    -- Restore items visibility
-    for slot,data in pairs(self.m_cache["items_shaders"]) do
-        local obj = db.actor:item_in_slot(slot)
-        if obj and data.id == obj:id() then
-            self:set_item_visible(obj, slot)
+    -- Reset player visibility
+    self:set_actor_visible()
+
+    -- Reset legs visibility
+    if se_legs then
+        local legs_id = se_legs.LegsTbl[level.name()]
+        local legs_obj = legs_id and level.object_by_id(legs_id)
+        if legs_obj then
+            self:set_legs_visible(legs_obj)
         end
-    end
-end
-
-function cloak:set_item_visible(obj, slot)
-    for idx,save in pairs(self.m_cache["items_shaders"][slot]["shaders"]) do
-        obj:set_shader(idx, save.shader, save.texture, true)
-    end
-    self.m_cache["items_shaders"][slot]["id"] = nil
-    self.m_cache["items_shaders"][slot]["shaders"] = nil
-end
-
-function cloak:set_item_invisible(obj, slot)
-    self.m_cache["items_shaders"][slot]["id"] = obj:id()
-    self.m_cache["items_shaders"][slot]["shaders"] = obj:get_shaders(true)
-    -- FIXME set_shader(-1, ...) is about 20x more costly than iterating through the meshes manually
-    -- obj:set_shader(-1, self.m_cloak_shader, self.m_cloak_texture, true)
-    for idx,_ in pairs(self.m_cache["items_shaders"][slot]["shaders"]) do
-        obj:set_shader(idx, self.m_cloak_shader, self.m_cloak_texture, true)
     end
 end
 
 -- FIXME : This fails if the NPC sees the actor before the cloak is applied, right now you need to break vision for this to take effect
 function cloak:get_visible_value(npc, who, time_delta, time_quant, luminosity, velocity_factor, velocity, distance, object_distance, always_visible_distance)
-    local original_value = self.m_cache["visibility_functor"](npc, who, time_delta, time_quant, luminosity, velocity_factor, velocity, distance, object_distance, always_visible_distance)
+    local original_value = self.m_cache.visibility_functor(npc, who, time_delta, time_quant, luminosity, velocity_factor, velocity, distance, object_distance, always_visible_distance)
+
     if not npc or not who or who:id() ~= AC_ID then
         return original_value
     end
+
     if object_distance > self.m_cloak_npc_see_distance then
         return 0
     end
 
     local distance_factor = 1 - (object_distance / self.m_cloak_npc_see_distance)
+
     return original_value * distance_factor
+end
+
+function cloak:set_actor_visible()
+    for idx,save in pairs(self.m_cache.actor_shaders.hud) do
+        db.actor:set_shader(idx, save.shader, save.texture, true)
+    end
+    for idx,save in pairs(self.m_cache.actor_shaders.world) do
+        db.actor:set_shader(idx, save.shader, save.texture)
+    end
+    self.m_cache.actor_shaders = { hud = nil, world = nil }
+end
+
+function cloak:set_actor_invisible()
+    self.m_cache.actor_shaders = { hud = db.actor:get_shaders(true), world = db.actor:get_shaders() }
+    for idx,_ in pairs(self.m_cache.actor_shaders.hud) do
+        db.actor:set_shader(idx, self.m_cloak_shader, self.m_cloak_texture, true)
+    end
+    for idx,_ in pairs(self.m_cache.actor_shaders.world) do
+        db.actor:set_shader(idx, self.m_cloak_shader, self.m_cloak_texture)
+    end
+end
+
+function cloak:set_legs_visible(legs_obj)
+    for idx,save in pairs(self.m_cache.legs_shaders.world) do
+        legs_obj:set_shader(idx, save.shader, save.texture)
+    end
+    self.m_cache.legs_shaders = { world = nil }
+end
+
+function cloak:set_legs_invisible(legs_obj)
+    self.m_cache.legs_shaders = { world = legs_obj:get_shaders() }
+    for idx,_ in pairs(self.m_cache.legs_shaders.world) do
+        legs_obj:set_shader(idx, self.m_cloak_shader, self.m_cloak_texture)
+    end
+end
+
+function cloak:game_object_on_net_spawn(obj)
+    if se_legs and obj:section() == "outfit_nanosuit_legs" then
+        CreateTimeEvent("nanosuit_legs_spawn", obj:name(), 0, function(id)
+            local obj_now = level.object_by_id(id)
+            if obj_now then
+                self:set_legs_invisible(obj_now)
+            end
+            return true
+        end, obj:id())
+    end
+end
+
+function cloak:game_object_on_net_destroy(obj)
+    if se_legs and obj:section() == "outfit_nanosuit_legs" then
+        self:set_legs_visible(obj)
+    end
 end
 
 function cloak:actor_on_update()
@@ -178,29 +209,4 @@ function cloak:actor_on_weapon_fired()
     self.m_sounds.cloak_shoot:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_core:use_energy(100)
     self.m_core:change_mode(self.m_core.m_default_mode)
-end
-
-function cloak:actor_item_to_slot(obj)
-    for slot,_ in pairs(self.m_cache["items_shaders"]) do
-        local obj_in_slot = db.actor:item_in_slot(slot)
-        if obj_in_slot and obj_in_slot:id() == obj:id() then
-            self:set_item_invisible(obj, slot)
-        end
-    end
-end
-
-function cloak:actor_item_to_ruck(obj)
-    for slot,data in pairs(self.m_cache["items_shaders"]) do
-        if data.id == obj:id() then
-            self:set_item_visible(obj, slot)
-        end
-    end
-end
-
-function cloak:actor_on_item_drop(obj)
-    for slot,data in pairs(self.m_cache["items_shaders"]) do
-        if data.id == obj:id() then
-            self:set_item_visible(obj, slot)
-        end
-    end
 end

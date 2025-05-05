@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="windows-1251" standalone="yes" ?>
+<!--=================================================================================================================-->
+<!--                                                                                                                 -->
+<!--    Original Author(s) : NLTP_ASHES                                                                              -->
+<!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
+<!--    Date : 28/04/2025                                                                                            -->
+<!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
+<!--                                                                                                                 -->
+<!--    Translation file for the Nanosuit addon.                                                                     -->
+<!--                                                                                                                 -->
+<!--=================================================================================================================-->
+<string_table>
+
+    <!--=============================================================================================================-->
+    <!--    Nanosuit item                                                                                            -->
+    <!--=============================================================================================================-->
+
+    <string id="st_nanosuit_outfit_name">
+        <text>CryNet Нанокостюм 1.0</text>
+    </string>
+
+    <string id="st_nanosuit_outfit_name_s">
+        <text>Нанокостюм</text>
+    </string>
+
+    <string id="st_nanosuit_outfit_name_descr">
+        <text>Нанокостюм (он же наномышечный экзоскелет) — мощная и универсальная броня, заточенная под боевые задачи. Изначально разрабатывался как ответ на угрозу [СЕКРЕТНО] и для нивелирования техноразрыва между человечеством и [СЕКРЕТНО]. Создан на основе трофейных технологий [СЕКРЕТНО], костюм оснащён волокнами CryFibril, которые можно перепрограммировать под разные задачи — от усиления мускулатуры и брони до режима невидимости. Значительно повышает боевые и физические характеристики носителя, позволяя вытворять такое, что обычному сталкеру и не снилось.\n \n</text>
+    </string>
+
+    <!--=============================================================================================================-->
+    <!--    Nanosuit menu UI                                                                                         -->
+    <!--=============================================================================================================-->
+
+    <string id="st_nanosuit_ui_menu_armor_title">
+        <text>Броня</text>
+    </string>
+
+    <string id="st_nanosuit_ui_menu_armor_descr">
+        <text>Режим брони</text>
+    </string>
+
+    <string id="st_nanosuit_ui_menu_cloak_title">
+        <text>Маскировка</text>
+    </string>
+
+    <string id="st_nanosuit_ui_menu_cloak_descr">
+        <text>Режим невидимости</text>
+    </string>
+
+    <string id="st_nanosuit_ui_menu_power_title">
+        <text>Сила</text>
+    </string>
+
+    <string id="st_nanosuit_ui_menu_power_descr">
+        <text>Режим усиления</text>
+    </string>
+
+    <string id="st_nanosuit_ui_menu_speed_title">
+        <text>Скорость</text>
+    </string>
+
+    <string id="st_nanosuit_ui_menu_speed_descr">
+        <text>Режим ускорения</text>
+    </string>
+
+    <!--=============================================================================================================-->
+    <!--    Nanosuit voice lines                                                                                     -->
+    <!--=============================================================================================================-->
+
+    <string id="nanosuit\mode_armor_voice">
+        <text>nanosuit\mode_armor_voice_rus</text>
+    </string>
+
+    <string id="nanosuit\mode_cloak_voice">
+        <text>nanosuit\mode_cloak_voice_rus</text>
+    </string>
+
+    <string id="nanosuit\mode_power_voice">
+        <text>nanosuit\mode_power_voice_rus</text>
+    </string>
+
+    <string id="nanosuit\mode_speed_voice">
+        <text>nanosuit\mode_speed_voice_rus</text>
+    </string>
+
+    <string id="nanosuit\energy_low_voice">
+        <text>nanosuit\energy_low_voice_rus</text>
+    </string>
+
+</string_table>

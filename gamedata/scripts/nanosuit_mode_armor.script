@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 13/04/2025                                                                                             ---
+---    Date : 04/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of armor mode of the Nanosuit addon.                                          ---
@@ -13,20 +13,45 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
+-- Imports
+localized_sound_object  = nanosuit_utils.localized_sound_object
+hit_types_enum          = nanosuit_utils.hit_types_enum
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Armor mode class
 -- ---------------------------------------------------------------------------------------------------------------------
 
 class "armor" (nanosuit_mode.abstract_mode)
 
--- FIXME : Armor mode should also protect the player against radiation
 function armor:__init(core, name) super(core, name)
+    -- Protection related variables (value is hit power armor can absorb)
+    self.m_protection_map[hit_types_enum.burn] = 5.0
+    self.m_protection_map[hit_types_enum.shock] = 1.0
+    self.m_protection_map[hit_types_enum.chemical_burn] = 2.0
+    self.m_protection_map[hit_types_enum.radiation] = 0.5
+    self.m_protection_map[hit_types_enum.telepathic] = nil
+    self.m_protection_map[hit_types_enum.wound] = 2.0
+    self.m_protection_map[hit_types_enum.fire_wound] = 2.0
+    self.m_protection_map[hit_types_enum.strike] = nil
+    self.m_protection_map[hit_types_enum.explosion] = 1.0
+    self.m_protection_map[hit_types_enum.wound_2] = 1.0
+    self.m_protection_map[hit_types_enum.light_burn] = 5.0
+
     -- Sound effects
-    self.m_sounds["armor_voice"] = sound_object([[nanosuit\mode_armor_voice]])
-    self.m_sounds["armor_on"] = sound_object([[nanosuit\mode_armor_on]])
+    self.m_sounds.armor_voice = localized_sound_object([[nanosuit\voice\mode_armor_voice]])
+    self.m_sounds.armor_on = sound_object([[nanosuit\modes\armor\mode_armor_on]])
+    self.m_sounds.impacts = {
+        sound_object([[nanosuit\modes\armor\mode_armor_hit_01]]),
+        sound_object([[nanosuit\modes\armor\mode_armor_hit_02]]),
+        sound_object([[nanosuit\modes\armor\mode_armor_hit_03]]),
+        sound_object([[nanosuit\modes\armor\mode_armor_hit_04]]),
+        sound_object([[nanosuit\modes\armor\mode_armor_hit_05]])
+    }
 end
 
-function armor:apply_effects()
+function armor:apply()
+    nanosuit_mode.abstract_mode.apply(self)
+
     -- Play sounds
     self.m_sounds.armor_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_sounds.armor_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
@@ -35,19 +60,21 @@ function armor:apply_effects()
     RegisterScriptCallback("actor_on_before_hit", self)
 end
 
-function armor:remove_effects()
+function armor:remove()
+    nanosuit_mode.abstract_mode.remove(self)
+
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_before_hit", self)
 end
 
-function armor:actor_on_before_hit(shit, bone_id, flags)
-    -- Calculate energy to use and damage to absorb
-    local absorb_energy_req = 100 * shit.power
-    local damage_to_absorb = math.min(self.m_core.m_energy, absorb_energy_req)
+function armor:actor_on_before_hit(scripted_hit, bone_id, flags)
+    nanosuit_mode.abstract_mode.actor_on_before_hit(self, scripted_hit, bone_id, flags)
 
-    -- Use energy
-    self.m_core:use_energy(damage_to_absorb)
-
-    -- Absorb hit
-    shit.power = shit.power - (damage_to_absorb / 100)
+    -- Play sound
+    if self.m_core.m_energy > 0 then
+        if scripted_hit.type == hit_types_enum.fire_wound then
+            local sfx = self.m_sounds.impacts[math.random(1, #self.m_sounds.impacts)]
+            sfx:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+        end
+    end
 end

@@ -1,14 +1,25 @@
-## **v0.4.0 - 21/04/2025 - Alpha Build**
+## **v0.5.0 - 06/05/2025 - Alpha Build**
 
-[![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.4.0/total?label=Downloads)]()
+[![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.5.0/total?label=Downloads)]()
 
 **• Additions :**
-> • Added a Nanosuit outfit (in Heavy armor category);
+> • Added different protection according to incoming damage type and selected suit mode;
+> • Added Russian translation (Thanks Stalker_Boss);
+> • Added French translation;
+> • Added carrying capacity bonus while in strength mode;
+> • Added code to make voice lines from the nanosuit localized according to selected game language;
+> • Added bullet impact sounds when receiving a hit in armor mode;
+> • Added boost when aiming down sights in speed mode;
+> • Added code to cloak the player's third person model when turning on cloak mode;
 
 **• Changes :**
-> • The Nanosuit's effects only apply when wearing the Nanosuit outfit;
-> • Improved the shader used for the cloak effect;
+> • Greatly improved textures quality (Thanks Blackgrowl);
+> • Greatly improved upgrade icon quality (Thanks Crepis);
+> • Greatly improved portrait quality (Thanks Crepis);
+> • Greatly improved inventory icon quality (Thanks Crepis);
+> • Lowered speed loop volume;
+> • Lowered walk boost from 50% to 25%;
 
-**Note :** This build might require [First Person Visible Body](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version) to work.
-
-**Note :** This build requires [Modded Exes version 21.04.2025](https://github.com/themrdemonized/xray-monolith/releases/tag/2025.4.21) for the new cloak shader to work properly.
+**• Bug fixes :**
+> • Fixed speed loop continuing to play if the player switched to another mode while in sprint;
+> • Fixed modes textures by properly extracting them from Crysis;

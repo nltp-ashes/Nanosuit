@@ -19,17 +19,21 @@ General :
 Armor mode :
 - Absorbs all incoming damage as long as the suit has energy
 - The more powerful is the impact, the more energy it consumes
+- Some damage types consume more energy than others
 - When the suit is out of energy, all incoming damage is transferred to the player
+- The suit does not protect against psi-emissions and blunt force (fall-damage, poltergeist throws, etc.)
 
 Speed mode :
-- Increases walk speed by 50%, does not consume energy
+- Increases walk speed by 25%, does not consume energy
 - Increases run speed by 25%, running consumes energy
+- Decreases time to aim down sights by 40%, does not consume energy
 - When low on energy, the bonuses get temporarily disabled
 
 Strength mode :
 - Increases melee damage by up to 100%, proportionally to the suit's energy level
 - Increases jump height by 100%, proportionally to the suit's energy level
-- Lowers weapon recoil by a factor of 10, for as long as the suit has energy
+- Increases carrying capacity by 25kg
+- Decreases weapon recoil by a factor of 10, for as long as the suit has energy
 - Shooting while in strength mode consumes energy
 - When low on energy, recoil goes back to normal
 
@@ -86,12 +90,7 @@ For past updates, please refer to the description of each release, in the [relea
 - The key-bind to open the suit menu is not configurable. It should be configurable
 - When wearing the suit, the player footsteps do not change. They should use custom sounds
 - The shader and textures used for cloak mode are not the best. They should be improved
-- Strength mode should reduce fall damage
-- Strength mode should decrease weapon sway
-- Strength mode should increase carry weight
-- Speed mode should increase reload speed
-- Speed mode should decrease ADS time
-- Armor mode should protect the player against radiation
+- Speed mode should increase reload speed. This is impossible due to engine limitations. Will probably never be fixed
 
 If you truly believe your problem is new, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).
 
@@ -110,10 +109,13 @@ If you need help with anything, or if you have any suggestions, you can :
 
 Credit goes to these people for their work contained in this addon :
 
-|                               Name                                |                              Motive                              |   License   |
-|:-----------------------------------------------------------------:|:----------------------------------------------------------------:|:-----------:|
-| **[_Paramonov Alexander_](https://users.playground.ru/1997780/)** | Port of the Nanosuit first person, third person and world models | Proprietary |
-|            **[Crytek GmbH](https://www.crytek.com/)**             |         Various assets (textures, sound effects, models)         | Proprietary |
+|                                Name                                 |                                          Motive                                           |         License         |
+|:-------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:-----------------------:|
+|                          **Stalker_Boss**                           |                             Translated the addon into russian                             |       Proprietary       |
+|         **[Crepis](https://www.moddb.com/members/cr3pis)**          | Greatly improved the quality of the inventory icon, upgrade icon and character portraits  |       Proprietary       |
+|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     | Greatly improved the texture quality of the first and third person models of the Nanosuit | See [LICENSE](#license) |
+| **[\_Paramonov Alexander\_](https://users.playground.ru/1997780/)** |             Port of the Nanosuit first person, third person and world models              |       Proprietary       |
+|             **[Crytek GmbH](https://www.crytek.com/)**              |                     Various assets (textures, sound effects, models)                      |       Proprietary       |
 
 Special thanks to these people for their help in the making of this addon :
 
@@ -131,5 +133,7 @@ This means you're allowed to redistribute and/or adapt the work, as long as you 
 - **Attribution** — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
 - **NonCommercial** — You may not use the material for commercial purposes (this includes donations).
 - **ShareAlike** — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
+
+Content made by Blackgrowl can be reused, as long as you credit him for the work he did in this addon (texture work, model fixes).
 
 For the work that wasn't made by me, unless a licence is specified in the [Credits](#special-thanks--credits) or in the files themselves, consider these works proprietary. If you want to reuse those, please get in touch with their original authors.

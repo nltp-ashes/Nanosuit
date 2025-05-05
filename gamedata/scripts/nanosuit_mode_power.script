@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 13/04/2025                                                                                             ---
+---    Date : 04/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of strength mode of the Nanosuit addon.                                       ---
@@ -13,118 +13,95 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
+-- Imports
+localized_sound_object  = nanosuit_utils.localized_sound_object
+actor_slots_enum        = nanosuit_utils.actor_slots_enum
+hit_types_enum          = nanosuit_utils.hit_types_enum
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Strength mode class
 -- ---------------------------------------------------------------------------------------------------------------------
 
 class "power" (nanosuit_mode.abstract_mode)
 
--- FIXME : Strength mode should also reduce fall damage
--- FIXME : Strength mode should also decrease weapon sway
--- FIXME : Strength mode should also increase carry weight
 function power:__init(core, name) super(core, name)
     -- Energy related variables
     self.m_energy_use_shoot = 4
     self.m_energy_use_melee = 10
     self.m_energy_use_power_jump = 20
 
-    self.m_power_bonus = 1
-    self.m_impulse_bonus = 2000
+    -- Protection related variables (value is hit power armor can absorb)
+    self.m_protection_map[hit_types_enum.strike] = 0.5
+
+    -- Strength related variables
+    self.m_wound_power_bonus = 1
+    self.m_wound_impulse_bonus = 2000
+    self.m_carry_weight_bonus = 25
 
     -- Cache
-    self.m_cache["jump_speed"] = db.actor:get_actor_jump_speed()
-    self.m_cache["wpn_id"] = nil
-    self.m_cache["wpn_dispersion"] = nil
-    self.m_cache["wpn_dispersion_zoom"] = nil
+    self.m_cache.jump_speed = db.actor:get_actor_jump_speed()
 
     -- Sound effects
-    self.m_sounds["power_voice"] = sound_object([[nanosuit\mode_power_voice]])
-    self.m_sounds["power_jump"] = sound_object([[nanosuit\mode_power_jump]])
-    self.m_sounds["power_on"] = sound_object([[nanosuit\mode_power_on]])
+    self.m_sounds.power_voice = localized_sound_object([[nanosuit\voice\mode_power_voice]])
+    self.m_sounds.power_jump = sound_object([[nanosuit\modes\power\mode_power_jump]])
+    self.m_sounds.power_on = sound_object([[nanosuit\modes\power\mode_power_on]])
 end
 
-function power:apply_effects()
+function power:apply()
+    nanosuit_mode.abstract_mode.apply(self)
+
     -- Play sounds
     self.m_sounds.power_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_sounds.power_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_jump", self)
-    RegisterScriptCallback("actor_on_update", self)
-    RegisterScriptCallback("actor_item_to_slot", self)
-    RegisterScriptCallback("actor_item_to_ruck", self)
-    RegisterScriptCallback("actor_on_item_drop", self)
     RegisterScriptCallback("npc_on_before_hit", self)
     RegisterScriptCallback("actor_on_weapon_fired", self)
-    RegisterScriptCallback("actor_on_changed_slot", self)
+
+    -- Boosters
+    self:apply_booster(nanosuit_booster_recoil.recoil, "recoil")
 
     -- Save jump speed
-    self.m_cache["jump_speed"] = db.actor:get_actor_jump_speed()
+    self.m_cache.jump_speed = db.actor:get_actor_jump_speed()
 
-    -- Reduce recoil
-    local active_item = db.actor:active_item()
-    if active_item and IsWeapon(active_item) then
-        self:decrease_recoil(active_item)
-    end
+    -- Set carry weight
+    self:set_carry_capacity("increase")
 end
 
-function power:remove_effects()
+function power:remove()
+    nanosuit_mode.abstract_mode.remove(self)
+
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_jump", self)
-    UnregisterScriptCallback("actor_on_update", self)
-    UnregisterScriptCallback("actor_item_to_slot", self)
-    UnregisterScriptCallback("actor_item_to_ruck", self)
-    UnregisterScriptCallback("actor_on_item_drop", self)
     UnregisterScriptCallback("npc_on_before_hit", self)
     UnregisterScriptCallback("actor_on_weapon_fired", self)
-    UnregisterScriptCallback("actor_on_changed_slot", self)
+
+    -- Boosters
+    self:remove_booster("recoil")
 
     -- Reset jump speed
-    db.actor:set_actor_jump_speed(self.m_cache["jump_speed"])
+    db.actor:set_actor_jump_speed(self.m_cache.jump_speed)
 
-    -- Reset recoil
-    local active_item = db.actor:active_item()
-    if active_item and IsWeapon(active_item) and active_item:id() == self.m_cache["wpn_id"] then
-        self:increase_recoil(active_item)
-    end
+    -- Reset carry weight
+    self:set_carry_capacity("decrease")
 end
 
-function power:decrease_recoil(obj)
-    printf("[NS] Strength Mode | Decreasing recoil for weapon %s", obj:id())
-    local wpn_obj = obj:cast_Weapon()
-
-    self.m_cache["wpn_id"] = obj:id()
-    self.m_cache["wpn_dispersion"] = wpn_obj:GetCamDispersion()
-    self.m_cache["wpn_dispersion_zoom"] = wpn_obj:GetZoomCamDispersion()
-
-    wpn_obj:SetCamDispersion(self.m_cache["wpn_dispersion"] * 0.1)
-    wpn_obj:SetZoomCamDispersion(self.m_cache["wpn_dispersion_zoom"] * 0.1)
-end
-
-function power:increase_recoil(obj)
-    printf("[NS] Strength Mode | Increasing recoil for weapon %s", obj:id())
-    local wpn_obj = obj:cast_Weapon()
-
-    wpn_obj:SetCamDispersion(self.m_cache["wpn_dispersion"])
-    wpn_obj:SetZoomCamDispersion(self.m_cache["wpn_dispersion_zoom"])
-
-    self.m_cache["wpn_id"] = nil
-    self.m_cache["wpn_dispersion"] = nil
-    self.m_cache["wpn_dispersion_zoom"] = nil
-end
-
-function power:actor_on_update()
-    local obj = db.actor:active_item()
-    if not obj or not IsWeapon(obj) then
+function power:set_carry_capacity(mode)
+    local suit_obj = level.object_by_id(self.m_core.m_suit_id)
+    if not suit_obj then
         return
     end
 
-    local has_enough_energy = self.m_core.m_energy >= self.m_core.m_energy_low_threshold
+    local max_weight = suit_obj:get_additional_max_weight()
+    local max_walk_weight = suit_obj:get_additional_max_walk_weight()
 
-    if has_enough_energy and obj:id() ~= self.m_cache["wpn_id"] then
-        self:decrease_recoil(obj)
-    elseif not has_enough_energy and obj:id() == self.m_cache["wpn_id"] then
-        self:increase_recoil(obj)
+    if mode == "increase" then
+        suit_obj:set_additional_max_weight(max_weight + self.m_carry_weight_bonus)
+        suit_obj:set_additional_max_walk_weight(max_walk_weight + self.m_carry_weight_bonus)
+    elseif mode == "decrease" then
+        suit_obj:set_additional_max_weight(max_weight - self.m_carry_weight_bonus)
+        suit_obj:set_additional_max_walk_weight(max_walk_weight - self.m_carry_weight_bonus)
     end
 end
 
@@ -143,9 +120,9 @@ function power:npc_on_before_hit(npc, scripted_hit, bone_id, flags)
     self.m_core:use_energy(self.m_energy_use_melee)
 
     -- Calculate new damage
-    local power_multiplier = 1 + (self.m_power_bonus * self.m_core.m_energy / 100)
+    local power_multiplier = 1 + (self.m_wound_power_bonus * self.m_core.m_energy / 100)
     scripted_hit.power = scripted_hit.power * power_multiplier
-    local impulse_multiplier = 1 + (self.m_impulse_bonus * self.m_core.m_energy / 100)
+    local impulse_multiplier = 1 + (self.m_wound_impulse_bonus * self.m_core.m_energy / 100)
     scripted_hit.impulse = scripted_hit.impulse * impulse_multiplier
 end
 
@@ -160,38 +137,10 @@ function power:actor_on_jump()
 
     -- Set jump speed (inversely proportional to energy)
     local jump_multiplier = 1 + self.m_core.m_energy / 100
-    db.actor:set_actor_jump_speed(self.m_cache["jump_speed"] * jump_multiplier)
+    db.actor:set_actor_jump_speed(self.m_cache.jump_speed * jump_multiplier)
 end
 
 function power:actor_on_weapon_fired()
     self.m_core:use_energy(self.m_energy_use_shoot)
 end
 
-function power:actor_on_changed_slot(new_slot, new_obj, prev_slot, prev_obj)
-    if prev_obj and prev_obj:id() == self.m_cache["wpn_id"] then
-        self:increase_recoil(prev_obj)
-    end
-    local active_item = db.actor:active_item()
-    if new_obj and active_item and IsWeapon(active_item) and active_item == new_obj:id() then
-        self:decrease_recoil(new_obj)
-    end
-end
-
-function power:actor_item_to_slot(_)
-    local active_item = db.actor:active_item()
-    if active_item and IsWeapon(active_item) then
-        self:decrease_recoil(active_item)
-    end
-end
-
-function power:actor_item_to_ruck(obj)
-    if obj:id() == self.m_cache["wpn_id"] then
-        self:increase_recoil(obj)
-    end
-end
-
-function power:actor_on_item_drop(obj)
-    if obj:id() == self.m_cache["wpn_id"] then
-        self:increase_recoil(obj)
-    end
-end

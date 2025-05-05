@@ -1,0 +1,92 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 04/05/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the logic of a recoil lowering booster usable by a Nanosuit mode.                       ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Speed mode class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "recoil" (nanosuit_booster.abstract_booster)
+
+function recoil:__init(core, name) super(core, name)
+    self.m_cache.low_energy = core.m_energy <= core.m_energy_low_threshold
+    self.m_cache.dispersion = nil
+    self.m_cache.dispersion_zoom = nil
+end
+
+function recoil:apply()
+    nanosuit_booster.abstract_booster.apply(self)
+
+    RegisterScriptCallback("actor_on_update", self)
+end
+
+function recoil:remove()
+    UnregisterScriptCallback("actor_on_update", self)
+
+    nanosuit_booster.abstract_booster.remove(self)
+end
+
+function recoil:filter(obj)
+    if not nanosuit_booster.abstract_booster.filter(self, obj) then
+        return false
+    end
+    return IsWeapon(obj) and obj:cast_Weapon()
+end
+
+function recoil:set(obj)
+    nanosuit_booster.abstract_booster.set(self, obj)
+
+    if not self.m_cache.low_energy then
+        printf("[NS] Strength Mode | Decreasing recoil for weapon %s", obj:name())
+        local wpn_obj = obj:cast_Weapon()
+
+        self.m_cache.dispersion = wpn_obj:GetCamDispersion()
+        self.m_cache.dispersion_zoom = wpn_obj:GetZoomCamDispersion()
+
+        wpn_obj:SetCamDispersion(self.m_cache.dispersion * 0.1)
+        wpn_obj:SetZoomCamDispersion(self.m_cache.dispersion_zoom * 0.1)
+    end
+end
+
+function recoil:unset(obj)
+    if not self.m_cache.low_energy then
+        printf("[NS] Strength Mode | Increasing recoil for weapon %s", obj:name())
+        local wpn_obj = obj:cast_Weapon()
+
+        wpn_obj:SetCamDispersion(self.m_cache.dispersion)
+        wpn_obj:SetZoomCamDispersion(self.m_cache.dispersion_zoom)
+
+        self.m_cache.dispersion = nil
+        self.m_cache.dispersion_zoom = nil
+    end
+
+    nanosuit_booster.abstract_booster.unset(self, obj)
+end
+
+function recoil:actor_on_update()
+    local obj = db.actor:active_item()
+    if not (obj and self:filter(obj)) then
+        return
+    end
+
+    local has_enough_energy = self.m_core.m_energy >= self.m_core.m_energy_low_threshold
+
+    if has_enough_energy and self.m_cache.low_energy then
+        self.m_cache.low_energy = false
+        self:set(obj)
+    elseif not has_enough_energy and not self.m_cache.low_energy then
+        self:unset(obj)
+        self.m_cache.low_energy = true
+    end
+end
