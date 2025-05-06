@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 04/05/2025                                                                                             ---
+---    Date : 06/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
@@ -24,7 +24,6 @@ actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 class "cloak" (nanosuit_mode.abstract_mode)
 
--- FIXME : Headlamp is not cloaked in 3rd person
 function cloak:__init(core, name) super(core, name)
     -- Energy related variables
     self.m_energy_use_min = 0.1

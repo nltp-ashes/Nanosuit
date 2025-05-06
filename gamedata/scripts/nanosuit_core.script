@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 04/05/2025                                                                                             ---
+---    Date : 06/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -14,38 +14,52 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- Imports
-localized_sound_object  = nanosuit_utils.localized_sound_object
-actor_slots_enum        = nanosuit_utils.actor_slots_enum
-armor_modes_enum        = nanosuit_utils.armor_modes_enum
+localized_sound_object = nanosuit_utils.localized_sound_object
+actor_slots_enum = nanosuit_utils.actor_slots_enum
+armor_modes_enum = nanosuit_utils.armor_modes_enum
 
 -- Singleton
-instance                = nil
+instance = nil
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- General functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
 function actor_item_to_slot(_)
-    local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-    if outfit ~= nil and outfit:section() == "outfit_nanosuit" and instance == nil then
-        instance = core(outfit:id())
-    end
+    nextTick(function()
+        local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
+        if outfit ~= nil and outfit:section() == "outfit_nanosuit" and instance == nil then
+            if instance == nil then
+                printf("Nanosuit core initializing")
+                instance = core()
+            end
+        end
+        return true
+    end)
 end
 
 function actor_item_to_ruck(_)
-    local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-    if (outfit == nil or outfit:section() ~= "outfit_nanosuit") and instance ~= nil then
-        instance:destroy()
-        instance = nil
-    end
+    nextTick(function()
+        local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
+        if (outfit == nil or outfit:section() ~= "outfit_nanosuit") and instance ~= nil then
+            instance:destroy()
+            instance = nil
+            printf("Nanosuit core destroyed")
+        end
+        return true
+    end)
 end
 
 function actor_on_item_drop(_)
-    local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-    if (outfit == nil or outfit:section() ~= "outfit_nanosuit") and instance ~= nil then
-        instance:destroy()
-        instance = nil
-    end
+    nextTick(function()
+        local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
+        if (outfit == nil or outfit:section() ~= "outfit_nanosuit") and instance ~= nil then
+            instance:destroy()
+            instance = nil
+            printf("Nanosuit core destroyed")
+        end
+        return true
+    end)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -66,10 +80,7 @@ end
 
 class "core"
 
-function core:__init(obj_id)
-    -- Misc
-    self.m_suit_id = obj_id
-
+function core:__init()
     -- Energy related variables
     self.m_energy = 100
     self.m_energy_regen_rate = 100
