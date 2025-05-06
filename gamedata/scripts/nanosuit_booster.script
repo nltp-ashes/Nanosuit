@@ -22,6 +22,7 @@ class "abstract_booster"
 function abstract_booster:__init(core, name)
     self.m_core = core
     self.m_name = name
+    self.m_active_item_id = nil
     self.m_cache = {}
 end
 
@@ -58,9 +59,11 @@ function abstract_booster:filter(obj)
 end
 
 function abstract_booster:set(obj)
+    self.m_active_item_id = obj:id()
 end
 
 function abstract_booster:unset(obj)
+    self.m_active_item_id = nil
 end
 
 function abstract_booster:actor_item_to_slot(obj)
@@ -71,13 +74,13 @@ function abstract_booster:actor_item_to_slot(obj)
 end
 
 function abstract_booster:actor_item_to_ruck(obj)
-    if not db.actor:active_item() and self:filter(obj) then
+    if self.m_active_item_id and not db.actor:active_item() and self:filter(obj) then
         self:unset(obj)
     end
 end
 
 function abstract_booster:actor_on_item_drop(obj)
-    if not db.actor:active_item() and self:filter(obj) then
+    if self.m_active_item_id and not db.actor:active_item() and self:filter(obj) then
         self:unset(obj)
     end
 end
