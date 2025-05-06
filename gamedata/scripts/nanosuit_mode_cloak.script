@@ -24,6 +24,7 @@ actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 class "cloak" (nanosuit_mode.abstract_mode)
 
+-- FIXME : Headlamp is not cloaked in 3rd person
 function cloak:__init(core, name) super(core, name)
     -- Energy related variables
     self.m_energy_use_min = 0.1

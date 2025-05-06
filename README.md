@@ -91,6 +91,7 @@ For past updates, please refer to the description of each release, in the [relea
 - When wearing the suit, the player footsteps do not change. They should use custom sounds
 - The shader and textures used for cloak mode are not the best. They should be improved
 - Speed mode should increase reload speed. This is impossible due to engine limitations. Will probably never be fixed
+- When using cloak mode, the player's headlamp is not cloaked in 3rd person
 
 If you truly believe your problem is new, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).
 

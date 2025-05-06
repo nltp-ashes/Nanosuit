@@ -13,6 +13,9 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
+-- Imports
+actor_slots_enum        = nanosuit_utils.actor_slots_enum
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Speed mode class
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -22,8 +25,22 @@ class "abstract_booster"
 function abstract_booster:__init(core, name)
     self.m_core = core
     self.m_name = name
-    self.m_active_item_id = nil
-    self.m_cache = {}
+    self.m_cache = {
+        [actor_slots_enum.knife] = { enabled = false, obj_id = nil },
+        [actor_slots_enum.pistol] = { enabled = false, obj_id = nil },
+        [actor_slots_enum.rifle] = { enabled = false, obj_id = nil },
+        [actor_slots_enum.grenade] = { enabled = false, obj_id = nil },
+        [actor_slots_enum.binoculars] = { enabled = false, obj_id = nil },
+        [actor_slots_enum.bolt] = { enabled = false, obj_id = nil },
+        [actor_slots_enum.outfit] = { enabled = false, obj_id = nil },
+        [actor_slots_enum.pda] = { enabled = false, obj_id = nil },
+        [actor_slots_enum.detector] = { enabled = false, obj_id = nil },
+        [actor_slots_enum.torch] = { enabled = false, obj_id = nil },
+        [actor_slots_enum.artefact] = { enabled = false, obj_id = nil },
+        [actor_slots_enum.helmet] = { enabled = false, obj_id = nil },
+        [actor_slots_enum.backpack] = { enabled = false, obj_id = nil },
+        [actor_slots_enum.animation] = { enabled = false, obj_id = nil }
+    }
 end
 
 function abstract_booster:__eq(other)
@@ -31,9 +48,11 @@ function abstract_booster:__eq(other)
 end
 
 function abstract_booster:apply()
-    local active_item = db.actor:active_item()
-    if active_item and self:filter(active_item) then
-        self:set(active_item)
+    for slot, _ in pairs(self.m_cache) do
+        local obj = db.actor:item_in_slot(slot)
+        if obj and self:filter(obj, slot) then
+            self:set(obj, slot)
+        end
     end
 
     RegisterScriptCallback("actor_item_to_slot", self)
@@ -43,9 +62,11 @@ function abstract_booster:apply()
 end
 
 function abstract_booster:remove()
-    local active_item = db.actor:active_item()
-    if active_item and self:filter(active_item) then
-        self:unset(active_item)
+    for slot, _ in pairs(self.m_cache) do
+        local obj = db.actor:item_in_slot(slot)
+        if obj and self:filter(obj, slot) then
+            self:unset(obj, slot)
+        end
     end
 
     UnregisterScriptCallback("actor_item_to_slot", self)
@@ -54,42 +75,44 @@ function abstract_booster:remove()
     UnregisterScriptCallback("actor_on_changed_slot", self)
 end
 
-function abstract_booster:filter(obj)
-    return true
+function abstract_booster:filter(obj, slot)
+    return self.m_cache[slot].enabled
 end
 
-function abstract_booster:set(obj)
-    self.m_active_item_id = obj:id()
+function abstract_booster:set(obj, slot)
+    printf("[NS] Abstract Booster | Setting effect %s to object %s in slot %s", self.m_name, obj:name(), slot)
+    self.m_cache[slot].obj_id = obj:id()
 end
 
-function abstract_booster:unset(obj)
-    self.m_active_item_id = nil
+function abstract_booster:unset(obj, slot)
+    printf("[NS] Abstract Booster | Unsetting effect %s to object %s in slot %s", self.m_name, obj:name(), slot)
+    self.m_cache[slot].obj_id = nil
 end
 
 function abstract_booster:actor_item_to_slot(obj)
-    local active_item = db.actor:active_item()
-    if active_item and active_item:id() == obj:id() and self:filter(obj) then
-        self:set(obj)
+    for slot, _ in pairs(self.m_cache) do
+        local item_in_slot = db.actor:item_in_slot(slot)
+        if item_in_slot and item_in_slot:id() == obj:id() and self:filter(obj, slot) then
+            self:set(obj, slot)
+            return
+        end
     end
 end
 
 function abstract_booster:actor_item_to_ruck(obj)
-    if self.m_active_item_id and not db.actor:active_item() and self:filter(obj) then
-        self:unset(obj)
+    for slot, cache in pairs(self.m_cache) do
+        if cache.obj_id == obj:id() and self:filter(obj, slot) then
+            self:unset(obj, slot)
+            return
+        end
     end
 end
 
 function abstract_booster:actor_on_item_drop(obj)
-    if self.m_active_item_id and not db.actor:active_item() and self:filter(obj) then
-        self:unset(obj)
-    end
-end
-
-function abstract_booster:actor_on_changed_slot(new_slot, new_obj, prev_slot, prev_obj)
-    if prev_slot ~= 0 and prev_obj and self:filter(prev_obj) then
-        self:unset(prev_obj)
-    end
-    if new_slot ~= 0 and new_obj and self:filter(new_obj) then
-        self:set(new_obj)
+    for slot, cache in pairs(self.m_cache) do
+        if cache.obj_id == obj:id() and self:filter(obj, slot) then
+            self:unset(obj, slot)
+            return
+        end
     end
 end
