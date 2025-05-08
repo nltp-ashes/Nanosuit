@@ -9,7 +9,8 @@
 <!--                                                                                                                 -->
 <!--=================================================================================================================-->
 <w>
+    <!-- Background -->
     <background x="10" y="563" width="249" height="195" stretch="1">
-        <texture>ui_nanosuit_tacmap_bg</texture>
+        <texture a="200">ui_nanosuit_tacmap_bg</texture>
     </background>
 </w>

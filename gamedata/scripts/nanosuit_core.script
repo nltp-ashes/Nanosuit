@@ -121,17 +121,17 @@ function core:__init()
         [armor_modes_enum.cloak] = nanosuit_mode_cloak[armor_modes_enum.cloak](self, armor_modes_enum.cloak)
     }
 
+    -- Default mode initialization
+    self.m_default_mode = armor_modes_enum.armor
+    self.m_current_mode = self.m_modes[self.m_default_mode]
+    self.m_current_mode:apply()
+
     -- UIs
     self.m_uis = {
         menu = nanosuit_ui_menu.ui_menu(self),
         status = nanosuit_ui_status.ui_status(self),
         tacmap = nanosuit_ui_tacmap.ui_tacmap(self)
     }
-
-    -- Default mode initialization
-    self.m_default_mode = armor_modes_enum.armor
-    self.m_current_mode = self.m_modes[self.m_default_mode]
-    self.m_current_mode:apply()
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_update", self)

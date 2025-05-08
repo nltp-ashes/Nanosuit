@@ -29,8 +29,18 @@ function ui_status:__init(core) super()
     self.m_xml = CScriptXmlInit()
     self.m_xml:ParseFile("ui_nanosuit_status.xml")
 
-    self.m_background = self.m_xml:InitStatic("background", self)
-    arm.scale_ui(self.m_background, true, true, "right")
+    self.m_ui_background = self.m_xml:InitStatic("background", self)
+    arm.scale_ui(self.m_ui_background, true, true, "right")
+
+    self.m_ui_mode = self.m_xml:InitStatic("mode", self)
+    self.m_ui_mode:InitTexture("ui_nanosuit_status_" .. self.m_core.m_current_mode.m_name)
+    arm.scale_ui(self.m_ui_mode, true, true, "right")
+
+    self.m_ui_energy = self.m_xml:InitTextWnd("energy", self)
+    arm.scale_ui(self.m_ui_energy, true, true, "right")
+
+    self.m_ui_health = self.m_xml:InitTextWnd("health", self)
+    arm.scale_ui(self.m_ui_health, true, true, "right")
 
     self:Show(false)
 
@@ -81,6 +91,51 @@ function ui_status:Update(force)
         self:Show(true)
     end
 
-    -- TODO : update code goes here
-    actor_menu.set_msg(1, "Energy : " .. round(self.m_core.m_energy), 1)
+    -- FIXME : this line should only run if mode has changed between updates
+    self.m_ui_mode:InitTexture("ui_nanosuit_status_" .. self.m_core.m_current_mode.m_name)
+
+    self.m_ui_energy:SetText(tostring(round(self.m_core.m_energy)))
+    self.m_ui_health:SetText(tostring(round(db.actor.health * 100)))
+end
+
+function on_game_start()
+    RegisterScriptCallback("on_key_press", on_key_press)
+    RegisterScriptCallback("on_key_release", on_key_release)
+end
+
+local holding_ctrl = false
+local x_transforms = 0
+local y_transforms = 0
+function on_key_press(dik)
+    if dik == DIK_keys.DIK_LCONTROL then
+        holding_ctrl = true
+    end
+
+    local static = nanosuit_core.instance.m_uis.status.m_ui_health
+
+    local pos = vector2():set(static:GetWndPos().x, static:GetWndPos().y)
+
+    local transform = holding_ctrl and 10 or 1
+    if dik == DIK_keys.DIK_DOWN then
+        pos.y = pos.y + transform
+        y_transforms = y_transforms + transform
+    elseif dik == DIK_keys.DIK_UP then
+        pos.y = pos.y - transform
+        y_transforms = y_transforms - transform
+    elseif dik == DIK_keys.DIK_LEFT then
+        pos.x = pos.x - transform
+        x_transforms = x_transforms - transform
+    elseif dik == DIK_keys.DIK_RIGHT then
+        pos.x = pos.x + transform
+        x_transforms = x_transforms + transform
+    elseif dik == DIK_keys.DIK_HOME then
+        printf("[NS] Static transforms: x:%s y:%s", x_transforms, y_transforms)
+    end
+    static:SetWndPos(pos)
+end
+
+function on_key_release(dik)
+    if dik == DIK_keys.DIK_LCONTROL then
+        holding_ctrl = false
+    end
 end

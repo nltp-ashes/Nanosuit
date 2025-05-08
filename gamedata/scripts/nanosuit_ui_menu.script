@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 03/05/2025                                                                                             ---
+---    Date : 08/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit mode selection UI.                                                         ---
@@ -40,7 +40,7 @@ function ui_menu:__init(core) super()
 
     -- Options
     for _,mode in ipairs(self.m_selectable_modes) do
-        local opt = arm.OptionData(mode, "ui_nanosuit_mode_" .. mode)
+        local opt = arm.OptionData(mode, "ui_nanosuit_menu_" .. mode)
         opt:SetText({
             title = game.translate_string("st_nanosuit_ui_menu_" .. mode .. "_title"),
             description = game.translate_string("st_nanosuit_ui_menu_" .. mode .. "_descr")
