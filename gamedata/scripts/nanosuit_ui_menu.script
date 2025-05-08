@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 03/05/2025                                                                                             ---
+---    Date : 11/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit mode selection UI.                                                         ---
@@ -17,13 +17,15 @@
 armor_modes_enum        = nanosuit_utils.armor_modes_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Menu UI Class
+-- Suit menu UI class
 -- ---------------------------------------------------------------------------------------------------------------------
 
 class "ui_menu" (arm.UIRadialMenu)
 
-function ui_menu:__init(core) super()
+function ui_menu:__init(core, parent) super()
     self.m_core = core
+    self.m_parent = parent
+    self.m_keybind = DIK_keys.DIK_V
     self.m_sounds = {
         show = sound_object([[nanosuit\menu\menu_show]]),
         hide = sound_object([[nanosuit\menu\menu_hide]])
@@ -40,7 +42,7 @@ function ui_menu:__init(core) super()
 
     -- Options
     for _,mode in ipairs(self.m_selectable_modes) do
-        local opt = arm.OptionData(mode, "ui_nanosuit_mode_" .. mode)
+        local opt = arm.OptionData(mode, "ui_nanosuit_menu_" .. mode)
         opt:SetText({
             title = game.translate_string("st_nanosuit_ui_menu_" .. mode .. "_title"),
             description = game.translate_string("st_nanosuit_ui_menu_" .. mode .. "_descr")
@@ -70,7 +72,7 @@ function ui_menu:Close()
 end
 
 function ui_menu:on_key_press(dik)
-    if dik ~= DIK_keys.DIK_V then
+    if dik ~= self.m_keybind then
         return
     end
 

@@ -1,0 +1,183 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 25/05/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+fire_modes_names_enums  = nanosuit_utils.fire_modes_names_enums
+
+-- Variables
+is_in_game              = false
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function on_loading_screen_dismissed()
+    is_in_game = true
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Callbacks registration
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to register callbacks.
+--- @return nil
+function on_game_start()
+    RegisterScriptCallback("on_loading_screen_dismissed", on_loading_screen_dismissed)
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Main HUD UI class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "ui_hud" (CUIScriptWnd)
+
+function ui_hud:__init(core) super()
+    -- Variables
+    self.m_core = core
+    self.m_next_update = time_global()
+    self.m_update_rate = 1000
+
+    -- Build UI
+    self.m_ui_status = nanosuit_ui_status.ui_status(core, self)
+    self.m_ui_status:Show(false)
+    self:AttachChild(self.m_ui_status)
+
+    self.m_ui_tacmap = nanosuit_ui_tacmap.ui_tacmap(core, self)
+    self.m_ui_tacmap:Show(false)
+    self:AttachChild(self.m_ui_tacmap)
+
+    self:Show(false)
+
+    -- Register callbacks
+    RegisterScriptCallback("actor_on_update", self)
+    RegisterScriptCallback("on_loading_screen_dismissed", self)
+
+    if is_in_game then
+        -- Switch to custom HUD
+        self:switch_hud(true)
+    end
+end
+
+function ui_hud:__finalize()
+end
+
+function ui_hud:destroy()
+    -- Switch to default HUD
+    self:switch_hud(false)
+
+    -- Destroy children
+    self.m_ui_status:destroy()
+    self.m_ui_tacmap:destroy()
+
+    -- Unregister callbacks
+    UnregisterScriptCallback("actor_on_update", self)
+    UnregisterScriptCallback("on_loading_screen_dismissed", self)
+end
+
+function ui_hud:switch_hud(take_control)
+    -- Get main HUD
+    local hud = get_hud()
+    local main_hud = ActorMenu.get_maingame()
+
+    if take_control then
+        -- Attach to main HUD
+        get_hud():AddDialogToRender(self)
+
+        -- Hide minimap
+        main_hud.UIZoneMap.disabled = true
+        main_hud.UIMotionIcon:Show(false)
+    else
+        -- Detach from main HUD
+        get_hud():RemoveDialogToRender(self)
+
+        -- Show minimap
+        main_hud.UIZoneMap.disabled = not ui_options.get([[video/hud/show_minimap]])
+        main_hud.UIMotionIcon:Show(not main_hud.UIZoneMap.disabled)
+    end
+
+    local elements_to_move = {
+        { element = ActorMenu.get_messages_menu(), offset = vector2():set(0, 100) },
+        { element = main_hud.m_ui_hud_states.m_ui_weapon_icon, offset = vector2():set(device().width + main_hud.m_ui_hud_states.m_ui_weapon_icon:GetWidth(), 0) },
+        { element = main_hud.m_ui_hud_states.m_ui_weapon_cur_ammo, offset = vector2():set(device().width + main_hud.m_ui_hud_states.m_ui_weapon_cur_ammo:GetWidth(), 0) },
+        { element = main_hud.m_ui_hud_states.m_fire_mode, offset = vector2():set(device().width + main_hud.m_ui_hud_states.m_fire_mode:GetWidth(), 0) },
+        { element = main_hud.m_ui_hud_states.m_ui_health_bar, offset = vector2():set(device().width + main_hud.m_ui_hud_states.m_ui_health_bar:GetWidth(), 0) },
+        { element = main_hud.m_ui_hud_states.m_ui_stamina_bar, offset = vector2():set(device().width + main_hud.m_ui_hud_states.m_ui_stamina_bar:GetWidth(), 0) },
+        { element = main_hud.m_ui_hud_states.m_ui_psy_bar, offset = vector2():set(device().width + main_hud.m_ui_hud_states.m_ui_psy_bar:GetWidth(), 0) },
+        { element = main_hud.m_ui_hud_states.m_back, offset = vector2():set(device().width + main_hud.m_ui_hud_states.m_back:GetWidth(), 0) }
+    }
+
+    -- Patch for Faction ID mod
+    if factionid_hud_mcm and factionid_hud_mcm.HUD then
+        table.insert(elements_to_move, { element = factionid_hud_mcm.HUD, offset = vector2():set(-115, 0) })
+    end
+
+    -- Lil shit
+    local notify_cs = hud:GetCustomStatic("notify_icon")
+    if not notify_cs then
+        hud:AddCustomStatic("notify_icon", true)
+        notify_cs = hud:GetCustomStatic("notify_icon")
+    end
+    table.insert(elements_to_move, { element = notify_cs:wnd(), offset = vector2():set(device().width + notify_cs:wnd():GetWidth(), 0) })
+
+    -- Move elements
+    for _, element in ipairs(elements_to_move) do
+        local pos = element.element:GetWndPos()
+        pos.x = pos.x + (take_control and -element.offset.x or element.offset.x)
+        pos.y = pos.y + (take_control and -element.offset.y or element.offset.y)
+        element.element:SetWndPos(pos)
+    end
+end
+
+function ui_hud:on_loading_screen_dismissed()
+    self:switch_hud(true)
+end
+
+function ui_hud:actor_on_update()
+    self:Update(true)
+end
+
+function ui_hud:Update(force)
+    CUIScriptWnd.Update(self)
+
+    local tg = time_global()
+
+    -- Force update
+    if force then
+        self.m_next_update = tg - 1
+    end
+
+    -- Throttle update
+    if self.m_next_update >= tg then
+        return
+    else
+        self.m_next_update = tg + self.m_update_rate
+    end
+
+    -- Handle UI visibility
+    local should_show = main_hud_shown()
+    if not should_show and self:IsShown() then
+        self:Show(false)
+        self.m_ui_status:Show(false)
+        self.m_ui_tacmap:Show(false)
+    elseif should_show and not self:IsShown() then
+        self:Show(true)
+        self.m_ui_status:Show(true)
+        self.m_ui_tacmap:Show(true)
+    end
+
+    -- Update children
+    self.m_ui_status:Update(force)
+    self.m_ui_tacmap:Update(force)
+end
