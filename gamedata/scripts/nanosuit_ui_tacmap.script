@@ -1,0 +1,83 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 08/05/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit tactical map UI.                                                                 ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Menu UI Class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "ui_tacmap" (CUIScriptWnd)
+
+function ui_tacmap:__init(core) super()
+    -- Variables
+    self.m_core = core
+    self.m_next_update = time_global()
+    self.m_update_rate = 1000
+
+    -- Build UI
+    self.m_xml = CScriptXmlInit()
+    self.m_xml:ParseFile("ui_nanosuit_tacmap.xml")
+
+    self.m_background = self.m_xml:InitStatic("background", self)
+    arm.scale_ui(self.m_background, true, true, "left")
+
+    self:Show(false)
+
+    -- Register callbacks
+    RegisterScriptCallback("actor_on_update", self)
+
+    -- Attach to main HUD
+    get_hud():AddDialogToRender(self)
+end
+
+function ui_tacmap:__finalize()
+end
+
+function ui_tacmap:destroy()
+    -- Detach from main HUD
+    get_hud():RemoveDialogToRender(self)
+
+    -- Unregister callbacks
+    UnregisterScriptCallback("actor_on_update", self)
+end
+
+function ui_tacmap:actor_on_update()
+    self:Update(true)
+end
+
+function ui_tacmap:Update(force)
+    CUIScriptWnd.Update(self)
+
+    local tg = time_global()
+
+    -- Force update
+    if force then
+        self.m_next_update = tg - 1
+    end
+
+    -- Throttle update
+    if self.m_next_update >= tg then
+        return
+    else
+        self.m_next_update = tg + self.m_update_rate
+    end
+
+    -- Handle UI visibility
+    local should_show = main_hud_shown()
+    if not should_show and self:IsShown() then
+        self:Show(false)
+    elseif should_show and not self:IsShown() then
+        self:Show(true)
+    end
+end

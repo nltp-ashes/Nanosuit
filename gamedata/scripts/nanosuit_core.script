@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 06/05/2025                                                                                             ---
+---    Date : 08/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -62,6 +62,14 @@ function actor_on_item_drop(_)
     end)
 end
 
+function actor_on_net_destroy()
+    if instance ~= nil then
+        instance:destroy()
+        instance = nil
+        printf("Nanosuit core destroyed")
+    end
+end
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Callbacks registration
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -72,6 +80,7 @@ function on_game_start()
     RegisterScriptCallback("actor_item_to_slot", actor_item_to_slot)
     RegisterScriptCallback("actor_item_to_ruck", actor_item_to_ruck)
     RegisterScriptCallback("actor_on_item_drop", actor_on_item_drop)
+    RegisterScriptCallback("actor_on_net_destroy", actor_on_net_destroy)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -115,7 +124,8 @@ function core:__init()
     -- UIs
     self.m_uis = {
         menu = nanosuit_ui_menu.ui_menu(self),
-        energy = nanosuit_ui_energy.ui_energy(self)
+        status = nanosuit_ui_status.ui_status(self),
+        tacmap = nanosuit_ui_tacmap.ui_tacmap(self)
     }
 
     -- Default mode initialization
@@ -125,12 +135,14 @@ function core:__init()
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_update", self)
+    RegisterScriptCallback("on_screen_resolution_changed", self)
 end
 
 function core:destroy()
     self.m_current_mode:remove()
 
     UnregisterScriptCallback("actor_on_update", self)
+    UnregisterScriptCallback("on_screen_resolution_changed", self)
 
     self.m_modes = {
         [armor_modes_enum.armor] = nil,
@@ -140,7 +152,8 @@ function core:destroy()
     }
 
     self.m_uis.menu:destroy()
-    self.m_uis.energy:destroy()
+    self.m_uis.status:destroy()
+    self.m_uis.tacmap:destroy()
 end
 
 function core:use_energy(amount)
@@ -154,6 +167,16 @@ function core:change_mode(mode)
         self.m_current_mode = self.m_modes[mode]
         self.m_current_mode:apply()
     end
+end
+
+function core:on_screen_resolution_changed()
+    -- Restart UIs
+    self.m_uis.menu:destroy()
+    self.m_uis.status:destroy()
+    self.m_uis.tacmap:destroy()
+    self.m_uis.menu = nanosuit_ui_menu.ui_menu(self)
+    self.m_uis.status = nanosuit_ui_status.ui_status(self)
+    self.m_uis.tacmap = nanosuit_ui_tacmap.ui_tacmap(self)
 end
 
 function core:actor_on_update()

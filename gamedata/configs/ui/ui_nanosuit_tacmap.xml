@@ -1,0 +1,15 @@
+<!--=================================================================================================================-->
+<!--                                                                                                                 -->
+<!--    Original Author(s) : NLTP_ASHES                                                                              -->
+<!--    Edited : N/A                                                                                                 -->
+<!--    Date : 08/05/2025                                                                                            -->
+<!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
+<!--                                                                                                                 -->
+<!--    UI template for the Nanosuit status hub.                                                                     -->
+<!--                                                                                                                 -->
+<!--=================================================================================================================-->
+<w>
+    <background x="10" y="563" width="249" height="195" stretch="1">
+        <texture>ui_nanosuit_tacmap_bg</texture>
+    </background>
+</w>
