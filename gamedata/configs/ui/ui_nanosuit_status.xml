@@ -12,7 +12,7 @@
 <!--=================================================================================================================-->
 <w>
     <!-- Current suit mode -->
-    <mode x="951" y="695" width="50" height="50" stretch="1" />
+    <suit_mode x="951" y="695" width="50" height="50" stretch="1" />
 
     <!-- Energy -->
     <energy x="895" y="683" width="50" height="20" stretch="1">
@@ -23,6 +23,19 @@
     <health x="895" y="701" width="50" height="20" stretch="1">
         <text complex_mode="1" r="129" g="183" b="135" align="c" vert_align="c" font="letterica16"/>
     </health>
+
+    <!-- Ammo -->
+    <ammo_count x="820" y="613" width="100" height="40" stretch="1">
+        <text complex_mode="1" r="129" g="183" b="135" align="c" vert_align="c" font="letterica25"/>
+    </ammo_count>
+
+    <!-- Ammo -->
+    <ammo_reserve x="883" y="620" width="50" height="20" stretch="1">
+        <text complex_mode="1" r="129" g="183" b="135" align="c" vert_align="c" font="letterica16"/>
+    </ammo_reserve>
+
+    <!-- Fire mode -->
+    <fire_mode x="935" y="624" width="25" height="25" stretch="1" />
 
     <!-- Background -->
     <background x="768" y="618" width="246" height="140" stretch="1">
