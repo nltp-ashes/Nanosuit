@@ -39,7 +39,7 @@ function on_key_press(dik)
         return
     end
 
-    local static = nanosuit_core.instance.m_uis.hud.m_ui_status.m_ui_energy_bar
+    local static = nanosuit_core.instance.m_uis.hud.m_ui_status.m_ui_health_icon
 
     local pos = vector2():set(static:GetWndPos().x, static:GetWndPos().y)
 
@@ -104,6 +104,9 @@ function ui_status:__init(core, parent) super()
     arm.scale_ui(self.m_ui_energy_bar, true, true, "right")
     arm.scale_ui(self.m_ui_energy_bar:GetProgressStatic(), true, true, "left", self.m_ui_energy_bar:GetWidth())
 
+    self.m_ui_energy_icon = self.m_xml:InitStatic("energy_icon", self)
+    arm.scale_ui(self.m_ui_energy_icon, true, true, "right")
+
     self.m_ui_health = self.m_xml:InitTextWnd("health", self)
     arm.scale_ui(self.m_ui_health, true, true, "right")
 
@@ -113,6 +116,9 @@ function ui_status:__init(core, parent) super()
     self.m_ui_health_bar = self.m_xml:InitProgressBar("health_bar", self)
     arm.scale_ui(self.m_ui_health_bar, true, true, "right")
     arm.scale_ui(self.m_ui_health_bar:GetProgressStatic(), true, true, "left", self.m_ui_health_bar:GetWidth())
+
+    self.m_ui_health_icon = self.m_xml:InitStatic("health_icon", self)
+    arm.scale_ui(self.m_ui_health_icon, true, true, "right")
 
     self.m_ui_ammo_count = self.m_xml:InitTextWnd("ammo_count", self)
     arm.scale_ui(self.m_ui_ammo_count, true, true, "right")
