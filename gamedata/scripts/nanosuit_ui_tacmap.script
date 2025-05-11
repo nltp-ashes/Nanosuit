@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/05/2025                                                                                             ---
+---    Date : 11/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                                 ---
@@ -12,6 +12,27 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
+
+-- Variables
+is_in_game              = false
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function on_loading_screen_dismissed()
+    is_in_game = true
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Callbacks registration
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to register callbacks.
+--- @return nil
+function on_game_start()
+    RegisterScriptCallback("on_loading_screen_dismissed", on_loading_screen_dismissed)
+end
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Menu UI Class
@@ -36,20 +57,49 @@ function ui_tacmap:__init(core) super()
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_update", self)
+    RegisterScriptCallback("on_loading_screen_dismissed", self)
 
-    -- Attach to main HUD
-    get_hud():AddDialogToRender(self)
+    if is_in_game then
+        -- Switch to custom HUD
+        self:switch_hud(true)
+    end
 end
 
 function ui_tacmap:__finalize()
 end
 
 function ui_tacmap:destroy()
-    -- Detach from main HUD
-    get_hud():RemoveDialogToRender(self)
+    -- Switch to default HUD
+    self:switch_hud(false)
 
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_update", self)
+    UnregisterScriptCallback("on_loading_screen_dismissed", self)
+end
+
+function ui_tacmap:switch_hud(take_control)
+    -- Get main HUD
+    local main_hud = ActorMenu.get_maingame()
+
+    if take_control then
+        -- Attach to main HUD
+        get_hud():AddDialogToRender(self)
+
+        -- Hide minimap
+        main_hud.UIZoneMap.disabled = true
+        main_hud.UIMotionIcon:Show(false)
+    else
+        -- Detach from main HUD
+        get_hud():RemoveDialogToRender(self)
+
+        -- Show minimap
+        main_hud.UIZoneMap.disabled = not ui_options.get([[video/hud/show_minimap]])
+        main_hud.UIMotionIcon:Show(not main_hud.UIZoneMap.disabled)
+    end
+end
+
+function ui_tacmap:on_loading_screen_dismissed()
+    self:switch_hud(true)
 end
 
 function ui_tacmap:actor_on_update()
