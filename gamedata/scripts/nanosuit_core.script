@@ -14,12 +14,12 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- Imports
-localized_sound_object = nanosuit_utils.localized_sound_object
-actor_slots_enum = nanosuit_utils.actor_slots_enum
-armor_modes_enum = nanosuit_utils.armor_modes_enum
+localized_sound_object  = nanosuit_utils.localized_sound_object
+actor_slots_enum        = nanosuit_utils.actor_slots_enum
+armor_modes_enum        = nanosuit_utils.armor_modes_enum
 
 -- Singleton
-instance = nil
+instance                = nil
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- General functions
@@ -129,8 +129,7 @@ function core:__init()
     -- UIs
     self.m_uis = {
         menu = nanosuit_ui_menu.ui_menu(self),
-        status = nanosuit_ui_status.ui_status(self),
-        tacmap = nanosuit_ui_tacmap.ui_tacmap(self)
+        hud = nanosuit_ui_hud.ui_hud(self),
     }
 
     -- Register callbacks
@@ -152,8 +151,7 @@ function core:destroy()
     }
 
     self.m_uis.menu:destroy()
-    self.m_uis.status:destroy()
-    self.m_uis.tacmap:destroy()
+    self.m_uis.hud:destroy()
 end
 
 function core:use_energy(amount)
@@ -172,11 +170,9 @@ end
 function core:on_option_change()
     -- Restart UIs
     self.m_uis.menu:destroy()
-    self.m_uis.status:destroy()
-    self.m_uis.tacmap:destroy()
+    self.m_uis.hud:destroy()
     self.m_uis.menu = nanosuit_ui_menu.ui_menu(self)
-    self.m_uis.status = nanosuit_ui_status.ui_status(self)
-    self.m_uis.tacmap = nanosuit_ui_tacmap.ui_tacmap(self)
+    self.m_uis.hud = nanosuit_ui_hud.ui_hud(self)
 end
 
 function core:actor_on_update()

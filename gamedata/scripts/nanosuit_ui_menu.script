@@ -17,13 +17,14 @@
 armor_modes_enum        = nanosuit_utils.armor_modes_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Menu UI Class
+-- Suit menu UI class
 -- ---------------------------------------------------------------------------------------------------------------------
 
 class "ui_menu" (arm.UIRadialMenu)
 
-function ui_menu:__init(core) super()
+function ui_menu:__init(core, parent) super()
     self.m_core = core
+    self.m_parent = parent
     self.m_keybind = DIK_keys.DIK_V
     self.m_sounds = {
         show = sound_object([[nanosuit\menu\menu_show]]),

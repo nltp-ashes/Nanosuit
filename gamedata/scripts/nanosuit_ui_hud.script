@@ -1,0 +1,173 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 11/05/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit's main HUD UI.                                                                 ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+fire_modes_names_enums  = nanosuit_utils.fire_modes_names_enums
+
+-- Variables
+is_in_game              = false
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function on_loading_screen_dismissed()
+    is_in_game = true
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Callbacks registration
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to register callbacks.
+--- @return nil
+function on_game_start()
+    RegisterScriptCallback("on_loading_screen_dismissed", on_loading_screen_dismissed)
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Main HUD UI class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "ui_hud" (CUIScriptWnd)
+
+function ui_hud:__init(core) super()
+    -- Variables
+    self.m_core = core
+    self.m_next_update = time_global()
+    self.m_update_rate = 1000
+
+    -- Build UI
+    self.m_ui_status = nanosuit_ui_status.ui_status(core, self)
+    self.m_ui_status:Show(false)
+    self:AttachChild(self.m_ui_status)
+
+    self.m_ui_tacmap = nanosuit_ui_tacmap.ui_tacmap(core, self)
+    self.m_ui_tacmap:Show(false)
+    self:AttachChild(self.m_ui_tacmap)
+
+    self:Show(false)
+
+    -- Register callbacks
+    RegisterScriptCallback("actor_on_update", self)
+    RegisterScriptCallback("on_loading_screen_dismissed", self)
+
+    if is_in_game then
+        -- Switch to custom HUD
+        self:switch_hud(true)
+    end
+end
+
+function ui_hud:__finalize()
+end
+
+function ui_hud:destroy()
+    -- Switch to default HUD
+    self:switch_hud(false)
+
+    -- Destroy children
+    self.m_ui_status:destroy()
+    self.m_ui_tacmap:destroy()
+
+    -- Unregister callbacks
+    UnregisterScriptCallback("actor_on_update", self)
+    UnregisterScriptCallback("on_loading_screen_dismissed", self)
+end
+
+function ui_hud:switch_hud(take_control)
+    -- Get main HUD
+    local main_hud = ActorMenu.get_maingame()
+
+    if take_control then
+        -- Attach to main HUD
+        get_hud():AddDialogToRender(self)
+
+        -- Hide minimap
+        main_hud.UIZoneMap.disabled = true
+        main_hud.UIMotionIcon:Show(false)
+    else
+        -- Detach from main HUD
+        get_hud():RemoveDialogToRender(self)
+
+        -- Show minimap
+        main_hud.UIZoneMap.disabled = not ui_options.get([[video/hud/show_minimap]])
+        main_hud.UIMotionIcon:Show(not main_hud.UIZoneMap.disabled)
+    end
+
+    -- List of elements to hide/show from main HUD
+    local main_hud_elements = {
+        main_hud.m_ui_hud_states.m_ui_weapon_icon,
+        main_hud.m_ui_hud_states.m_ui_weapon_cur_ammo,
+        main_hud.m_ui_hud_states.m_fire_mode,
+        main_hud.m_ui_hud_states.m_ui_health_bar,
+        main_hud.m_ui_hud_states.m_ui_stamina_bar,
+        main_hud.m_ui_hud_states.m_ui_psy_bar,
+        main_hud.m_ui_hud_states.m_back,
+    }
+
+    -- Hide or show main HUD elements
+    for _, element in ipairs(main_hud_elements) do
+        local pos = element:GetWndPos()
+        local hide_offset = device().width + element:GetWidth()
+        if (take_control and pos.x > 0) then
+            pos.x = pos.x - hide_offset
+        elseif ((not take_control) and pos.x < 0) then
+            pos.x = pos.x + hide_offset
+        end
+        element:SetWndPos(pos)
+    end
+end
+
+function ui_hud:on_loading_screen_dismissed()
+    self:switch_hud(true)
+end
+
+function ui_hud:actor_on_update()
+    self:Update(true)
+end
+
+function ui_hud:Update(force)
+    CUIScriptWnd.Update(self)
+
+    local tg = time_global()
+
+    -- Force update
+    if force then
+        self.m_next_update = tg - 1
+    end
+
+    -- Throttle update
+    if self.m_next_update >= tg then
+        return
+    else
+        self.m_next_update = tg + self.m_update_rate
+    end
+
+    -- Handle UI visibility
+    local should_show = main_hud_shown()
+    if not should_show and self:IsShown() then
+        self:Show(false)
+        self.m_ui_status:Show(false)
+        self.m_ui_tacmap:Show(false)
+    elseif should_show and not self:IsShown() then
+        self:Show(true)
+        self.m_ui_status:Show(true)
+        self.m_ui_tacmap:Show(true)
+    end
+
+    -- Update children
+    self.m_ui_status:Update(force)
+    self.m_ui_tacmap:Update(force)
+end
