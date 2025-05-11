@@ -24,7 +24,7 @@
     </energy_icon>
 
     <energy_bar_background x="779" y="681" width="122" height="20" stretch="1">
-        <texture>ui_nanosuit_status_energy_bar_bg</texture>
+        <texture>ui_nanosuit_status_energy_bar</texture>
     </energy_bar_background>
 
     <energy_bar x="779" y="681" width="122" height="20" mode="back" min="0" max="100" pos="100">
@@ -43,7 +43,7 @@
     </health_icon>
 
     <health_bar_background x="779" y="699" width="122" height="20" stretch="1">
-        <texture>ui_nanosuit_status_health_bar_bg</texture>
+        <texture>ui_nanosuit_status_health_bar</texture>
     </health_bar_background>
 
     <health_bar x="779" y="699" width="122" height="20" mode="back" min="0" max="100" pos="100">

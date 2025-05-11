@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 08/05/2025                                                                                            -->
+<!--    Date : 11/05/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Texture description file for the Nanosuit addon's UI textures.                                               -->
@@ -36,13 +36,11 @@
     </file>
     <file name="nanosuit\ui\hud\status\energy.dds">
         <texture id="ui_nanosuit_status_energy_bar"       x="0"       y="0"      width="495"     height="80" />
-        <texture id="ui_nanosuit_status_energy_bar_bg"    x="0"       y="80"     width="495"     height="80" />
-        <texture id="ui_nanosuit_status_energy_icon"      x="0"       y="160"    width="50"      height="50" />
+        <texture id="ui_nanosuit_status_energy_icon"      x="0"       y="80"     width="50"      height="50" />
     </file>
     <file name="nanosuit\ui\hud\status\health.dds">
         <texture id="ui_nanosuit_status_health_bar"       x="0"       y="0"      width="495"     height="80" />
-        <texture id="ui_nanosuit_status_health_bar_bg"    x="0"       y="80"     width="495"     height="80" />
-        <texture id="ui_nanosuit_status_health_icon"      x="0"       y="160"    width="50"      height="50" />
+        <texture id="ui_nanosuit_status_health_icon"      x="0"       y="80"     width="50"      height="50" />
     </file>
     <file name="nanosuit\ui\hud\status\suit_modes.dds">
         <texture id="ui_nanosuit_status_armor"            x="0"       y="0"      width="1024"    height="1024" />

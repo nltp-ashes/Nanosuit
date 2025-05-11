@@ -83,6 +83,11 @@ function ui_status:__init(core, parent) super()
     -- Variables
     self.m_core = core
     self.m_parent = parent
+    self.m_energy_color = GetARGB(255, 0, 107, 179)
+    self.m_energy_bg_color = GetARGB(255, 18, 40, 46)
+    self.m_health_color = GetARGB(255, 85, 148, 17)
+    self.m_health_bg_color = GetARGB(255, 27, 33, 21)
+    self.m_low_color = GetARGB(255, 255, 0, 0)
 
     -- Build UI
     self.m_xml = CScriptXmlInit()
@@ -98,6 +103,7 @@ function ui_status:__init(core, parent) super()
     arm.scale_ui(self.m_ui_energy, true, true, "right")
 
     self.m_ui_energy_bar_background = self.m_xml:InitStatic("energy_bar_background", self)
+    self.m_ui_energy_bar_background:SetTextureColor(self.m_energy_bg_color)
     arm.scale_ui(self.m_ui_energy_bar_background, true, true, "right")
 
     self.m_ui_energy_bar = self.m_xml:InitProgressBar("energy_bar", self)
@@ -111,6 +117,7 @@ function ui_status:__init(core, parent) super()
     arm.scale_ui(self.m_ui_health, true, true, "right")
 
     self.m_ui_health_bar_background = self.m_xml:InitStatic("health_bar_background", self)
+    self.m_ui_health_bar_background:SetTextureColor(self.m_health_bg_color)
     arm.scale_ui(self.m_ui_health_bar_background, true, true, "right")
 
     self.m_ui_health_bar = self.m_xml:InitProgressBar("health_bar", self)
@@ -146,6 +153,7 @@ function ui_status:Update(force)
     -- Energy
     local energy = self.m_core.m_energy
     energy = round(energy)
+    self.m_ui_energy_bar:SetColor(energy > 20 and self.m_energy_color or self.m_low_color)
     self.m_ui_energy_bar:SetProgressPos(energy)
     energy = tostring(energy)
     self.m_ui_energy:SetText(energy)
@@ -154,6 +162,7 @@ function ui_status:Update(force)
     local health = db.actor.health
     health = health * 100
     health = round(health)
+    self.m_ui_health_bar:SetColor(health > 20 and self.m_health_color or self.m_low_color)
     self.m_ui_health_bar:SetProgressPos(health)
     health = tostring(health)
     self.m_ui_health:SetText(health)
