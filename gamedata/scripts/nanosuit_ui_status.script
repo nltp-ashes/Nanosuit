@@ -39,7 +39,7 @@ function on_key_press(dik)
         return
     end
 
-    local static = nanosuit_core.instance.m_uis.hud.m_ui_status.m_ui_fire_mode
+    local static = nanosuit_core.instance.m_uis.hud.m_ui_status.m_ui_energy_bar
 
     local pos = vector2():set(static:GetWndPos().x, static:GetWndPos().y)
 
@@ -97,8 +97,22 @@ function ui_status:__init(core, parent) super()
     self.m_ui_energy = self.m_xml:InitTextWnd("energy", self)
     arm.scale_ui(self.m_ui_energy, true, true, "right")
 
+    self.m_ui_energy_bar_background = self.m_xml:InitStatic("energy_bar_background", self)
+    arm.scale_ui(self.m_ui_energy_bar_background, true, true, "right")
+
+    self.m_ui_energy_bar = self.m_xml:InitProgressBar("energy_bar", self)
+    arm.scale_ui(self.m_ui_energy_bar, true, true, "right")
+    arm.scale_ui(self.m_ui_energy_bar:GetProgressStatic(), true, true, "left", self.m_ui_energy_bar:GetWidth())
+
     self.m_ui_health = self.m_xml:InitTextWnd("health", self)
     arm.scale_ui(self.m_ui_health, true, true, "right")
+
+    self.m_ui_health_bar_background = self.m_xml:InitStatic("health_bar_background", self)
+    arm.scale_ui(self.m_ui_health_bar_background, true, true, "right")
+
+    self.m_ui_health_bar = self.m_xml:InitProgressBar("health_bar", self)
+    arm.scale_ui(self.m_ui_health_bar, true, true, "right")
+    arm.scale_ui(self.m_ui_health_bar:GetProgressStatic(), true, true, "left", self.m_ui_health_bar:GetWidth())
 
     self.m_ui_ammo_count = self.m_xml:InitTextWnd("ammo_count", self)
     arm.scale_ui(self.m_ui_ammo_count, true, true, "right")
@@ -126,6 +140,7 @@ function ui_status:Update(force)
     -- Energy
     local energy = self.m_core.m_energy
     energy = round(energy)
+    self.m_ui_energy_bar:SetProgressPos(energy)
     energy = tostring(energy)
     self.m_ui_energy:SetText(energy)
 
@@ -133,6 +148,7 @@ function ui_status:Update(force)
     local health = db.actor.health
     health = health * 100
     health = round(health)
+    self.m_ui_health_bar:SetProgressPos(health)
     health = tostring(health)
     self.m_ui_health:SetText(health)
 
