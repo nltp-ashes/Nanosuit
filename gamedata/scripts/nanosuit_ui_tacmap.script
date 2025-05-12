@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 11/05/2025                                                                                             ---
+---    Date : 13/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -12,6 +12,74 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
+
+-- Variables
+poly_point              = -1
+holding_ctrl            = false
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function on_key_release(dik)
+    if dik == DIK_keys.DIK_LCONTROL then
+        holding_ctrl = false
+    end
+end
+
+function on_key_press(dik)
+    if dik == DIK_keys.DIK_LCONTROL then
+        holding_ctrl = true
+    end
+    if not nanosuit_core.instance then
+        return
+    end
+
+    local pos = nil
+    if poly_point == -1 then
+        pos = nanosuit_core.instance.m_uis.hud.m_ui_tacmap.m_player
+    else
+        pos = nanosuit_core.instance.m_uis.hud.m_ui_tacmap.m_polygon[poly_point]
+    end
+
+    local transform = holding_ctrl and 10 or 1
+    if dik == DIK_keys.DIK_DOWN then
+        pos.y = pos.y + transform
+    elseif dik == DIK_keys.DIK_UP then
+        pos.y = pos.y - transform
+    elseif dik == DIK_keys.DIK_LEFT then
+        pos.x = pos.x - transform
+    elseif dik == DIK_keys.DIK_RIGHT then
+        pos.x = pos.x + transform
+    elseif dik == DIK_keys.DIK_ADD then
+        if poly_point < 7 then
+            poly_point = poly_point + 1
+            printf("[NS] Poly point set to : poly_point:%s", poly_point)
+        end
+    elseif dik == DIK_keys.DIK_SUBTRACT then
+        if poly_point > 1 then
+            poly_point = poly_point - 1
+            printf("[NS] Poly point set to : poly_point:%s", poly_point)
+        else
+            poly_point = -1
+            printf("[NS] Poly point set to player")
+        end
+    elseif dik == DIK_keys.DIK_HOME then
+        printf("[NS] Poly : x:%s y:%s", pos.x, pos.y)
+        return
+    end
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Callbacks registration
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to register callbacks.
+--- @return nil
+function on_game_start()
+    RegisterScriptCallback("on_key_press", on_key_press)
+    RegisterScriptCallback("on_key_release", on_key_release)
+end
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Tactical map UI class
@@ -23,6 +91,30 @@ function ui_tacmap:__init(core, parent) super()
     -- Variables
     self.m_core = core
     self.m_parent = parent
+
+    self.m_polygon = {
+        [1] = vector2():set(39, 595),
+        [2] = vector2():set(192, 584),
+        [3] = vector2():set(192, 700),
+        [4] = vector2():set(176, 719),
+        [5] = vector2():set(65, 725),
+        [6] = vector2():set(65, 697),
+        [7] = vector2():set(39, 677),
+    }
+
+    self.m_player = vector2():set(118, 661)
+
+    self.m_debug_player = debug_render.add_object(101, DBG_ScriptObject.line):cast_dbg_line()
+
+    self.m_debug_lines = {
+        [1] = debug_render.add_object(201, DBG_ScriptObject.line):cast_dbg_line(),
+        [2] = debug_render.add_object(202, DBG_ScriptObject.line):cast_dbg_line(),
+        [3] = debug_render.add_object(203, DBG_ScriptObject.line):cast_dbg_line(),
+        [4] = debug_render.add_object(204, DBG_ScriptObject.line):cast_dbg_line(),
+        [5] = debug_render.add_object(205, DBG_ScriptObject.line):cast_dbg_line(),
+        [6] = debug_render.add_object(206, DBG_ScriptObject.line):cast_dbg_line(),
+        [7] = debug_render.add_object(207, DBG_ScriptObject.line):cast_dbg_line(),
+    }
 
     -- Build UI
     self.m_xml = CScriptXmlInit()
@@ -40,4 +132,28 @@ end
 
 function ui_tacmap:Update(force)
     CUIScriptWnd.Update(self)
+
+    self.m_debug_player.point_a = game.ui2world(self.m_player)
+    self.m_debug_player.point_b = game.ui2world(vector2():set(self.m_player.x, self.m_player.y - 10))
+
+    self.m_debug_lines[1].point_a = game.ui2world(self.m_polygon[1])
+    self.m_debug_lines[1].point_b = game.ui2world(self.m_polygon[2])
+
+    self.m_debug_lines[2].point_a = game.ui2world(self.m_polygon[2])
+    self.m_debug_lines[2].point_b = game.ui2world(self.m_polygon[3])
+
+    self.m_debug_lines[3].point_a = game.ui2world(self.m_polygon[3])
+    self.m_debug_lines[3].point_b = game.ui2world(self.m_polygon[4])
+
+    self.m_debug_lines[4].point_a = game.ui2world(self.m_polygon[4])
+    self.m_debug_lines[4].point_b = game.ui2world(self.m_polygon[5])
+
+    self.m_debug_lines[5].point_a = game.ui2world(self.m_polygon[5])
+    self.m_debug_lines[5].point_b = game.ui2world(self.m_polygon[6])
+
+    self.m_debug_lines[6].point_a = game.ui2world(self.m_polygon[6])
+    self.m_debug_lines[6].point_b = game.ui2world(self.m_polygon[7])
+
+    self.m_debug_lines[7].point_a = game.ui2world(self.m_polygon[7])
+    self.m_debug_lines[7].point_b = game.ui2world(self.m_polygon[1])
 end
