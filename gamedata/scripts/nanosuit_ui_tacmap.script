@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 13/05/2025                                                                                             ---
+---    Date : 15/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -39,7 +39,7 @@ function on_key_press(dik)
     if poly_point == -1 then
         pos = nanosuit_core.instance.m_uis.hud.m_ui_tacmap.m_player
     else
-        pos = nanosuit_core.instance.m_uis.hud.m_ui_tacmap.m_polygon[poly_point]
+        pos = nanosuit_core.instance.m_uis.hud.m_ui_tacmap.m_tacmap_bounds[poly_point]
     end
 
     local transform = holding_ctrl and 10 or 1
@@ -92,7 +92,8 @@ function ui_tacmap:__init(core, parent) super()
     self.m_core = core
     self.m_parent = parent
 
-    self.m_polygon = {
+    self.m_player = vector2():set(118, 661)
+    self.m_tacmap_bounds = {
         [1] = vector2():set(39, 595),
         [2] = vector2():set(192, 584),
         [3] = vector2():set(192, 700),
@@ -101,8 +102,8 @@ function ui_tacmap:__init(core, parent) super()
         [6] = vector2():set(65, 697),
         [7] = vector2():set(39, 677),
     }
-
-    self.m_player = vector2():set(118, 661)
+    self.m_range = 50
+    self.m_scale = self:get_scale(self.m_range, self.m_player, self.m_tacmap_bounds)
 
     self.m_debug_player = debug_render.add_object(101, DBG_ScriptObject.line):cast_dbg_line()
 
@@ -115,6 +116,8 @@ function ui_tacmap:__init(core, parent) super()
         [6] = debug_render.add_object(206, DBG_ScriptObject.line):cast_dbg_line(),
         [7] = debug_render.add_object(207, DBG_ScriptObject.line):cast_dbg_line(),
     }
+
+    self.m_debug_test_obj = debug_render.add_object(401, DBG_ScriptObject.line):cast_dbg_line()
 
     -- Build UI
     self.m_xml = CScriptXmlInit()
@@ -136,24 +139,86 @@ function ui_tacmap:Update(force)
     self.m_debug_player.point_a = game.ui2world(self.m_player)
     self.m_debug_player.point_b = game.ui2world(vector2():set(self.m_player.x, self.m_player.y - 10))
 
-    self.m_debug_lines[1].point_a = game.ui2world(self.m_polygon[1])
-    self.m_debug_lines[1].point_b = game.ui2world(self.m_polygon[2])
+    self.m_debug_lines[1].point_a = game.ui2world(self.m_tacmap_bounds[1])
+    self.m_debug_lines[1].point_b = game.ui2world(self.m_tacmap_bounds[2])
 
-    self.m_debug_lines[2].point_a = game.ui2world(self.m_polygon[2])
-    self.m_debug_lines[2].point_b = game.ui2world(self.m_polygon[3])
+    self.m_debug_lines[2].point_a = game.ui2world(self.m_tacmap_bounds[2])
+    self.m_debug_lines[2].point_b = game.ui2world(self.m_tacmap_bounds[3])
 
-    self.m_debug_lines[3].point_a = game.ui2world(self.m_polygon[3])
-    self.m_debug_lines[3].point_b = game.ui2world(self.m_polygon[4])
+    self.m_debug_lines[3].point_a = game.ui2world(self.m_tacmap_bounds[3])
+    self.m_debug_lines[3].point_b = game.ui2world(self.m_tacmap_bounds[4])
 
-    self.m_debug_lines[4].point_a = game.ui2world(self.m_polygon[4])
-    self.m_debug_lines[4].point_b = game.ui2world(self.m_polygon[5])
+    self.m_debug_lines[4].point_a = game.ui2world(self.m_tacmap_bounds[4])
+    self.m_debug_lines[4].point_b = game.ui2world(self.m_tacmap_bounds[5])
 
-    self.m_debug_lines[5].point_a = game.ui2world(self.m_polygon[5])
-    self.m_debug_lines[5].point_b = game.ui2world(self.m_polygon[6])
+    self.m_debug_lines[5].point_a = game.ui2world(self.m_tacmap_bounds[5])
+    self.m_debug_lines[5].point_b = game.ui2world(self.m_tacmap_bounds[6])
 
-    self.m_debug_lines[6].point_a = game.ui2world(self.m_polygon[6])
-    self.m_debug_lines[6].point_b = game.ui2world(self.m_polygon[7])
+    self.m_debug_lines[6].point_a = game.ui2world(self.m_tacmap_bounds[6])
+    self.m_debug_lines[6].point_b = game.ui2world(self.m_tacmap_bounds[7])
 
-    self.m_debug_lines[7].point_a = game.ui2world(self.m_polygon[7])
-    self.m_debug_lines[7].point_b = game.ui2world(self.m_polygon[1])
+    self.m_debug_lines[7].point_a = game.ui2world(self.m_tacmap_bounds[7])
+    self.m_debug_lines[7].point_b = game.ui2world(self.m_tacmap_bounds[1])
+
+    local test_obj_pos_world = vector():set(0.14054030179977,6.4193840026855,34.733509063721)
+    local test_obj_pos_tacmap = self:world_to_tacmap(test_obj_pos_world)
+    self.m_debug_test_obj.point_a = game.ui2world(self.m_player)
+    self.m_debug_test_obj.point_b = game.ui2world(test_obj_pos_tacmap)
+end
+
+function ui_tacmap:world_to_tacmap(pos)
+    -- Translate distance from world space to tacmap space
+    local distance_world = db.actor:position():distance_to(pos)
+    local distance_tacmap = distance_world * self.m_scale
+
+    -- Get angle from player to target in tacmap space
+    local angle = self:get_heading(pos) -- angle in radians
+
+    -- Calculate the x and y coordinates on the tacmap relative to self.m_player
+    local x = self.m_player.x + distance_tacmap * math.sin(angle)
+    local y = self.m_player.y - distance_tacmap * math.cos(angle)
+
+    return vector2():set(x, y)
+end
+
+function ui_tacmap:get_heading(pos)
+    local dev = device()
+
+    -- Get the player's position and direction
+    local player_pos = dev.cam_pos
+    local player_dir = dev.cam_dir
+
+    -- Calculate the vector from the player to the target
+    local to_target = vector():sub(pos, player_pos)
+
+    -- Normalize the player's direction and the target vector on the xz plane
+    local player_dir_xz = vector():set(player_dir.x, 0, player_dir.z):normalize()
+    local to_target_xz = vector():set(to_target.x, 0, to_target.z):normalize()
+
+    -- Calculate the angle using the dot product
+    local dot_product = player_dir_xz:dotproduct(to_target_xz)
+    local angle = math.acos(clamp(dot_product, -1, 1)) -- Clamp to avoid precision errors
+
+    -- Determine the sign of the angle using the cross product
+    local cross_product = player_dir_xz.x * to_target_xz.z - player_dir_xz.z * to_target_xz.x
+    if cross_product > 0 then
+        angle = -angle
+    end
+
+    return angle
+end
+
+function ui_tacmap:get_scale(range, center, bounds)
+    local furthest_distance = 0
+    local furthest_point_idx = nil
+
+    for i = 1, #bounds do
+        local distance = nanosuit_utils.vec2_distance_to(center, bounds[i])
+        if distance > furthest_distance then
+            furthest_distance = distance
+            furthest_point_idx = i
+        end
+    end
+
+    return furthest_distance / range
 end

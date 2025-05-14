@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 02/05/2025                                                                                             ---
+---    Date : 15/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -47,6 +47,15 @@ function vec_magnitude_xz(vec)
     local vec_xz = vector():set(vec.x, 0, vec.z)
     return vec_xz:magnitude()
 end
+
+--- Function used to calculate the distance between two 2D vectors.
+--- @param lhs vector
+--- @param rhs vector
+--- @return number
+function vec2_distance_to(lhs, rhs)
+    return math.sqrt((rhs.x - lhs.x)^2 + (rhs.y - lhs.y)^2)
+end
+
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Sound functions
