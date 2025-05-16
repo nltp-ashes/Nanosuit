@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 15/05/2025                                                                                             ---
+---    Date : 17/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -92,20 +92,19 @@ function ui_tacmap:__init(core, parent) super()
     self.m_core = core
     self.m_parent = parent
 
-    self.m_player = vector2():set(118, 661)
+    self.m_player = vector2():set(118, 651)
     self.m_tacmap_bounds = {
-        [1] = vector2():set(39, 595),
+        [1] = vector2():set(50, 595),
         [2] = vector2():set(192, 584),
         [3] = vector2():set(192, 700),
         [4] = vector2():set(176, 719),
         [5] = vector2():set(65, 725),
         [6] = vector2():set(65, 697),
-        [7] = vector2():set(39, 677),
+        [7] = vector2():set(50, 685),
     }
     self.m_range = 50
     self.m_scale = self:get_scale(self.m_range, self.m_player, self.m_tacmap_bounds)
-
-    self.m_debug_player = debug_render.add_object(101, DBG_ScriptObject.line):cast_dbg_line()
+    self.m_tracked_objects = {}
 
     self.m_debug_lines = {
         [1] = debug_render.add_object(201, DBG_ScriptObject.line):cast_dbg_line(),
@@ -116,8 +115,6 @@ function ui_tacmap:__init(core, parent) super()
         [6] = debug_render.add_object(206, DBG_ScriptObject.line):cast_dbg_line(),
         [7] = debug_render.add_object(207, DBG_ScriptObject.line):cast_dbg_line(),
     }
-
-    self.m_debug_test_obj = debug_render.add_object(401, DBG_ScriptObject.line):cast_dbg_line()
 
     -- Build UI
     self.m_xml = CScriptXmlInit()
@@ -135,9 +132,6 @@ end
 
 function ui_tacmap:Update(force)
     CUIScriptWnd.Update(self)
-
-    self.m_debug_player.point_a = game.ui2world(self.m_player)
-    self.m_debug_player.point_b = game.ui2world(vector2():set(self.m_player.x, self.m_player.y - 10))
 
     self.m_debug_lines[1].point_a = game.ui2world(self.m_tacmap_bounds[1])
     self.m_debug_lines[1].point_b = game.ui2world(self.m_tacmap_bounds[2])
@@ -160,10 +154,38 @@ function ui_tacmap:Update(force)
     self.m_debug_lines[7].point_a = game.ui2world(self.m_tacmap_bounds[7])
     self.m_debug_lines[7].point_b = game.ui2world(self.m_tacmap_bounds[1])
 
-    local test_obj_pos_world = vector():set(0.14054030179977,6.4193840026855,34.733509063721)
-    local test_obj_pos_tacmap = self:world_to_tacmap(test_obj_pos_world)
-    self.m_debug_test_obj.point_a = game.ui2world(self.m_player)
-    self.m_debug_test_obj.point_b = game.ui2world(test_obj_pos_tacmap)
+    -- Mark all as not refreshed
+    for _,data in pairs(self.m_tracked_objects) do
+        data.refreshed = false
+    end
+
+    -- Iterate over all objects in proximity and refresh/track them
+    level.iterate_nearest(db.actor:position(), self.m_range, function(obj)
+        if (obj and (IsStalker(obj) or IsMonster(obj)) and obj:id() ~= AC_ID and obj:alive()) then
+            if not self.m_tracked_objects[obj:id()] then
+                self.m_tracked_objects[obj:id()] = {}
+                self.m_tracked_objects[obj:id()].static = self.m_xml:InitStatic("object_icon", self)
+                self.m_tracked_objects[obj:id()].static:SetAutoDelete(true)
+                arm.scale_ui(self.m_tracked_objects[obj:id()].static, true, true, "center")
+            end
+            self.m_tracked_objects[obj:id()].pos = obj:position()
+            self.m_tracked_objects[obj:id()].refreshed = true
+        end
+    end)
+
+    -- Update tracked objects or destroy untracked ones
+    for obj_id,data in pairs(self.m_tracked_objects) do
+        local pos_tacmap = self:world_to_tacmap(data.pos)
+
+        if not data.refreshed or not self:is_within_bounds(pos_tacmap) then
+            self:DetachChild(self.m_tracked_objects[obj_id].static)
+            self.m_tracked_objects[obj_id] = nil
+        else
+            pos_tacmap.x = pos_tacmap.x - data.static:GetWidth() / 2
+            pos_tacmap.y = pos_tacmap.y - data.static:GetHeight() / 2
+            data.static:SetWndPos(pos_tacmap)
+        end
+    end
 end
 
 function ui_tacmap:world_to_tacmap(pos)
@@ -221,4 +243,23 @@ function ui_tacmap:get_scale(range, center, bounds)
     end
 
     return furthest_distance / range
+end
+
+function ui_tacmap:is_within_bounds(pos)
+    local bounds = self.m_tacmap_bounds
+    local inside = false
+    local j = #bounds
+
+    for i = 1, #bounds do
+        local vi = bounds[i]
+        local vj = bounds[j]
+
+        if ((vi.y > pos.y) ~= (vj.y > pos.y)) and (pos.x < (vj.x - vi.x) * (pos.y - vi.y) / (vj.y - vi.y) + vi.x) then
+            inside = not inside
+        end
+
+        j = i
+    end
+
+    return inside
 end

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 15/05/2025                                                                                             ---
+---    Date : 17/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -89,4 +89,19 @@ function string_pad_l(var, char, length)
         end
     end
     return ret
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Other functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to determine if the object is a legs object.
+--- @param obj game_object
+--- @return boolean
+function is_legs(obj)
+    -- FIXME: A better check is needed
+    if obj and obj:section() == "outfit_nanosuit_legs" then
+        return true
+    end
+    return false
 end
