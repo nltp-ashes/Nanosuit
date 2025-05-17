@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/05/2025                                                                                             ---
+---    Date : 18/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -106,16 +106,6 @@ function ui_tacmap:__init(core, parent) super()
     self.m_scale = self:get_scale(self.m_range, self.m_player, self.m_tacmap_bounds)
     self.m_tracked_objects = {}
 
-    self.m_debug_lines = {
-        [1] = debug_render.add_object(201, DBG_ScriptObject.line):cast_dbg_line(),
-        [2] = debug_render.add_object(202, DBG_ScriptObject.line):cast_dbg_line(),
-        [3] = debug_render.add_object(203, DBG_ScriptObject.line):cast_dbg_line(),
-        [4] = debug_render.add_object(204, DBG_ScriptObject.line):cast_dbg_line(),
-        [5] = debug_render.add_object(205, DBG_ScriptObject.line):cast_dbg_line(),
-        [6] = debug_render.add_object(206, DBG_ScriptObject.line):cast_dbg_line(),
-        [7] = debug_render.add_object(207, DBG_ScriptObject.line):cast_dbg_line(),
-    }
-
     -- Build UI
     self.m_xml = CScriptXmlInit()
     self.m_xml:ParseFile("ui_nanosuit_tacmap.xml")
@@ -133,27 +123,10 @@ end
 function ui_tacmap:Update(force)
     CUIScriptWnd.Update(self)
 
-    self.m_debug_lines[1].point_a = game.ui2world(self.m_tacmap_bounds[1])
-    self.m_debug_lines[1].point_b = game.ui2world(self.m_tacmap_bounds[2])
+    self:update_icons()
+end
 
-    self.m_debug_lines[2].point_a = game.ui2world(self.m_tacmap_bounds[2])
-    self.m_debug_lines[2].point_b = game.ui2world(self.m_tacmap_bounds[3])
-
-    self.m_debug_lines[3].point_a = game.ui2world(self.m_tacmap_bounds[3])
-    self.m_debug_lines[3].point_b = game.ui2world(self.m_tacmap_bounds[4])
-
-    self.m_debug_lines[4].point_a = game.ui2world(self.m_tacmap_bounds[4])
-    self.m_debug_lines[4].point_b = game.ui2world(self.m_tacmap_bounds[5])
-
-    self.m_debug_lines[5].point_a = game.ui2world(self.m_tacmap_bounds[5])
-    self.m_debug_lines[5].point_b = game.ui2world(self.m_tacmap_bounds[6])
-
-    self.m_debug_lines[6].point_a = game.ui2world(self.m_tacmap_bounds[6])
-    self.m_debug_lines[6].point_b = game.ui2world(self.m_tacmap_bounds[7])
-
-    self.m_debug_lines[7].point_a = game.ui2world(self.m_tacmap_bounds[7])
-    self.m_debug_lines[7].point_b = game.ui2world(self.m_tacmap_bounds[1])
-
+function ui_tacmap:update_icons()
     -- Mark all as not refreshed
     for _,data in pairs(self.m_tracked_objects) do
         data.refreshed = false
@@ -163,29 +136,38 @@ function ui_tacmap:Update(force)
     level.iterate_nearest(db.actor:position(), self.m_range, function(obj)
         if (obj and (IsStalker(obj) or IsMonster(obj)) and obj:id() ~= AC_ID and obj:alive()) then
             if not self.m_tracked_objects[obj:id()] then
-                self.m_tracked_objects[obj:id()] = {}
-                self.m_tracked_objects[obj:id()].static = self.m_xml:InitStatic("object_icon", self)
-                self.m_tracked_objects[obj:id()].static:SetAutoDelete(true)
-                arm.scale_ui(self.m_tracked_objects[obj:id()].static, true, true, "center")
+                self:attach_icon(obj:id())
             end
-            self.m_tracked_objects[obj:id()].pos = obj:position()
-            self.m_tracked_objects[obj:id()].refreshed = true
+            self:update_icon(obj:id(), obj:position())
         end
     end)
 
     -- Update tracked objects or destroy untracked ones
     for obj_id,data in pairs(self.m_tracked_objects) do
         local pos_tacmap = self:world_to_tacmap(data.pos)
-
-        if not data.refreshed or not self:is_within_bounds(pos_tacmap) then
-            self:DetachChild(self.m_tracked_objects[obj_id].static)
-            self.m_tracked_objects[obj_id] = nil
+        if data.refreshed and self:is_within_bounds(pos_tacmap) then
+            arm.move_and_center_element(data.static, pos_tacmap.x, pos_tacmap.y)
         else
-            pos_tacmap.x = pos_tacmap.x - data.static:GetWidth() / 2
-            pos_tacmap.y = pos_tacmap.y - data.static:GetHeight() / 2
-            data.static:SetWndPos(pos_tacmap)
+            self:detach_icon(obj_id)
         end
     end
+end
+
+function ui_tacmap:update_icon(obj_id, pos)
+    self.m_tracked_objects[obj_id].pos = pos
+    self.m_tracked_objects[obj_id].refreshed = true
+end
+
+function ui_tacmap:attach_icon(obj_id)
+    self.m_tracked_objects[obj_id] = {}
+    self.m_tracked_objects[obj_id].static = self.m_xml:InitStatic("object_icon", self)
+    self.m_tracked_objects[obj_id].static:SetAutoDelete(true)
+    arm.scale_ui(self.m_tracked_objects[obj_id].static, true, true, "center")
+end
+
+function ui_tacmap:detach_icon(obj_id)
+    self:DetachChild(self.m_tracked_objects[obj_id].static)
+    self.m_tracked_objects[obj_id] = nil
 end
 
 function ui_tacmap:world_to_tacmap(pos)
