@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 18/05/2025                                                                                             ---
+---    Date : 25/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -14,7 +14,7 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- Variables
-poly_point              = -1
+poly_point              = 0
 holding_ctrl            = false
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ function on_key_press(dik)
     end
 
     local pos = nil
-    if poly_point == -1 then
+    if poly_point == 0 then
         pos = nanosuit_core.instance.m_uis.hud.m_ui_tacmap.m_player
     else
         pos = nanosuit_core.instance.m_uis.hud.m_ui_tacmap.m_tacmap_bounds[poly_point]
@@ -61,7 +61,7 @@ function on_key_press(dik)
             poly_point = poly_point - 1
             printf("[NS] Poly point set to : poly_point:%s", poly_point)
         else
-            poly_point = -1
+            poly_point = 0
             printf("[NS] Poly point set to player")
         end
     elseif dik == DIK_keys.DIK_HOME then
