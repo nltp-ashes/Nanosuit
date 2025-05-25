@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/05/2025                                                                                             ---
+---    Date : 25/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -56,6 +56,21 @@ function vec2_distance_to(lhs, rhs)
     return math.sqrt((rhs.x - lhs.x)^2 + (rhs.y - lhs.y)^2)
 end
 
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Color functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to convert a shitty float color value to a ARGB table.
+--- @param clr number
+--- @return table
+function float_to_argb(clr)
+    return {
+        a = bit.band(bit.rshift(clr, 24), 255),
+        r = bit.band(bit.rshift(clr, 16), 255),
+        g = bit.band(bit.rshift(clr, 8), 255),
+        b = bit.band(clr, 255)
+    }
+end
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Sound functions

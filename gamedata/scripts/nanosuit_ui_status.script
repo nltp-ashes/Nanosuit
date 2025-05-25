@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 13/05/2025                                                                                             ---
+---    Date : 25/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit status hub (energy, health, ammo, etc) UI.                                 ---
@@ -39,7 +39,7 @@ function on_key_press(dik)
         return
     end
 
-    local static = nanosuit_core.instance.m_uis.hud.m_ui_status.m_ui_health_icon
+    local static = actor_status.HUD.dialog
 
     local pos = vector2():set(static:GetWndPos().x, static:GetWndPos().y)
 
@@ -69,8 +69,8 @@ end
 --- Function used to register callbacks.
 --- @return nil
 function on_game_start()
-    --RegisterScriptCallback("on_key_press", on_key_press)
-    --RegisterScriptCallback("on_key_release", on_key_release)
+    RegisterScriptCallback("on_key_press", on_key_press)
+    RegisterScriptCallback("on_key_release", on_key_release)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------

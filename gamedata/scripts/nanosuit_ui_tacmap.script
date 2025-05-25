@@ -77,8 +77,8 @@ end
 --- Function used to register callbacks.
 --- @return nil
 function on_game_start()
-    RegisterScriptCallback("on_key_press", on_key_press)
-    RegisterScriptCallback("on_key_release", on_key_release)
+    --RegisterScriptCallback("on_key_press", on_key_press)
+    --RegisterScriptCallback("on_key_release", on_key_release)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------

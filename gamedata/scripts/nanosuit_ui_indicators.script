@@ -1,0 +1,140 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 29/05/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit indicators UI.                                                             ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Indicators UI class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "ui_indicators" (CUIScriptWnd)
+
+function ui_indicators:__init(core, parent) super()
+    -- Variables
+    self.m_core = core
+    self.m_parent = parent
+
+    self.slot = {}
+    self.state_to_color = {
+        [1] = GetARGB(255,255,255,255), -- white
+        [2] = GetARGB(255,200,200,200), -- grey
+        [3] = GetARGB(255,255,255,50), -- yellow
+        [4] = GetARGB(255,255,125,50), -- orange
+        [5] = GetARGB(255,255,50,50), -- red
+    }
+    self.config_override = {
+        ["Radiation"] = { icon = "ui_nanosuit_ind_booster_rad", background = "ui_nanosuit_ind_indicator_slot" },
+        ["Hunger"] = { icon = "ui_nanosuit_ind_indicator_hunger", background = "ui_nanosuit_ind_indicator_slot" },
+        ["Overweight"] = { icon = "ui_nanosuit_ind_indicator_overweight", background = "ui_nanosuit_ind_indicator_slot" },
+
+        ["HpRestore"] = { icon = "ui_nanosuit_ind_booster_health", background = "ui_nanosuit_ind_booster_slot" },
+        ["BleedingRestore"] = { icon = "ui_nanosuit_ind_booster_bleed", background = "ui_nanosuit_ind_booster_slot" },
+        ["RadiationRestore"] = { icon = "ui_nanosuit_ind_booster_rad", background = "ui_nanosuit_ind_booster_slot" },
+        ["MaxWeight"] = { icon = "ui_nanosuit_ind_booster_carry_weight", background = "ui_nanosuit_ind_booster_slot" },
+        ["PowerRestore"] = { icon = "ui_nanosuit_ind_booster_power", background = "ui_nanosuit_ind_booster_slot" },
+        ["RadiationProtection"] = { icon = "ui_nanosuit_ind_booster_ext_rad", background = "ui_nanosuit_ind_booster_slot" },
+        ["TelepaticProtection"] = { icon = "ui_nanosuit_ind_booster_psi", background = "ui_nanosuit_ind_booster_slot" },
+        ["ChemicalBurnProtection"] = { icon = "ui_nanosuit_ind_booster_chem", background = "ui_nanosuit_ind_booster_slot" }
+    }
+    self.ratio  = utils_xml.screen_ratio()
+    self.spacing = 10
+
+    actor_status.prepare_indictors_list()
+
+    -- Build UI
+    self.m_xml = CScriptXmlInit()
+    self.m_xml:ParseFile("ui_nanosuit_indicators.xml")
+
+    self.dialog = self.m_xml:InitStatic("indicators", self)
+    self.dialog:Show(false)
+
+    self:iterate_indicators(function(name, _, i)
+        self.slot[i] = {}
+        self.slot[i].name = name
+
+        self.slot[i].background = self.m_xml:InitStatic("indicators:static", self.dialog)
+        local background_x = (i-1) * (self.slot[i].background:GetWidth() + self.spacing)
+        self.slot[i].background:SetWndPos(vector2():set(background_x, 0))
+        utils_xml.correct_ratio(self.slot[i].background)
+
+        self.slot[i].icon = self.m_xml:InitStatic("indicators:static", self.dialog)
+        local icon_x = (i-1) * (self.slot[i].icon:GetWidth() + self.spacing)
+        self.slot[i].icon:SetWndPos(vector2():set(icon_x, 0))
+        utils_xml.correct_ratio(self.slot[i].icon)
+    end)
+end
+
+function ui_indicators:destroy()
+end
+
+function ui_indicators:Update(force)
+    CUIScriptWnd.Update(self)
+
+    -- Clear all
+    self:hide_all()
+
+    local index = 0
+    self:iterate_indicators(function(name, config, i)
+        local value = config.functor and execute_func(unpack(config.functor))
+
+        local pass = false
+        if config.typ == "state" then
+            pass = value and value <= 4 and value >= 1
+        elseif config.typ == "booster" then
+            pass = value and true or false
+        end
+
+        if not pass then
+            return
+        end
+
+        index = index + 1
+
+        self:update_static(config, index, value, name, "background", "anim_bk")
+        self:update_static(config, index, value, name, "icon", "anim_icon")
+    end)
+
+    self.dialog:Show(index > 0)
+end
+
+function ui_indicators:update_static(config, i, value, name, key, anim_flag)
+    if config[key] then
+        if config.typ == "booster" then
+            if (config.anim_period and (value < config.anim_period)) or config[anim_flag] then
+                self.slot[i][key]:SetColorAnimation("ui_slow_blinking_alpha", 13, 0)
+            else
+                self.slot[i][key]:RemoveColorAnimation()
+            end
+        else
+            self.slot[i][key]:SetTextureColor(self.state_to_color[value + 1])
+        end
+
+        self.slot[i][key]:InitTexture(self.config_override[name][key] or config[key])
+        self.slot[i][key]:Show(true)
+    end
+end
+
+function ui_indicators:hide_all()
+    self:iterate_indicators(function(_, _, i)
+        self.slot[i].background:Show(false)
+        self.slot[i].icon:Show(false)
+    end)
+end
+
+function ui_indicators:iterate_indicators(func)
+    local i = 1
+    for name,config in spairs(actor_status.indicators, actor_status.func_index) do
+        func(name, config, i)
+        i = i + 1
+    end
+end
