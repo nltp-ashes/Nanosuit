@@ -1,0 +1,247 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 25/05/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit tactical map UI.                                                           ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Variables
+poly_point              = 0
+holding_ctrl            = false
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function on_key_release(dik)
+    if dik == DIK_keys.DIK_LCONTROL then
+        holding_ctrl = false
+    end
+end
+
+function on_key_press(dik)
+    if dik == DIK_keys.DIK_LCONTROL then
+        holding_ctrl = true
+    end
+    if not nanosuit_core.instance then
+        return
+    end
+
+    local pos = nil
+    if poly_point == 0 then
+        pos = nanosuit_core.instance.m_uis.hud.m_ui_tacmap.m_player
+    else
+        pos = nanosuit_core.instance.m_uis.hud.m_ui_tacmap.m_tacmap_bounds[poly_point]
+    end
+
+    local transform = holding_ctrl and 10 or 1
+    if dik == DIK_keys.DIK_DOWN then
+        pos.y = pos.y + transform
+    elseif dik == DIK_keys.DIK_UP then
+        pos.y = pos.y - transform
+    elseif dik == DIK_keys.DIK_LEFT then
+        pos.x = pos.x - transform
+    elseif dik == DIK_keys.DIK_RIGHT then
+        pos.x = pos.x + transform
+    elseif dik == DIK_keys.DIK_ADD then
+        if poly_point < 7 then
+            poly_point = poly_point + 1
+            printf("[NS] Poly point set to : poly_point:%s", poly_point)
+        end
+    elseif dik == DIK_keys.DIK_SUBTRACT then
+        if poly_point > 1 then
+            poly_point = poly_point - 1
+            printf("[NS] Poly point set to : poly_point:%s", poly_point)
+        else
+            poly_point = 0
+            printf("[NS] Poly point set to player")
+        end
+    elseif dik == DIK_keys.DIK_HOME then
+        printf("[NS] Poly : x:%s y:%s", pos.x, pos.y)
+        return
+    end
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Callbacks registration
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to register callbacks.
+--- @return nil
+function on_game_start()
+    --RegisterScriptCallback("on_key_press", on_key_press)
+    --RegisterScriptCallback("on_key_release", on_key_release)
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Tactical map UI class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "ui_tacmap" (CUIScriptWnd)
+
+function ui_tacmap:__init(core, parent) super()
+    -- Variables
+    self.m_core = core
+    self.m_parent = parent
+
+    self.m_player = vector2():set(118, 651)
+    self.m_tacmap_bounds = {
+        [1] = vector2():set(50, 595),
+        [2] = vector2():set(192, 584),
+        [3] = vector2():set(192, 700),
+        [4] = vector2():set(176, 719),
+        [5] = vector2():set(65, 725),
+        [6] = vector2():set(65, 697),
+        [7] = vector2():set(50, 685),
+    }
+    self.m_range = 50
+    self.m_scale = self:get_scale(self.m_range, self.m_player, self.m_tacmap_bounds)
+    self.m_tracked_objects = {}
+
+    -- Build UI
+    self.m_xml = CScriptXmlInit()
+    self.m_xml:ParseFile("ui_nanosuit_tacmap.xml")
+
+    self.m_background = self.m_xml:InitStatic("background", self)
+    arm.scale_ui(self.m_background, true, true, "left")
+end
+
+function ui_tacmap:__finalize()
+end
+
+function ui_tacmap:destroy()
+end
+
+function ui_tacmap:Update(force)
+    CUIScriptWnd.Update(self)
+
+    self:update_icons()
+end
+
+function ui_tacmap:update_icons()
+    -- Mark all as not refreshed
+    for _,data in pairs(self.m_tracked_objects) do
+        data.refreshed = false
+    end
+
+    -- Iterate over all objects in proximity and refresh/track them
+    level.iterate_nearest(db.actor:position(), self.m_range, function(obj)
+        if (obj and (IsStalker(obj) or IsMonster(obj)) and obj:id() ~= AC_ID and obj:alive()) then
+            if not self.m_tracked_objects[obj:id()] then
+                self:attach_icon(obj:id())
+            end
+            self:update_icon(obj:id(), obj:position())
+        end
+    end)
+
+    -- Update tracked objects or destroy untracked ones
+    for obj_id,data in pairs(self.m_tracked_objects) do
+        local pos_tacmap = self:world_to_tacmap(data.pos)
+        if data.refreshed and self:is_within_bounds(pos_tacmap) then
+            arm.move_and_center_element(data.static, pos_tacmap.x, pos_tacmap.y)
+        else
+            self:detach_icon(obj_id)
+        end
+    end
+end
+
+function ui_tacmap:update_icon(obj_id, pos)
+    self.m_tracked_objects[obj_id].pos = pos
+    self.m_tracked_objects[obj_id].refreshed = true
+end
+
+function ui_tacmap:attach_icon(obj_id)
+    self.m_tracked_objects[obj_id] = {}
+    self.m_tracked_objects[obj_id].static = self.m_xml:InitStatic("object_icon", self)
+    self.m_tracked_objects[obj_id].static:SetAutoDelete(true)
+    arm.scale_ui(self.m_tracked_objects[obj_id].static, true, true, "center")
+end
+
+function ui_tacmap:detach_icon(obj_id)
+    self:DetachChild(self.m_tracked_objects[obj_id].static)
+    self.m_tracked_objects[obj_id] = nil
+end
+
+function ui_tacmap:world_to_tacmap(pos)
+    -- Translate distance from world space to tacmap space
+    local distance_world = db.actor:position():distance_to(pos)
+    local distance_tacmap = distance_world * self.m_scale
+
+    -- Get angle from player to target in tacmap space
+    local angle = self:get_heading(pos) -- angle in radians
+
+    -- Calculate the x and y coordinates on the tacmap relative to self.m_player
+    local x = self.m_player.x + distance_tacmap * math.sin(angle)
+    local y = self.m_player.y - distance_tacmap * math.cos(angle)
+
+    return vector2():set(x, y)
+end
+
+function ui_tacmap:get_heading(pos)
+    local dev = device()
+
+    -- Get the player's position and direction
+    local player_pos = dev.cam_pos
+    local player_dir = dev.cam_dir
+
+    -- Calculate the vector from the player to the target
+    local to_target = vector():sub(pos, player_pos)
+
+    -- Normalize the player's direction and the target vector on the xz plane
+    local player_dir_xz = vector():set(player_dir.x, 0, player_dir.z):normalize()
+    local to_target_xz = vector():set(to_target.x, 0, to_target.z):normalize()
+
+    -- Calculate the angle using the dot product
+    local dot_product = player_dir_xz:dotproduct(to_target_xz)
+    local angle = math.acos(clamp(dot_product, -1, 1)) -- Clamp to avoid precision errors
+
+    -- Determine the sign of the angle using the cross product
+    local cross_product = player_dir_xz.x * to_target_xz.z - player_dir_xz.z * to_target_xz.x
+    if cross_product > 0 then
+        angle = -angle
+    end
+
+    return angle
+end
+
+function ui_tacmap:get_scale(range, center, bounds)
+    local furthest_distance = 0
+    local furthest_point_idx = nil
+
+    for i = 1, #bounds do
+        local distance = nanosuit_utils.vec2_distance_to(center, bounds[i])
+        if distance > furthest_distance then
+            furthest_distance = distance
+            furthest_point_idx = i
+        end
+    end
+
+    return furthest_distance / range
+end
+
+function ui_tacmap:is_within_bounds(pos)
+    local bounds = self.m_tacmap_bounds
+    local inside = false
+    local j = #bounds
+
+    for i = 1, #bounds do
+        local vi = bounds[i]
+        local vj = bounds[j]
+
+        if ((vi.y > pos.y) ~= (vj.y > pos.y)) and (pos.x < (vj.x - vi.x) * (pos.y - vi.y) / (vj.y - vi.y) + vi.x) then
+            inside = not inside
+        end
+
+        j = i
+    end
+
+    return inside
+end

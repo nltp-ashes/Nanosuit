@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 04/05/2025                                                                                             ---
+---    Date : 17/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
@@ -170,7 +170,7 @@ function cloak:set_legs_invisible(legs_obj)
 end
 
 function cloak:game_object_on_net_spawn(obj)
-    if se_legs and obj:section() == "outfit_nanosuit_legs" then
+    if se_legs and nanosuit_utils.is_legs(obj) then
         CreateTimeEvent("nanosuit_legs_spawn", obj:name(), 0, function(id)
             local obj_now = level.object_by_id(id)
             if obj_now then
@@ -182,7 +182,7 @@ function cloak:game_object_on_net_spawn(obj)
 end
 
 function cloak:game_object_on_net_destroy(obj)
-    if se_legs and obj:section() == "outfit_nanosuit_legs" then
+    if se_legs and nanosuit_utils.is_legs(obj) then
         self:set_legs_visible(obj)
     end
 end

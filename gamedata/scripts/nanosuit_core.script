@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 04/05/2025                                                                                             ---
+---    Date : 11/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -26,25 +26,47 @@ instance                = nil
 -- ---------------------------------------------------------------------------------------------------------------------
 
 function actor_item_to_slot(_)
-    local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-    if outfit ~= nil and outfit:section() == "outfit_nanosuit" and instance == nil then
-        instance = core(outfit:id())
-    end
+    nextTick(function()
+        local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
+        if outfit ~= nil and outfit:section() == "outfit_nanosuit" and instance == nil then
+            if instance == nil then
+                printf("Nanosuit core initializing")
+                instance = core()
+            end
+        end
+        return true
+    end)
 end
 
 function actor_item_to_ruck(_)
-    local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-    if (outfit == nil or outfit:section() ~= "outfit_nanosuit") and instance ~= nil then
-        instance:destroy()
-        instance = nil
-    end
+    nextTick(function()
+        local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
+        if (outfit == nil or outfit:section() ~= "outfit_nanosuit") and instance ~= nil then
+            instance:destroy()
+            instance = nil
+            printf("Nanosuit core destroyed")
+        end
+        return true
+    end)
 end
 
 function actor_on_item_drop(_)
-    local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-    if (outfit == nil or outfit:section() ~= "outfit_nanosuit") and instance ~= nil then
+    nextTick(function()
+        local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
+        if (outfit == nil or outfit:section() ~= "outfit_nanosuit") and instance ~= nil then
+            instance:destroy()
+            instance = nil
+            printf("Nanosuit core destroyed")
+        end
+        return true
+    end)
+end
+
+function actor_on_net_destroy()
+    if instance ~= nil then
         instance:destroy()
         instance = nil
+        printf("Nanosuit core destroyed")
     end
 end
 
@@ -58,6 +80,7 @@ function on_game_start()
     RegisterScriptCallback("actor_item_to_slot", actor_item_to_slot)
     RegisterScriptCallback("actor_item_to_ruck", actor_item_to_ruck)
     RegisterScriptCallback("actor_on_item_drop", actor_on_item_drop)
+    RegisterScriptCallback("actor_on_net_destroy", actor_on_net_destroy)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -66,10 +89,7 @@ end
 
 class "core"
 
-function core:__init(obj_id)
-    -- Misc
-    self.m_suit_id = obj_id
-
+function core:__init()
     -- Energy related variables
     self.m_energy = 100
     self.m_energy_regen_rate = 100
@@ -101,25 +121,27 @@ function core:__init(obj_id)
         [armor_modes_enum.cloak] = nanosuit_mode_cloak[armor_modes_enum.cloak](self, armor_modes_enum.cloak)
     }
 
-    -- UIs
-    self.m_uis = {
-        menu = nanosuit_ui_menu.ui_menu(self),
-        energy = nanosuit_ui_energy.ui_energy(self)
-    }
-
     -- Default mode initialization
     self.m_default_mode = armor_modes_enum.armor
     self.m_current_mode = self.m_modes[self.m_default_mode]
     self.m_current_mode:apply()
 
+    -- UIs
+    self.m_uis = {
+        menu = nanosuit_ui_menu.ui_menu(self),
+        hud = nanosuit_ui_hud.ui_hud(self),
+    }
+
     -- Register callbacks
     RegisterScriptCallback("actor_on_update", self)
+    RegisterScriptCallback("on_option_change", self)
 end
 
 function core:destroy()
     self.m_current_mode:remove()
 
     UnregisterScriptCallback("actor_on_update", self)
+    UnregisterScriptCallback("on_option_change", self)
 
     self.m_modes = {
         [armor_modes_enum.armor] = nil,
@@ -129,7 +151,7 @@ function core:destroy()
     }
 
     self.m_uis.menu:destroy()
-    self.m_uis.energy:destroy()
+    self.m_uis.hud:destroy()
 end
 
 function core:use_energy(amount)
@@ -143,6 +165,14 @@ function core:change_mode(mode)
         self.m_current_mode = self.m_modes[mode]
         self.m_current_mode:apply()
     end
+end
+
+function core:on_option_change()
+    -- Restart UIs
+    self.m_uis.menu:destroy()
+    self.m_uis.hud:destroy()
+    self.m_uis.menu = nanosuit_ui_menu.ui_menu(self)
+    self.m_uis.hud = nanosuit_ui_hud.ui_hud(self)
 end
 
 function core:actor_on_update()

@@ -2,10 +2,10 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 21/04/2025                                                                                             ---
+---    Date : 06/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
----    Script used to handle the Nanosuit energy UI.                                                                 ---
+---    Script used to handle the logic of a carry weight booster usable by a Nanosuit mode.                          ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -13,24 +13,43 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
+-- Imports
+actor_slots_enum        = nanosuit_utils.actor_slots_enum
+
 -- ---------------------------------------------------------------------------------------------------------------------
--- Menu UI Class
+-- Speed mode class
 -- ---------------------------------------------------------------------------------------------------------------------
 
-class "ui_energy"
+class "weight" (nanosuit_booster.abstract_booster)
 
-function ui_energy:__init(core)
-    self.m_core = core
+function weight:__init(core, name) super(core, name)
+    self.m_carry_weight_bonus = 25
 
-    -- Register callbacks
-    RegisterScriptCallback("actor_on_update", self)
+    -- Cache
+    self.m_cache[actor_slots_enum.outfit] = { enabled = true, obj_id = nil }
 end
 
-function ui_energy:destroy()
-    -- Unregister callbacks
-    UnregisterScriptCallback("actor_on_update", self)
+function weight:filter(obj, slot)
+    if not nanosuit_booster.abstract_booster.filter(self, obj, slot) then
+        return false
+    end
+    return IsOutfit(obj)
 end
 
-function ui_energy:actor_on_update()
-    actor_menu.set_msg(1, "Energy : " .. round(self.m_core.m_energy), 1)
+function weight:set(obj, slot)
+    nanosuit_booster.abstract_booster.set(self, obj, slot)
+
+    local max_weight = obj:get_additional_max_weight()
+    local max_walk_weight = obj:get_additional_max_walk_weight()
+    obj:set_additional_max_weight(max_weight + self.m_carry_weight_bonus)
+    obj:set_additional_max_walk_weight(max_walk_weight + self.m_carry_weight_bonus)
+end
+
+function weight:unset(obj, slot)
+    local max_weight = obj:get_additional_max_weight()
+    local max_walk_weight = obj:get_additional_max_walk_weight()
+    obj:set_additional_max_weight(max_weight - self.m_carry_weight_bonus)
+    obj:set_additional_max_walk_weight(max_walk_weight - self.m_carry_weight_bonus)
+
+    nanosuit_booster.abstract_booster.unset(self, obj, slot)
 end

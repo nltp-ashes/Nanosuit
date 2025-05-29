@@ -1,0 +1,71 @@
+<!--=================================================================================================================-->
+<!--                                                                                                                 -->
+<!--    Original Author(s) : NLTP_ASHES                                                                              -->
+<!--    Edited : N/A                                                                                                 -->
+<!--    Date : 11/05/2025                                                                                            -->
+<!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
+<!--                                                                                                                 -->
+<!--    UI template for the Nanosuit status hub.                                                                     -->
+<!--                                                                                                                 -->
+<!--    Background : #637D66 Text : #81B787                                                                          -->
+<!--                                                                                                                 -->
+<!--=================================================================================================================-->
+<w>
+    <!-- Current suit mode -->
+    <suit_mode x="951" y="695" width="50" height="50" stretch="1" />
+
+    <!-- Energy -->
+    <energy x="895" y="683" width="50" height="20" stretch="1">
+        <text complex_mode="1" r="129" g="183" b="135" align="c" vert_align="c" font="letterica16"/>
+    </energy>
+
+    <energy_icon x="882" y="686" width="15" height="15" stretch="1">
+        <texture>ui_nanosuit_status_energy_icon</texture>
+    </energy_icon>
+
+    <energy_bar_background x="779" y="681" width="122" height="20" stretch="1">
+        <texture>ui_nanosuit_status_energy_bar</texture>
+    </energy_bar_background>
+
+    <energy_bar x="779" y="681" width="122" height="20" mode="back" min="0" max="100" pos="100">
+        <progress stretch="1">
+            <texture>ui_nanosuit_status_energy_bar</texture>
+        </progress>
+    </energy_bar>
+
+    <!-- Health -->
+    <health x="895" y="701" width="50" height="20" stretch="1">
+        <text complex_mode="1" r="129" g="183" b="135" align="c" vert_align="c" font="letterica16"/>
+    </health>
+
+    <health_icon x="882" y="704" width="15" height="15" stretch="1">
+        <texture>ui_nanosuit_status_health_icon</texture>
+    </health_icon>
+
+    <health_bar_background x="779" y="699" width="122" height="20" stretch="1">
+        <texture>ui_nanosuit_status_health_bar</texture>
+    </health_bar_background>
+
+    <health_bar x="779" y="699" width="122" height="20" mode="back" min="0" max="100" pos="100">
+        <progress stretch="1">
+            <texture>ui_nanosuit_status_health_bar</texture>
+        </progress>
+    </health_bar>
+
+    <!-- Ammo -->
+    <ammo_count x="820" y="613" width="100" height="40" stretch="1">
+        <text complex_mode="1" r="129" g="183" b="135" align="c" vert_align="c" font="letterica25"/>
+    </ammo_count>
+
+    <ammo_reserve x="883" y="620" width="50" height="20" stretch="1">
+        <text complex_mode="1" r="129" g="183" b="135" align="c" vert_align="c" font="letterica16"/>
+    </ammo_reserve>
+
+    <!-- Fire mode -->
+    <fire_mode x="935" y="624" width="25" height="25" stretch="1" />
+
+    <!-- Background -->
+    <background x="768" y="618" width="246" height="140" stretch="1">
+        <texture a="200">ui_nanosuit_status_bg</texture>
+    </background>
+</w>

@@ -13,6 +13,9 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
+-- Imports
+actor_slots_enum        = nanosuit_utils.actor_slots_enum
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Speed mode class
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -21,27 +24,31 @@ class "ads" (nanosuit_booster.abstract_booster)
 
 function ads:__init(core, name) super(core, name)
     self.m_ads_factor = 0.6
-    self.m_cache.ads_time = nil
+
+    -- Cache
+    self.m_cache[actor_slots_enum.knife] = { enabled = true, obj_id = nil, ads_time = nil }
+    self.m_cache[actor_slots_enum.pistol] = { enabled = true, obj_id = nil, ads_time = nil }
+    self.m_cache[actor_slots_enum.rifle] = { enabled = true, obj_id = nil, ads_time = nil }
 end
 
-function ads:filter(obj)
-    if not nanosuit_booster.abstract_booster.filter(self, obj) then
+function ads:filter(obj, slot)
+    if not nanosuit_booster.abstract_booster.filter(self, obj, slot) then
         return false
     end
     return IsWeapon(obj) and obj:cast_Weapon()
 end
 
-function ads:set(obj)
-    nanosuit_booster.abstract_booster.set(self, obj)
+function ads:set(obj, slot)
+    nanosuit_booster.abstract_booster.set(self, obj, slot)
 
     local wpn_obj = obj:cast_Weapon()
-    self.m_cache.ads_time = wpn_obj:GetZoomRotateTime()
-    wpn_obj:SetZoomRotateTime(self.m_cache.ads_time * self.m_ads_factor)
+    self.m_cache[slot].ads_time = wpn_obj:GetZoomRotateTime()
+    wpn_obj:SetZoomRotateTime(self.m_cache[slot].ads_time * self.m_ads_factor)
 end
 
-function ads:unset(obj)
+function ads:unset(obj, slot)
     local wpn_obj = obj:cast_Weapon()
-    wpn_obj:SetZoomRotateTime(self.m_cache.ads_time)
+    wpn_obj:SetZoomRotateTime(self.m_cache[slot].ads_time)
 
-    nanosuit_booster.abstract_booster.unset(self, obj)
+    nanosuit_booster.abstract_booster.unset(self, obj, slot)
 end

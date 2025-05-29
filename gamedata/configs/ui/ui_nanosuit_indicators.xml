@@ -1,0 +1,15 @@
+<!--=================================================================================================================-->
+<!--                                                                                                                 -->
+<!--    Original Author(s) : NLTP_ASHES                                                                              -->
+<!--    Edited : N/A                                                                                                 -->
+<!--    Date : 17/05/2025                                                                                            -->
+<!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
+<!--                                                                                                                 -->
+<!--    UI template for the Nanosuit indicators.                                                                     -->
+<!--                                                                                                                 -->
+<!--=================================================================================================================-->
+<w>
+    <indicators x="214" y="696" width="480" height="40" stretch="1">
+        <static x="0" y="0" width="40" height="40" stretch="1"/>
+    </indicators>
+</w>

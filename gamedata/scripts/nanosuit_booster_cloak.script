@@ -13,6 +13,9 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
+-- Imports
+actor_slots_enum = nanosuit_utils.actor_slots_enum
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Speed mode class
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -22,31 +25,46 @@ class "cloak" (nanosuit_booster.abstract_booster)
 function cloak:__init(core, name) super(core, name)
     self.m_cloak_texture = [[nanosuit\cloak_pattern]]
     self.m_cloak_shader = [[models\xanomaly]] --[[models\window]] --[[models\pautina]]
-    self.m_cache.shaders = { hud = nil, world = nil }
+
+    -- Cache
+    self.m_cache[actor_slots_enum.knife] = { enabled = true, obj_id = nil, shaders = { hud = nil, world = nil } }
+    self.m_cache[actor_slots_enum.pistol] = { enabled = true, obj_id = nil, shaders = { hud = nil, world = nil } }
+    self.m_cache[actor_slots_enum.rifle] = { enabled = true, obj_id = nil, shaders = { hud = nil, world = nil } }
+    self.m_cache[actor_slots_enum.grenade] = { enabled = true, obj_id = nil, shaders = { hud = nil, world = nil } }
+    self.m_cache[actor_slots_enum.binoculars] = { enabled = true, obj_id = nil, shaders = { hud = nil, world = nil } }
+    self.m_cache[actor_slots_enum.bolt] = { enabled = true, obj_id = nil, shaders = { hud = nil, world = nil } }
+    self.m_cache[actor_slots_enum.outfit] = { enabled = true, obj_id = nil, shaders = { hud = nil, world = nil } }
+    self.m_cache[actor_slots_enum.pda] = { enabled = true, obj_id = nil, shaders = { hud = nil, world = nil } }
+    self.m_cache[actor_slots_enum.detector] = { enabled = true, obj_id = nil, shaders = { hud = nil, world = nil } }
+    self.m_cache[actor_slots_enum.torch] = { enabled = true, obj_id = nil, shaders = { hud = nil, world = nil } }
+    self.m_cache[actor_slots_enum.artefact] = { enabled = true, obj_id = nil, shaders = { hud = nil, world = nil } }
+    self.m_cache[actor_slots_enum.helmet] = { enabled = true, obj_id = nil, shaders = { hud = nil, world = nil } }
+    self.m_cache[actor_slots_enum.backpack] = { enabled = true, obj_id = nil, shaders = { hud = nil, world = nil } }
+    self.m_cache[actor_slots_enum.animation] = { enabled = true, obj_id = nil, shaders = { hud = nil, world = nil } }
 end
 
-function cloak:set(obj)
-    nanosuit_booster.abstract_booster.set(self, obj)
+function cloak:set(obj, slot)
+    nanosuit_booster.abstract_booster.set(self, obj, slot)
 
-    self.m_cache.shaders = { hud = obj:get_shaders(true), world = obj:get_shaders() }
+    self.m_cache[slot].shaders = { hud = obj:get_shaders(true), world = obj:get_shaders() }
 
-    for idx,_ in pairs(self.m_cache.shaders.hud) do
+    for idx, _ in pairs(self.m_cache[slot].shaders.hud) do
         obj:set_shader(idx, self.m_cloak_shader, self.m_cloak_texture, true)
     end
-    for idx,_ in pairs(self.m_cache.shaders.world) do
+    for idx, _ in pairs(self.m_cache[slot].shaders.world) do
         obj:set_shader(idx, self.m_cloak_shader, self.m_cloak_texture)
     end
 end
 
-function cloak:unset(obj)
-    for idx,save in pairs(self.m_cache.shaders.hud) do
+function cloak:unset(obj, slot)
+    for idx, save in pairs(self.m_cache[slot].shaders.hud) do
         obj:set_shader(idx, save.shader, save.texture, true)
     end
-    for idx,save in pairs(self.m_cache.shaders.world) do
+    for idx, save in pairs(self.m_cache[slot].shaders.world) do
         obj:set_shader(idx, save.shader, save.texture)
     end
 
-    self.m_cache.shaders = { hud = nil, world = nil }
+    self.m_cache[slot].shaders = { hud = nil, world = nil }
 
-    nanosuit_booster.abstract_booster.unset(self, obj)
+    nanosuit_booster.abstract_booster.unset(self, obj, slot)
 end
