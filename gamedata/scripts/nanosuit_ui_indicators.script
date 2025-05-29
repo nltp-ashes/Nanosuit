@@ -1,7 +1,7 @@
 ---==================================================================================================================---
 ---                                                                                                                  ---
----    Original Author(s) : NLTP_ASHES                                                                               ---
----    Edited : N/A                                                                                                  ---
+---    Original Author(s) : Tronex                                                                                   ---
+---    Edited : Rewrote to improve linking between config table & slots (NLTP_ASHES - 29/05/2025)                    ---
 ---    Date : 29/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
@@ -24,15 +24,16 @@ function ui_indicators:__init(core, parent) super()
     self.m_core = core
     self.m_parent = parent
 
-    self.slot = {}
-    self.state_to_color = {
+    self.m_spacing = 10
+    self.m_slots = {}
+    self.m_state_to_color = {
         [1] = GetARGB(255,255,255,255), -- white
         [2] = GetARGB(255,200,200,200), -- grey
         [3] = GetARGB(255,255,255,50), -- yellow
         [4] = GetARGB(255,255,125,50), -- orange
         [5] = GetARGB(255,255,50,50), -- red
     }
-    self.config_override = {
+    self.m_config_override = {
         ["Radiation"] = { icon = "ui_nanosuit_ind_booster_rad", background = "ui_nanosuit_ind_indicator_slot" },
         ["Hunger"] = { icon = "ui_nanosuit_ind_indicator_hunger", background = "ui_nanosuit_ind_indicator_slot" },
         ["Overweight"] = { icon = "ui_nanosuit_ind_indicator_overweight", background = "ui_nanosuit_ind_indicator_slot" },
@@ -46,8 +47,6 @@ function ui_indicators:__init(core, parent) super()
         ["TelepaticProtection"] = { icon = "ui_nanosuit_ind_booster_psi", background = "ui_nanosuit_ind_booster_slot" },
         ["ChemicalBurnProtection"] = { icon = "ui_nanosuit_ind_booster_chem", background = "ui_nanosuit_ind_booster_slot" }
     }
-    self.ratio  = utils_xml.screen_ratio()
-    self.spacing = 10
 
     actor_status.prepare_indictors_list()
 
@@ -59,18 +58,18 @@ function ui_indicators:__init(core, parent) super()
     self.dialog:Show(false)
 
     self:iterate_indicators(function(name, _, i)
-        self.slot[i] = {}
-        self.slot[i].name = name
+        self.m_slots[i] = {}
+        self.m_slots[i].name = name
 
-        self.slot[i].background = self.m_xml:InitStatic("indicators:static", self.dialog)
-        local background_x = (i-1) * (self.slot[i].background:GetWidth() + self.spacing)
-        self.slot[i].background:SetWndPos(vector2():set(background_x, 0))
-        utils_xml.correct_ratio(self.slot[i].background)
+        self.m_slots[i].background = self.m_xml:InitStatic("indicators:static", self.dialog)
+        local background_x = (i-1) * (self.m_slots[i].background:GetWidth() + self.m_spacing)
+        self.m_slots[i].background:SetWndPos(vector2():set(background_x, 0))
+        utils_xml.correct_ratio(self.m_slots[i].background)
 
-        self.slot[i].icon = self.m_xml:InitStatic("indicators:static", self.dialog)
-        local icon_x = (i-1) * (self.slot[i].icon:GetWidth() + self.spacing)
-        self.slot[i].icon:SetWndPos(vector2():set(icon_x, 0))
-        utils_xml.correct_ratio(self.slot[i].icon)
+        self.m_slots[i].icon = self.m_xml:InitStatic("indicators:static", self.dialog)
+        local icon_x = (i-1) * (self.m_slots[i].icon:GetWidth() + self.m_spacing)
+        self.m_slots[i].icon:SetWndPos(vector2():set(icon_x, 0))
+        utils_xml.correct_ratio(self.m_slots[i].icon)
     end)
 end
 
@@ -111,23 +110,23 @@ function ui_indicators:update_static(config, i, value, name, key, anim_flag)
     if config[key] then
         if config.typ == "booster" then
             if (config.anim_period and (value < config.anim_period)) or config[anim_flag] then
-                self.slot[i][key]:SetColorAnimation("ui_slow_blinking_alpha", 13, 0)
+                self.m_slots[i][key]:SetColorAnimation("ui_slow_blinking_alpha", 13, 0)
             else
-                self.slot[i][key]:RemoveColorAnimation()
+                self.m_slots[i][key]:RemoveColorAnimation()
             end
         else
-            self.slot[i][key]:SetTextureColor(self.state_to_color[value + 1])
+            self.m_slots[i][key]:SetTextureColor(self.m_state_to_color[value + 1])
         end
 
-        self.slot[i][key]:InitTexture(self.config_override[name][key] or config[key])
-        self.slot[i][key]:Show(true)
+        self.m_slots[i][key]:InitTexture(self.m_config_override[name][key] or config[key])
+        self.m_slots[i][key]:Show(true)
     end
 end
 
 function ui_indicators:hide_all()
     self:iterate_indicators(function(_, _, i)
-        self.slot[i].background:Show(false)
-        self.slot[i].icon:Show(false)
+        self.m_slots[i].background:Show(false)
+        self.m_slots[i].icon:Show(false)
     end)
 end
 
