@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 11/05/2025                                                                                             ---
+---    Date : 30/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -131,6 +131,9 @@ function core:__init()
         menu = nanosuit_ui_menu.ui_menu(self),
         hud = nanosuit_ui_hud.ui_hud(self),
     }
+
+    -- Others
+    self.m_vaporizer = nanosuit_vaporizer.vaporizer(self)
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_update", self)

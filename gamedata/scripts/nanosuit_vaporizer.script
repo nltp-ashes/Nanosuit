@@ -1,0 +1,94 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 30/05/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit's vaporization process.                                                    ---
+---                                                                                                                  ---
+---    Debug : nanosuit_core.instance.m_vaporizer:vaporize(level.object_by_id(0))                                    ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Vaporizer class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "vaporizer"
+
+function vaporizer:__init(core)
+    -- Variables
+    self.m_core = core
+    self.m_kill_delay = 2
+    self.m_hide_delay = 5
+    self.m_vaporizing_obj_id = nil
+
+    -- Sound effects
+    self.vaporize_sfx = {
+        hud = sound_object([[nanosuit\misc\vaporize_hud]]),
+        world = sound_object([[nanosuit\misc\vaporize_world]])
+    }
+    self.particles = {
+        smoke = particles_object([[nanosuit\vaporize_smoke]])
+    }
+end
+
+function vaporizer:destroy()
+end
+
+function vaporizer:vaporize(obj)
+    -- Play sound effects
+    if obj:id() == AC_ID then
+        self.vaporize_sfx.hud:play_at_pos(obj, VEC_ZERO, 0, sound_object.s2d)
+    else
+        self.vaporize_sfx.world:play_at_pos(obj, obj:position())
+    end
+
+    -- Start actor update callback
+    self.m_vaporizing_obj_id = obj:id()
+    RegisterScriptCallback("actor_on_update", self)
+
+    CreateTimeEvent("nanosuit_vaporize_kill", obj:id(), self.m_kill_delay, function()
+        local obj_now = level.object_by_id(self.m_vaporizing_obj_id)
+
+        -- Kill object if alive
+        if obj_now:alive() then
+            obj_now:kill(obj_now)
+        end
+
+        return true
+    end)
+
+    CreateTimeEvent("nanosuit_vaporize_hide", obj:id(), self.m_hide_delay, function()
+        local obj_now = level.object_by_id(self.m_vaporizing_obj_id)
+
+        -- Stop particles
+        self.particles.smoke:stop()
+
+        -- Hide body
+        obj_now:set_bone_visible(0, false, true, false)
+
+        -- Stop actor update callback
+        self.m_vaporizing_obj_id = nil
+        UnregisterScriptCallback("actor_on_update", self)
+
+        return true
+    end)
+end
+
+function vaporizer:actor_on_update()
+    local obj = level.object_by_id(self.m_vaporizing_obj_id)
+
+    local pos = obj:bone_position(obj:get_bone_id("bip01_r_forearm", false), false)
+
+    if not (self.particles.smoke:playing()) then
+        self.particles.smoke:play()
+    end
+
+    self.particles.smoke:move_to(pos, VEC_ZERO)
+end

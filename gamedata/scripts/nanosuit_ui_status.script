@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/05/2025                                                                                             ---
+---    Date : 30/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit status hub (energy, health, ammo, etc) UI.                                 ---
@@ -161,6 +161,7 @@ function ui_status:Update(force)
     -- Health
     local health = db.actor.health
     health = health * 100
+    health = clamp(health, 0, 100)
     health = round(health)
     self.m_ui_health_bar:SetColor(health > 20 and self.m_health_color or self.m_low_color)
     self.m_ui_health_bar:SetProgressPos(health)
