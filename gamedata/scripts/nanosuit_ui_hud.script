@@ -114,7 +114,7 @@ function ui_hud:switch_hud(take_control)
 
     local elements_to_move = {
         { element = ActorMenu.get_messages_menu(), y = -100 },
-        { element = actor_status.HUD, x = -device().width - actor_status.HUD:GetWidth() },
+        { element = actor_status.HUD, x = -device().width - (actor_status.HUD and actor_status.HUD:GetWidth() or 0) },
         { element = main_hud.m_ui_hud_states.m_ui_weapon_icon, x = -device().width - main_hud.m_ui_hud_states.m_ui_weapon_icon:GetWidth() },
         { element = main_hud.m_ui_hud_states.m_ui_weapon_cur_ammo, x = -device().width - main_hud.m_ui_hud_states.m_ui_weapon_cur_ammo:GetWidth() },
         { element = main_hud.m_ui_hud_states.m_fire_mode, x = -device().width - main_hud.m_ui_hud_states.m_fire_mode:GetWidth() },
