@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 02/05/2025                                                                                             ---
+---    Date : 25/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -21,6 +21,8 @@ actor_slots_enum = { knife = 1, pistol = 2, rifle = 3, grenade = 4, binoculars =
 hit_types_enum   = { burn = 0, shock = 1, chemical_burn = 2, radiation = 3, telepathic = 4, wound = 5, fire_wound = 6, strike = 7, explosion = 8, wound_2 = 9, light_burn = 10 }
 hit_types_names_enum   = { [0] = "burn", [1] = "shock", [2] = "chemical_burn", [3] = "radiation", [4] = "telepathic", [5] = "wound", [6] = "fire_wound", [7] = "strike", [8] = "explosion", [9] = "wound_2", [10] = "light_burn" }
 armor_modes_enum = { armor = "armor", power = "power", speed = "speed", cloak = "cloak" }
+fire_modes_enum = { single = 1, burst_2 = 2, burst_3 = 3, auto = -1 }
+fire_modes_names_enums = { [1] = "single", [2] = "burst_2", [3] = "burst_3", [-1] = "auto" }
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Debug Functions
@@ -46,10 +48,75 @@ function vec_magnitude_xz(vec)
     return vec_xz:magnitude()
 end
 
+--- Function used to calculate the distance between two 2D vectors.
+--- @param lhs vector
+--- @param rhs vector
+--- @return number
+function vec2_distance_to(lhs, rhs)
+    return math.sqrt((rhs.x - lhs.x)^2 + (rhs.y - lhs.y)^2)
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Color functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to convert a shitty float color value to a ARGB table.
+--- @param clr number
+--- @return table
+function float_to_argb(clr)
+    return {
+        a = bit.band(bit.rshift(clr, 24), 255),
+        r = bit.band(bit.rshift(clr, 16), 255),
+        g = bit.band(bit.rshift(clr, 8), 255),
+        b = bit.band(clr, 255)
+    }
+end
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Sound functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
+--- Function used to get a sound object localized to the game's language (if available).
+--- Simply define multiple sounds with the same name, and use the language code as a suffix.
+--- For example: my_sound / my_sound_rus / my_sound_fra.
+--- Then call the function localized_sound_object("my_sound").
+--- The sound file without suffix should be the english (or default) version.
+--- @param path string
+--- @return sound_object
 function localized_sound_object(path)
     return sound_object(game.translate_string(path))
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Data functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to pad a string with 0s.
+--- The function will add 0s before the number to match the desired length.
+--- @param var any
+--- @param length number
+--- @return string
+function string_pad_l(var, char, length)
+    local ret = var
+    if length then
+        while #ret < length do
+            ret = char .. ret
+        end
+    end
+    return ret
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Other functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to determine if the object is a legs object.
+--- @param obj game_object
+--- @return boolean
+function is_legs(obj)
+    -- FIXME: A better check is needed
+    if obj and obj:section() == "outfit_nanosuit_legs" then
+        return true
+    end
+    return false
 end

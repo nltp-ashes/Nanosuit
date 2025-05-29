@@ -1,0 +1,196 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 25/05/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit status hub (energy, health, ammo, etc) UI.                                 ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+fire_modes_names_enums  = nanosuit_utils.fire_modes_names_enums
+
+-- Variables
+holding_ctrl            = false
+x_transforms            = 0
+y_transforms            = 0
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function on_key_release(dik)
+    if dik == DIK_keys.DIK_LCONTROL then
+        holding_ctrl = false
+    end
+end
+
+function on_key_press(dik)
+    if dik == DIK_keys.DIK_LCONTROL then
+        holding_ctrl = true
+    end
+    if not nanosuit_core.instance then
+        return
+    end
+
+    local static = actor_status.HUD.dialog
+
+    local pos = vector2():set(static:GetWndPos().x, static:GetWndPos().y)
+
+    local transform = holding_ctrl and 10 or 1
+    if dik == DIK_keys.DIK_DOWN then
+        pos.y = pos.y + transform
+        y_transforms = y_transforms + transform
+    elseif dik == DIK_keys.DIK_UP then
+        pos.y = pos.y - transform
+        y_transforms = y_transforms - transform
+    elseif dik == DIK_keys.DIK_LEFT then
+        pos.x = pos.x - transform
+        x_transforms = x_transforms - transform
+    elseif dik == DIK_keys.DIK_RIGHT then
+        pos.x = pos.x + transform
+        x_transforms = x_transforms + transform
+    elseif dik == DIK_keys.DIK_HOME then
+        printf("[NS] Static transforms: x:%s y:%s", x_transforms, y_transforms)
+    end
+    static:SetWndPos(pos)
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Callbacks registration
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to register callbacks.
+--- @return nil
+function on_game_start()
+    RegisterScriptCallback("on_key_press", on_key_press)
+    RegisterScriptCallback("on_key_release", on_key_release)
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Status UI class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "ui_status" (CUIScriptWnd)
+
+function ui_status:__init(core, parent) super()
+    -- Variables
+    self.m_core = core
+    self.m_parent = parent
+    self.m_energy_color = GetARGB(255, 0, 107, 179)
+    self.m_energy_bg_color = GetARGB(255, 18, 40, 46)
+    self.m_health_color = GetARGB(255, 85, 148, 17)
+    self.m_health_bg_color = GetARGB(255, 27, 33, 21)
+    self.m_low_color = GetARGB(255, 255, 0, 0)
+
+    -- Build UI
+    self.m_xml = CScriptXmlInit()
+    self.m_xml:ParseFile("ui_nanosuit_status.xml")
+
+    self.m_ui_background = self.m_xml:InitStatic("background", self)
+    arm.scale_ui(self.m_ui_background, true, true, "right")
+
+    self.m_ui_suit_mode = self.m_xml:InitStatic("suit_mode", self)
+    arm.scale_ui(self.m_ui_suit_mode, true, true, "right")
+
+    self.m_ui_energy = self.m_xml:InitTextWnd("energy", self)
+    arm.scale_ui(self.m_ui_energy, true, true, "right")
+
+    self.m_ui_energy_bar_background = self.m_xml:InitStatic("energy_bar_background", self)
+    self.m_ui_energy_bar_background:SetTextureColor(self.m_energy_bg_color)
+    arm.scale_ui(self.m_ui_energy_bar_background, true, true, "right")
+
+    self.m_ui_energy_bar = self.m_xml:InitProgressBar("energy_bar", self)
+    arm.scale_ui(self.m_ui_energy_bar, true, true, "right")
+    arm.scale_ui(self.m_ui_energy_bar:GetProgressStatic(), true, true, "left", self.m_ui_energy_bar:GetWidth())
+
+    self.m_ui_energy_icon = self.m_xml:InitStatic("energy_icon", self)
+    arm.scale_ui(self.m_ui_energy_icon, true, true, "right")
+
+    self.m_ui_health = self.m_xml:InitTextWnd("health", self)
+    arm.scale_ui(self.m_ui_health, true, true, "right")
+
+    self.m_ui_health_bar_background = self.m_xml:InitStatic("health_bar_background", self)
+    self.m_ui_health_bar_background:SetTextureColor(self.m_health_bg_color)
+    arm.scale_ui(self.m_ui_health_bar_background, true, true, "right")
+
+    self.m_ui_health_bar = self.m_xml:InitProgressBar("health_bar", self)
+    arm.scale_ui(self.m_ui_health_bar, true, true, "right")
+    arm.scale_ui(self.m_ui_health_bar:GetProgressStatic(), true, true, "left", self.m_ui_health_bar:GetWidth())
+
+    self.m_ui_health_icon = self.m_xml:InitStatic("health_icon", self)
+    arm.scale_ui(self.m_ui_health_icon, true, true, "right")
+
+    self.m_ui_ammo_count = self.m_xml:InitTextWnd("ammo_count", self)
+    arm.scale_ui(self.m_ui_ammo_count, true, true, "right")
+
+    self.m_ui_ammo_reserve = self.m_xml:InitTextWnd("ammo_reserve", self)
+    arm.scale_ui(self.m_ui_ammo_reserve, true, true, "right")
+
+    self.m_ui_fire_mode = self.m_xml:InitStatic("fire_mode", self)
+    arm.scale_ui(self.m_ui_fire_mode, true, true, "right")
+end
+
+function ui_status:__finalize()
+end
+
+function ui_status:destroy()
+end
+
+function ui_status:Update(force)
+    CUIScriptWnd.Update(self)
+
+    -- Current suit mode
+    local suit_mode = "ui_nanosuit_status_" .. self.m_core.m_current_mode.m_name
+    self.m_ui_suit_mode:InitTexture(suit_mode)
+
+    -- Energy
+    local energy = self.m_core.m_energy
+    energy = round(energy)
+    self.m_ui_energy_bar:SetColor(energy > 20 and self.m_energy_color or self.m_low_color)
+    self.m_ui_energy_bar:SetProgressPos(energy)
+    energy = tostring(energy)
+    self.m_ui_energy:SetText(energy)
+
+    -- Health
+    local health = db.actor.health
+    health = health * 100
+    health = round(health)
+    self.m_ui_health_bar:SetColor(health > 20 and self.m_health_color or self.m_low_color)
+    self.m_ui_health_bar:SetProgressPos(health)
+    health = tostring(health)
+    self.m_ui_health:SetText(health)
+
+    local active_item = db.actor:active_item()
+    local weapon_obj = active_item and IsWeapon(active_item) and active_item
+    local weapon_class = weapon_obj and weapon_obj:cast_Weapon()
+
+    -- Ammo count
+    local ammo = weapon_obj and weapon_obj:get_ammo_in_magazine()
+    ammo = ammo and clamp(ammo, 0, 999)
+    ammo = ammo and tostring(ammo)
+    ammo = ammo and nanosuit_utils.string_pad_l(ammo, "0", 3)
+    ammo = ammo or "---"
+    self.m_ui_ammo_count:SetText(ammo)
+
+    -- Ammo reserve
+    local ammo_reserve = weapon_obj and weapon_obj:get_ammo_count_for_type(weapon_obj:get_ammo_type())
+    ammo_reserve = ammo_reserve and clamp(ammo_reserve, 0, 999)
+    ammo_reserve = ammo_reserve and tostring(ammo_reserve)
+    ammo_reserve = ammo_reserve and nanosuit_utils.string_pad_l(ammo_reserve, "0", 3)
+    ammo_reserve = ammo_reserve or "---"
+    self.m_ui_ammo_reserve:SetText(ammo_reserve)
+
+    -- Fire mode
+    local fire_mode = weapon_class and weapon_class:GetFireMode()
+    fire_mode = fire_mode and fire_modes_names_enums[fire_mode]
+    fire_mode = fire_mode and "ui_nanosuit_status_" .. fire_mode
+    fire_mode = fire_mode or "ui_nanosuit_status_auto"
+    self.m_ui_fire_mode:InitTexture(fire_mode)
+end

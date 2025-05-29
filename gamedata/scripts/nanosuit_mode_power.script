@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 04/05/2025                                                                                             ---
+---    Date : 06/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of strength mode of the Nanosuit addon.                                       ---
@@ -36,7 +36,6 @@ function power:__init(core, name) super(core, name)
     -- Strength related variables
     self.m_wound_power_bonus = 1
     self.m_wound_impulse_bonus = 2000
-    self.m_carry_weight_bonus = 25
 
     -- Cache
     self.m_cache.jump_speed = db.actor:get_actor_jump_speed()
@@ -61,12 +60,10 @@ function power:apply()
 
     -- Boosters
     self:apply_booster(nanosuit_booster_recoil.recoil, "recoil")
+    self:apply_booster(nanosuit_booster_weight.weight, "weight")
 
     -- Save jump speed
     self.m_cache.jump_speed = db.actor:get_actor_jump_speed()
-
-    -- Set carry weight
-    self:set_carry_capacity("increase")
 end
 
 function power:remove()
@@ -79,30 +76,10 @@ function power:remove()
 
     -- Boosters
     self:remove_booster("recoil")
+    self:remove_booster("weight")
 
     -- Reset jump speed
     db.actor:set_actor_jump_speed(self.m_cache.jump_speed)
-
-    -- Reset carry weight
-    self:set_carry_capacity("decrease")
-end
-
-function power:set_carry_capacity(mode)
-    local suit_obj = level.object_by_id(self.m_core.m_suit_id)
-    if not suit_obj then
-        return
-    end
-
-    local max_weight = suit_obj:get_additional_max_weight()
-    local max_walk_weight = suit_obj:get_additional_max_walk_weight()
-
-    if mode == "increase" then
-        suit_obj:set_additional_max_weight(max_weight + self.m_carry_weight_bonus)
-        suit_obj:set_additional_max_walk_weight(max_walk_weight + self.m_carry_weight_bonus)
-    elseif mode == "decrease" then
-        suit_obj:set_additional_max_weight(max_weight - self.m_carry_weight_bonus)
-        suit_obj:set_additional_max_walk_weight(max_walk_weight - self.m_carry_weight_bonus)
-    end
 end
 
 function power:npc_on_before_hit(npc, scripted_hit, bone_id, flags)

@@ -91,6 +91,7 @@ For past updates, please refer to the description of each release, in the [relea
 - When wearing the suit, the player footsteps do not change. They should use custom sounds
 - The shader and textures used for cloak mode are not the best. They should be improved
 - Speed mode should increase reload speed. This is impossible due to engine limitations. Will probably never be fixed
+- When using cloak mode, the player's headlamp is not cloaked in 3rd person
 
 If you truly believe your problem is new, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).
 
@@ -111,7 +112,8 @@ Credit goes to these people for their work contained in this addon :
 
 |                                Name                                 |                                          Motive                                           |         License         |
 |:-------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:-----------------------:|
-|                          **Stalker_Boss**                           |                             Translated the addon into russian                             |       Proprietary       |
+|                             **Tronex**                              |                  Reused their "Indicators" HUD from actor_status.script                   |       Proprietary       |
+|                          **Stalker_Boss**                           |                             Translated the addon into Russian                             |       Proprietary       |
 |         **[Crepis](https://www.moddb.com/members/cr3pis)**          | Greatly improved the quality of the inventory icon, upgrade icon and character portraits  |       Proprietary       |
 |     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     | Greatly improved the texture quality of the first and third person models of the Nanosuit | See [LICENSE](#license) |
 | **[\_Paramonov Alexander\_](https://users.playground.ru/1997780/)** |             Port of the Nanosuit first person, third person and world models              |       Proprietary       |
