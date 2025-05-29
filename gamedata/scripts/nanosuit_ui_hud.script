@@ -114,14 +114,14 @@ function ui_hud:switch_hud(take_control)
 
     local elements_to_move = {
         { element = ActorMenu.get_messages_menu(), y = -100 },
-        { element = actor_status.HUD, x = -device().width - (actor_status.HUD and actor_status.HUD:GetWidth() or 0) },
-        { element = main_hud.m_ui_hud_states.m_ui_weapon_icon, x = -device().width - main_hud.m_ui_hud_states.m_ui_weapon_icon:GetWidth() },
-        { element = main_hud.m_ui_hud_states.m_ui_weapon_cur_ammo, x = -device().width - main_hud.m_ui_hud_states.m_ui_weapon_cur_ammo:GetWidth() },
-        { element = main_hud.m_ui_hud_states.m_fire_mode, x = -device().width - main_hud.m_ui_hud_states.m_fire_mode:GetWidth() },
-        { element = main_hud.m_ui_hud_states.m_ui_health_bar, x = -device().width - main_hud.m_ui_hud_states.m_ui_health_bar:GetWidth() },
-        { element = main_hud.m_ui_hud_states.m_ui_stamina_bar, x = -device().width - main_hud.m_ui_hud_states.m_ui_stamina_bar:GetWidth() },
-        { element = main_hud.m_ui_hud_states.m_ui_psy_bar, x = -device().width - main_hud.m_ui_hud_states.m_ui_psy_bar:GetWidth() },
-        { element = main_hud.m_ui_hud_states.m_back, x = -device().width - main_hud.m_ui_hud_states.m_back:GetWidth() }
+        { element = actor_status.HUD, hide = true },
+        { element = main_hud.m_ui_hud_states.m_ui_weapon_icon, hide = true },
+        { element = main_hud.m_ui_hud_states.m_ui_weapon_cur_ammo, hide = true },
+        { element = main_hud.m_ui_hud_states.m_fire_mode, hide = true },
+        { element = main_hud.m_ui_hud_states.m_ui_health_bar, hide = true },
+        { element = main_hud.m_ui_hud_states.m_ui_stamina_bar, hide = true },
+        { element = main_hud.m_ui_hud_states.m_ui_psy_bar, hide = true },
+        { element = main_hud.m_ui_hud_states.m_back, hide = true }
     }
 
     -- Patch for Faction ID mod
@@ -141,8 +141,14 @@ function ui_hud:switch_hud(take_control)
     for _, element in ipairs(elements_to_move) do
         if element.element then
             local pos = element.element:GetWndPos()
-            local offset_x = element.x or 0
-            local offset_y = element.y or 0
+            local offset_x, offset_y = nil, nil
+            if element.hide then
+                offset_x = -device().width - element.element:GetWidth()
+                offset_y = 0
+            else
+                offset_x = element.x or 0
+                offset_y = element.y or 0
+            end
             pos.x = pos.x + (take_control and offset_x or -offset_x)
             pos.y = pos.y + (take_control and offset_y or -offset_y)
             element.element:SetWndPos(pos)
