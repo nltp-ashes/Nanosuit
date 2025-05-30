@@ -24,18 +24,22 @@ class "vaporizer"
 function vaporizer:__init(core)
     -- Variables
     self.m_core = core
-    self.m_kill_delay = 2
-    self.m_hide_delay = 5
     self.m_vaporizing_obj_id = nil
+    self.m_delays = {
+        burn = 1,
+        kill = 4,
+        hide_body = 5,
+        stop_burn = 6
+    }
 
     -- Sound effects
-    self.vaporize_sfx = {
+    self.m_vaporize_sfx = {
         hud = sound_object([[nanosuit\misc\vaporize_hud]]),
         world = sound_object([[nanosuit\misc\vaporize_world]])
     }
-    self.particles = {
-        smoke = particles_object([[nanosuit\vaporize_smoke]])
-    }
+
+    -- Particles
+    self.m_particles = {}
 end
 
 function vaporizer:destroy()
@@ -44,51 +48,74 @@ end
 function vaporizer:vaporize(obj)
     -- Play sound effects
     if obj:id() == AC_ID then
-        self.vaporize_sfx.hud:play_at_pos(obj, VEC_ZERO, 0, sound_object.s2d)
+        self.m_vaporize_sfx.hud:play_at_pos(obj, VEC_ZERO, 0, sound_object.s2d)
     else
-        self.vaporize_sfx.world:play_at_pos(obj, obj:position())
+        self.m_vaporize_sfx.world:play_at_pos(obj, obj:position())
     end
 
-    -- Start actor update callback
+    -- Save vaporizing object ID
     self.m_vaporizing_obj_id = obj:id()
-    RegisterScriptCallback("actor_on_update", self)
 
-    CreateTimeEvent("nanosuit_vaporize_kill", obj:id(), self.m_kill_delay, function()
-        local obj_now = level.object_by_id(self.m_vaporizing_obj_id)
+    self:delayed_effect("burn", obj, self.m_delays.burn, function(obj_now)
+        -- Start actor update callback
+        RegisterScriptCallback("actor_on_update", self)
+    end)
 
+    self:delayed_effect("kill", obj, self.m_delays.kill, function(obj_now)
         -- Kill object if alive
         if obj_now:alive() then
             obj_now:kill(obj_now)
         end
-
-        return true
     end)
 
-    CreateTimeEvent("nanosuit_vaporize_hide", obj:id(), self.m_hide_delay, function()
-        local obj_now = level.object_by_id(self.m_vaporizing_obj_id)
-
-        -- Stop particles
-        self.particles.smoke:stop()
-
+    self:delayed_effect("hide_body", obj, self.m_delays.hide_body, function(obj_now)
         -- Hide body
-        obj_now:set_bone_visible(0, false, true, false)
+        --obj_now:set_bone_visible(0, false, true, false)
+    end)
+
+    self:delayed_effect("stop_burn", obj, self.m_delays.stop_burn, function(obj_now)
+        -- Stop particles
+        for bone_name, particle in pairs(self.m_particles) do
+            if particle:playing() then
+                particle:stop()
+            end
+        end
+
+        -- Reset vaporizing object ID
+        self.m_vaporizing_obj_id = nil
 
         -- Stop actor update callback
-        self.m_vaporizing_obj_id = nil
         UnregisterScriptCallback("actor_on_update", self)
-
-        return true
     end)
 end
 
 function vaporizer:actor_on_update()
     local obj = level.object_by_id(self.m_vaporizing_obj_id)
 
-    local pos = obj:bone_position(obj:get_bone_id("bip01_r_forearm", false), false)
+    local hud_mode = obj:id() == AC_ID
+    local bones = obj:list_bones(hud_mode)
 
-    if not (self.particles.smoke:playing()) then
-        self.particles.smoke:play()
+    for bone_id, bone_name in pairs(bones) do
+        local pos = obj:bone_position(bone_id, hud_mode)
+
+        if not self.m_particles[bone_name] then
+            self.m_particles[bone_name] = particles_object([[damage_fx\burn_creatures]])
+        end
+
+        if not self.m_particles[bone_name]:playing() then
+            self.m_particles[bone_name]:play(hud_mode)
+        end
+
+        self.m_particles[bone_name]:move_to(pos, VEC_ZERO)
     end
+end
 
-    self.particles.smoke:move_to(pos, VEC_ZERO)
+function vaporizer:delayed_effect(name, obj, delay, callback)
+    CreateTimeEvent("nanosuit_vaporizer_" .. name, obj:id(), delay, function()
+        if self.m_vaporizing_obj_id then
+            local obj_now = level.object_by_id(self.m_vaporizing_obj_id)
+            callback(obj_now)
+        end
+        return true
+    end)
 end
