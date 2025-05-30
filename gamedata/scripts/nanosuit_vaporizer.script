@@ -2,11 +2,12 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/05/2025                                                                                             ---
+---    Date : 31/05/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's vaporization process.                                                    ---
 ---                                                                                                                  ---
+---    Debug : level.object_by_id(0):set_visual_name([[nanosuit\nanosuit_tp]])                                       ---
 ---    Debug : nanosuit_core.instance.m_vaporizer:vaporize(level.object_by_id(0))                                    ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
@@ -25,6 +26,7 @@ function vaporizer:__init(core)
     -- Variables
     self.m_core = core
     self.m_vaporizing_obj_id = nil
+    self.m_vaporizing_burning = false
     self.m_delays = {
         burn = 1,
         kill = 4,
@@ -56,9 +58,11 @@ function vaporizer:vaporize(obj)
     -- Save vaporizing object ID
     self.m_vaporizing_obj_id = obj:id()
 
+    -- Start actor update callback
+    RegisterScriptCallback("actor_on_update", self)
+
     self:delayed_effect("burn", obj, self.m_delays.burn, function(obj_now)
-        -- Start actor update callback
-        RegisterScriptCallback("actor_on_update", self)
+        self.m_vaporizing_burning = true
     end)
 
     self:delayed_effect("kill", obj, self.m_delays.kill, function(obj_now)
@@ -70,7 +74,16 @@ function vaporizer:vaporize(obj)
 
     self:delayed_effect("hide_body", obj, self.m_delays.hide_body, function(obj_now)
         -- Hide body
-        --obj_now:set_bone_visible(0, false, true, false)
+        if obj_now:id() == AC_ID then
+            obj_now:set_bone_visible(0, false, true, true)
+        else
+            local se_obj = alife_object(obj_now:id())
+            safe_release_manager.release(se_obj)
+            self.m_vaporizing_obj_id = nil
+        end
+
+        -- Stop actor update callback
+        UnregisterScriptCallback("actor_on_update", self)
     end)
 
     self:delayed_effect("stop_burn", obj, self.m_delays.stop_burn, function(obj_now)
@@ -83,30 +96,34 @@ function vaporizer:vaporize(obj)
 
         -- Reset vaporizing object ID
         self.m_vaporizing_obj_id = nil
-
-        -- Stop actor update callback
-        UnregisterScriptCallback("actor_on_update", self)
     end)
 end
 
 function vaporizer:actor_on_update()
     local obj = level.object_by_id(self.m_vaporizing_obj_id)
 
-    local hud_mode = obj:id() == AC_ID
-    local bones = obj:list_bones(hud_mode)
+    -- Update sound effects
+    if obj:id() ~= AC_ID then
+        self.m_vaporize_sfx.world:set_position(obj:position())
+    end
 
-    for bone_id, bone_name in pairs(bones) do
-        local pos = obj:bone_position(bone_id, hud_mode)
+    -- Update particles
+    if self.m_vaporizing_burning then
+        local hud_mode = obj:id() == AC_ID
+        local bones = obj:list_bones(hud_mode)
+        for bone_id, bone_name in pairs(bones) do
+            local pos = obj:bone_position(bone_id, hud_mode)
 
-        if not self.m_particles[bone_name] then
-            self.m_particles[bone_name] = particles_object([[damage_fx\burn_creatures]])
+            if not self.m_particles[bone_name] then
+                self.m_particles[bone_name] = particles_object([[damage_fx\burn_creatures]])
+            end
+
+            if not self.m_particles[bone_name]:playing() then
+                self.m_particles[bone_name]:play(hud_mode)
+            end
+
+            self.m_particles[bone_name]:move_to(pos, VEC_ZERO)
         end
-
-        if not self.m_particles[bone_name]:playing() then
-            self.m_particles[bone_name]:play(hud_mode)
-        end
-
-        self.m_particles[bone_name]:move_to(pos, VEC_ZERO)
     end
 end
 
