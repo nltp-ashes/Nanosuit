@@ -10,7 +10,9 @@ Fend off the Zone's dangers with the Nanosuit, a powerful and extremely versatil
 
 ### ABOUT
 
-This addon adds a fully operational Nanosuit from Crysis. Bellow is a list of features that are currently available in the addon :
+This addon adds a fully operational Nanosuit from Crysis. 
+
+Bellow is a list of features that are currently available in the addon :
 
 General :
 - The nanosuit menu allows you to switch from one mode to another
@@ -50,6 +52,7 @@ Cloak mode :
 
 These addons are **absolutely required** in order for Nanosuit to work :
 1. [S.T.A.L.K.E.R. Anomaly 1.5.3](https://www.moddb.com/mods/stalker-anomaly/downloads/stalker-anomaly-153).
+2. [First Person Visible Body](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version) (this dependency will be optional in the final release, but is needed for now)
 
 ---
 
@@ -68,10 +71,8 @@ To **update** the addon :
 4. Follow the installation instructions.
 
 To **uninstall** the addon :
-1. Start your game and open the MCM settings;
-2. Enable the "Addon removal" option;
-3. Load your save-game. Once loaded, save again;
-4. Close your game, disable and delete the addon from MO2.
+1. Un-wear the suit if you have it equipped;
+2. Close your game, disable and delete the addon from MO2.
 
 ---
 
@@ -86,12 +87,10 @@ For past updates, please refer to the description of each release, in the [relea
 ### KNOWN ISSUES
 
 - Cloak mode does not work if the NPC sees the actor before the cloak is applied, right now you need to break vision for it to work
-- The suit's energy level is displayed as a message on the HUD. It should have a custom UI
 - The key-bind to open the suit menu is not configurable. It should be configurable
 - When wearing the suit, the player footsteps do not change. They should use custom sounds
 - The shader and textures used for cloak mode are not the best. They should be improved
 - Speed mode should increase reload speed. This is impossible due to engine limitations. Will probably never be fixed
-- When using cloak mode, the player's headlamp is not cloaked in 3rd person
 
 If you truly believe your problem is new, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).
 
@@ -100,9 +99,9 @@ If you truly believe your problem is new, please open an issue [on the addon's G
 ### SUPPORT & SUGGESTIONS
 
 If you need help with anything, or if you have any suggestions, you can :
-- ✅ Message me on [ModDB](https://www.moddb.com/members/nltp-ashes) (recommended);
-- ✅ Message me on Discord : @nltp_ashes (formerly NLTP_ASHES#0117) (recommended);
-- ✅ Message me on my [Discord](https://discord.gg/7Z8S2qg) server (recommended);
+- ✅ Message me on [ModDB](https://www.moddb.com/members/nltp-ashes);
+- ✅ Message me on Discord : @nltp_ashes (formerly NLTP_ASHES#0117);
+- ✅ Message me on my [Discord](https://discord.gg/7Z8S2qg) server;
 
 ---
 
