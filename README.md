@@ -52,7 +52,8 @@ Cloak mode :
 
 These addons are **absolutely required** in order for Nanosuit to work :
 1. [S.T.A.L.K.E.R. Anomaly 1.5.3](https://www.moddb.com/mods/stalker-anomaly/downloads/stalker-anomaly-153).
-2. [First Person Visible Body](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version) (this dependency will be optional in the final release, but is needed for now)
+2. [S.T.A.L.K.E.R. Anomaly Modded Exes 03.06.2025 (or newer)](https://github.com/themrdemonized/xray-monolith)
+3. [First Person Visible Body](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version) (this dependency will be optional in the final release, but is needed for now)
 
 ---
 
