@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 04/06/2025                                                                                             ---
+---    Date : 05/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to execute debug functions to help in development.                                                ---
@@ -104,10 +104,15 @@ function on_key_press_status(dik)
 end
 
 function on_key_press_vap(dik)
+    if dik == DIK_keys.DIK_J then
+        nanosuit_core.instance.m_vaporizer:vaporize(db.actor)
+    end
+
     local obj = level.get_target_obj()
     if not obj then
         return
     end
+
     if dik == DIK_keys.DIK_L then
         obj:set_visual_name([[nanosuit\nanosuit_tp]])
     elseif dik == DIK_keys.DIK_K then

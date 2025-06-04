@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 04/06/2025                                                                                             ---
+---    Date : 05/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's vaporization process.                                                    ---
@@ -24,6 +24,7 @@ vaporize_state          = "psy_armed"
 
 -- Imports
 hit_types_enum          = nanosuit_utils.hit_types_enum
+actor_cameras_enum      = nanosuit_utils.actor_cameras_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- General functions
@@ -113,8 +114,8 @@ function vaporizer:__init(core)
     self.m_core = core
     self.m_delays = {
         sounds = 0,
-        burn = 1,
-        kill = 3,
+        burn = 1.2,
+        kill = 2.5,
         force_kill = 3.5,
         hide_body = 5,
         stop_burn = 13
@@ -132,8 +133,9 @@ end
 
 function vaporizer:vaporize(obj)
     -- Initialize storage
-    if not self.m_storage[obj:id()] then
-        self.m_storage[obj:id()] = {
+    if not self.m_storage[obj:name()] then
+        self.m_storage[obj:name()] = {
+            id = obj:id(),
             vaporizing = true,
             burning = false,
             particles = {},
@@ -147,13 +149,24 @@ function vaporizer:vaporize(obj)
     -- Schedule vaporization
     CreateTimeEvent("nanosuit_vaporizer_schedule", obj:id(), 0, function(id)
         local obj_now = level.object_by_id(id)
+        if not obj_now then
+            return true
+        end
+
+        -- Actor
+        if obj_now:id() == AC_ID then
+            self:schedule_effects(obj_now)
+            return true
+        end
+
+        -- NPC
         local state = state_mgr.get_state(obj_now)
         if state and state == vaporize_state then
             self:schedule_effects(obj_now)
             return true
-        else
-            return false
         end
+
+        return false
     end, obj:id())
 end
 
@@ -195,7 +208,11 @@ function vaporizer:schedule_effects(obj)
     self:delayed_effect("hide_body", obj, self.m_delays.hide_body, function(obj_now, storage)
         -- Hide body
         if obj_now:id() == AC_ID then
-            obj_now:set_bone_visible(0, false, true, true)
+            for _, hud_mode in pairs({ true, false }) do
+                for idx in pairs(obj_now:get_shaders()) do
+                    obj_now:set_shader(idx, [[models\window]], [[nanosuit\no_draw]], hud_mode)
+                end
+            end
         else
             local se_obj = alife_object(obj_now:id())
             safe_release_manager.release(se_obj)
@@ -205,20 +222,31 @@ function vaporizer:schedule_effects(obj)
 
     self:delayed_effect("stop_burn", obj, self.m_delays.stop_burn, function(obj_now, storage)
         -- Stop particles
-        for bone_name, particle in pairs(storage.particles) do
-            if particle:playing() then
-                particle:stop_deffered()
-            end
-        end
+        --for bone_name, particle in pairs(storage.particles) do
+        --    if particle:playing() then
+        --        particle:stop_deffered()
+        --    end
+        --end
 
         -- Reset vaporizing object ID
-        storage.vaporizing = false
+        --storage.vaporizing = false
     end)
 end
 
+function vaporizer:delayed_effect(name, obj, delay, callback)
+    CreateTimeEvent("nanosuit_vaporizer_" .. name, obj:id(), delay, function(obj_name)
+        local storage = self.m_storage[obj_name]
+        if storage and storage.vaporizing then
+            local obj_now = level.object_by_id(storage.id)
+            callback(obj_now, storage)
+        end
+        return true
+    end, obj:name())
+end
+
 function vaporizer:actor_on_update()
-    for id, storage in pairs(self.m_storage) do
-        self:update_vaporization(id, storage)
+    for name, storage in pairs(self.m_storage) do
+        self:update_vaporization(storage.id, storage)
     end
 end
 
@@ -239,11 +267,9 @@ function vaporizer:update_vaporization(id, storage)
 
     -- Update particles
     if storage.burning then
-        local hud_mode = obj:id() == AC_ID
+        local hud_mode = obj:id() == AC_ID and level.get_active_cam() == actor_cameras_enum.first_eye
         local bones = obj:list_bones(hud_mode)
         for bone_id, bone_name in pairs(bones) do
-            local pos = obj:bone_position(bone_id, hud_mode)
-
             if not storage.particles[bone_name] then
                 storage.particles[bone_name] = particles_object([[damage_fx\burn_creatures]])
             end
@@ -252,20 +278,10 @@ function vaporizer:update_vaporization(id, storage)
                 storage.particles[bone_name]:play(hud_mode)
             end
 
-            storage.particles[bone_name]:move_to(pos, VEC_ZERO)
+            storage.particles[bone_name]:set_hud_mode(hud_mode)
+            storage.particles[bone_name]:move_to(obj:bone_position(bone_id, hud_mode), VEC_ZERO)
         end
     end
-end
-
-function vaporizer:delayed_effect(name, obj, delay, callback)
-    CreateTimeEvent("nanosuit_vaporizer_" .. name, obj:id(), delay, function(id)
-        local storage = self.m_storage[id]
-        if storage and storage.vaporizing then
-            local obj_now = level.object_by_id(id)
-            callback(obj_now, storage)
-        end
-        return true
-    end, obj:id())
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -288,7 +304,7 @@ function evaluator_nanosuit_vaporize:evaluate()
         return false
     end
 
-    local st = core.m_vaporizer.m_storage[self.object:id()]
+    local st = core.m_vaporizer.m_storage[self.object:name()]
     if not st then
         return false
     end
