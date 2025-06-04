@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 02/06/2025                                                                                             ---
+---    Date : 04/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's vaporization process.                                                    ---
@@ -16,7 +16,91 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
+-- Constants
+action_id               = 73419
+evaluator_id            = 73419
+vaporize_flag           = "nanosuit_vaporize_flag"
+vaporize_state          = "psy_armed"
+
+-- Imports
 hit_types_enum          = nanosuit_utils.hit_types_enum
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function setup_generic_scheme(npc, ini, scheme, section, stype, temp)
+    xr_logic.assign_storage_and_bind(npc, ini, "nanosuit_vaporize", section, temp)
+end
+
+function add_to_binder(npc, ini, scheme, section, storage, temp)
+    if not npc then
+        return
+    end
+
+    local manager = npc:motivation_action_manager()
+    if not manager then
+        return
+    end
+
+    if not npc:alive() then
+        manager:add_evaluator(evaluator_id, property_evaluator_const(false))
+        temp.needs_configured = false
+        return
+    end
+
+    manager:add_evaluator(evaluator_id, evaluator_nanosuit_vaporize(npc, "evaluator_nanosuit_vaporize", storage))
+
+    temp.action = action_nanosuit_vaporize(npc, "action_nanosuit_vaporize", storage)
+
+    temp.action:add_precondition(world_property(stalker_ids.property_alive, true))
+    temp.action:add_precondition(world_property(evaluator_id, true))
+
+    temp.action:add_effect(world_property(evaluator_id, false))
+
+    manager:add_action(action_id, temp.action)
+end
+
+function configure_actions(npc, ini, scheme, section, stype, temp)
+    if not npc then
+        return
+    end
+
+    local manager = npc:motivation_action_manager()
+    if not manager or not temp.action then
+        return
+    end
+
+    local overrides_actions = {
+        xr_danger.actid,
+        xr_evaluators_id.sidor_wounded_base,
+        xr_actions_id.state_mgr + 2,
+        xr_actions_id.alife,
+        stalker_ids.property_danger,
+        stalker_ids.action_combat_planner,
+        stalker_ids.action_danger_planner
+    }
+
+    local action = nil
+    for i = 1, #overrides_actions do
+        action = manager:action(overrides_actions[i])
+        if action then
+            action:add_precondition(world_property(evaluator_id, false))
+        end
+    end
+end
+
+function disable_generic_scheme(npc, scheme, stype)
+    if db.storage[npc:id()][scheme] then
+        db.storage[npc:id()][scheme].enabled = false
+    end
+end
+
+function npc_add_precondition(action)
+    if action then
+        action:add_precondition(world_property(evaluator_id, false))
+    end
+end
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Vaporizer class
@@ -27,125 +111,217 @@ class "vaporizer"
 function vaporizer:__init(core)
     -- Variables
     self.m_core = core
-    self.m_vaporizing_obj_id = nil
-    self.m_vaporizing_burning = false
     self.m_delays = {
+        sounds = 0,
         burn = 1,
         kill = 3,
+        force_kill = 3.5,
         hide_body = 5,
-        stop_burn = 10
+        stop_burn = 13
     }
+    self.m_storage = {}
 
-    -- Sound effects
-    self.m_vaporize_sfx = {
-        hud = sound_object([[nanosuit\misc\vaporize_hud]]),
-        world = sound_object([[nanosuit\misc\vaporize_world]])
-    }
-
-    -- Particles
-    self.m_particles = {}
+    -- Register callbacks
+    RegisterScriptCallback("actor_on_update", self)
 end
 
 function vaporizer:destroy()
+    -- Unregister callbacks
+    UnregisterScriptCallback("actor_on_update", self)
 end
 
 function vaporizer:vaporize(obj)
-    -- Play sound effects
-    if obj:id() == AC_ID then
-        self.m_vaporize_sfx.hud:play_at_pos(obj, VEC_ZERO, 0, sound_object.s2d)
-    else
-        self.m_vaporize_sfx.world:play_at_pos(obj, obj:position())
+    -- Initialize storage
+    if not self.m_storage[obj:id()] then
+        self.m_storage[obj:id()] = {
+            vaporizing = true,
+            burning = false,
+            particles = {},
+            vaporize_sfx = {
+                hud = sound_object([[nanosuit\misc\vaporize_hud]]),
+                world = sound_object([[nanosuit\misc\vaporize_world]])
+            }
+        }
     end
 
-    -- Save vaporizing object ID
-    self.m_vaporizing_obj_id = obj:id()
+    -- Schedule vaporization
+    CreateTimeEvent("nanosuit_vaporizer_schedule", obj:id(), 0, function(id)
+        local obj_now = level.object_by_id(id)
+        local state = state_mgr.get_state(obj_now)
+        if state and state == vaporize_state then
+            self:schedule_effects(obj_now)
+            return true
+        else
+            return false
+        end
+    end, obj:id())
+end
 
-    db.storage[obj:id()].ui_debug_wpn_hud_dummy = {
-        state = "psy_armed"
-    }
-
-    -- Start actor update callback
-    RegisterScriptCallback("actor_on_update", self)
-
-    self:delayed_effect("burn", obj, self.m_delays.burn, function(obj_now)
-        self.m_vaporizing_burning = true
+function vaporizer:schedule_effects(obj)
+    self:delayed_effect("sounds", obj, self.m_delays.sounds, function(obj_now, storage)
+        local snd = obj_now:id() == AC_ID and storage.vaporize_sfx.hud or storage.vaporize_sfx.world
+        if obj_now:id() == AC_ID and snd:playing() then
+            snd:play_at_pos(obj_now, VEC_ZERO, 0, sound_object.s2d)
+        else
+            snd:play_at_pos(obj_now, obj_now:position())
+        end
     end)
 
-    self:delayed_effect("kill", obj, self.m_delays.kill, function(obj_now)
+    self:delayed_effect("burn", obj, self.m_delays.burn, function(obj_now, storage)
+        storage.burning = true
+    end)
+
+    self:delayed_effect("kill", obj, self.m_delays.kill, function(obj_now, storage)
         -- Kill object if alive
         if obj_now:alive() then
             local h = hit()
             h.power = 1000
-            h.direction = vector(-1,0,0)
+            h.direction = obj_now:direction()
             h.bone = "bip01_spine"
             h.draftsman = obj_now
-            h.impulse = 5000
+            h.impulse = 20
             h.type = hit_types_enum.burn
             obj_now:hit(h)
         end
     end)
 
-    self:delayed_effect("hide_body", obj, self.m_delays.hide_body, function(obj_now)
+    self:delayed_effect("force_kill", obj, self.m_delays.force_kill, function(obj_now, storage)
+        -- Force kill object if alive
+        if obj_now:alive() then
+            obj_now:kill(obj_now)
+        end
+    end)
+
+    self:delayed_effect("hide_body", obj, self.m_delays.hide_body, function(obj_now, storage)
         -- Hide body
         if obj_now:id() == AC_ID then
             obj_now:set_bone_visible(0, false, true, true)
         else
             local se_obj = alife_object(obj_now:id())
             safe_release_manager.release(se_obj)
-            self.m_vaporizing_obj_id = nil
+            storage.vaporizing = false
         end
-
-        -- Stop actor update callback
-        UnregisterScriptCallback("actor_on_update", self)
     end)
 
-    self:delayed_effect("stop_burn", obj, self.m_delays.stop_burn, function(obj_now)
+    self:delayed_effect("stop_burn", obj, self.m_delays.stop_burn, function(obj_now, storage)
         -- Stop particles
-        for bone_name, particle in pairs(self.m_particles) do
+        for bone_name, particle in pairs(storage.particles) do
             if particle:playing() then
-                particle:stop()
+                particle:stop_deffered()
             end
         end
 
         -- Reset vaporizing object ID
-        self.m_vaporizing_obj_id = nil
+        storage.vaporizing = false
     end)
 end
 
 function vaporizer:actor_on_update()
-    local obj = level.object_by_id(self.m_vaporizing_obj_id)
+    for id, storage in pairs(self.m_storage) do
+        self:update_vaporization(id, storage)
+    end
+end
+
+function vaporizer:update_vaporization(id, storage)
+    if not storage.vaporizing then
+        return
+    end
+
+    local obj = level.object_by_id(id)
+    if not obj then
+        return
+    end
 
     -- Update sound effects
-    if obj:id() ~= AC_ID then
-        self.m_vaporize_sfx.world:set_position(obj:position())
+    if obj:id() ~= AC_ID and storage.vaporize_sfx.world:playing() then
+        storage.vaporize_sfx.world:set_position(obj:position())
     end
 
     -- Update particles
-    if self.m_vaporizing_burning then
+    if storage.burning then
         local hud_mode = obj:id() == AC_ID
         local bones = obj:list_bones(hud_mode)
         for bone_id, bone_name in pairs(bones) do
             local pos = obj:bone_position(bone_id, hud_mode)
 
-            if not self.m_particles[bone_name] then
-                self.m_particles[bone_name] = particles_object([[damage_fx\burn_creatures]])
+            if not storage.particles[bone_name] then
+                storage.particles[bone_name] = particles_object([[damage_fx\burn_creatures]])
             end
 
-            if not self.m_particles[bone_name]:playing() then
-                self.m_particles[bone_name]:play(hud_mode)
+            if not storage.particles[bone_name]:playing() then
+                storage.particles[bone_name]:play(hud_mode)
             end
 
-            self.m_particles[bone_name]:move_to(pos, VEC_ZERO)
+            storage.particles[bone_name]:move_to(pos, VEC_ZERO)
         end
     end
 end
 
 function vaporizer:delayed_effect(name, obj, delay, callback)
-    CreateTimeEvent("nanosuit_vaporizer_" .. name, obj:id(), delay, function()
-        if self.m_vaporizing_obj_id then
-            local obj_now = level.object_by_id(self.m_vaporizing_obj_id)
-            callback(obj_now)
+    CreateTimeEvent("nanosuit_vaporizer_" .. name, obj:id(), delay, function(id)
+        local storage = self.m_storage[id]
+        if storage and storage.vaporizing then
+            local obj_now = level.object_by_id(id)
+            callback(obj_now, storage)
         end
         return true
-    end)
+    end, obj:id())
 end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Vaporizer property evaluator class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "evaluator_nanosuit_vaporize" (property_evaluator)
+
+function evaluator_nanosuit_vaporize:__init(npc, name, storage) super(nil, name)
+    self.st = storage
+end
+
+function evaluator_nanosuit_vaporize:evaluate()
+    if not db.storage[self.object:id()] then
+        db.storage[self.object:id()] = {}
+    end
+
+    local core = nanosuit_core.instance
+    if not core then
+        return false
+    end
+
+    local st = core.m_vaporizer.m_storage[self.object:id()]
+    if not st then
+        return false
+    end
+
+    return st.vaporizing
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Vaporizer action class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "action_nanosuit_vaporize" (action_base)
+
+function action_nanosuit_vaporize:__init(npc, name, storage) super(nil, name)
+    self.st = storage
+end
+
+function action_nanosuit_vaporize:initialize()
+    action_base.initialize(self)
+end
+
+function action_nanosuit_vaporize:finalize()
+    action_base.finalize(self)
+
+    db.storage[self.object:id()][vaporize_flag] = nil
+    self.object:clear_animations()
+    self.object:movement_enabled(true)
+end
+
+function action_nanosuit_vaporize:execute()
+    action_base.execute(self)
+
+    state_mgr.set_state(self.object, vaporize_state, nil, nil, {}, { fast_set = true, animation = true, })
+end
+
+LoadScheme("nanosuit_vaporizer", "nanosuit_vaporize", modules.stype_stalker)
