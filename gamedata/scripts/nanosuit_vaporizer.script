@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 05/06/2025                                                                                             ---
+---    Date : 07/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's vaporization process.                                                    ---
@@ -118,7 +118,8 @@ function vaporizer:__init(core)
         kill = 2.5,
         force_kill = 3.5,
         hide_body = 5,
-        stop_burn = 13
+        stop_burn = 7,
+        release_npc = 8
     }
     self.m_storage = {}
 
@@ -207,29 +208,29 @@ function vaporizer:schedule_effects(obj)
 
     self:delayed_effect("hide_body", obj, self.m_delays.hide_body, function(obj_now, storage)
         -- Hide body
-        if obj_now:id() == AC_ID then
-            for _, hud_mode in pairs({ true, false }) do
-                for idx in pairs(obj_now:get_shaders()) do
-                    obj_now:set_shader(idx, [[models\window]], [[nanosuit\no_draw]], hud_mode)
-                end
+        for _, hud_mode in pairs({ true, false }) do
+            for idx in pairs(obj_now:get_shaders()) do
+                obj_now:set_shader(idx, [[models\window]], [[nanosuit\no_draw]], hud_mode)
             end
-        else
-            local se_obj = alife_object(obj_now:id())
-            safe_release_manager.release(se_obj)
-            storage.vaporizing = false
         end
     end)
 
     self:delayed_effect("stop_burn", obj, self.m_delays.stop_burn, function(obj_now, storage)
         -- Stop particles
-        --for bone_name, particle in pairs(storage.particles) do
-        --    if particle:playing() then
-        --        particle:stop_deffered()
-        --    end
-        --end
+        for bone_name, particle in pairs(storage.particles) do
+            if particle:playing() then
+                particle:stop_deffered()
+            end
+        end
+    end)
 
-        -- Reset vaporizing object ID
-        --storage.vaporizing = false
+    -- FIXME : If actor interacts with NPC, this will crash their game
+    self:delayed_effect("release_npc", obj, self.m_delays.release_npc, function(obj_now, storage)
+        if obj_now:id() ~= AC_ID then
+            local se_obj = alife_object(obj_now:id())
+            safe_release_manager.release(se_obj)
+            storage.vaporizing = false
+        end
     end)
 end
 
