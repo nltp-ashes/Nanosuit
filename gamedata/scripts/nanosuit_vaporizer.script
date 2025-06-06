@@ -116,9 +116,9 @@ function vaporizer:__init(core)
         sounds = 0,
         burn = 1.2,
         kill = 2.5,
-        force_kill = 3.5,
+        force_kill = 2.6,
         hide_body = 5,
-        stop_burn = 7,
+        stop_burn = 6,
         release_npc = 8
     }
     self.m_storage = {}
@@ -222,6 +222,7 @@ function vaporizer:schedule_effects(obj)
                 particle:stop_deffered()
             end
         end
+        storage.burning = false
     end)
 
     -- FIXME : If actor interacts with NPC, this will crash their game
@@ -229,8 +230,8 @@ function vaporizer:schedule_effects(obj)
         if obj_now:id() ~= AC_ID then
             local se_obj = alife_object(obj_now:id())
             safe_release_manager.release(se_obj)
-            storage.vaporizing = false
         end
+        storage.vaporizing = false
     end)
 end
 
