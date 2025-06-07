@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 05/06/2025                                                                                             ---
+---    Date : 07/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -120,4 +120,26 @@ function is_legs(obj)
         return true
     end
     return false
+end
+
+--- Function used to add a unique call (function called every frame) to the level.
+--- @param callback function
+--- @return function
+function add_unique_call(callback, ...)
+    local args = {...}
+    local wrapper = function()
+        if callback(unpack(args)) then
+            return true
+        end
+        return false
+    end
+    AddUniqueCall(wrapper)
+    return wrapper
+end
+
+--- Function used to remove a unique call (function called every frame) from the level.
+--- @param callback function
+--- @return nil
+function remove_unique_call(callback)
+    RemoveUniqueCall(callback)
 end

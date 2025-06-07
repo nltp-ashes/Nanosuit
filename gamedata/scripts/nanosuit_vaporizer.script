@@ -16,6 +16,10 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
+-- Callbacks
+-- FIXME : This should be in the modded exes
+AddScriptCallback("actor_on_death")
+
 -- Constants
 action_id               = 73419
 evaluator_id            = 73419
@@ -103,6 +107,18 @@ function npc_add_precondition(action)
     end
 end
 
+-- FIXME : This should be in the modded exes
+function actor_on_first_update()
+    db.actor:set_callback(callback.death, function()
+        SendScriptCallback("actor_on_death")
+    end)
+end
+
+-- FIXME : This should be in the modded exes
+function on_game_start()
+    RegisterScriptCallback("actor_on_first_update", actor_on_first_update)
+end
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Vaporizer class
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -123,13 +139,19 @@ function vaporizer:__init(core)
     }
     self.m_storage = {}
 
-    -- Register callbacks
-    RegisterScriptCallback("actor_on_update", self)
+    -- Callbacks
+    RegisterScriptCallback("actor_on_death", self)
+
+    -- Unique call
+    self.m_unique_call_wrapper = nanosuit_utils.add_unique_call(self.update_vaporization, self)
 end
 
 function vaporizer:destroy()
-    -- Unregister callbacks
-    UnregisterScriptCallback("actor_on_update", self)
+    -- Callbacks
+    UnregisterScriptCallback("actor_on_death", self)
+
+    -- Unique call
+    nanosuit_utils.remove_unique_call(self.m_unique_call_wrapper)
 end
 
 function vaporizer:vaporize(obj)
@@ -246,13 +268,13 @@ function vaporizer:delayed_effect(name, obj, delay, callback)
     end, obj:name())
 end
 
-function vaporizer:actor_on_update()
+function vaporizer:update_vaporization()
     for name, storage in pairs(self.m_storage) do
-        self:update_vaporization(storage.id, storage)
+        self:update_vaporization_single(storage.id, storage)
     end
 end
 
-function vaporizer:update_vaporization(id, storage)
+function vaporizer:update_vaporization_single(id, storage)
     if not storage.vaporizing then
         return
     end
@@ -283,6 +305,13 @@ function vaporizer:update_vaporization(id, storage)
             storage.particles[bone_name]:set_hud_mode(hud_mode)
             storage.particles[bone_name]:move_to(obj:bone_position(bone_id, hud_mode), VEC_ZERO)
         end
+    end
+end
+
+function vaporizer:actor_on_death()
+    local storage = self.m_storage[db.actor:name()]
+    if not storage then
+        self:vaporize(db.actor)
     end
 end
 
