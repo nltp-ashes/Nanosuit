@@ -1,0 +1,140 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 05/06/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to execute debug functions to help in development.                                                ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Variables
+holding_ctrl            = false
+x_transforms            = 0
+y_transforms            = 0
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Debug functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Variables
+poly_point              = 0
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function on_key_press_tacmap(dik)
+    if dik == DIK_keys.DIK_LCONTROL then
+        holding_ctrl = true
+    end
+    if not nanosuit_core.instance then
+        return
+    end
+
+    local pos = nil
+    if poly_point == 0 then
+        pos = nanosuit_core.instance.m_uis.hud.m_ui_tacmap.m_player
+    else
+        pos = nanosuit_core.instance.m_uis.hud.m_ui_tacmap.m_tacmap_bounds[poly_point]
+    end
+
+    local transform = holding_ctrl and 10 or 1
+    if dik == DIK_keys.DIK_DOWN then
+        pos.y = pos.y + transform
+    elseif dik == DIK_keys.DIK_UP then
+        pos.y = pos.y - transform
+    elseif dik == DIK_keys.DIK_LEFT then
+        pos.x = pos.x - transform
+    elseif dik == DIK_keys.DIK_RIGHT then
+        pos.x = pos.x + transform
+    elseif dik == DIK_keys.DIK_ADD then
+        if poly_point < 7 then
+            poly_point = poly_point + 1
+            printf("[NS] Poly point set to : poly_point:%s", poly_point)
+        end
+    elseif dik == DIK_keys.DIK_SUBTRACT then
+        if poly_point > 1 then
+            poly_point = poly_point - 1
+            printf("[NS] Poly point set to : poly_point:%s", poly_point)
+        else
+            poly_point = 0
+            printf("[NS] Poly point set to player")
+        end
+    elseif dik == DIK_keys.DIK_HOME then
+        printf("[NS] Poly : x:%s y:%s", pos.x, pos.y)
+        return
+    end
+end
+
+function on_key_press_status(dik)
+    if dik == DIK_keys.DIK_LCONTROL then
+        holding_ctrl = true
+    end
+    if not nanosuit_core.instance then
+        return
+    end
+
+    local static = actor_status.HUD.dialog
+
+    local pos = vector2():set(static:GetWndPos().x, static:GetWndPos().y)
+
+    local transform = holding_ctrl and 10 or 1
+    if dik == DIK_keys.DIK_DOWN then
+        pos.y = pos.y + transform
+        y_transforms = y_transforms + transform
+    elseif dik == DIK_keys.DIK_UP then
+        pos.y = pos.y - transform
+        y_transforms = y_transforms - transform
+    elseif dik == DIK_keys.DIK_LEFT then
+        pos.x = pos.x - transform
+        x_transforms = x_transforms - transform
+    elseif dik == DIK_keys.DIK_RIGHT then
+        pos.x = pos.x + transform
+        x_transforms = x_transforms + transform
+    elseif dik == DIK_keys.DIK_HOME then
+        printf("[NS] Static transforms: x:%s y:%s", x_transforms, y_transforms)
+    end
+    static:SetWndPos(pos)
+end
+
+function on_key_press_vap(dik)
+    if dik == DIK_keys.DIK_J then
+        nanosuit_core.instance.m_vaporizer:vaporize(db.actor)
+    end
+
+    local obj = level.get_target_obj()
+    if not obj then
+        return
+    end
+
+    if dik == DIK_keys.DIK_L then
+        obj:set_visual_name([[nanosuit\nanosuit_tp]])
+    elseif dik == DIK_keys.DIK_K then
+        nanosuit_core.instance.m_vaporizer:vaporize(obj)
+    end
+end
+
+function on_key_release(dik)
+    if dik == DIK_keys.DIK_LCONTROL then
+        holding_ctrl = false
+    end
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Callbacks registration
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to register callbacks.
+--- @return nil
+function on_game_start()
+    --RegisterScriptCallback("on_key_press", on_key_press_tacmap)
+    RegisterScriptCallback("on_key_press", on_key_press_status)
+    RegisterScriptCallback("on_key_press", on_key_press_vap)
+    RegisterScriptCallback("on_key_release", on_key_release)
+end

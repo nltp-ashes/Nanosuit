@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 11/05/2025                                                                                             ---
+---    Date : 07/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -132,7 +132,11 @@ function core:__init()
         hud = nanosuit_ui_hud.ui_hud(self),
     }
 
+    -- Others
+    self.m_vaporizer = nanosuit_vaporizer.vaporizer()
+
     -- Register callbacks
+    RegisterScriptCallback("actor_on_death", self)
     RegisterScriptCallback("actor_on_update", self)
     RegisterScriptCallback("on_option_change", self)
 end
@@ -140,6 +144,7 @@ end
 function core:destroy()
     self.m_current_mode:remove()
 
+    UnregisterScriptCallback("actor_on_death", self)
     UnregisterScriptCallback("actor_on_update", self)
     UnregisterScriptCallback("on_option_change", self)
 
@@ -175,6 +180,14 @@ function core:on_option_change()
     self.m_uis.hud = nanosuit_ui_hud.ui_hud(self)
 end
 
+function core:actor_on_death()
+    for _, sfx in pairs(self.m_sounds) do
+        if sfx:playing() then
+            sfx:stop()
+        end
+    end
+end
+
 function core:actor_on_update()
     -- Delay energy regen 5s after last energy use
     if time_global() - self.m_energy_last_use > self.m_energy_regen_delay then
@@ -185,7 +198,7 @@ function core:actor_on_update()
         end
     end
 
-    -- Energy low
+    -- Energy low voice
     if self.m_energy <= self.m_energy_low_threshold and not self.m_energy_low_voiced then
         self.m_sounds.energy_low_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         self.m_energy_low_voiced = true

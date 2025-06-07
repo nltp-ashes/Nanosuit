@@ -92,6 +92,8 @@ For past updates, please refer to the description of each release, in the [relea
 - When wearing the suit, the player footsteps do not change. They should use custom sounds
 - The shader and textures used for cloak mode are not the best. They should be improved
 - Speed mode should increase reload speed. This is impossible due to engine limitations. Will probably never be fixed
+- If actor interacts with an NPC while they're getting vaporized, the game will crash
+- Some code in the vaporization script should be moved to the modded exes
 
 If you truly believe your problem is new, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).
 

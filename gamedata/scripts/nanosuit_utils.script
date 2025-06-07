@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/05/2025                                                                                             ---
+---    Date : 07/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -22,7 +22,8 @@ hit_types_enum   = { burn = 0, shock = 1, chemical_burn = 2, radiation = 3, tele
 hit_types_names_enum   = { [0] = "burn", [1] = "shock", [2] = "chemical_burn", [3] = "radiation", [4] = "telepathic", [5] = "wound", [6] = "fire_wound", [7] = "strike", [8] = "explosion", [9] = "wound_2", [10] = "light_burn" }
 armor_modes_enum = { armor = "armor", power = "power", speed = "speed", cloak = "cloak" }
 fire_modes_enum = { single = 1, burst_2 = 2, burst_3 = 3, auto = -1 }
-fire_modes_names_enums = { [1] = "single", [2] = "burst_2", [3] = "burst_3", [-1] = "auto" }
+fire_modes_names_enum = { [1] = "single", [2] = "burst_2", [3] = "burst_3", [-1] = "auto" }
+actor_cameras_enum = { first_eye = 0, look_at = 1, free_look = 2, fixed_look_at = 3 }
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Debug Functions
@@ -119,4 +120,26 @@ function is_legs(obj)
         return true
     end
     return false
+end
+
+--- Function used to add a unique call (function called every frame) to the level.
+--- @param callback function
+--- @return function
+function add_unique_call(callback, ...)
+    local args = {...}
+    local wrapper = function()
+        if callback(unpack(args)) then
+            return true
+        end
+        return false
+    end
+    AddUniqueCall(wrapper)
+    return wrapper
+end
+
+--- Function used to remove a unique call (function called every frame) from the level.
+--- @param callback function
+--- @return nil
+function remove_unique_call(callback)
+    RemoveUniqueCall(callback)
 end
