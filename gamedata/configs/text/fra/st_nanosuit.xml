@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 28/04/2025                                                                                            -->
+<!--    Date : 08/06/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -67,24 +67,24 @@
     <!--    Nanosuit voice lines                                                                                     -->
     <!--=============================================================================================================-->
 
-    <string id="nanosuit\mode_armor_voice">
-        <text>nanosuit\mode_armor_voice_fra</text>
+    <string id="nanosuit\voice\mode_armor_voice">
+        <text>nanosuit\voice\mode_armor_voice_fra</text>
     </string>
 
-    <string id="nanosuit\mode_cloak_voice">
-        <text>nanosuit\mode_cloak_voice_fra</text>
+    <string id="nanosuit\voice\mode_cloak_voice">
+        <text>nanosuit\voice\mode_cloak_voice_fra</text>
     </string>
 
-    <string id="nanosuit\mode_power_voice">
-        <text>nanosuit\mode_power_voice_fra</text>
+    <string id="nanosuit\voice\mode_power_voice">
+        <text>nanosuit\voice\mode_power_voice_fra</text>
     </string>
 
-    <string id="nanosuit\mode_speed_voice">
-        <text>nanosuit\mode_speed_voice_fra</text>
+    <string id="nanosuit\voice\mode_speed_voice">
+        <text>nanosuit\voice\mode_speed_voice_fra</text>
     </string>
 
-    <string id="nanosuit\energy_low_voice">
-        <text>nanosuit\energy_low_voice_fra</text>
+    <string id="nanosuit\voice\energy_low_voice">
+        <text>nanosuit\voice\energy_low_voice_fra</text>
     </string>
 
 </string_table>

@@ -9,3 +9,4 @@
 > • Changed the behavior of the HUD and some sound effects after the player dies;
 
 **• Bug fixes :**
+> • Fixed localized voice-lines not working properly;
