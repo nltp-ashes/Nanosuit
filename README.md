@@ -14,10 +14,6 @@ This addon adds a fully operational Nanosuit from Crysis.
 
 Bellow is a list of features that are currently available in the addon :
 
-General :
-- The nanosuit menu allows you to switch from one mode to another
-- The menu opens when pressing V
-
 Armor mode :
 - Absorbs all incoming damage as long as the suit has energy
 - The more powerful is the impact, the more energy it consumes
@@ -45,6 +41,17 @@ Cloak mode :
 - Shooting while in cloak mode completely depletes the suit's energy
 - The player is cloaked from NPC's vision while cloak mode is active
 - When getting too close to an NPC while in cloak mode, they will start to notice you
+
+HUD :
+- Added a custom HUD when wearing the suit. HUD dynamically switches from vanilla HUD to the Nanosuit's and back
+- HUD is divided in 3 parts : the menu, the left side shows a minimap, the right side shows the suit's status
+- The menu (opened by pressing V) allows you to switch from one mode to another
+- The minimap shows all human objects around the player
+- The status hub shows the suit's current mode, energy level, health, ammo count, ammo reserve and fire mode
+
+Miscellaneous :
+- The Nanosuit voice-lines are available in English, French and Russian, depending on the game language
+- When dying, the suit vaporizes the player, leaving no body behind
 
 ---
 
@@ -93,7 +100,6 @@ For past updates, please refer to the description of each release, in the [relea
 - The shader and textures used for cloak mode are not the best. They should be improved
 - Speed mode should increase reload speed. This is impossible due to engine limitations. Will probably never be fixed
 - If actor interacts with an NPC while they're getting vaporized, the game will crash
-- Some code in the vaporization script should be moved to the modded exes
 
 If you truly believe your problem is new, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).
 
