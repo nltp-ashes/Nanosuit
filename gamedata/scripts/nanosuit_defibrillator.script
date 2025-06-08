@@ -1,0 +1,97 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 08/06/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit's built-in defibrillator.                                                  ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Constants
+effector_id             = 3419
+effector_factor_min     = 0.005 -- [0, 1]
+effector_factor_max     = 1     -- [0, 1]
+effector_min_val        = 0.2   -- [0, 1]
+effector_max_val        = 0.6   -- [0, 1]
+effector_period         = 3000  -- ms
+
+-- Imports
+hit_types_enum          = nanosuit_utils.hit_types_enum
+actor_cameras_enum      = nanosuit_utils.actor_cameras_enum
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Defibrillator class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "defibrillator"
+
+function defibrillator:__init()
+    -- Variables
+    self.m_is_defibrillating = false
+    self.m_start_time = 0
+
+    -- Callbacks
+    RegisterScriptCallback("actor_on_update", self)
+    RegisterScriptCallback("main_menu_on_quit", self)
+    RegisterScriptCallback("actor_on_before_death", self)
+end
+
+function defibrillator:destroy()
+    if nanosuit_utils.has_pp_effector(effector_id) then
+        nanosuit_utils.remove_pp_effector(effector_id)
+    end
+
+    -- Callbacks
+    UnregisterScriptCallback("actor_on_update", self)
+    UnregisterScriptCallback("main_menu_on_quit", self)
+    UnregisterScriptCallback("actor_on_before_death", self)
+end
+
+function defibrillator:defibrillate()
+    if self.m_is_defibrillating then
+        return
+    end
+
+    printf("[NS] Defibrillator activated")
+
+    self.m_is_defibrillating = true
+    self.m_start_time = time_global()
+
+    nanosuit_utils.add_pp_effector("black_infinite.ppe", effector_id, true)
+    nanosuit_utils.set_pp_effector_factor(effector_id, effector_factor_min)
+end
+
+function defibrillator:actor_on_update()
+    local elapsed = time_global() - self.m_start_time
+    local phase = (elapsed % effector_period) / effector_period
+    local factor = effector_min_val + (effector_max_val - effector_min_val) * 0.5 * (1 + math.sin(2 * math.pi * phase - math.pi / 2))
+
+    printf("[NS] Defibrillator effect factor: %s", factor)
+
+    if self.m_is_defibrillating then
+        nanosuit_utils.set_pp_effector_factor(effector_id, factor)
+        return
+    end
+
+    local last_factor = nanosuit_utils.get_pp_effector_factor(effector_id)
+    if last_factor > effector_factor_min then
+        nanosuit_utils.set_pp_effector_factor(effector_id, math.min(0, last_factor - 0.1))
+    elseif nanosuit_utils.has_pp_effector(effector_id) then
+        nanosuit_utils.remove_pp_effector(effector_id)
+    end
+end
+
+function defibrillator:actor_on_before_death(killer_id, flags)
+    local should_defibrillate = true
+    if should_defibrillate then
+        flags.ret_value = false
+        db.actor.health = 0.01
+        self:defibrillate()
+    end
+end

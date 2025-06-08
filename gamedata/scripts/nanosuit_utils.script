@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 07/06/2025                                                                                             ---
+---    Date : 08/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -105,6 +105,45 @@ function string_pad_l(var, char, length)
         end
     end
     return ret
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Post-process effectors functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+local active_pp_effectors = {}
+
+function add_pp_effector(name, id, looped)
+    if has_pp_effector(id) then
+        remove_pp_effector(id)
+    end
+    level.add_pp_effector(name, id, looped)
+    active_pp_effectors[id] = { name = name, factor = 1 }
+end
+
+function remove_pp_effector(id)
+    if has_pp_effector(id) then
+        level.remove_pp_effector(id)
+        active_pp_effectors[id] = nil
+    end
+end
+
+function has_pp_effector(id)
+    return active_pp_effectors[id] ~= nil
+end
+
+function set_pp_effector_factor(id, factor)
+    if has_pp_effector(id) then
+        level.set_pp_effector_factor(id, factor)
+        active_pp_effectors[id].factor = factor
+    end
+end
+
+function get_pp_effector_factor(id)
+    if has_pp_effector(id) then
+        return active_pp_effectors[id].factor
+    end
+    return 0
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
