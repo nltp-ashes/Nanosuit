@@ -52,9 +52,9 @@ function defibrillator:__init()
 
     -- Variables
     self.m_is_defibrillating = false
+    self.m_last_active_slot = 0
 
     -- Callbacks
-    --RegisterScriptCallback("actor_on_update", self)
     RegisterScriptCallback("main_menu_on_quit", self)
     RegisterScriptCallback("actor_on_before_death", self)
 end
@@ -65,7 +65,6 @@ function defibrillator:destroy()
     end
 
     -- Callbacks
-    --UnregisterScriptCallback("actor_on_update", self)
     UnregisterScriptCallback("main_menu_on_quit", self)
     UnregisterScriptCallback("actor_on_before_death", self)
 end
@@ -81,7 +80,10 @@ function defibrillator:defibrillate()
     local start_length = level.add_cam_effector(cam_effector_start_path, cam_effector_start_id, false, "", 0, false, 1)
 
     CreateTimeEvent("nanosuit_defibrillator", "blur", 0, function()
+        level.disable_input()
         nanosuit_utils.add_pp_effector(pp_effector_b_path, pp_effector_b_id, true)
+        self.m_last_active_slot = db.actor:active_slot()
+        db.actor:activate_slot(0)
         return true
     end)
 
@@ -99,38 +101,32 @@ function defibrillator:defibrillate()
     CreateTimeEvent("nanosuit_defibrillator", "fade_out", start_length + self.m_blackout_length, function()
         nanosuit_utils.remove_pp_effector(pp_effector_black_id)
         nanosuit_utils.add_pp_effector(pp_effector_ftg_path, pp_effector_ftg_id, false)
+        level.add_cam_effector(cam_effector_end_path, cam_effector_end_id, false, "", 0, false, 1)
+        return true
+    end)
 
-        local end_length = level.add_cam_effector(cam_effector_end_path, cam_effector_end_id, false, "", 0, false, 1)
-        CreateTimeEvent("nanosuit_defibrillator", "end", start_length + self.m_blackout_length + 1, function()
-            nanosuit_utils.remove_pp_effector(pp_effector_b_id)
+    CreateTimeEvent("nanosuit_defibrillator", "enable_input", start_length + self.m_blackout_length + 5, function()
+        level.enable_input()
+        db.actor:activate_slot(self.m_last_active_slot)
+        return true
+    end)
 
-            self.m_is_defibrillating = false
-            printf("[NS] Defibrillator completed")
-            return true
-        end)
-
+    CreateTimeEvent("nanosuit_defibrillator", "end", start_length + self.m_blackout_length + 6, function()
+        nanosuit_utils.remove_pp_effector(pp_effector_b_id)
+        db.actor.health = 0.2
+        self.m_is_defibrillating = false
+        printf("[NS] Defibrillator completed")
         return true
     end)
 end
 
-function defibrillator:actor_on_update()
-    if self.m_is_defibrillating or not nanosuit_utils.has_pp_effector(pp_effector_b_id) then
-        return
-    end
-
-    local last_factor = nanosuit_utils.get_pp_effector_factor(pp_effector_b_id)
-    if last_factor > pp_effector_b_factor_min then
-        nanosuit_utils.set_pp_effector_factor(pp_effector_b_id, math.min(0, last_factor - 0.1))
-    elseif nanosuit_utils.has_pp_effector(pp_effector_b_id) then
-        nanosuit_utils.remove_pp_effector(pp_effector_b_id)
-    end
-end
-
 function defibrillator:actor_on_before_death(killer_id, flags)
     local should_defibrillate = true
-    if should_defibrillate then
+    if should_defibrillate or self.m_is_defibrillating then
         flags.ret_value = false
         db.actor.health = 0.01
+    end
+    if should_defibrillate then
         self:defibrillate()
     end
 end
