@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 05/06/2025                                                                                             ---
+---    Date : 08/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to execute debug functions to help in development.                                                ---
@@ -120,6 +120,18 @@ function on_key_press_vap(dik)
     end
 end
 
+function on_key_press_defib(dik)
+    if dik == DIK_keys.DIK_K then
+        if not nanosuit_core.instance.m_defibrillator.m_is_defibrillating then
+            nanosuit_core.instance.m_defibrillator:defibrillate()
+        else
+            level.remove_cam_effector(nanosuit_defibrillator.cam_effector_start_id)
+            nanosuit_utils.remove_pp_effector(nanosuit_defibrillator.pp_effector_b_id)
+            nanosuit_utils.remove_pp_effector(nanosuit_defibrillator.pp_effector_ftb_id)
+        end
+    end
+end
+
 function on_key_release(dik)
     if dik == DIK_keys.DIK_LCONTROL then
         holding_ctrl = false
@@ -134,7 +146,8 @@ end
 --- @return nil
 function on_game_start()
     --RegisterScriptCallback("on_key_press", on_key_press_tacmap)
-    RegisterScriptCallback("on_key_press", on_key_press_status)
-    RegisterScriptCallback("on_key_press", on_key_press_vap)
-    RegisterScriptCallback("on_key_release", on_key_release)
+    --RegisterScriptCallback("on_key_press", on_key_press_status)
+    --RegisterScriptCallback("on_key_press", on_key_press_vap)
+    RegisterScriptCallback("on_key_press", on_key_press_defib)
+    --RegisterScriptCallback("on_key_release", on_key_release)
 end

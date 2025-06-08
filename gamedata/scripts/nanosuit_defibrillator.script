@@ -7,6 +7,9 @@
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's built-in defibrillator.                                                  ---
 ---                                                                                                                  ---
+---    game.play_hud_anm([[camera_effects\sleep.anm]], 0, 1, 1, false)                                               ---
+---    level.add_cam_effector("camera_effects\\wake_up.anm", 9683, false, "")                                        ---
+---                                                                                                                  ---
 ---==================================================================================================================---
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -14,16 +17,28 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- Constants
-effector_id             = 3419
-effector_factor_min     = 0.005 -- [0, 1]
-effector_factor_max     = 1     -- [0, 1]
-effector_min_val        = 0.2   -- [0, 1]
-effector_max_val        = 0.6   -- [0, 1]
-effector_period         = 3000  -- ms
+pp_effector_b_id         = 3419
+pp_effector_b_path       = [[surge_shock_old.ppe]]
+pp_effector_b_factor_min = 0.005
+
+pp_effector_ftb_id       = 34196
+pp_effector_ftb_path     = [[fade_in.ppe]]
+
+pp_effector_ftg_id       = 34195
+pp_effector_ftg_path     = [[fade_out.ppe]]
+
+pp_effector_black_id     = 34198
+pp_effector_black_path   = [[black_infinite_2.ppe]]
+
+cam_effector_start_id    = 34197
+cam_effector_start_path  = [[nanosuit\defibrillator_start.anm]]
+
+cam_effector_end_id      = 34199
+cam_effector_end_path    = [[camera_effects\prison_1.anm]]
 
 -- Imports
-hit_types_enum          = nanosuit_utils.hit_types_enum
-actor_cameras_enum      = nanosuit_utils.actor_cameras_enum
+hit_types_enum           = nanosuit_utils.hit_types_enum
+actor_cameras_enum       = nanosuit_utils.actor_cameras_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Defibrillator class
@@ -32,23 +47,25 @@ actor_cameras_enum      = nanosuit_utils.actor_cameras_enum
 class "defibrillator"
 
 function defibrillator:__init()
+    -- Constants
+    self.m_blackout_length = 5
+
     -- Variables
     self.m_is_defibrillating = false
-    self.m_start_time = 0
 
     -- Callbacks
-    RegisterScriptCallback("actor_on_update", self)
+    --RegisterScriptCallback("actor_on_update", self)
     RegisterScriptCallback("main_menu_on_quit", self)
     RegisterScriptCallback("actor_on_before_death", self)
 end
 
 function defibrillator:destroy()
-    if nanosuit_utils.has_pp_effector(effector_id) then
-        nanosuit_utils.remove_pp_effector(effector_id)
+    if nanosuit_utils.has_pp_effector(pp_effector_b_id) then
+        nanosuit_utils.remove_pp_effector(pp_effector_b_id)
     end
 
     -- Callbacks
-    UnregisterScriptCallback("actor_on_update", self)
+    --UnregisterScriptCallback("actor_on_update", self)
     UnregisterScriptCallback("main_menu_on_quit", self)
     UnregisterScriptCallback("actor_on_before_death", self)
 end
@@ -57,33 +74,55 @@ function defibrillator:defibrillate()
     if self.m_is_defibrillating then
         return
     end
+    self.m_is_defibrillating = true
 
     printf("[NS] Defibrillator activated")
 
-    self.m_is_defibrillating = true
-    self.m_start_time = time_global()
+    local start_length = level.add_cam_effector(cam_effector_start_path, cam_effector_start_id, false, "", 0, false, 1)
 
-    nanosuit_utils.add_pp_effector("black_infinite.ppe", effector_id, true)
-    nanosuit_utils.set_pp_effector_factor(effector_id, effector_factor_min)
+    CreateTimeEvent("nanosuit_defibrillator", "blur", 0, function()
+        nanosuit_utils.add_pp_effector(pp_effector_b_path, pp_effector_b_id, true)
+        return true
+    end)
+
+    CreateTimeEvent("nanosuit_defibrillator", "fade_in", start_length - 1, function()
+        nanosuit_utils.add_pp_effector(pp_effector_ftb_path, pp_effector_ftb_id, false)
+        return true
+    end)
+
+    CreateTimeEvent("nanosuit_defibrillator", "blackout", start_length, function()
+        nanosuit_utils.remove_pp_effector(pp_effector_ftb_id)
+        nanosuit_utils.add_pp_effector(pp_effector_black_path, pp_effector_black_id, true)
+        return true
+    end)
+
+    CreateTimeEvent("nanosuit_defibrillator", "fade_out", start_length + self.m_blackout_length, function()
+        nanosuit_utils.remove_pp_effector(pp_effector_black_id)
+        nanosuit_utils.add_pp_effector(pp_effector_ftg_path, pp_effector_ftg_id, false)
+
+        local end_length = level.add_cam_effector(cam_effector_end_path, cam_effector_end_id, false, "", 0, false, 1)
+        CreateTimeEvent("nanosuit_defibrillator", "end", start_length + self.m_blackout_length + 1, function()
+            nanosuit_utils.remove_pp_effector(pp_effector_b_id)
+
+            self.m_is_defibrillating = false
+            printf("[NS] Defibrillator completed")
+            return true
+        end)
+
+        return true
+    end)
 end
 
 function defibrillator:actor_on_update()
-    local elapsed = time_global() - self.m_start_time
-    local phase = (elapsed % effector_period) / effector_period
-    local factor = effector_min_val + (effector_max_val - effector_min_val) * 0.5 * (1 + math.sin(2 * math.pi * phase - math.pi / 2))
-
-    printf("[NS] Defibrillator effect factor: %s", factor)
-
-    if self.m_is_defibrillating then
-        nanosuit_utils.set_pp_effector_factor(effector_id, factor)
+    if self.m_is_defibrillating or not nanosuit_utils.has_pp_effector(pp_effector_b_id) then
         return
     end
 
-    local last_factor = nanosuit_utils.get_pp_effector_factor(effector_id)
-    if last_factor > effector_factor_min then
-        nanosuit_utils.set_pp_effector_factor(effector_id, math.min(0, last_factor - 0.1))
-    elseif nanosuit_utils.has_pp_effector(effector_id) then
-        nanosuit_utils.remove_pp_effector(effector_id)
+    local last_factor = nanosuit_utils.get_pp_effector_factor(pp_effector_b_id)
+    if last_factor > pp_effector_b_factor_min then
+        nanosuit_utils.set_pp_effector_factor(pp_effector_b_id, math.min(0, last_factor - 0.1))
+    elseif nanosuit_utils.has_pp_effector(pp_effector_b_id) then
+        nanosuit_utils.remove_pp_effector(pp_effector_b_id)
     end
 end
 

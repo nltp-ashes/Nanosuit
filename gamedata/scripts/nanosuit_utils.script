@@ -118,7 +118,9 @@ function add_pp_effector(name, id, looped)
         remove_pp_effector(id)
     end
     level.add_pp_effector(name, id, looped)
-    active_pp_effectors[id] = { name = name, factor = 1 }
+    if looped then
+        active_pp_effectors[id] = { name = name, factor = 1 }
+    end
 end
 
 function remove_pp_effector(id)
