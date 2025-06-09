@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/06/2025                                                                                             ---
+---    Date : 09/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's built-in defibrillator.                                                  ---
@@ -15,26 +15,6 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
-
--- Constants
-pp_effector_b_id         = 3419
-pp_effector_b_path       = [[surge_shock_old.ppe]]
-pp_effector_b_factor_min = 0.005
-
-pp_effector_ftb_id       = 34196
-pp_effector_ftb_path     = [[fade_in.ppe]]
-
-pp_effector_ftg_id       = 34195
-pp_effector_ftg_path     = [[fade_out.ppe]]
-
-pp_effector_black_id     = 34198
-pp_effector_black_path   = [[black_infinite_2.ppe]]
-
-cam_effector_start_id    = 34197
-cam_effector_start_path  = [[nanosuit\defibrillator_start.anm]]
-
-cam_effector_end_id      = 34199
-cam_effector_end_path    = [[camera_effects\prison_1.anm]]
 
 -- Imports
 hit_types_enum           = nanosuit_utils.hit_types_enum
@@ -49,23 +29,42 @@ class "defibrillator"
 function defibrillator:__init()
     -- Constants
     self.m_blackout_length = 5
+    self.m_recoverable_hit_types = {
+        [hit_types_enum.radiation] = true,
+        [hit_types_enum.wound] = true,
+        [hit_types_enum.strike] = true,
+        [hit_types_enum.wound_2] = true
+    }
+    self.m_effectors = {
+        blur = { id = 3419, path = [[surge_shock_old.ppe]] },
+        fade_in = { id = 3429, path = [[fade_in.ppe]] },
+        fade_out = { id = 3439, path = [[fade_out.ppe]] },
+        blackout = { id = 3449, path = [[black_infinite_2.ppe]] },
+        fall = { id = 3459, path = [[nanosuit\defibrillator_start.anm]] },
+        stand = { id = 3469, path = [[nanosuit\defibrillator_end.anm]] }
+    }
 
     -- Variables
     self.m_is_defibrillating = false
     self.m_last_active_slot = 0
 
     -- Callbacks
-    RegisterScriptCallback("main_menu_on_quit", self)
+    RegisterScriptCallback("actor_on_before_hit", self)
+    RegisterScriptCallback("actor_on_hit_callback", self)
     RegisterScriptCallback("actor_on_before_death", self)
 end
 
 function defibrillator:destroy()
-    if nanosuit_utils.has_pp_effector(pp_effector_b_id) then
-        nanosuit_utils.remove_pp_effector(pp_effector_b_id)
+    -- Remove effectors
+    for _, config in pairs(self.m_effectors) do
+        if nanosuit_utils.has_pp_effector(config.id) then
+            nanosuit_utils.remove_pp_effector(config.id)
+        end
     end
 
     -- Callbacks
-    UnregisterScriptCallback("main_menu_on_quit", self)
+    UnregisterScriptCallback("actor_on_before_hit", self)
+    UnregisterScriptCallback("actor_on_hit_callback", self)
     UnregisterScriptCallback("actor_on_before_death", self)
 end
 
@@ -77,31 +76,31 @@ function defibrillator:defibrillate()
 
     printf("[NS] Defibrillator activated")
 
-    local start_length = level.add_cam_effector(cam_effector_start_path, cam_effector_start_id, false, "", 0, false, 1)
+    local start_length = level.add_cam_effector(self.m_effectors.fall.path, self.m_effectors.fall.id, false, "", 0, false, 1)
 
     CreateTimeEvent("nanosuit_defibrillator", "blur", 0, function()
+        nanosuit_utils.add_pp_effector(self.m_effectors.blur.path, self.m_effectors.blur.id, true)
         level.disable_input()
-        nanosuit_utils.add_pp_effector(pp_effector_b_path, pp_effector_b_id, true)
         self.m_last_active_slot = db.actor:active_slot()
         db.actor:activate_slot(0)
         return true
     end)
 
     CreateTimeEvent("nanosuit_defibrillator", "fade_in", start_length - 1, function()
-        nanosuit_utils.add_pp_effector(pp_effector_ftb_path, pp_effector_ftb_id, false)
+        nanosuit_utils.add_pp_effector(self.m_effectors.fade_in.path, self.m_effectors.fade_in.id, false)
         return true
     end)
 
     CreateTimeEvent("nanosuit_defibrillator", "blackout", start_length, function()
-        nanosuit_utils.remove_pp_effector(pp_effector_ftb_id)
-        nanosuit_utils.add_pp_effector(pp_effector_black_path, pp_effector_black_id, true)
+        nanosuit_utils.remove_pp_effector(self.m_effectors.fade_in.id)
+        nanosuit_utils.add_pp_effector(self.m_effectors.blackout.path, self.m_effectors.blackout.id, true)
         return true
     end)
 
     CreateTimeEvent("nanosuit_defibrillator", "fade_out", start_length + self.m_blackout_length, function()
-        nanosuit_utils.remove_pp_effector(pp_effector_black_id)
-        nanosuit_utils.add_pp_effector(pp_effector_ftg_path, pp_effector_ftg_id, false)
-        level.add_cam_effector(cam_effector_end_path, cam_effector_end_id, false, "", 0, false, 1)
+        nanosuit_utils.remove_pp_effector(self.m_effectors.blackout.id)
+        nanosuit_utils.add_pp_effector(self.m_effectors.fade_out.path, self.m_effectors.fade_out.id, false)
+        level.add_cam_effector(self.m_effectors.stand.path, self.m_effectors.stand.id, false, "", 0, false, 1)
         return true
     end)
 
@@ -112,7 +111,7 @@ function defibrillator:defibrillate()
     end)
 
     CreateTimeEvent("nanosuit_defibrillator", "end", start_length + self.m_blackout_length + 6, function()
-        nanosuit_utils.remove_pp_effector(pp_effector_b_id)
+        nanosuit_utils.remove_pp_effector(self.m_effectors.blur.id)
         db.actor.health = 0.2
         self.m_is_defibrillating = false
         printf("[NS] Defibrillator completed")
@@ -120,12 +119,38 @@ function defibrillator:defibrillate()
     end)
 end
 
+local defib_once = true
+function defibrillator:should_defibrillate()
+    -- FIXME : Implement a real way to check if the defibrillator should be used
+    local temp = defib_once
+    defib_once = false
+    return temp
+end
+
+function defibrillator:actor_on_before_hit(scripted_hit, bone_id, flags)
+    self.m_last_before_hit_type = scripted_hit.type
+end
+
+function defibrillator:actor_on_hit_callback(obj, amount, local_direction, who, bone_index)
+    self.m_last_hit_type = self.m_last_before_hit_type
+end
+
 function defibrillator:actor_on_before_death(killer_id, flags)
-    local should_defibrillate = true
+    -- Check if hit can be recovered
+    if not self.m_recoverable_hit_types[self.m_last_hit_type] then
+        return
+    end
+
+    -- Check if should defibrillate
+    local should_defibrillate = self:should_defibrillate()
+
+    -- Maintain player alive
     if should_defibrillate or self.m_is_defibrillating then
         flags.ret_value = false
         db.actor.health = 0.01
     end
+
+    -- Defibrillate if needed
     if should_defibrillate then
         self:defibrillate()
     end

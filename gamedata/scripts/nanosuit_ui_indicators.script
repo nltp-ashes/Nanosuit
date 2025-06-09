@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : Tronex                                                                                   ---
 ---    Edited : Rewrote to improve linking between config table & slots (NLTP_ASHES - 29/05/2025)                    ---
----    Date : 29/05/2025                                                                                             ---
+---    Date : 09/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit indicators UI.                                                             ---
@@ -118,6 +118,7 @@ function ui_indicators:update_static(config, i, value, name, key, anim_flag)
             self.m_slots[i][key]:SetTextureColor(self.m_state_to_color[value + 1])
         end
 
+        printf("[NS] Updating indicator %s %s %s", i, key, name)
         self.m_slots[i][key]:InitTexture(self.m_config_override[name][key] or config[key])
         self.m_slots[i][key]:Show(true)
     end

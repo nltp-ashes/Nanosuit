@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/06/2025                                                                                             ---
+---    Date : 09/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -206,7 +206,7 @@ function core:actor_on_update()
     -- Delay energy regen 5s after last energy use
     if time_global() - self.m_energy_last_use > self.m_energy_regen_delay then
         -- Throttle energy regen once every 100ms
-        if time_global() - self.m_energy_last_regen > self.m_energy_regen_rate then
+        if time_global() - self.m_energy_last_regen > self.m_energy_regen_rate and not self.m_defibrillator.m_is_defibrillating then
             self.m_energy = clamp(self.m_energy + 1, 0, 100)
             self.m_energy_last_regen = time_global()
         end
