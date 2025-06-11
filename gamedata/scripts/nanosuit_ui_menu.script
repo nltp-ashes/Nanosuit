@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 11/05/2025                                                                                             ---
+---    Date : 12/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit mode selection UI.                                                         ---
@@ -42,11 +42,19 @@ function ui_menu:__init(core, parent) super()
 
     -- Options
     for _,mode in ipairs(self.m_selectable_modes) do
-        local opt = arm.OptionData(mode, "ui_nanosuit_menu_" .. mode)
+        local opt = arm.OptionData(mode, function(state)
+            return "ui_nanosuit_menu_" .. mode
+        end)
         opt:SetText({
-            title = game.translate_string("st_nanosuit_ui_menu_" .. mode .. "_title"),
-            description = game.translate_string("st_nanosuit_ui_menu_" .. mode .. "_descr")
+            title = "", -- game.translate_string("st_nanosuit_ui_menu_" .. mode .. "_title")
+            description = "" -- game.translate_string("st_nanosuit_ui_menu_" .. mode .. "_descr")
         })
+        opt:SetColour(function(state)
+            if state == arm.States.TOUCHED then
+                return GetARGB(200, 250, 173, 44)
+            end
+            return GetARGB(200, 99, 125, 102)
+        end)
         self:AddOption(opt)
         self:RegisterCallback(mode, function(flags)
             self.m_core:change_mode(mode)
@@ -69,6 +77,11 @@ function ui_menu:Close()
     self:HideDialog()
     self.m_sounds.hide:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     Unregister_UI("ui_menu")
+end
+
+function ui_menu:OnButtonHover(i)
+    arm.UIRadialMenu.OnButtonHover(self, i)
+    self.options[i].hover_bg:Show(false)
 end
 
 function ui_menu:on_key_press(dik)

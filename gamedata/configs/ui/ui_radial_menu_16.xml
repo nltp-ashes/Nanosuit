@@ -5,12 +5,14 @@
         <texture>ui_arm_wheel_bg</texture>
     </bg>
 
-    <cursor x="0" y="0" width="426" height="213" stretch="1">
+    <!-- TODO : These changes should be done externally to this file -->
+    <cursor x="0" y="0" width="120" height="60" stretch="1">
         <texture>ui_arm_cursor</texture>
     </cursor>
 
     <!-- Position matters here: determines distance from center -->
-    <icon x="0" y="-160" width="50" height="50"/>
+    <!-- TODO : These changes should be done externally to this file -->
+    <icon x="0" y="-65" width="60" height="60"/>
 
     <title x="512" y="338" width="120" height="20"  stretch="1">
         <text complex_mode="1" r="240" g="240" b="240" align="c" vert_align="t" font="letterica25"/>

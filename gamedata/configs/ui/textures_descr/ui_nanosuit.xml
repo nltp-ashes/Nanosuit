@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 05/06/2025                                                                                            -->
+<!--    Date : 12/06/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Texture description file for the Nanosuit addon's UI textures.                                               -->
@@ -23,7 +23,7 @@
     </file>
 
     <!-- Menu UI -->
-    <file name="nanosuit\ui\hud\menu\modes.dds">
+    <file name="nanosuit\ui\hud\menu\modes_mc.dds">
         <texture id="ui_nanosuit_menu_armor"              x="0"       y="0"      width="128"     height="128" />
         <texture id="ui_nanosuit_menu_speed"              x="128"     y="0"      width="128"     height="128" />
         <texture id="ui_nanosuit_menu_power"              x="256"     y="0"      width="128"     height="128" />
