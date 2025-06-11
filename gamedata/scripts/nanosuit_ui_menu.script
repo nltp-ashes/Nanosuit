@@ -36,9 +36,17 @@ function ui_menu:__init(core, parent) super()
         armor_modes_enum.cloak,
         armor_modes_enum.armor
     }
+    self.m_colors = {
+        background = GetARGB(200, 99, 125, 102),
+        active = GetARGB(200, 250, 173, 44),
+    }
 
     -- Hide RadialMenu background
     self.bg:Show(false)
+
+    -- Replace cursor
+    self.cursor:InitTexture("ui_nanosuit_menu_cursor")
+    self.cursor:SetTextureColor(self.m_colors.background)
 
     -- Options
     for _,mode in ipairs(self.m_selectable_modes) do
@@ -51,9 +59,9 @@ function ui_menu:__init(core, parent) super()
         })
         opt:SetColour(function(state)
             if state == arm.States.TOUCHED then
-                return GetARGB(200, 250, 173, 44)
+                return self.m_colors.active
             end
-            return GetARGB(200, 99, 125, 102)
+            return self.m_colors.background
         end)
         self:AddOption(opt)
         self:RegisterCallback(mode, function(flags)

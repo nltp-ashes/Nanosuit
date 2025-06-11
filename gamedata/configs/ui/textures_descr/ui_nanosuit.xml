@@ -23,6 +23,9 @@
     </file>
 
     <!-- Menu UI -->
+    <file name="nanosuit\ui\hud\menu\cursor.dds">
+        <texture id="ui_nanosuit_menu_cursor"             x="0"       y="0"      width="600"     height="300" />
+    </file>
     <file name="nanosuit\ui\hud\menu\modes_mc.dds">
         <texture id="ui_nanosuit_menu_armor"              x="0"       y="0"      width="128"     height="128" />
         <texture id="ui_nanosuit_menu_speed"              x="128"     y="0"      width="128"     height="128" />
