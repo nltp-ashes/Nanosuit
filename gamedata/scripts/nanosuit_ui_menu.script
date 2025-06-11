@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 11/05/2025                                                                                             ---
+---    Date : 13/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit mode selection UI.                                                         ---
@@ -26,6 +26,10 @@ function ui_menu:__init(core, parent) super()
     self.m_core = core
     self.m_parent = parent
     self.m_keybind = DIK_keys.DIK_V
+    self.m_last_selected_option_idx = nil
+    self.m_last_selected_option_time = nil
+    self.m_icon_anim_duration = 250
+    self.m_icon_size = 60
     self.m_sounds = {
         show = sound_object([[nanosuit\menu\menu_show]]),
         hide = sound_object([[nanosuit\menu\menu_hide]])
@@ -36,17 +40,42 @@ function ui_menu:__init(core, parent) super()
         armor_modes_enum.cloak,
         armor_modes_enum.armor
     }
+    self.m_colors = {
+        background = GetARGB(200, 99, 125, 102),
+        active = GetARGB(200, 250, 173, 44),
+    }
 
     -- Hide RadialMenu background
     self.bg:Show(false)
 
+    -- Replace cursor
+    self.cursor:InitTexture("ui_nanosuit_menu_cursor")
+    self.cursor:SetTextureColor(self.m_colors.background)
+    self.cursor:SetWndSize(vector2():set(100, 50))
+
+    -- Override icon position & size
+    local og_init_static = self.xml.InitStatic
+    self.xml.InitStatic = function(xml_init, name, child_of)
+        local static = og_init_static(xml_init, name, child_of)
+        if name == "icon" then
+            static:SetWndSize(vector2():set(self.m_icon_size, self.m_icon_size))
+            static:SetWndPos(vector2():set(static:GetWndPos().x, -65))
+        end
+        return static
+    end
+
     -- Options
     for _,mode in ipairs(self.m_selectable_modes) do
-        local opt = arm.OptionData(mode, "ui_nanosuit_menu_" .. mode)
-        opt:SetText({
-            title = game.translate_string("st_nanosuit_ui_menu_" .. mode .. "_title"),
-            description = game.translate_string("st_nanosuit_ui_menu_" .. mode .. "_descr")
-        })
+        local opt = arm.OptionData(mode, function(state)
+            return "ui_nanosuit_menu_" .. mode
+        end)
+        opt:SetText({ title = "", description = "" })
+        opt:SetColour(function(state)
+            if state == arm.States.TOUCHED then
+                return self.m_colors.active
+            end
+            return self.m_colors.background
+        end)
         self:AddOption(opt)
         self:RegisterCallback(mode, function(flags)
             self.m_core:change_mode(mode)
@@ -71,6 +100,28 @@ function ui_menu:Close()
     Unregister_UI("ui_menu")
 end
 
+function ui_menu:OnButtonHover(i)
+    arm.UIRadialMenu.OnButtonHover(self, i)
+    self.options[i].hover_bg:Show(false)
+end
+
+function ui_menu:UpdateIcon(i)
+    arm.UIRadialMenu.UpdateIcon(self, i)
+
+    if not self.m_last_selected_option_idx or self.m_last_selected_option_idx ~= self.hovered_option_i then
+        self.m_last_selected_option_idx = i
+        self.m_last_selected_option_time = time_global()
+        local pos = self.options[i].icon:GetWndPos()
+        self.m_last_selected_option_pos = vector2():set(pos.x + self.options[i].icon:GetWidth() / 2, pos.y + self.options[i].icon:GetHeight() / 2)
+    end
+
+    if self.m_last_selected_option_idx == i then
+        local size = self:calculate_icon_size()
+        self.options[i].icon:SetWndSize(vector2():set(size * utils_xml.screen_ratio(), size))
+        arm.move_and_center_element(self.options[i].icon, self.m_last_selected_option_pos.x, self.m_last_selected_option_pos.y)
+    end
+end
+
 function ui_menu:on_key_press(dik)
     if dik ~= self.m_keybind then
         return
@@ -82,5 +133,19 @@ function ui_menu:on_key_press(dik)
         self:ShowDialog(true)
         self.m_sounds.show:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         Register_UI("ui_menu", "nanosuit_ui_menu")
+    end
+end
+
+function ui_menu:calculate_icon_size()
+    local elapsed_time = time_global() - self.m_last_selected_option_time
+    if elapsed_time < 0 or elapsed_time > self.m_icon_anim_duration then
+        return self.m_icon_size
+    end
+
+    local progress = elapsed_time / self.m_icon_anim_duration
+    if progress <= 0.5 then
+        return self.m_icon_size * (1 + 0.5 * progress)
+    else
+        return self.m_icon_size * (1.5 - 0.5 * progress)
     end
 end
