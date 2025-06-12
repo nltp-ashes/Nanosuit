@@ -50,9 +50,9 @@ function ui_menu:__init(core, parent) super()
     self.cursor:SetWndSize(vector2():set(120, 60))
 
     -- Override icon position & size
-    self.m_og_init_static = self.xml.InitStatic
+    local og_init_static = self.xml.InitStatic
     self.xml.InitStatic = function(xml_init, name, child_of)
-        local static = self.m_og_init_static(xml_init, name, child_of)
+        local static = og_init_static(xml_init, name, child_of)
         if name == "icon" then
             static:SetWndSize(vector2():set(60, 60))
             static:SetWndPos(vector2():set(static:GetWndPos().x, -65))
