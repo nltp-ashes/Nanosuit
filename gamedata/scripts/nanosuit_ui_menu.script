@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 12/06/2025                                                                                             ---
+---    Date : 13/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit mode selection UI.                                                         ---
@@ -47,16 +47,25 @@ function ui_menu:__init(core, parent) super()
     -- Replace cursor
     self.cursor:InitTexture("ui_nanosuit_menu_cursor")
     self.cursor:SetTextureColor(self.m_colors.background)
+    self.cursor:SetWndSize(vector2():set(120, 60))
+
+    -- Override icon position & size
+    self.m_og_init_static = self.xml.InitStatic
+    self.xml.InitStatic = function(xml_init, name, child_of)
+        local static = self.m_og_init_static(xml_init, name, child_of)
+        if name == "icon" then
+            static:SetWndSize(vector2():set(60, 60))
+            static:SetWndPos(vector2():set(static:GetWndPos().x, -65))
+        end
+        return static
+    end
 
     -- Options
     for _,mode in ipairs(self.m_selectable_modes) do
         local opt = arm.OptionData(mode, function(state)
             return "ui_nanosuit_menu_" .. mode
         end)
-        opt:SetText({
-            title = "", -- game.translate_string("st_nanosuit_ui_menu_" .. mode .. "_title")
-            description = "" -- game.translate_string("st_nanosuit_ui_menu_" .. mode .. "_descr")
-        })
+        opt:SetText({ title = "", description = "" })
         opt:SetColour(function(state)
             if state == arm.States.TOUCHED then
                 return self.m_colors.active
