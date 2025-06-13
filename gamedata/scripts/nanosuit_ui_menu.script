@@ -40,6 +40,8 @@ function ui_menu:__init(core, parent) super()
         background = GetARGB(200, 99, 125, 102),
         active = GetARGB(200, 250, 173, 44),
     }
+    self.m_last_selected_option_idx = nil
+    self.m_last_selected_option_time = nil
 
     -- Hide RadialMenu background
     self.bg:Show(false)
@@ -47,7 +49,7 @@ function ui_menu:__init(core, parent) super()
     -- Replace cursor
     self.cursor:InitTexture("ui_nanosuit_menu_cursor")
     self.cursor:SetTextureColor(self.m_colors.background)
-    self.cursor:SetWndSize(vector2():set(120, 60))
+    self.cursor:SetWndSize(vector2():set(100, 50))
 
     -- Override icon position & size
     local og_init_static = self.xml.InitStatic
@@ -101,6 +103,23 @@ function ui_menu:OnButtonHover(i)
     self.options[i].hover_bg:Show(false)
 end
 
+function ui_menu:UpdateIcon(i)
+    arm.UIRadialMenu.UpdateIcon(self, i)
+
+    if not self.m_last_selected_option_idx or self.m_last_selected_option_idx ~= self.hovered_option_i then
+        self.m_last_selected_option_idx = i
+        self.m_last_selected_option_time = time_global()
+        local pos = self.options[i].icon:GetWndPos()
+        self.m_last_selected_option_pos = vector2():set(pos.x + self.options[i].icon:GetWidth() / 2, pos.y + self.options[i].icon:GetHeight() / 2)
+    end
+
+    if self.m_last_selected_option_idx == i then
+        local size = calculate_icon_size(self.m_last_selected_option_time, 250, 60)
+        self.options[i].icon:SetWndSize(vector2():set(size * utils_xml.screen_ratio(), size))
+        arm.move_and_center_element(self.options[i].icon, self.m_last_selected_option_pos.x, self.m_last_selected_option_pos.y)
+    end
+end
+
 function ui_menu:on_key_press(dik)
     if dik ~= self.m_keybind then
         return
@@ -112,5 +131,19 @@ function ui_menu:on_key_press(dik)
         self:ShowDialog(true)
         self.m_sounds.show:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         Register_UI("ui_menu", "nanosuit_ui_menu")
+    end
+end
+
+function calculate_icon_size(start_time, duration, normal_size)
+    local elapsed_time = time_global() - start_time
+    if elapsed_time < 0 or elapsed_time > duration then
+        return normal_size
+    end
+
+    local half_duration = duration / 2
+    if elapsed_time <= half_duration then
+        return normal_size * (1 + 0.25 * (elapsed_time / half_duration))
+    else
+        return normal_size * (1.25 - 0.25 * ((elapsed_time - half_duration) / half_duration))
     end
 end

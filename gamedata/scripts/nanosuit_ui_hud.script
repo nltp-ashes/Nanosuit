@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 07/06/2025                                                                                             ---
+---    Date : 13/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -183,7 +183,7 @@ function ui_hud:Update(force)
     end
 
     -- Handle UI visibility
-    local should_show = main_hud_shown() and (db.actor:alive() or level.get_active_cam() == actor_cameras_enum.first_eye)
+    local should_show = (main_hud_shown() or self.m_core.m_uis.menu:IsShown()) and (db.actor:alive() or level.get_active_cam() == actor_cameras_enum.first_eye)
     if not should_show and self:IsShown() then
         self:Show(false)
         self.m_ui_status:Show(false)
