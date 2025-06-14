@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 14/06/2025                                                                                             ---
+---    Date : 15/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -49,6 +49,18 @@ function ui_hud:__init(core) super()
     self.m_core = core
     self.m_next_update = time_global()
     self.m_update_rate = 1000
+    self.m_colors = {
+        text = GetARGB(255, 129, 183, 135),
+        background = GetARGB(200, 99, 125, 102),
+        active = GetARGB(200, 250, 173, 44),
+        energy = GetARGB(255, 0, 107, 179),
+        energy_bg = GetARGB(200, 18, 40, 46),
+        energy_off_bg = GetARGB(200, 24, 24, 24),
+        health = GetARGB(255, 85, 148, 17),
+        health_bg = GetARGB(200, 27, 33, 21),
+        health_off_bg = GetARGB(200, 24, 24, 24),
+        red = GetARGB(255, 255, 0, 0)
+    }
 
     -- Build UI
     self.m_ui_menu = nanosuit_ui_menu.ui_menu(core, self)

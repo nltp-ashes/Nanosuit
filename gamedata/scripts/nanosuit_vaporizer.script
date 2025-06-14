@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 07/06/2025                                                                                             ---
+---    Date : 16/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's vaporization process.                                                    ---
@@ -109,8 +109,9 @@ end
 
 class "vaporizer"
 
-function vaporizer:__init()
+function vaporizer:__init(core)
     -- Variables
+    self.m_core = core
     self.m_delays = {
         sounds = 0,
         burn = 1.2,

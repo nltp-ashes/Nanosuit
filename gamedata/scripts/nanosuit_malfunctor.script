@@ -1,0 +1,49 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 16/06/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the malfunction logic of the Nanosuit addon.                                            ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+armor_modes_enum        = nanosuit_utils.armor_modes_enum
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Malfunction class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "malfunctor"
+
+function malfunctor:__init(core)
+    -- Variables
+    self.m_core = core
+    self.m_enabled = false
+end
+
+function malfunctor:destroy()
+end
+
+function malfunctor:enable_malfunction()
+    if not self.m_enabled then
+        self.m_enabled = true
+        self.m_core:change_mode(armor_modes_enum.armor, false)
+        self.m_core:use_energy(100)
+    end
+end
+
+function malfunctor:disable_malfunction()
+    if self.m_enabled then
+        self.m_enabled = false
+        self.m_core:change_mode(self.m_core.m_default_mode, true)
+        self.m_core.m_energy_last_use = time_global()
+    end
+end
+
