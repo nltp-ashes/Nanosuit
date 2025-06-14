@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 14/06/2025                                                                                             ---
+---    Date : 15/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -104,6 +104,7 @@ function core:__init()
     self.m_energy_off_voiced = true
     self.m_energy_on_threshold = 0
     self.m_energy_on_voiced = true
+    self.m_malfunction = false
 
     -- Sound effects
     self.m_sounds = {
@@ -160,16 +161,26 @@ function core:use_energy(amount)
     self.m_energy_last_use = time_global()
 end
 
-function core:change_mode(mode)
+function core:change_mode(mode, play_voice)
     if self.m_current_mode ~= self.m_modes[mode] then
         self.m_current_mode:remove()
         self.m_current_mode = self.m_modes[mode]
-        self.m_current_mode:apply()
+        self.m_current_mode:apply(play_voice)
     end
 end
 
+function core:enable_malfunction()
+    self.m_malfunction = true
+    self:change_mode(armor_modes_enum.armor, false)
+    self:use_energy(100)
+end
+
+function core:disable_malfunction()
+    self.m_malfunction = false
+    self:change_mode(self.m_default_mode, true)
+end
+
 function core:on_option_change()
-    -- Restart HUD
     self.m_hud:destroy()
     self.m_hud = nanosuit_ui_hud.ui_hud(self)
 end
@@ -184,7 +195,7 @@ end
 
 function core:actor_on_update()
     -- Delay energy regen 5s after last energy use
-    if time_global() - self.m_energy_last_use > self.m_energy_regen_delay then
+    if time_global() - self.m_energy_last_use > self.m_energy_regen_delay and not self.m_malfunction then
         -- Throttle energy regen once every 100ms
         if time_global() - self.m_energy_last_regen > self.m_energy_regen_rate then
             self.m_energy = clamp(self.m_energy + 1, 0, 100)
@@ -193,21 +204,21 @@ function core:actor_on_update()
     end
 
     -- Energy low voice
-    if self.m_energy <= self.m_energy_low_threshold and not self.m_energy_low_voiced then
+    if self.m_energy <= self.m_energy_low_threshold and not self.m_energy_low_voiced and not self.m_malfunction then
         self.m_sounds.energy_low_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         self.m_energy_low_voiced = true
     end
-    if self.m_energy > self.m_energy_low_threshold and self.m_energy_low_voiced then
+    if (self.m_malfunction or self.m_energy > self.m_energy_low_threshold) and self.m_energy_low_voiced then
         self.m_sounds.energy_low_voice:stop()
         self.m_energy_low_voiced = false
     end
 
     -- Energy very low
-    if self.m_energy <= self.m_energy_very_low_threshold and not self.m_energy_very_low_voiced then
+    if self.m_energy <= self.m_energy_very_low_threshold and not self.m_energy_very_low_voiced and not self.m_malfunction then
         self.m_sounds.energy_very_low:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
         self.m_energy_very_low_voiced = true
     end
-    if self.m_energy > self.m_energy_very_low_threshold and self.m_energy_very_low_voiced then
+    if (self.m_malfunction or self.m_energy > self.m_energy_very_low_threshold) and self.m_energy_very_low_voiced then
         self.m_sounds.energy_very_low:stop()
         self.m_energy_very_low_voiced = false
     end

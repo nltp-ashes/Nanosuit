@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 14/06/2025                                                                                             ---
+---    Date : 15/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit mode selection UI.                                                         ---
@@ -40,17 +40,13 @@ function ui_menu:__init(core, parent) super()
         armor_modes_enum.cloak,
         armor_modes_enum.armor
     }
-    self.m_colors = {
-        background = GetARGB(200, 99, 125, 102),
-        active = GetARGB(200, 250, 173, 44),
-    }
 
     -- Hide RadialMenu background
     self.bg:Show(false)
 
     -- Replace cursor
     self.cursor:InitTexture("ui_nanosuit_menu_cursor")
-    self.cursor:SetTextureColor(self.m_colors.background)
+    self.cursor:SetTextureColor(self.m_parent.m_colors.background)
     self.cursor:SetWndSize(vector2():set(100, 50))
 
     -- Override icon position & size
@@ -72,13 +68,13 @@ function ui_menu:__init(core, parent) super()
         opt:SetText({ title = "", description = "" })
         opt:SetColour(function(state)
             if state == arm.States.TOUCHED then
-                return self.m_colors.active
+                return self.m_parent.m_colors.active
             end
-            return self.m_colors.background
+            return self.m_parent.m_colors.background
         end)
         self:AddOption(opt)
         self:RegisterCallback(mode, function(flags)
-            self.m_core:change_mode(mode)
+            self.m_core:change_mode(mode, true)
             flags.close_gui = true
         end)
     end
@@ -128,6 +124,10 @@ function ui_menu:on_key_press(dik)
     end
 
     if not main_hud_shown() then
+        return
+    end
+
+    if self.m_parent.m_core.m_malfunction then
         return
     end
 

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 04/05/2025                                                                                             ---
+---    Date : 15/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract suit mode of the Nanosuit addon.                               ---
@@ -34,7 +34,7 @@ function abstract_mode:__eq(other)
     return self.m_name == other.m_name
 end
 
-function abstract_mode:apply()
+function abstract_mode:apply(play_voice)
     -- Register callbacks
     RegisterScriptCallback("actor_on_before_hit", self)
 end

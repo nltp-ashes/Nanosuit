@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 17/05/2025                                                                                            -->
+<!--    Date : 15/06/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    UI template for the Nanosuit status hub.                                                                     -->
@@ -13,6 +13,16 @@
     <background x="10" y="563" width="249" height="195" stretch="1">
         <texture a="200">ui_nanosuit_tacmap_bg</texture>
     </background>
+
+    <!-- Outline -->
+    <outline x="10" y="563" width="249" height="195" stretch="1">
+        <texture a="200">ui_nanosuit_tacmap_outline</texture>
+    </outline>
+
+    <!-- Map -->
+    <map x="10" y="563" width="249" height="195" stretch="1">
+        <texture a="200">ui_nanosuit_tacmap_map</texture>
+    </map>
 
     <!-- Object icon -->
     <object_icon x="10" y="563" width="10" height="10" stretch="1">

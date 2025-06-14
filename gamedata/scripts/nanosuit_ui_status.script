@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 05/06/2025                                                                                             ---
+---    Date : 15/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit status hub (energy, health, ammo, etc) UI.                                 ---
@@ -26,11 +26,6 @@ function ui_status:__init(core, parent) super()
     -- Variables
     self.m_core = core
     self.m_parent = parent
-    self.m_energy_color = GetARGB(255, 0, 107, 179)
-    self.m_energy_bg_color = GetARGB(255, 18, 40, 46)
-    self.m_health_color = GetARGB(255, 85, 148, 17)
-    self.m_health_bg_color = GetARGB(255, 27, 33, 21)
-    self.m_low_color = GetARGB(255, 255, 0, 0)
 
     -- Build UI
     self.m_xml = CScriptXmlInit()
@@ -39,14 +34,20 @@ function ui_status:__init(core, parent) super()
     self.m_ui_background = self.m_xml:InitStatic("background", self)
     arm.scale_ui(self.m_ui_background, true, true, "right")
 
+    self.m_ui_outline = self.m_xml:InitStatic("outline", self)
+    self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
+    arm.scale_ui(self.m_ui_outline, true, true, "right")
+
     self.m_ui_suit_mode = self.m_xml:InitStatic("suit_mode", self)
+    self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_colors.background)
     arm.scale_ui(self.m_ui_suit_mode, true, true, "right")
 
     self.m_ui_energy = self.m_xml:InitTextWnd("energy", self)
+    self.m_ui_energy:SetTextColor(self.m_parent.m_colors.text)
     arm.scale_ui(self.m_ui_energy, true, true, "right")
 
     self.m_ui_energy_bar_background = self.m_xml:InitStatic("energy_bar_background", self)
-    self.m_ui_energy_bar_background:SetTextureColor(self.m_energy_bg_color)
+    self.m_ui_energy_bar_background:SetTextureColor(self.m_parent.m_colors.energy_bg)
     arm.scale_ui(self.m_ui_energy_bar_background, true, true, "right")
 
     self.m_ui_energy_bar = self.m_xml:InitProgressBar("energy_bar", self)
@@ -54,13 +55,15 @@ function ui_status:__init(core, parent) super()
     arm.scale_ui(self.m_ui_energy_bar:GetProgressStatic(), true, true, "left", self.m_ui_energy_bar:GetWidth())
 
     self.m_ui_energy_icon = self.m_xml:InitStatic("energy_icon", self)
+    self.m_ui_energy_icon:SetTextureColor(self.m_parent.m_colors.text)
     arm.scale_ui(self.m_ui_energy_icon, true, true, "right")
 
     self.m_ui_health = self.m_xml:InitTextWnd("health", self)
+    self.m_ui_health:SetTextColor(self.m_parent.m_colors.text)
     arm.scale_ui(self.m_ui_health, true, true, "right")
 
     self.m_ui_health_bar_background = self.m_xml:InitStatic("health_bar_background", self)
-    self.m_ui_health_bar_background:SetTextureColor(self.m_health_bg_color)
+    self.m_ui_health_bar_background:SetTextureColor(self.m_parent.m_colors.health_bg)
     arm.scale_ui(self.m_ui_health_bar_background, true, true, "right")
 
     self.m_ui_health_bar = self.m_xml:InitProgressBar("health_bar", self)
@@ -68,15 +71,19 @@ function ui_status:__init(core, parent) super()
     arm.scale_ui(self.m_ui_health_bar:GetProgressStatic(), true, true, "left", self.m_ui_health_bar:GetWidth())
 
     self.m_ui_health_icon = self.m_xml:InitStatic("health_icon", self)
+    self.m_ui_health_icon:SetTextureColor(self.m_parent.m_colors.text)
     arm.scale_ui(self.m_ui_health_icon, true, true, "right")
 
     self.m_ui_ammo_count = self.m_xml:InitTextWnd("ammo_count", self)
+    self.m_ui_ammo_count:SetTextColor(self.m_parent.m_colors.text)
     arm.scale_ui(self.m_ui_ammo_count, true, true, "right")
 
     self.m_ui_ammo_reserve = self.m_xml:InitTextWnd("ammo_reserve", self)
+    self.m_ui_ammo_reserve:SetTextColor(self.m_parent.m_colors.text)
     arm.scale_ui(self.m_ui_ammo_reserve, true, true, "right")
 
     self.m_ui_fire_mode = self.m_xml:InitStatic("fire_mode", self)
+    self.m_ui_fire_mode:SetTextureColor(self.m_parent.m_colors.background)
     arm.scale_ui(self.m_ui_fire_mode, true, true, "right")
 end
 
@@ -89,27 +96,70 @@ end
 function ui_status:Update(force)
     CUIScriptWnd.Update(self)
 
+    if self.m_parent.m_core.m_malfunction then
+        -- Outline
+        self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.red)
+
+        -- Current suit mode
+        self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_colors.red)
+        self.m_ui_suit_mode:InitTexture("ui_nanosuit_no_draw")
+
+        -- Energy
+        self.m_ui_energy:SetText("!")
+        self.m_ui_energy:SetTextColor(self.m_parent.m_colors.red)
+        self.m_ui_energy_bar:SetProgressPos(0)
+        self.m_ui_energy_bar_background:SetTextureColor(self.m_parent.m_colors.energy_off_bg)
+        self.m_ui_energy_icon:SetTextureColor(self.m_parent.m_colors.red)
+
+        -- Health
+        self.m_ui_health:SetText("!")
+        self.m_ui_health:SetTextColor(self.m_parent.m_colors.red)
+        self.m_ui_health_bar:SetProgressPos(0)
+        self.m_ui_health_bar_background:SetTextureColor(self.m_parent.m_colors.health_off_bg)
+        self.m_ui_health_icon:SetTextureColor(self.m_parent.m_colors.red)
+
+        -- Ammo count
+        self.m_ui_ammo_count:SetText("")
+
+        -- Ammo reserve
+        self.m_ui_ammo_reserve:SetText("")
+
+        -- Fire mode
+        self.m_ui_fire_mode:InitTexture("ui_nanosuit_no_draw")
+        return
+    end
+
+    -- Outline
+    self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
+
     -- Current suit mode
     local suit_mode = "ui_nanosuit_status_" .. self.m_core.m_current_mode.m_name
     self.m_ui_suit_mode:InitTexture(suit_mode)
+    self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_colors.background)
 
     -- Energy
     local energy = self.m_core.m_energy
     energy = round(energy)
-    self.m_ui_energy_bar:SetColor(energy > 20 and self.m_energy_color or self.m_low_color)
+    self.m_ui_energy_bar:SetColor(energy > 20 and self.m_parent.m_colors.energy or self.m_parent.m_colors.red)
     self.m_ui_energy_bar:SetProgressPos(energy)
+    self.m_ui_energy_bar_background:SetTextureColor(self.m_parent.m_colors.energy_bg)
     energy = tostring(energy)
     self.m_ui_energy:SetText(energy)
+    self.m_ui_energy:SetTextColor(self.m_parent.m_colors.text)
+    self.m_ui_energy_icon:SetTextureColor(self.m_parent.m_colors.text)
 
     -- Health
     local health = db.actor.health
     health = health * 100
     health = clamp(health, 0, 100)
     health = round(health)
-    self.m_ui_health_bar:SetColor(health > 20 and self.m_health_color or self.m_low_color)
+    self.m_ui_health_bar:SetColor(health > 20 and self.m_parent.m_colors.health or self.m_parent.m_colors.red)
     self.m_ui_health_bar:SetProgressPos(health)
+    self.m_ui_health_bar_background:SetTextureColor(self.m_parent.m_colors.health_bg)
     health = tostring(health)
     self.m_ui_health:SetText(health)
+    self.m_ui_health:SetTextColor(self.m_parent.m_colors.text)
+    self.m_ui_health_icon:SetTextureColor(self.m_parent.m_colors.text)
 
     local active_item = db.actor:active_item()
     local weapon_obj = active_item and IsWeapon(active_item) and active_item

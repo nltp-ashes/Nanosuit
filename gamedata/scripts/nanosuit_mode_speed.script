@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 04/05/2025                                                                                             ---
+---    Date : 15/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of speed mode of the Nanosuit addon.                                          ---
@@ -44,11 +44,13 @@ function speed:__init(core, name) super(core, name)
     self.m_sounds.speed_stop = sound_object([[nanosuit\modes\speed\mode_speed_stop]])
 end
 
-function speed:apply()
-    nanosuit_mode.abstract_mode.apply(self)
+function speed:apply(play_voice)
+    nanosuit_mode.abstract_mode.apply(self, play_voice)
 
     -- Play sounds
-    self.m_sounds.speed_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    if play_voice then
+        self.m_sounds.speed_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    end
     self.m_sounds.speed_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
 
     -- Register callbacks

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 14/06/2025                                                                                             ---
+---    Date : 15/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to execute debug functions to help in development.                                                ---
@@ -120,6 +120,14 @@ function on_key_press_vap(dik)
     end
 end
 
+function on_key_press_malfunction(dik)
+    if dik == DIK_keys.DIK_K then
+        nanosuit_core.instance:enable_malfunction()
+        elseif dik == DIK_keys.DIK_L then
+        nanosuit_core.instance:disable_malfunction()
+    end
+end
+
 function on_key_release(dik)
     if dik == DIK_keys.DIK_LCONTROL then
         holding_ctrl = false
@@ -134,7 +142,8 @@ end
 --- @return nil
 function on_game_start()
     --RegisterScriptCallback("on_key_press", on_key_press_tacmap)
-    RegisterScriptCallback("on_key_press", on_key_press_status)
-    RegisterScriptCallback("on_key_press", on_key_press_vap)
+    --RegisterScriptCallback("on_key_press", on_key_press_status)
+    --RegisterScriptCallback("on_key_press", on_key_press_vap)
+    RegisterScriptCallback("on_key_press", on_key_press_malfunction)
     RegisterScriptCallback("on_key_release", on_key_release)
 end

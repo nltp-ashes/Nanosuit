@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 04/06/2025                                                                                             ---
+---    Date : 15/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -44,6 +44,13 @@ function ui_tacmap:__init(core, parent) super()
 
     self.m_background = self.m_xml:InitStatic("background", self)
     arm.scale_ui(self.m_background, true, true, "left")
+
+    self.m_outline = self.m_xml:InitStatic("outline", self)
+    self.m_outline:SetTextureColor(self.m_parent.m_colors.background)
+    arm.scale_ui(self.m_outline, true, true, "left")
+
+    self.m_map = self.m_xml:InitStatic("map", self)
+    arm.scale_ui(self.m_map, true, true, "left")
 end
 
 function ui_tacmap:__finalize()
@@ -54,6 +61,14 @@ end
 
 function ui_tacmap:Update(force)
     CUIScriptWnd.Update(self)
+
+    if self.m_parent.m_core.m_malfunction then
+        self.m_outline:SetTextureColor(self.m_parent.m_colors.red)
+        self.m_map:Show(false)
+    else
+        self.m_outline:SetTextureColor(self.m_parent.m_colors.background)
+        self.m_map:Show(true)
+    end
 
     self:update_icons()
 end
@@ -92,13 +107,13 @@ end
 
 function ui_tacmap:attach_icon(obj_id)
     self.m_tracked_objects[obj_id] = {}
-    self.m_tracked_objects[obj_id].static = self.m_xml:InitStatic("object_icon", self)
+    self.m_tracked_objects[obj_id].static = self.m_xml:InitStatic("object_icon", self.m_map)
     self.m_tracked_objects[obj_id].static:SetAutoDelete(true)
     arm.scale_ui(self.m_tracked_objects[obj_id].static, true, true, "center")
 end
 
 function ui_tacmap:detach_icon(obj_id)
-    self:DetachChild(self.m_tracked_objects[obj_id].static)
+    self.m_map:DetachChild(self.m_tracked_objects[obj_id].static)
     self.m_tracked_objects[obj_id] = nil
 end
 
@@ -114,7 +129,9 @@ function ui_tacmap:world_to_tacmap(pos)
     local x = self.m_player.x + distance_tacmap * math.sin(angle)
     local y = self.m_player.y - distance_tacmap * math.cos(angle)
 
-    return vector2():set(x, y)
+    local wnd_pos = self.m_map:GetWndPos()
+
+    return vector2():set(x - wnd_pos.x, y - wnd_pos.y)
 end
 
 function ui_tacmap:get_heading(pos)
@@ -168,7 +185,14 @@ function ui_tacmap:is_within_bounds(pos)
         local vi = bounds[i]
         local vj = bounds[j]
 
-        if ((vi.y > pos.y) ~= (vj.y > pos.y)) and (pos.x < (vj.x - vi.x) * (pos.y - vi.y) / (vj.y - vi.y) + vi.x) then
+        local wnd_pos = self.m_map:GetWndPos()
+
+        local vi_x = vi.x - wnd_pos.x
+        local vi_y = vi.y - wnd_pos.y
+        local vj_x = vj.x - wnd_pos.x
+        local vj_y = vj.y - wnd_pos.y
+
+        if ((vi_y > pos.y) ~= (vj_y > pos.y)) and (pos.x < (vj_x - vi_x) * (pos.y - vi_y) / (vj_y - vi_y) + vi_x) then
             inside = not inside
         end
 

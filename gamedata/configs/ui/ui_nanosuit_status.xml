@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 11/05/2025                                                                                            -->
+<!--    Date : 15/06/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    UI template for the Nanosuit status hub.                                                                     -->
@@ -11,6 +11,16 @@
 <!--                                                                                                                 -->
 <!--=================================================================================================================-->
 <w>
+    <!-- Background -->
+    <background x="768" y="618" width="246" height="140" stretch="1">
+        <texture a="200">ui_nanosuit_status_background</texture>
+    </background>
+
+    <!-- Outline -->
+    <outline x="768" y="618" width="246" height="140" stretch="1">
+        <texture a="200">ui_nanosuit_status_outline</texture>
+    </outline>
+
     <!-- Current suit mode -->
     <suit_mode x="951" y="695" width="50" height="50" stretch="1" />
 
@@ -24,7 +34,7 @@
     </energy_icon>
 
     <energy_bar_background x="779" y="681" width="122" height="20" stretch="1">
-        <texture>ui_nanosuit_status_energy_bar</texture>
+        <texture a="200">ui_nanosuit_status_energy_bar</texture>
     </energy_bar_background>
 
     <energy_bar x="779" y="681" width="122" height="20" mode="back" min="0" max="100" pos="100">
@@ -43,7 +53,7 @@
     </health_icon>
 
     <health_bar_background x="779" y="699" width="122" height="20" stretch="1">
-        <texture>ui_nanosuit_status_health_bar</texture>
+        <texture a="200">ui_nanosuit_status_health_bar</texture>
     </health_bar_background>
 
     <health_bar x="779" y="699" width="122" height="20" mode="back" min="0" max="100" pos="100">
@@ -63,9 +73,4 @@
 
     <!-- Fire mode -->
     <fire_mode x="935" y="624" width="25" height="25" stretch="1" />
-
-    <!-- Background -->
-    <background x="768" y="618" width="246" height="140" stretch="1">
-        <texture a="200">ui_nanosuit_status_bg</texture>
-    </background>
 </w>
