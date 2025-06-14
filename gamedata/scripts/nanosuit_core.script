@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 07/06/2025                                                                                             ---
+---    Date : 14/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -127,10 +127,7 @@ function core:__init()
     self.m_current_mode:apply()
 
     -- UIs
-    self.m_uis = {
-        menu = nanosuit_ui_menu.ui_menu(self),
-        hud = nanosuit_ui_hud.ui_hud(self),
-    }
+    self.m_hud = nanosuit_ui_hud.ui_hud(self)
 
     -- Others
     self.m_vaporizer = nanosuit_vaporizer.vaporizer()
@@ -155,8 +152,7 @@ function core:destroy()
         [armor_modes_enum.cloak] = nil
     }
 
-    self.m_uis.menu:destroy()
-    self.m_uis.hud:destroy()
+    self.m_hud:destroy()
 end
 
 function core:use_energy(amount)
@@ -173,11 +169,9 @@ function core:change_mode(mode)
 end
 
 function core:on_option_change()
-    -- Restart UIs
-    self.m_uis.menu:destroy()
-    self.m_uis.hud:destroy()
-    self.m_uis.menu = nanosuit_ui_menu.ui_menu(self)
-    self.m_uis.hud = nanosuit_ui_hud.ui_hud(self)
+    -- Restart HUD
+    self.m_hud:destroy()
+    self.m_hud = nanosuit_ui_hud.ui_hud(self)
 end
 
 function core:actor_on_death()

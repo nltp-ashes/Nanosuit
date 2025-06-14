@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 13/06/2025                                                                                             ---
+---    Date : 14/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -51,6 +51,10 @@ function ui_hud:__init(core) super()
     self.m_update_rate = 1000
 
     -- Build UI
+    self.m_ui_menu = nanosuit_ui_menu.ui_menu(core, self)
+    self.m_ui_menu:Show(false)
+    self:AttachChild(self.m_ui_menu)
+
     self.m_ui_status = nanosuit_ui_status.ui_status(core, self)
     self.m_ui_status:Show(false)
     self:AttachChild(self.m_ui_status)
@@ -83,6 +87,7 @@ function ui_hud:destroy()
     self:switch_hud(false)
 
     -- Destroy children
+    self.m_ui_menu:destroy()
     self.m_ui_status:destroy()
     self.m_ui_tacmap:destroy()
     self.m_ui_indicators:destroy()
@@ -183,7 +188,8 @@ function ui_hud:Update(force)
     end
 
     -- Handle UI visibility
-    local should_show = (main_hud_shown() or self.m_core.m_uis.menu:IsShown()) and (db.actor:alive() or level.get_active_cam() == actor_cameras_enum.first_eye)
+    local should_show = (main_hud_shown() or self.m_ui_menu:IsShown()) and (db.actor:alive() or level.get_active_cam() == actor_cameras_enum.first_eye)
+
     if not should_show and self:IsShown() then
         self:Show(false)
         self.m_ui_status:Show(false)
@@ -197,6 +203,7 @@ function ui_hud:Update(force)
     end
 
     -- Update children
+    self.m_ui_menu:Update(force)
     self.m_ui_status:Update(force)
     self.m_ui_tacmap:Update(force)
     self.m_ui_indicators:Update(force)

@@ -18,3 +18,4 @@
 
 **• Bug fixes :**
 > • Fixed localized voice-lines not working properly;
+> • The Nanosuit menu now doesn't show when the main HUD is hidden

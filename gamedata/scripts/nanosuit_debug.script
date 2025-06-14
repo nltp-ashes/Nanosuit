@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 05/06/2025                                                                                             ---
+---    Date : 14/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to execute debug functions to help in development.                                                ---
@@ -39,9 +39,9 @@ function on_key_press_tacmap(dik)
 
     local pos = nil
     if poly_point == 0 then
-        pos = nanosuit_core.instance.m_uis.hud.m_ui_tacmap.m_player
+        pos = nanosuit_core.instance.m_hud.m_ui_tacmap.m_player
     else
-        pos = nanosuit_core.instance.m_uis.hud.m_ui_tacmap.m_tacmap_bounds[poly_point]
+        pos = nanosuit_core.instance.m_hud.m_ui_tacmap.m_tacmap_bounds[poly_point]
     end
 
     local transform = holding_ctrl and 10 or 1

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 13/06/2025                                                                                             ---
+---    Date : 14/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit mode selection UI.                                                         ---
@@ -124,6 +124,10 @@ end
 
 function ui_menu:on_key_press(dik)
     if dik ~= self.m_keybind then
+        return
+    end
+
+    if not main_hud_shown() then
         return
     end
 
