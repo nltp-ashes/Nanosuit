@@ -50,12 +50,8 @@ function ui_tacmap:__init(core, parent) super()
     arm.scale_ui(self.m_outline, true, true, "left")
 
     self.m_map = self.m_xml:InitStatic("map", self)
+    self.m_map:InitTexture("ui_nanosuit_tacmap_map")
     arm.scale_ui(self.m_map, true, true, "left")
-
-    -- FIXME : This solution is a bit shitty
-    self.m_map_malfunction = self.m_xml:InitStatic("map_malfunction", self)
-    self.m_map_malfunction:Show(false)
-    arm.scale_ui(self.m_map_malfunction, true, true, "left")
 end
 
 function ui_tacmap:__finalize()
@@ -69,12 +65,10 @@ function ui_tacmap:Update(force)
 
     if self.m_parent.m_core.m_malfunction then
         self.m_outline:SetTextureColor(self.m_parent.m_colors.red)
-        self.m_map:Show(false)
-        self.m_map_malfunction:Show(true)
+        self.m_map:InitTexture("ui_nanosuit_tacmap_map_malfunction")
     else
         self.m_outline:SetTextureColor(self.m_parent.m_colors.background)
-        self.m_map:Show(true)
-        self.m_map_malfunction:Show(false)
+        self.m_map:InitTexture("ui_nanosuit_tacmap_map")
     end
 
     self:update_icons()
@@ -99,7 +93,7 @@ function ui_tacmap:update_icons()
     -- Update tracked objects or destroy untracked ones
     for obj_id,data in pairs(self.m_tracked_objects) do
         local pos_tacmap = self:world_to_tacmap(data.pos)
-        if data.refreshed and self:is_within_bounds(pos_tacmap) then
+        if not self.m_parent.m_core.m_malfunction and data.refreshed and self:is_within_bounds(pos_tacmap) then
             arm.move_and_center_element(data.static, pos_tacmap.x, pos_tacmap.y)
         else
             self:detach_icon(obj_id)
