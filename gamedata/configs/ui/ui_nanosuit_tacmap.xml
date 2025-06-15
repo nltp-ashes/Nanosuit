@@ -24,6 +24,11 @@
         <texture a="200">ui_nanosuit_tacmap_map</texture>
     </map>
 
+    <!-- Map (malfunction mode) -->
+    <map_malfunction x="10" y="563" width="249" height="195" stretch="1">
+        <texture a="200">ui_nanosuit_tacmap_map_malfunction</texture>
+    </map_malfunction>
+
     <!-- Object icon -->
     <object_icon x="10" y="563" width="10" height="10" stretch="1">
         <texture>ui_nanosuit_tacmap_object</texture>

@@ -71,6 +71,9 @@
     <file name="nanosuit\ui\hud\tacmap\map.dds">
         <texture id="ui_nanosuit_tacmap_map"                  x="0"       y="0"      width="998"     height="782" />
     </file>
+    <file name="nanosuit\ui\hud\tacmap\map_malfunction.dds">
+        <texture id="ui_nanosuit_tacmap_map_malfunction"      x="0"       y="0"      width="998"     height="782" />
+    </file>
     <file name="ui\ui_actor_hint_wnd.dds">
         <texture id="ui_nanosuit_tacmap_object"               x="4"       y="563"    width="23"      height="23" />
     </file>

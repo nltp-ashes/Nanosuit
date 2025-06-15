@@ -51,6 +51,11 @@ function ui_tacmap:__init(core, parent) super()
 
     self.m_map = self.m_xml:InitStatic("map", self)
     arm.scale_ui(self.m_map, true, true, "left")
+
+    -- FIXME : This solution is a bit shitty
+    self.m_map_malfunction = self.m_xml:InitStatic("map_malfunction", self)
+    self.m_map_malfunction:Show(false)
+    arm.scale_ui(self.m_map_malfunction, true, true, "left")
 end
 
 function ui_tacmap:__finalize()
@@ -65,9 +70,11 @@ function ui_tacmap:Update(force)
     if self.m_parent.m_core.m_malfunction then
         self.m_outline:SetTextureColor(self.m_parent.m_colors.red)
         self.m_map:Show(false)
+        self.m_map_malfunction:Show(true)
     else
         self.m_outline:SetTextureColor(self.m_parent.m_colors.background)
         self.m_map:Show(true)
+        self.m_map_malfunction:Show(false)
     end
 
     self:update_icons()

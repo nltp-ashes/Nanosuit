@@ -191,6 +191,8 @@ function core:actor_on_death()
             sfx:stop()
         end
     end
+    self:enable_malfunction()
+    self.m_vaporizer:vaporize(db.actor)
 end
 
 function core:actor_on_update()
