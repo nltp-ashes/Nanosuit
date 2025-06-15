@@ -18,4 +18,5 @@
 
 **• Bug fixes :**
 > • Fixed localized voice-lines not working properly;
-> • The Nanosuit menu now doesn't show when the main HUD is hidden
+> • The Nanosuit menu now doesn't show when the main HUD is hidden;
+> • Fixed a crash when an indicator (added by another addon) has no override from the Nanosuit HUD;

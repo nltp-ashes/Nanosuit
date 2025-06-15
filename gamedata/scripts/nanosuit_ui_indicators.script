@@ -118,9 +118,13 @@ function ui_indicators:update_static(config, i, value, name, key, anim_flag)
             self.m_slots[i][key]:SetTextureColor(self.m_state_to_color[value + 1])
         end
 
-        self.m_slots[i][key]:InitTexture(self.m_config_override[name][key] or config[key])
+        self.m_slots[i][key]:InitTexture(self:get_config_override(name, key) or config[key])
         self.m_slots[i][key]:Show(true)
     end
+end
+
+function ui_indicators:get_config_override(name, key)
+    return self.m_config_override[name] and self.m_config_override[name][key]
 end
 
 function ui_indicators:hide_all()
