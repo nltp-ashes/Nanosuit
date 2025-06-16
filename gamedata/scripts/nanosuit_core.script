@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 16/06/2025                                                                                             ---
+---    Date : 17/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -182,8 +182,6 @@ function core:actor_on_death()
             sfx:stop()
         end
     end
-    self.m_malfunctor:enable_malfunction()
-    self.m_vaporizer:vaporize(db.actor)
 end
 
 function core:actor_on_update()
