@@ -49,9 +49,17 @@ HUD :
 - The minimap shows all human objects around the player
 - The status hub shows the suit's current mode, energy level, health, ammo count, ammo reserve and fire mode
 
+Malfunctions :
+- The suit can malfunction, turning it off (protection and bonuses are removed) and disabling the HUD (turns red and indicators are offline)
+- The suit malfunctions when the player dies, or when hit by a psi-storm vortex, or by a pulse anomaly
+- The suit will also malfunction during the storylines that will be added in the future
+
+Vaporization :
+- When the player (or an NPC) dies wearing the suit, they will be vaporized, leaving no body behind
+- When NPCs get vaporized alive, they enter a special animation
+
 Miscellaneous :
 - The Nanosuit voice-lines are available in English, French and Russian, depending on the game language
-- When dying, the suit vaporizes the player, leaving no body behind
 
 ---
 
