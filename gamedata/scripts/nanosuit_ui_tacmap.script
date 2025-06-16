@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 16/06/2025                                                                                             ---
+---    Date : 17/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -42,16 +42,16 @@ function ui_tacmap:__init(core, parent) super()
     self.m_xml = CScriptXmlInit()
     self.m_xml:ParseFile("ui_nanosuit_tacmap.xml")
 
-    self.m_background = self.m_xml:InitStatic("background", self)
-    arm.scale_ui(self.m_background, true, true, "left")
+    self.m_ui_background = self.m_xml:InitStatic("background", self)
+    arm.scale_ui(self.m_ui_background, true, true, "left")
 
-    self.m_outline = self.m_xml:InitStatic("outline", self)
-    self.m_outline:SetTextureColor(self.m_parent.m_colors.background)
-    arm.scale_ui(self.m_outline, true, true, "left")
+    self.m_ui_outline = self.m_xml:InitStatic("outline", self)
+    self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
+    arm.scale_ui(self.m_ui_outline, true, true, "left")
 
-    self.m_map = self.m_xml:InitStatic("map", self)
-    self.m_map:InitTexture("ui_nanosuit_tacmap_map")
-    arm.scale_ui(self.m_map, true, true, "left")
+    self.m_ui_map = self.m_xml:InitStatic("map", self)
+    self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map")
+    arm.scale_ui(self.m_ui_map, true, true, "left")
 end
 
 function ui_tacmap:__finalize()
@@ -64,11 +64,11 @@ function ui_tacmap:Update(force)
     CUIScriptWnd.Update(self)
 
     if self.m_parent.m_core.m_malfunctor.m_enabled then
-        self.m_outline:SetTextureColor(self.m_parent.m_colors.red)
-        self.m_map:InitTexture("ui_nanosuit_tacmap_map_malfunction")
+        self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.red)
+        self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map_malfunction")
     else
-        self.m_outline:SetTextureColor(self.m_parent.m_colors.background)
-        self.m_map:InitTexture("ui_nanosuit_tacmap_map")
+        self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
+        self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map")
     end
 
     self:update_icons()
@@ -108,13 +108,13 @@ end
 
 function ui_tacmap:attach_icon(obj_id)
     self.m_tracked_objects[obj_id] = {}
-    self.m_tracked_objects[obj_id].static = self.m_xml:InitStatic("object_icon", self.m_map)
+    self.m_tracked_objects[obj_id].static = self.m_xml:InitStatic("object_icon", self.m_ui_map)
     self.m_tracked_objects[obj_id].static:SetAutoDelete(true)
     arm.scale_ui(self.m_tracked_objects[obj_id].static, true, true, "center")
 end
 
 function ui_tacmap:detach_icon(obj_id)
-    self.m_map:DetachChild(self.m_tracked_objects[obj_id].static)
+    self.m_ui_map:DetachChild(self.m_tracked_objects[obj_id].static)
     self.m_tracked_objects[obj_id] = nil
 end
 
@@ -130,7 +130,7 @@ function ui_tacmap:world_to_tacmap(pos)
     local x = self.m_player.x + distance_tacmap * math.sin(angle)
     local y = self.m_player.y - distance_tacmap * math.cos(angle)
 
-    local wnd_pos = self.m_map:GetWndPos()
+    local wnd_pos = self.m_ui_map:GetWndPos()
 
     return vector2():set(x - wnd_pos.x, y - wnd_pos.y)
 end
@@ -186,7 +186,7 @@ function ui_tacmap:is_within_bounds(pos)
         local vi = bounds[i]
         local vj = bounds[j]
 
-        local wnd_pos = self.m_map:GetWndPos()
+        local wnd_pos = self.m_ui_map:GetWndPos()
 
         local vi_x = vi.x - wnd_pos.x
         local vi_y = vi.y - wnd_pos.y
