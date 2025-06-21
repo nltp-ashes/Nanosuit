@@ -130,7 +130,7 @@ end
 
 function on_key_press_defib(dik)
     if dik == DIK_keys.DIK_K then
-        if not nanosuit_core.instance.m_defibrillator.m_is_defibrillating then
+        if not nanosuit_core.instance.m_defibrillator.m_enabled then
             nanosuit_core.instance.m_defibrillator:defibrillate()
         else
             level.remove_cam_effector(nanosuit_defibrillator.cam_effector_start_id)
@@ -142,7 +142,7 @@ end
 
 function on_key_press_defib_ui(dik)
     if dik == DIK_keys.DIK_K then
-        nanosuit_core.instance.m_defibrillator.m_is_defibrillating = true
+        nanosuit_core.instance.m_defibrillator.m_enabled = true
         nanosuit_core.instance.m_defibrillator.m_charging = not nanosuit_core.instance.m_defibrillator.m_charging
         nanosuit_core.instance.m_defibrillator.m_charging_time_remaining = 3000
         nanosuit_core.instance.m_defibrillator.m_charging_time_last_update = time_global()
@@ -166,7 +166,7 @@ function on_game_start()
     --RegisterScriptCallback("on_key_press", on_key_press_status)
     --RegisterScriptCallback("on_key_press", on_key_press_vap)
     --RegisterScriptCallback("on_key_press", on_key_press_malfunction)
-    --RegisterScriptCallback("on_key_press", on_key_press_defib)
-    RegisterScriptCallback("on_key_press", on_key_press_defib_ui)
+    RegisterScriptCallback("on_key_press", on_key_press_defib)
+    --RegisterScriptCallback("on_key_press", on_key_press_defib_ui)
     RegisterScriptCallback("on_key_release", on_key_release)
 end

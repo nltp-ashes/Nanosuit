@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 15/06/2025                                                                                             ---
+---    Date : 22/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -64,23 +64,20 @@ function ui_hud:__init(core) super()
 
     -- Build UI
     self.m_ui_menu = nanosuit_ui_menu.ui_menu(core, self)
-    self.m_ui_menu:Show(false)
     self:AttachChild(self.m_ui_menu)
 
     self.m_ui_status = nanosuit_ui_status.ui_status(core, self)
-    self.m_ui_status:Show(false)
+    self.m_ui_status:Show(true)
     self:AttachChild(self.m_ui_status)
 
     self.m_ui_tacmap = nanosuit_ui_tacmap.ui_tacmap(core, self)
-    self.m_ui_tacmap:Show(false)
+    self.m_ui_tacmap:Show(true)
     self:AttachChild(self.m_ui_tacmap)
 
     self.m_ui_indicators = nanosuit_ui_indicators.ui_indicators(core, self)
-    self.m_ui_indicators:Show(false)
     self:AttachChild(self.m_ui_indicators)
 
     self.m_ui_defibrillator = nanosuit_ui_defibrillator.ui_defibrillator(core, self)
-    self.m_ui_defibrillator:Show(false)
     self:AttachChild(self.m_ui_defibrillator)
 
     self:Show(false)
@@ -116,7 +113,6 @@ end
 
 function ui_hud:switch_hud(take_control)
     -- Get main HUD
-    local hud = get_hud()
     local main_hud = ActorMenu.get_maingame()
 
     if take_control then
@@ -134,6 +130,31 @@ function ui_hud:switch_hud(take_control)
         main_hud.UIZoneMap.disabled = not ui_options.get([[video/hud/show_minimap]])
         main_hud.UIMotionIcon:Show(not main_hud.UIZoneMap.disabled)
     end
+
+    local elements_to_move = self:get_elements_to_move()
+
+    -- Move elements
+    for _, element in ipairs(elements_to_move) do
+        if element.element then
+            local pos = element.element:GetWndPos()
+            local offset_x, offset_y = nil, nil
+            if element.hide then
+                offset_x = -device().width - element.element:GetWidth()
+                offset_y = 0
+            else
+                offset_x = element.x or 0
+                offset_y = element.y or 0
+            end
+            pos.x = pos.x + (take_control and offset_x or -offset_x)
+            pos.y = pos.y + (take_control and offset_y or -offset_y)
+            element.element:SetWndPos(pos)
+        end
+    end
+end
+
+function ui_hud:get_elements_to_move()
+    local hud = get_hud()
+    local main_hud = ActorMenu.get_maingame()
 
     local elements_to_move = {
         { element = ActorMenu.get_messages_menu(), y = -100 },
@@ -158,25 +179,9 @@ function ui_hud:switch_hud(take_control)
         hud:AddCustomStatic("notify_icon", true)
         notify_cs = hud:GetCustomStatic("notify_icon")
     end
-    table.insert(elements_to_move, { element = notify_cs:wnd(), x = -device().width - notify_cs:wnd():GetWidth() })
+    table.insert(elements_to_move, { element = notify_cs:wnd(), hide = true })
 
-    -- Move elements
-    for _, element in ipairs(elements_to_move) do
-        if element.element then
-            local pos = element.element:GetWndPos()
-            local offset_x, offset_y = nil, nil
-            if element.hide then
-                offset_x = -device().width - element.element:GetWidth()
-                offset_y = 0
-            else
-                offset_x = element.x or 0
-                offset_y = element.y or 0
-            end
-            pos.x = pos.x + (take_control and offset_x or -offset_x)
-            pos.y = pos.y + (take_control and offset_y or -offset_y)
-            element.element:SetWndPos(pos)
-        end
-    end
+    return elements_to_move
 end
 
 function ui_hud:on_loading_screen_dismissed()
@@ -209,16 +214,8 @@ function ui_hud:Update(force)
 
     if not should_show and self:IsShown() then
         self:Show(false)
-        self.m_ui_status:Show(false)
-        self.m_ui_tacmap:Show(false)
-        self.m_ui_indicators:Show(false)
-        self.m_ui_defibrillator:Show(false)
     elseif should_show and not self:IsShown() then
         self:Show(true)
-        self.m_ui_status:Show(true)
-        self.m_ui_tacmap:Show(true)
-        self.m_ui_indicators:Show(true)
-        self.m_ui_defibrillator:Show(true)
     end
 
     -- Update children

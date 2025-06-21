@@ -142,7 +142,7 @@ function core:__init()
     -- Others
     self.m_vaporizer = nanosuit_vaporizer.vaporizer(self)
     self.m_malfunctor = nanosuit_malfunctor.malfunctor(self)
-    self.m_defibrillator = nanosuit_defibrillator.defibrillator()
+    self.m_defibrillator = nanosuit_defibrillator.defibrillator(self)
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_death", self)
@@ -198,7 +198,7 @@ end
 
 function core:actor_on_update()
     -- Delay energy regen 5s after last energy use
-    if time_global() - self.m_energy_last_use > self.m_energy_regen_delay and not self.m_malfunctor.m_enabled and not self.m_defibrillator.m_is_defibrillating then
+    if time_global() - self.m_energy_last_use > self.m_energy_regen_delay and not self.m_malfunctor.m_enabled and not self.m_defibrillator.m_enabled then
         -- Throttle energy regen once every 100ms
         if time_global() - self.m_energy_last_regen > self.m_energy_regen_rate then
             self.m_energy = clamp(self.m_energy + 1, 0, 100)
