@@ -63,6 +63,10 @@ function ui_hud:__init(core) super()
     self.m_ui_indicators:Show(false)
     self:AttachChild(self.m_ui_indicators)
 
+    self.m_ui_defibrillator = nanosuit_ui_defibrillator.ui_defibrillator(core, self)
+    self.m_ui_defibrillator:Show(false)
+    self:AttachChild(self.m_ui_defibrillator)
+
     self:Show(false)
 
     -- Register callbacks
@@ -86,6 +90,7 @@ function ui_hud:destroy()
     self.m_ui_status:destroy()
     self.m_ui_tacmap:destroy()
     self.m_ui_indicators:destroy()
+    self.m_ui_defibrillator:destroy()
 
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_update", self)
@@ -189,15 +194,18 @@ function ui_hud:Update(force)
         self.m_ui_status:Show(false)
         self.m_ui_tacmap:Show(false)
         self.m_ui_indicators:Show(false)
+        self.m_ui_defibrillator:Show(false)
     elseif should_show and not self:IsShown() then
         self:Show(true)
         self.m_ui_status:Show(true)
         self.m_ui_tacmap:Show(true)
         self.m_ui_indicators:Show(true)
+        self.m_ui_defibrillator:Show(true)
     end
 
     -- Update children
     self.m_ui_status:Update(force)
     self.m_ui_tacmap:Update(force)
     self.m_ui_indicators:Update(force)
+    self.m_ui_defibrillator:Update(force)
 end

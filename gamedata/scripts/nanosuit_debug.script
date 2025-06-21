@@ -132,6 +132,15 @@ function on_key_press_defib(dik)
     end
 end
 
+function on_key_press_defib_ui(dik)
+    if dik == DIK_keys.DIK_K then
+        nanosuit_core.instance.m_defibrillator.m_is_defibrillating = true
+        nanosuit_core.instance.m_defibrillator.m_charging = not nanosuit_core.instance.m_defibrillator.m_charging
+        nanosuit_core.instance.m_defibrillator.m_charging_time_remaining = 3000
+        nanosuit_core.instance.m_defibrillator.m_charging_time_last_update = time_global()
+    end
+end
+
 function on_key_release(dik)
     if dik == DIK_keys.DIK_LCONTROL then
         holding_ctrl = false
@@ -148,6 +157,7 @@ function on_game_start()
     --RegisterScriptCallback("on_key_press", on_key_press_tacmap)
     --RegisterScriptCallback("on_key_press", on_key_press_status)
     --RegisterScriptCallback("on_key_press", on_key_press_vap)
-    RegisterScriptCallback("on_key_press", on_key_press_defib)
+    --RegisterScriptCallback("on_key_press", on_key_press_defib)
+    RegisterScriptCallback("on_key_press", on_key_press_defib_ui)
     --RegisterScriptCallback("on_key_release", on_key_release)
 end
