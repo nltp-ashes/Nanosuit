@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/06/2025                                                                                             ---
+---    Date : 21/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to execute debug functions to help in development.                                                ---
@@ -39,9 +39,9 @@ function on_key_press_tacmap(dik)
 
     local pos = nil
     if poly_point == 0 then
-        pos = nanosuit_core.instance.m_uis.hud.m_ui_tacmap.m_player
+        pos = nanosuit_core.instance.m_hud.m_ui_tacmap.m_player
     else
-        pos = nanosuit_core.instance.m_uis.hud.m_ui_tacmap.m_tacmap_bounds[poly_point]
+        pos = nanosuit_core.instance.m_hud.m_ui_tacmap.m_tacmap_bounds[poly_point]
     end
 
     local transform = holding_ctrl and 10 or 1
@@ -120,6 +120,14 @@ function on_key_press_vap(dik)
     end
 end
 
+function on_key_press_malfunction(dik)
+    if dik == DIK_keys.DIK_K then
+        nanosuit_core.instance.m_malfunctor:enable_malfunction()
+        elseif dik == DIK_keys.DIK_L then
+        nanosuit_core.instance.m_malfunctor:disable_malfunction()
+    end
+end
+
 function on_key_press_defib(dik)
     if dik == DIK_keys.DIK_K then
         if not nanosuit_core.instance.m_defibrillator.m_is_defibrillating then
@@ -157,7 +165,8 @@ function on_game_start()
     --RegisterScriptCallback("on_key_press", on_key_press_tacmap)
     --RegisterScriptCallback("on_key_press", on_key_press_status)
     --RegisterScriptCallback("on_key_press", on_key_press_vap)
+    --RegisterScriptCallback("on_key_press", on_key_press_malfunction)
     --RegisterScriptCallback("on_key_press", on_key_press_defib)
     RegisterScriptCallback("on_key_press", on_key_press_defib_ui)
-    --RegisterScriptCallback("on_key_release", on_key_release)
+    RegisterScriptCallback("on_key_release", on_key_release)
 end
