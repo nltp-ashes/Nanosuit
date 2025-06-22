@@ -1,10 +1,11 @@
-## **v0.7.0 - 17/06/2025 - Alpha Build**
+## **v0.7.0 - 22/06/2025 - Alpha Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.7.0/total?label=Downloads)]()
 
 **• Additions :**
 > • Added a new feature : the vaporization. When the player dies wearing the suit, they will be vaporized, leaving no body behind;
 > • Added a new feature : malfunctions. The suit turns off and the HUD turns red. Used in a variety of game-events, and will be used in the future during storylines;
+> • Added a new feature : defibrillator. If the player dies with a defibrillator powerbank equipped, an animated sequence plays, giving the option to get a second chance;
 > • Added a little animation when hovering an option in the menu;
 
 **• Changes :**
