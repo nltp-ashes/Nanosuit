@@ -109,9 +109,7 @@ function defibrillator:defibrillate()
         nanosuit_utils.remove_pp_effector(self.m_effectors.fade_in.id)
         nanosuit_utils.add_pp_effector(self.m_effectors.blackout.path, self.m_effectors.blackout.id, true)
 
-        self.m_charging = true
-        self.m_charging_time_remaining = 3000
-        self.m_charging_time_last_update = time_global()
+        self:set_charging()
 
         return true
     end)
@@ -171,6 +169,12 @@ function defibrillator:should_defibrillate()
     alife_release_id(defib_obj:id())
 
     return true
+end
+
+function defibrillator:set_charging()
+    self.m_charging = true
+    self.m_charging_time_remaining = 3000
+    self.m_charging_time_last_update = time_global()
 end
 
 function defibrillator:is_charging()
