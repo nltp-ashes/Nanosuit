@@ -2,13 +2,10 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 22/06/2025                                                                                             ---
+---    Date : 24/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's built-in defibrillator.                                                  ---
----                                                                                                                  ---
----    game.play_hud_anm([[camera_effects\sleep.anm]], 0, 1, 1, false)                                               ---
----    level.add_cam_effector("camera_effects\\wake_up.anm", 9683, false, "")                                        ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -120,9 +117,7 @@ function defibrillator:defibrillate()
     end)
 
     CreateTimeEvent("nanosuit_defibrillator", "wait", start_length, function()
-        local waiting_for = time_global() - self.m_charging_time_last_update
-        if waiting_for >= self.m_kill_timeout then
-            printf("[NS] Defibrillator waiting for %sms", waiting_for)
+        if db.actor:alive() and self:has_timed_out() then
             db.actor:kill(db.actor)
             return true
         end
@@ -186,6 +181,14 @@ function defibrillator:is_ready()
     return self.m_charging and self.m_charging_time_remaining <= 0
 end
 
+function defibrillator:has_timed_out()
+    if not self:is_ready() then
+        return false
+    end
+    local waiting_for = time_global() - self.m_charging_time_last_update
+    return waiting_for >= self.m_kill_timeout
+end
+
 function defibrillator:actor_on_update()
     if self:is_charging() then
         local tg = time_global()
@@ -219,6 +222,11 @@ function defibrillator:actor_on_hit_callback(obj, amount, local_direction, who, 
 end
 
 function defibrillator:actor_on_before_death(killer_id, flags)
+    -- Check time out
+    if self.m_enabled and self:has_timed_out() then
+        return
+    end
+
     -- Check if hit can be recovered
     if not self.m_recoverable_hit_types[self.m_last_hit_type] then
         return
