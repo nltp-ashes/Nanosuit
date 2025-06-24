@@ -1,0 +1,104 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 25/06/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the animated sequence of the defibrillator.                                             ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Defibrillator sequence class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "defibrillator_sequence" (nanosuit_sequence.scripted_sequence)
+
+function defibrillator_sequence:__init(defibrillator, core) super(core)
+    self.m_defibrillator = defibrillator
+    self.m_effectors = {
+        blur = { id = 3419, path = [[surge_shock_old.ppe]] },
+        fade_in = { id = 3429, path = [[fade_in.ppe]] },
+        fade_out = { id = 3439, path = [[fade_out.ppe]] },
+        blackout = { id = 3449, path = [[black_infinite_2.ppe]] },
+        fall = { id = 3459, path = [[nanosuit\defibrillator_start.anm]] },
+        stand = { id = 3469, path = [[nanosuit\defibrillator_end.anm]] }
+    }
+end
+
+function defibrillator_sequence:destroy()
+    for _, config in pairs(self.m_effectors) do
+        if nanosuit_utils.has_pp_effector(config.id) then
+            nanosuit_utils.remove_pp_effector(config.id)
+        end
+    end
+
+    level.enable_input()
+
+    nanosuit_sequence.scripted_sequence.destroy(self)
+end
+
+function defibrillator_sequence:action_start()
+    level.add_cam_effector(self.m_effectors.fall.path, self.m_effectors.fall.id, false, "", 0, false, 1)
+    return true
+end
+
+function defibrillator_sequence:action_blur()
+    nanosuit_utils.add_pp_effector(self.m_effectors.blur.path, self.m_effectors.blur.id, true)
+    level.disable_input()
+    self.m_last_active_slot = db.actor:active_slot()
+    db.actor:activate_slot(0)
+    return true
+end
+
+function defibrillator_sequence:action_fade_in()
+    nanosuit_utils.add_pp_effector(self.m_effectors.fade_in.path, self.m_effectors.fade_in.id, false)
+    return true
+end
+
+function defibrillator_sequence:action_blackout()
+    nanosuit_utils.remove_pp_effector(self.m_effectors.fade_in.id)
+    nanosuit_utils.add_pp_effector(self.m_effectors.blackout.path, self.m_effectors.blackout.id, true)
+
+    self.m_defibrillator:set_charging()
+
+    return true
+end
+
+function defibrillator_sequence:action_wait()
+    if db.actor:alive() and self.m_defibrillator:has_timed_out() then
+        db.actor:kill(db.actor)
+        return true
+    end
+
+    if self.m_defibrillator:is_charging() or self.m_defibrillator:is_ready() then
+        return false
+    end
+
+    return true
+end
+
+function defibrillator_sequence:action_fade_out()
+    nanosuit_utils.remove_pp_effector(self.m_effectors.blackout.id)
+    nanosuit_utils.add_pp_effector(self.m_effectors.fade_out.path, self.m_effectors.fade_out.id, false)
+    level.add_cam_effector(self.m_effectors.stand.path, self.m_effectors.stand.id, false, "", 0, false, 1)
+    return true
+end
+
+function defibrillator_sequence:action_enable_input()
+    level.enable_input()
+    db.actor:activate_slot(self.m_last_active_slot)
+    return true
+end
+
+function defibrillator_sequence:action_end()
+    nanosuit_utils.remove_pp_effector(self.m_effectors.blur.id)
+    db.actor.health = 0.2
+    self.m_defibrillator.m_enabled = false
+    return true
+end

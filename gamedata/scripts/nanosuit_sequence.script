@@ -1,0 +1,71 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 25/06/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to run chained scripted events, with custom delay and precedence between scripts.                 ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Scripted sequence class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "scripted_sequence"
+
+function scripted_sequence:__init(core)
+    self.m_core = core
+    self.m_init_func = nil
+    self.m_chain = {}
+    self.m_cursor = 0
+    self.m_last_update = time_global()
+end
+
+function scripted_sequence:destroy()
+    UnregisterScriptCallback("actor_on_update", self)
+end
+
+function scripted_sequence:from(init_func)
+    self.m_init_func = init_func
+end
+
+function scripted_sequence:after(next_func, delay)
+    table.insert(self.m_chain, { func = next_func, delay = delay * 1000 })
+end
+
+function scripted_sequence:execute()
+    printf("[NS] Scripted sequence started")
+    RegisterScriptCallback("actor_on_update", self)
+end
+
+function scripted_sequence:actor_on_update()
+    if self.m_cursor == 0 and self:m_init_func() then
+        self.m_cursor = 1
+        printf("[NS] Init step done, moving to next step %s", self.m_cursor)
+        return
+    end
+
+    if self:is_done() then
+        UnregisterScriptCallback("actor_on_update", self)
+        printf("[NS] Scripted sequence completed")
+        return
+    end
+
+    local tg = time_global()
+    local current = self.m_chain[self.m_cursor]
+    if (tg - self.m_last_update) >= current.delay and current.func(self) then
+        self.m_cursor = self.m_cursor + 1
+        self.m_last_update = tg
+        printf("[NS] Step done, moving to next step %s", self.m_cursor)
+    end
+end
+
+function scripted_sequence:is_done()
+    return self.m_cursor > #self.m_chain
+end
