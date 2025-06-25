@@ -49,6 +49,13 @@ HUD :
 - The minimap shows all human objects around the player
 - The status hub shows the suit's current mode, energy level, health, ammo count, ammo reserve and fire mode
 
+Defibrillator :
+- If the player dies, under certain conditions, an animated sequence will play, giving the option to get a second chance
+- The defibrillator can only be used when dying from certain damage types (fall damage, radiation, lacerations)
+- A defibrillator powerbank is required for the defibrillator to activate
+- Powerbanks are single use, and need to be replaced after being revived
+- During the defibrillator sequence, the player has a 3 seconds window to press the dedicated key, after which the player dies
+
 Malfunctions :
 - The suit can malfunction, turning it off (protection and bonuses are removed) and disabling the HUD (turns red and indicators are offline)
 - The suit malfunctions when the player dies, or when hit by a psi-storm vortex, or by a pulse anomaly
