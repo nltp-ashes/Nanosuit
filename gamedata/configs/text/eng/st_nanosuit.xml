@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 14/06/2025                                                                                            -->
+<!--    Date : 22/06/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -25,6 +25,34 @@
 
     <string id="st_nanosuit_outfit_name_descr">
         <text>The Nanosuit (also known as Nano-muscle suit) is a powerful and extremely versatile set of tactical-combat armor originally designed to counter the [CLASSIFIED] threat and circumvent the technological margin between Mankind and [CLASSIFIED]. Reverse-engineered from captured [CLASSIFIED] technology, the suits' CryFibril muscle fibers can be programmed for a variety of purposes (such as hardening, muscle augmentation or camouflage), leading to drastically enhanced combat and physical performance, allowing the operator to execute superhuman feats.\n \n</text>
+    </string>
+
+    <!--=============================================================================================================-->
+    <!--    Nanosuit defibrillator item                                                                              -->
+    <!--=============================================================================================================-->
+
+    <string id="st_nanosuit_defibrillator">
+        <text>Nanosuit defibrillator powerbank</text>
+    </string>
+
+    <string id="st_nanosuit_defibrillator_s">
+        <text>Powerbank</text>
+    </string>
+
+    <string id="st_nanosuit_defibrillator_descr">
+        <text>This powerbank is a compact, high-capacity energy storage device designed to power the Nanosuit's built-in defibrillator system. It allows the user to revive themselves, providing a critical advantage in combat situations. The powerbank is single use, and must be replaced after use.\n \n</text>
+    </string>
+
+    <!--=============================================================================================================-->
+    <!--    Nanosuit built-in defibrillator                                                                          -->
+    <!--=============================================================================================================-->
+
+    <string id="st_nanosuit_defibrillator_charging">
+        <text>DEFIBRILLATOR CHARGING... %s</text>
+    </string>
+
+    <string id="st_nanosuit_defibrillator_ready">
+        <text>DEFIBRILLATOR READY</text>
     </string>
 
     <!--=============================================================================================================-->
@@ -50,5 +78,4 @@
     <string id="nanosuit\voice\energy_low_voice">
         <text>nanosuit\voice\energy_low_voice</text>
     </string>
-
 </string_table>

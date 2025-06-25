@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 16/06/2025                                                                                             ---
+---    Date : 25/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to execute debug functions to help in development.                                                ---
@@ -17,13 +17,8 @@
 holding_ctrl            = false
 x_transforms            = 0
 y_transforms            = 0
-
--- ---------------------------------------------------------------------------------------------------------------------
--- Debug functions
--- ---------------------------------------------------------------------------------------------------------------------
-
--- Variables
 poly_point              = 0
+seq                     = nil
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- General functions
@@ -128,6 +123,43 @@ function on_key_press_malfunction(dik)
     end
 end
 
+function on_key_press_defib(dik)
+    if dik == DIK_keys.DIK_K then
+        if not nanosuit_core.instance.m_defibrillator.m_enabled then
+            nanosuit_core.instance.m_defibrillator:defibrillate()
+        else
+            level.remove_cam_effector(nanosuit_defibrillator.cam_effector_start_id)
+            nanosuit_utils.remove_pp_effector(nanosuit_defibrillator.pp_effector_b_id)
+            nanosuit_utils.remove_pp_effector(nanosuit_defibrillator.pp_effector_ftb_id)
+        end
+    end
+end
+
+function on_key_press_defib_ui(dik)
+    if dik == DIK_keys.DIK_K then
+        nanosuit_core.instance.m_defibrillator.m_enabled = true
+        nanosuit_core.instance.m_defibrillator.m_charging = not nanosuit_core.instance.m_defibrillator.m_charging
+        nanosuit_core.instance.m_defibrillator.m_charging_time_remaining = 3000
+        nanosuit_core.instance.m_defibrillator.m_charging_time_last_update = time_global()
+    end
+end
+
+function on_key_press_chainable(dik)
+    if dik == DIK_keys.DIK_K then
+        if not seq then
+            seq = dummy_sequence(nanosuit_core.instance)
+            seq:from(seq.action_1)
+            seq:after(seq.action_2, 5)
+            seq:after(seq.action_3, 0)
+            seq:after(seq.action_4, 5)
+            seq:execute()
+        else
+            seq:destroy()
+            seq = nil
+        end
+    end
+end
+
 function on_key_release(dik)
     if dik == DIK_keys.DIK_LCONTROL then
         holding_ctrl = false
@@ -144,6 +176,42 @@ function on_game_start()
     --RegisterScriptCallback("on_key_press", on_key_press_tacmap)
     --RegisterScriptCallback("on_key_press", on_key_press_status)
     --RegisterScriptCallback("on_key_press", on_key_press_vap)
-    RegisterScriptCallback("on_key_press", on_key_press_malfunction)
-    RegisterScriptCallback("on_key_release", on_key_release)
+    --RegisterScriptCallback("on_key_press", on_key_press_malfunction)
+    --RegisterScriptCallback("on_key_press", on_key_press_defib)
+    --RegisterScriptCallback("on_key_press", on_key_press_defib_ui)
+    --RegisterScriptCallback("on_key_press", on_key_press_chainable)
+    --RegisterScriptCallback("on_key_release", on_key_release)
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Dummy anim seq
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "dummy_sequence" (nanosuit_sequence.scripted_sequence)
+
+function dummy_sequence:__init(core) super(core)
+end
+
+function dummy_sequence:destroy()
+    nanosuit_sequence.scripted_sequence.destroy(self)
+end
+
+function dummy_sequence:action_1()
+    printf("[NS] Dummy anim seq action 1 called")
+    return true
+end
+
+function dummy_sequence:action_2()
+    printf("[NS] Dummy anim seq action 2 called")
+    return true
+end
+
+function dummy_sequence:action_3()
+    printf("[NS] Dummy anim seq action 3 called")
+    return true
+end
+
+function dummy_sequence:action_4()
+    printf("[NS] Dummy anim seq action 4 called")
+    return true
 end

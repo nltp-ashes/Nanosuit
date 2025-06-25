@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/06/2025                                                                                             ---
+---    Date : 21/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -28,11 +28,8 @@ instance                = nil
 function actor_item_to_slot(_)
     nextTick(function()
         local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-        if outfit ~= nil and outfit:section() == "outfit_nanosuit" and instance == nil then
-            if instance == nil then
-                printf("Nanosuit core initializing")
-                instance = core()
-            end
+        if outfit ~= nil and outfit:section() == "outfit_nanosuit" then
+            create_instance_if_not_exists()
         end
         return true
     end)
@@ -41,10 +38,8 @@ end
 function actor_item_to_ruck(_)
     nextTick(function()
         local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-        if (outfit == nil or outfit:section() ~= "outfit_nanosuit") and instance ~= nil then
-            instance:destroy()
-            instance = nil
-            printf("Nanosuit core destroyed")
+        if outfit == nil or outfit:section() ~= "outfit_nanosuit" then
+            destroy_instance_if_exists()
         end
         return true
     end)
@@ -53,20 +48,35 @@ end
 function actor_on_item_drop(_)
     nextTick(function()
         local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-        if (outfit == nil or outfit:section() ~= "outfit_nanosuit") and instance ~= nil then
-            instance:destroy()
-            instance = nil
-            printf("Nanosuit core destroyed")
+        if outfit == nil or outfit:section() ~= "outfit_nanosuit" then
+            destroy_instance_if_exists()
         end
         return true
     end)
 end
 
 function actor_on_net_destroy()
+    destroy_instance_if_exists()
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Instance management functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function create_instance_if_not_exists()
+    if instance == nil then
+        printf("[NS] Nanosuit core initializing")
+        instance = core()
+        printf("[NS] Nanosuit core initialized")
+    end
+end
+
+function destroy_instance_if_exists()
     if instance ~= nil then
+        printf("[NS] Nanosuit core destroying")
         instance:destroy()
         instance = nil
-        printf("Nanosuit core destroyed")
+        printf("[NS] Nanosuit core destroyed")
     end
 end
 
@@ -132,6 +142,7 @@ function core:__init()
     -- Others
     self.m_vaporizer = nanosuit_vaporizer.vaporizer(self)
     self.m_malfunctor = nanosuit_malfunctor.malfunctor(self)
+    self.m_defibrillator = nanosuit_defibrillator.defibrillator(self)
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_death", self)
@@ -156,6 +167,7 @@ function core:destroy()
     self.m_hud:destroy()
     self.m_vaporizer:destroy()
     self.m_malfunctor:destroy()
+    self.m_defibrillator:destroy()
 end
 
 function core:use_energy(amount)
@@ -186,7 +198,7 @@ end
 
 function core:actor_on_update()
     -- Delay energy regen 5s after last energy use
-    if time_global() - self.m_energy_last_use > self.m_energy_regen_delay and not self.m_malfunctor.m_enabled then
+    if time_global() - self.m_energy_last_use > self.m_energy_regen_delay and not self.m_malfunctor.m_enabled and not self.m_defibrillator.m_enabled then
         -- Throttle energy regen once every 100ms
         if time_global() - self.m_energy_last_regen > self.m_energy_regen_rate then
             self.m_energy = clamp(self.m_energy + 1, 0, 100)

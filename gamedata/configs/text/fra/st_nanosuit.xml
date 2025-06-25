@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 14/06/2025                                                                                            -->
+<!--    Date : 22/06/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -25,6 +25,34 @@
 
     <string id="st_nanosuit_outfit_name_descr">
         <text>La Nanocombinaison (aussi connue sous le nom combinaison nano-muscle) est un ensemble tactique puissant et extrêmement polyvalent initialement conçu pour combattre la menace [CLASSIFIÉ] et minimiser l'écart technologique entre l'humanité et les [CLASSIFIÉ]. Rétro-ingénierée à partir de technologies [CLASSIFIÉ], les fibres musculaires CryFibril de la combinaison peuvent être programmés pour diverses applications (comme la rigidité, force accrue ou encore camouflage optique), permettant de dramatiquement augmenter les capacités de combat et physiques, rendant possible des exploits surhumains à son opérateur.\n \n</text>
+    </string>
+
+    <!--=============================================================================================================-->
+    <!--    Nanosuit defibrillator item                                                                              -->
+    <!--=============================================================================================================-->
+
+    <string id="st_nanosuit_defibrillator">
+        <text>Batterie pour défibrillateur Nanocombinaison</text>
+    </string>
+
+    <string id="st_nanosuit_defibrillator_s">
+        <text>Batterie</text>
+    </string>
+
+    <string id="st_nanosuit_defibrillator_descr">
+        <text>Cette batterie est un dispositif de stockage d'énergie compact et de haute-capacité conçu pour alimenter le système de défibrillation intégré à la Nanocombinaison. Elle permet à l'utilisateur de se réanimer, offrant un avantage décisif en situation de combat. La batterie est à usage unique et doit être remplacée après utilisation.\n \n</text>
+    </string>
+
+    <!--=============================================================================================================-->
+    <!--    Nanosuit built-in defibrillator                                                                          -->
+    <!--=============================================================================================================-->
+
+    <string id="st_nanosuit_defibrillator_charging">
+        <text>DÉFIBRILLATEUR EN CHARGE... %s</text>
+    </string>
+
+    <string id="st_nanosuit_defibrillator_ready">
+        <text>DÉFIBRILLATEUR PRÊT</text>
     </string>
 
     <!--=============================================================================================================-->
@@ -50,5 +78,4 @@
     <string id="nanosuit\voice\energy_low_voice">
         <text>nanosuit\voice\energy_low_voice_fra</text>
     </string>
-
 </string_table>
