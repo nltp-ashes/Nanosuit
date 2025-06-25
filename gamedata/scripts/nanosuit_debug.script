@@ -179,7 +179,7 @@ function on_game_start()
     --RegisterScriptCallback("on_key_press", on_key_press_malfunction)
     --RegisterScriptCallback("on_key_press", on_key_press_defib)
     --RegisterScriptCallback("on_key_press", on_key_press_defib_ui)
-    RegisterScriptCallback("on_key_press", on_key_press_chainable)
+    --RegisterScriptCallback("on_key_press", on_key_press_chainable)
     --RegisterScriptCallback("on_key_release", on_key_release)
 end
 

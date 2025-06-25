@@ -25,10 +25,14 @@ function scripted_sequence:__init(core)
     self.m_chain = {}
     self.m_cursor = 0
     self.m_last_update = time_global()
+    self.m_unique_call_wrapper = nil
 end
 
 function scripted_sequence:destroy()
-    UnregisterScriptCallback("actor_on_update", self)
+    if self.m_unique_call_wrapper then
+        nanosuit_utils.remove_unique_call(self.m_unique_call_wrapper)
+        self.m_unique_call_wrapper = nil
+    end
 end
 
 function scripted_sequence:from(init_func)
@@ -41,10 +45,10 @@ end
 
 function scripted_sequence:execute()
     printf("[NS] Scripted sequence started")
-    RegisterScriptCallback("actor_on_update", self)
+    self.m_unique_call_wrapper = nanosuit_utils.add_unique_call(self.update, self)
 end
 
-function scripted_sequence:actor_on_update()
+function scripted_sequence:update()
     if self.m_cursor == 0 and self:m_init_func() then
         self.m_cursor = 1
         printf("[NS] Init step done, moving to next step %s", self.m_cursor)
@@ -52,7 +56,8 @@ function scripted_sequence:actor_on_update()
     end
 
     if self:is_done() then
-        UnregisterScriptCallback("actor_on_update", self)
+        nanosuit_utils.remove_unique_call(self.m_unique_call_wrapper)
+        self.m_unique_call_wrapper = nil
         printf("[NS] Scripted sequence completed")
         return
     end
