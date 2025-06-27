@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/06/2025                                                                                             ---
+---    Date : 27/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to execute debug functions to help in development.                                                ---
@@ -117,7 +117,7 @@ end
 
 function on_key_press_malfunction(dik)
     if dik == DIK_keys.DIK_K then
-        nanosuit_core.instance.m_malfunctor:enable_malfunction()
+        nanosuit_core.instance.m_malfunctor:enable_malfunction(true)
         elseif dik == DIK_keys.DIK_L then
         nanosuit_core.instance.m_malfunctor:disable_malfunction()
     end

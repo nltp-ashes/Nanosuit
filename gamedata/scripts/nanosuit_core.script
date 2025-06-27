@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 21/06/2025                                                                                             ---
+---    Date : 27/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -20,6 +20,9 @@ armor_modes_enum        = nanosuit_utils.armor_modes_enum
 
 -- Singleton
 instance                = nil
+
+-- Variables
+loaded_m_data           = {}
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- General functions
@@ -59,6 +62,17 @@ function actor_on_net_destroy()
     destroy_instance_if_exists()
 end
 
+function save_state(m_data)
+    if instance ~= nil then
+        m_data.nanosuit = {}
+        instance:save(m_data.nanosuit)
+    end
+end
+
+function load_state(m_data)
+    loaded_m_data = m_data.nanosuit or loaded_m_data
+end
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Instance management functions
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -87,6 +101,8 @@ end
 --- Function used to register callbacks.
 --- @return nil
 function on_game_start()
+    RegisterScriptCallback("save_state", save_state)
+    RegisterScriptCallback("load_state", load_state)
     RegisterScriptCallback("actor_item_to_slot", actor_item_to_slot)
     RegisterScriptCallback("actor_item_to_ruck", actor_item_to_ruck)
     RegisterScriptCallback("actor_on_item_drop", actor_on_item_drop)
@@ -100,19 +116,21 @@ end
 class "core"
 
 function core:__init()
-    -- Energy related variables
-    self.m_energy = 100
+    -- Constants
     self.m_energy_regen_rate = 100
     self.m_energy_regen_delay = 5000
+    self.m_energy_low_threshold = 20
+    self.m_energy_very_low_threshold = 10
+    self.m_energy_off_threshold = 0
+    self.m_energy_on_threshold = 0
+
+    -- Variables
+    self.m_energy = 100
     self.m_energy_last_use = 0
     self.m_energy_last_regen = 0
-    self.m_energy_low_threshold = 20
     self.m_energy_low_voiced = true
-    self.m_energy_very_low_threshold = 10
     self.m_energy_very_low_voiced = true
-    self.m_energy_off_threshold = 0
     self.m_energy_off_voiced = true
-    self.m_energy_on_threshold = 0
     self.m_energy_on_voiced = true
 
     -- Sound effects
@@ -144,6 +162,12 @@ function core:__init()
     self.m_malfunctor = nanosuit_malfunctor.malfunctor(self)
     self.m_defibrillator = nanosuit_defibrillator.defibrillator(self)
 
+    -- Load
+    if loaded_m_data then
+        self:load(loaded_m_data)
+        loaded_m_data = nil
+    end
+
     -- Register callbacks
     RegisterScriptCallback("actor_on_death", self)
     RegisterScriptCallback("actor_on_update", self)
@@ -168,6 +192,53 @@ function core:destroy()
     self.m_vaporizer:destroy()
     self.m_malfunctor:destroy()
     self.m_defibrillator:destroy()
+end
+
+function core:save(m_data)
+    m_data.energy = self.m_energy
+    m_data.energy_last_use = self.m_energy_last_use
+    m_data.energy_last_regen = self.m_energy_last_regen
+    m_data.energy_low_voiced = self.m_energy_low_voiced
+    m_data.energy_very_low_voiced = self.m_energy_very_low_voiced
+    m_data.energy_off_voiced = self.m_energy_off_voiced
+    m_data.energy_on_voiced = self.m_energy_on_voiced
+
+    m_data.modes = {}
+    for name, mode in pairs(self.m_modes) do
+        m_data.modes[name] = mode.save and mode:save() or {}
+    end
+
+    m_data.vaporizer = self.m_vaporizer.save and self.m_vaporizer:save() or {}
+    m_data.malfunctor = self.m_malfunctor.save and self.m_malfunctor:save() or {}
+    m_data.defibrillator = self.m_defibrillator.save and self.m_defibrillator:save() or {}
+end
+
+function core:load(m_data)
+    self.m_energy = m_data.energy or self.m_energy
+    self.m_energy_last_use = m_data.energy_last_use or self.m_energy_last_use
+    self.m_energy_last_regen = m_data.energy_last_regen or self.m_energy_last_regen
+    self.m_energy_low_voiced = m_data.energy_low_voiced or self.m_energy_low_voiced
+    self.m_energy_very_low_voiced = m_data.energy_very_low_voiced or self.m_energy_very_low_voiced
+    self.m_energy_off_voiced = m_data.energy_off_voiced or self.m_energy_off_voiced
+    self.m_energy_on_voiced = m_data.energy_on_voiced or self.m_energy_on_voiced
+
+    for name, mode in pairs(self.m_modes) do
+        if m_data.modes and m_data.modes[name] and mode.load then
+            mode:load(m_data.modes[name])
+        end
+    end
+
+    if m_data.vaporizer and self.m_vaporizer.load then
+        self.m_vaporizer:load(m_data.vaporizer)
+    end
+
+    if m_data.malfunctor and self.m_malfunctor.load then
+        self.m_malfunctor:load(m_data.malfunctor)
+    end
+
+    if m_data.defibrillator and self.m_defibrillator.load then
+        self.m_defibrillator:load(m_data.defibrillator)
+    end
 end
 
 function core:use_energy(amount)
