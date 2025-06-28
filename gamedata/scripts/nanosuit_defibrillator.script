@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/06/2025                                                                                             ---
+---    Date : 28/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's built-in defibrillator.                                                  ---
@@ -48,6 +48,9 @@ function defibrillator:__init(core)
     self.m_charging = false
     self.m_charging_time_remaining = 0
     self.m_charging_time_last_update = time_global()
+    self.m_last_before_hit_type = nil
+    self.m_last_hit_type = nil
+    self.m_last_hit_time = time_global()
 
     -- Callbacks
     RegisterScriptCallback("actor_on_update", self)
@@ -164,12 +167,19 @@ end
 
 function defibrillator:actor_on_hit_callback(obj, amount, local_direction, who, bone_index)
     self.m_last_hit_type = self.m_last_before_hit_type
+    self.m_last_hit_time = time_global()
 end
 
 function defibrillator:actor_on_before_death(killer_id, flags)
     -- Check time out
     if self.m_enabled and self:has_timed_out() then
         return
+    end
+
+    -- Handle radiation not sending hit callbacks
+    local time_since_last_hit = time_global() - self.m_last_hit_time
+    if time_since_last_hit > 1000 and db.actor.radiation > 0 then
+        self.m_last_hit_type = hit_types_enum.radiation
     end
 
     -- Check if hit can be recovered
