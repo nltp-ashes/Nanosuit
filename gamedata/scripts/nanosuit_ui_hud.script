@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 29/05/2025                                                                                             ---
+---    Date : 28/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -14,7 +14,8 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- Imports
-fire_modes_names_enums  = nanosuit_utils.fire_modes_names_enums
+fire_modes_names_enum   = nanosuit_utils.fire_modes_names_enum
+actor_cameras_enum      = nanosuit_utils.actor_cameras_enum
 
 -- Variables
 is_in_game              = false
@@ -48,19 +49,37 @@ function ui_hud:__init(core) super()
     self.m_core = core
     self.m_next_update = time_global()
     self.m_update_rate = 1000
+    self.m_colors = {
+        text = GetARGB(255, 129, 183, 135),
+        background = GetARGB(200, 99, 125, 102),
+        active = GetARGB(200, 250, 173, 44),
+        energy = GetARGB(255, 0, 107, 179),
+        energy_bg = GetARGB(200, 18, 40, 46),
+        energy_off_bg = GetARGB(200, 24, 24, 24),
+        health = GetARGB(255, 85, 148, 17),
+        health_bg = GetARGB(200, 27, 33, 21),
+        health_off_bg = GetARGB(200, 24, 24, 24),
+        red = GetARGB(255, 255, 0, 0)
+    }
 
     -- Build UI
+    self.m_ui_menu = nanosuit_ui_menu.ui_menu(core, self)
+    self:AttachChild(self.m_ui_menu)
+
     self.m_ui_status = nanosuit_ui_status.ui_status(core, self)
-    self.m_ui_status:Show(false)
+    self.m_ui_status:Show(true)
     self:AttachChild(self.m_ui_status)
 
     self.m_ui_tacmap = nanosuit_ui_tacmap.ui_tacmap(core, self)
-    self.m_ui_tacmap:Show(false)
+    self.m_ui_tacmap:Show(true)
     self:AttachChild(self.m_ui_tacmap)
 
     self.m_ui_indicators = nanosuit_ui_indicators.ui_indicators(core, self)
-    self.m_ui_indicators:Show(false)
+    self.m_ui_indicators:Show(true)
     self:AttachChild(self.m_ui_indicators)
+
+    self.m_ui_defibrillator = nanosuit_ui_defibrillator.ui_defibrillator(core, self)
+    self:AttachChild(self.m_ui_defibrillator)
 
     self:Show(false)
 
@@ -82,9 +101,11 @@ function ui_hud:destroy()
     self:switch_hud(false)
 
     -- Destroy children
+    self.m_ui_menu:destroy()
     self.m_ui_status:destroy()
     self.m_ui_tacmap:destroy()
     self.m_ui_indicators:destroy()
+    self.m_ui_defibrillator:destroy()
 
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_update", self)
@@ -93,7 +114,6 @@ end
 
 function ui_hud:switch_hud(take_control)
     -- Get main HUD
-    local hud = get_hud()
     local main_hud = ActorMenu.get_maingame()
 
     if take_control then
@@ -111,6 +131,31 @@ function ui_hud:switch_hud(take_control)
         main_hud.UIZoneMap.disabled = not ui_options.get([[video/hud/show_minimap]])
         main_hud.UIMotionIcon:Show(not main_hud.UIZoneMap.disabled)
     end
+
+    local elements_to_move = self:get_elements_to_move()
+
+    -- Move elements
+    for _, element in ipairs(elements_to_move) do
+        if element.element then
+            local pos = element.element:GetWndPos()
+            local offset_x, offset_y = nil, nil
+            if element.hide then
+                offset_x = -device().width - element.element:GetWidth()
+                offset_y = 0
+            else
+                offset_x = element.x or 0
+                offset_y = element.y or 0
+            end
+            pos.x = pos.x + (take_control and offset_x or -offset_x)
+            pos.y = pos.y + (take_control and offset_y or -offset_y)
+            element.element:SetWndPos(pos)
+        end
+    end
+end
+
+function ui_hud:get_elements_to_move()
+    local hud = get_hud()
+    local main_hud = ActorMenu.get_maingame()
 
     local elements_to_move = {
         { element = ActorMenu.get_messages_menu(), y = -100 },
@@ -135,25 +180,9 @@ function ui_hud:switch_hud(take_control)
         hud:AddCustomStatic("notify_icon", true)
         notify_cs = hud:GetCustomStatic("notify_icon")
     end
-    table.insert(elements_to_move, { element = notify_cs:wnd(), x = -device().width - notify_cs:wnd():GetWidth() })
+    table.insert(elements_to_move, { element = notify_cs:wnd(), hide = true })
 
-    -- Move elements
-    for _, element in ipairs(elements_to_move) do
-        if element.element then
-            local pos = element.element:GetWndPos()
-            local offset_x, offset_y = nil, nil
-            if element.hide then
-                offset_x = -device().width - element.element:GetWidth()
-                offset_y = 0
-            else
-                offset_x = element.x or 0
-                offset_y = element.y or 0
-            end
-            pos.x = pos.x + (take_control and offset_x or -offset_x)
-            pos.y = pos.y + (take_control and offset_y or -offset_y)
-            element.element:SetWndPos(pos)
-        end
-    end
+    return elements_to_move
 end
 
 function ui_hud:on_loading_screen_dismissed()
@@ -182,21 +211,18 @@ function ui_hud:Update(force)
     end
 
     -- Handle UI visibility
-    local should_show = main_hud_shown()
+    local should_show = (main_hud_shown() or self.m_ui_menu:IsShown()) and (db.actor:alive() or level.get_active_cam() == actor_cameras_enum.first_eye)
+
     if not should_show and self:IsShown() then
         self:Show(false)
-        self.m_ui_status:Show(false)
-        self.m_ui_tacmap:Show(false)
-        self.m_ui_indicators:Show(false)
     elseif should_show and not self:IsShown() then
         self:Show(true)
-        self.m_ui_status:Show(true)
-        self.m_ui_tacmap:Show(true)
-        self.m_ui_indicators:Show(true)
     end
 
     -- Update children
+    self.m_ui_menu:Update(force)
     self.m_ui_status:Update(force)
     self.m_ui_tacmap:Update(force)
     self.m_ui_indicators:Update(force)
+    self.m_ui_defibrillator:Update(force)
 end

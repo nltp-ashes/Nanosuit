@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 28/04/2025                                                                                            -->
+<!--    Date : 22/06/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -28,63 +28,54 @@
     </string>
 
     <!--=============================================================================================================-->
-    <!--    Nanosuit menu UI                                                                                         -->
+    <!--    Nanosuit defibrillator item                                                                              -->
     <!--=============================================================================================================-->
 
-    <string id="st_nanosuit_ui_menu_armor_title">
-        <text>Armure</text>
+    <string id="st_nanosuit_defibrillator">
+        <text>Batterie pour défibrillateur Nanocombinaison</text>
     </string>
 
-    <string id="st_nanosuit_ui_menu_armor_descr">
-        <text>Mode armure</text>
+    <string id="st_nanosuit_defibrillator_s">
+        <text>Batterie</text>
     </string>
 
-    <string id="st_nanosuit_ui_menu_cloak_title">
-        <text>Camouflage</text>
+    <string id="st_nanosuit_defibrillator_descr">
+        <text>Cette batterie est un dispositif de stockage d'énergie compact et de haute-capacité conçu pour alimenter le système de défibrillation intégré à la Nanocombinaison. Elle permet à l'utilisateur de se réanimer, offrant un avantage décisif en situation de combat. La batterie est à usage unique et doit être remplacée après utilisation.\n \n</text>
     </string>
 
-    <string id="st_nanosuit_ui_menu_cloak_descr">
-        <text>Mode camouflage</text>
+    <!--=============================================================================================================-->
+    <!--    Nanosuit built-in defibrillator                                                                          -->
+    <!--=============================================================================================================-->
+
+    <string id="st_nanosuit_defibrillator_charging">
+        <text>DÉFIBRILLATEUR EN CHARGE... %s</text>
     </string>
 
-    <string id="st_nanosuit_ui_menu_power_title">
-        <text>Force</text>
-    </string>
-
-    <string id="st_nanosuit_ui_menu_power_descr">
-        <text>Mode force</text>
-    </string>
-
-    <string id="st_nanosuit_ui_menu_speed_title">
-        <text>Vitesse</text>
-    </string>
-
-    <string id="st_nanosuit_ui_menu_speed_descr">
-        <text>Mode vitesse</text>
+    <string id="st_nanosuit_defibrillator_ready">
+        <text>DÉFIBRILLATEUR PRÊT</text>
     </string>
 
     <!--=============================================================================================================-->
     <!--    Nanosuit voice lines                                                                                     -->
     <!--=============================================================================================================-->
 
-    <string id="nanosuit\mode_armor_voice">
-        <text>nanosuit\mode_armor_voice_fra</text>
+    <string id="nanosuit\voice\mode_armor_voice">
+        <text>nanosuit\voice\mode_armor_voice_fra</text>
     </string>
 
-    <string id="nanosuit\mode_cloak_voice">
-        <text>nanosuit\mode_cloak_voice_fra</text>
+    <string id="nanosuit\voice\mode_cloak_voice">
+        <text>nanosuit\voice\mode_cloak_voice_fra</text>
     </string>
 
-    <string id="nanosuit\mode_power_voice">
-        <text>nanosuit\mode_power_voice_fra</text>
+    <string id="nanosuit\voice\mode_power_voice">
+        <text>nanosuit\voice\mode_power_voice_fra</text>
     </string>
 
-    <string id="nanosuit\mode_speed_voice">
-        <text>nanosuit\mode_speed_voice_fra</text>
+    <string id="nanosuit\voice\mode_speed_voice">
+        <text>nanosuit\voice\mode_speed_voice_fra</text>
     </string>
 
-    <string id="nanosuit\energy_low_voice">
-        <text>nanosuit\energy_low_voice_fra</text>
+    <string id="nanosuit\voice\energy_low_voice">
+        <text>nanosuit\voice\energy_low_voice_fra</text>
     </string>
-
 </string_table>

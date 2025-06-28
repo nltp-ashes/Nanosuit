@@ -10,11 +10,9 @@ Fend off the Zone's dangers with the Nanosuit, a powerful and extremely versatil
 
 ### ABOUT
 
-This addon adds a fully operational Nanosuit from Crysis. Bellow is a list of features that are currently available in the addon :
+This addon adds a fully operational Nanosuit from Crysis. 
 
-General :
-- The nanosuit menu allows you to switch from one mode to another
-- The menu opens when pressing V
+Bellow is a list of features that are currently available in the addon :
 
 Armor mode :
 - Absorbs all incoming damage as long as the suit has energy
@@ -44,12 +42,40 @@ Cloak mode :
 - The player is cloaked from NPC's vision while cloak mode is active
 - When getting too close to an NPC while in cloak mode, they will start to notice you
 
+HUD :
+- Added a custom HUD when wearing the suit. HUD dynamically switches from vanilla HUD to the Nanosuit's and back
+- HUD is divided in 3 parts : the menu, the left side shows a minimap, the right side shows the suit's status
+- The menu (opened by pressing V) allows you to switch from one mode to another
+- The minimap shows all human objects around the player
+- The status hub shows the suit's current mode, energy level, health, ammo count, ammo reserve and fire mode
+
+Defibrillator :
+- If the player dies, under certain conditions, an animated sequence will play, giving the option to get a second chance
+- The defibrillator can only be used when dying from certain damage types (fall damage, radiation, lacerations)
+- A defibrillator powerbank is required for the defibrillator to activate
+- Powerbanks are single use, and need to be replaced after being revived
+- During the defibrillator sequence, the player has a 3 seconds window to press the dedicated key, after which the player dies
+
+Malfunctions :
+- The suit can malfunction, turning it off (protection and bonuses are removed) and disabling the HUD (turns red and indicators are offline)
+- The suit malfunctions when the player dies, or when hit by a psi-storm vortex, or by a pulse anomaly
+- The suit will also malfunction during the storylines that will be added in the future
+
+Vaporization :
+- When the player (or an NPC) dies wearing the suit, they will be vaporized, leaving no body behind
+- When NPCs get vaporized alive, they enter a special animation
+
+Miscellaneous :
+- The Nanosuit voice-lines are available in English, French and Russian, depending on the game language
+
 ---
 
 ### REQUIREMENTS
 
 These addons are **absolutely required** in order for Nanosuit to work :
 1. [S.T.A.L.K.E.R. Anomaly 1.5.3](https://www.moddb.com/mods/stalker-anomaly/downloads/stalker-anomaly-153).
+2. [S.T.A.L.K.E.R. Anomaly Modded Exes 03.06.2025 (or newer)](https://github.com/themrdemonized/xray-monolith)
+3. [First Person Visible Body](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version) (this dependency will be optional in the final release, but is needed for now)
 
 ---
 
@@ -68,10 +94,8 @@ To **update** the addon :
 4. Follow the installation instructions.
 
 To **uninstall** the addon :
-1. Start your game and open the MCM settings;
-2. Enable the "Addon removal" option;
-3. Load your save-game. Once loaded, save again;
-4. Close your game, disable and delete the addon from MO2.
+1. Un-wear the suit if you have it equipped;
+2. Close your game, disable and delete the addon from MO2.
 
 ---
 
@@ -85,13 +109,14 @@ For past updates, please refer to the description of each release, in the [relea
 
 ### KNOWN ISSUES
 
+- The thumb of the left arm is fucked. I don't really know how to fix it, so it'll stay like this for a bit
 - Cloak mode does not work if the NPC sees the actor before the cloak is applied, right now you need to break vision for it to work
-- The suit's energy level is displayed as a message on the HUD. It should have a custom UI
+- Cloak mode does not work on mutants
 - The key-bind to open the suit menu is not configurable. It should be configurable
 - When wearing the suit, the player footsteps do not change. They should use custom sounds
 - The shader and textures used for cloak mode are not the best. They should be improved
 - Speed mode should increase reload speed. This is impossible due to engine limitations. Will probably never be fixed
-- When using cloak mode, the player's headlamp is not cloaked in 3rd person
+- If actor interacts with an NPC while they're getting vaporized, the game will crash
 
 If you truly believe your problem is new, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).
 
@@ -100,9 +125,9 @@ If you truly believe your problem is new, please open an issue [on the addon's G
 ### SUPPORT & SUGGESTIONS
 
 If you need help with anything, or if you have any suggestions, you can :
-- ✅ Message me on [ModDB](https://www.moddb.com/members/nltp-ashes) (recommended);
-- ✅ Message me on Discord : @nltp_ashes (formerly NLTP_ASHES#0117) (recommended);
-- ✅ Message me on my [Discord](https://discord.gg/7Z8S2qg) server (recommended);
+- ✅ Message me on [ModDB](https://www.moddb.com/members/nltp-ashes);
+- ✅ Message me on Discord : @nltp_ashes (formerly NLTP_ASHES#0117);
+- ✅ Message me on my [Discord](https://discord.gg/7Z8S2qg) server;
 
 ---
 
@@ -112,6 +137,7 @@ Credit goes to these people for their work contained in this addon :
 
 |                                Name                                 |                                          Motive                                           |         License         |
 |:-------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:-----------------------:|
+|         **[Crepis](https://www.moddb.com/members/cr3pis)**          |              Provided an inventory icon for the defibrillator powerbank item              |       Proprietary       |
 |                             **Tronex**                              |                  Reused their "Indicators" HUD from actor_status.script                   |       Proprietary       |
 |                          **Stalker_Boss**                           |                             Translated the addon into Russian                             |       Proprietary       |
 |         **[Crepis](https://www.moddb.com/members/cr3pis)**          | Greatly improved the quality of the inventory icon, upgrade icon and character portraits  |       Proprietary       |

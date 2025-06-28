@@ -1,0 +1,210 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 28/06/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit's built-in defibrillator.                                                  ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+hit_types_enum           = nanosuit_utils.hit_types_enum
+actor_cameras_enum       = nanosuit_utils.actor_cameras_enum
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Defibrillator class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "defibrillator"
+
+function defibrillator:__init(core)
+    -- Constants
+    self.m_core = core
+    self.m_keybind = DIK_keys.DIK_SPACE
+    self.m_blackout_length = 4
+    self.m_kill_timeout = 3000
+    self.m_recoverable_hit_types = {
+        [hit_types_enum.radiation] = true,
+        [hit_types_enum.wound] = true,
+        [hit_types_enum.strike] = true,
+        [hit_types_enum.wound_2] = true
+    }
+    self.m_sequence = nil
+
+    -- Sound effects
+    self.m_sounds = {
+        defibrillate = sound_object([[nanosuit\misc\defibrillate]])
+    }
+
+    -- Variables
+    self.m_enabled = false
+    self.m_last_active_slot = 0
+    self.m_charging = false
+    self.m_charging_time_remaining = 0
+    self.m_charging_time_last_update = time_global()
+    self.m_last_before_hit_type = nil
+    self.m_last_hit_type = nil
+    self.m_last_hit_time = time_global()
+
+    -- Callbacks
+    RegisterScriptCallback("actor_on_update", self)
+    RegisterScriptCallback("actor_on_before_hit", self)
+    RegisterScriptCallback("on_before_key_press", self) -- Hack : used when input is disabled, on_key_press doesn't fire then
+    RegisterScriptCallback("actor_on_hit_callback", self)
+    RegisterScriptCallback("actor_on_before_death", self)
+    RegisterScriptCallback("actor_item_to_belt", self)
+end
+
+function defibrillator:destroy()
+    -- Destroy sequence
+    if self.m_sequence then
+        self.m_sequence:destroy()
+    end
+
+    -- Callbacks
+    UnregisterScriptCallback("actor_on_update", self)
+    UnregisterScriptCallback("actor_on_before_hit", self)
+    UnregisterScriptCallback("on_before_key_press", self)
+    UnregisterScriptCallback("actor_on_hit_callback", self)
+    UnregisterScriptCallback("actor_on_before_death", self)
+    UnregisterScriptCallback("actor_item_to_belt", self)
+end
+
+function defibrillator:defibrillate()
+    if self.m_enabled then
+        return
+    end
+    self.m_enabled = true
+
+    self.m_sequence = nanosuit_sequence_defibrillator.defibrillator_sequence(self, self.m_core)
+    self.m_sequence:from(self.m_sequence.action_start)
+    self.m_sequence:after(self.m_sequence.action_blur, 0)
+    self.m_sequence:after(self.m_sequence.action_fade_in, 7)
+    self.m_sequence:after(self.m_sequence.action_blackout, 1)
+    self.m_sequence:after(self.m_sequence.action_wait, 0)
+    self.m_sequence:after(self.m_sequence.action_fade_out, 4)
+    self.m_sequence:after(self.m_sequence.action_enable_input, 5)
+    self.m_sequence:after(self.m_sequence.action_end, 1)
+    self.m_sequence:execute()
+end
+
+function defibrillator:should_defibrillate()
+    if self.m_enabled then
+        return false
+    end
+
+    local defib_obj = false
+    db.actor:iterate_belt(function(owner, obj)
+        if obj:section() == "nanosuit_defibrillator" then
+            defib_obj = obj
+        end
+    end)
+
+    if not defib_obj then
+        return false
+    end
+
+    alife_release_id(defib_obj:id())
+
+    return true
+end
+
+function defibrillator:set_charging()
+    self.m_charging = true
+    self.m_charging_time_remaining = 3000
+    self.m_charging_time_last_update = time_global()
+end
+
+function defibrillator:is_charging()
+    return self.m_charging and self.m_charging_time_remaining > 0
+end
+
+function defibrillator:is_ready()
+    return self.m_charging and self.m_charging_time_remaining <= 0
+end
+
+function defibrillator:has_timed_out()
+    if not self:is_ready() then
+        return false
+    end
+    local waiting_for = time_global() - self.m_charging_time_last_update
+    return waiting_for >= self.m_kill_timeout
+end
+
+function defibrillator:actor_on_update()
+    if self:is_charging() then
+        local tg = time_global()
+        local delta = tg - self.m_charging_time_last_update
+        self.m_charging_time_last_update = tg
+
+        local time_remaining = self.m_charging_time_remaining - delta
+        self.m_charging_time_remaining = time_remaining > 0 and time_remaining or 0
+    end
+end
+
+function defibrillator:on_before_key_press(dik)
+    if dik ~= self.m_keybind then
+        return
+    end
+
+    if not self:is_ready() then
+        return
+    end
+
+    self.m_charging = false
+    self.m_sounds.defibrillate:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+end
+
+function defibrillator:actor_on_before_hit(scripted_hit, bone_id, flags)
+    self.m_last_before_hit_type = scripted_hit.type
+end
+
+function defibrillator:actor_on_hit_callback(obj, amount, local_direction, who, bone_index)
+    self.m_last_hit_type = self.m_last_before_hit_type
+    self.m_last_hit_time = time_global()
+end
+
+function defibrillator:actor_on_before_death(killer_id, flags)
+    -- Check time out
+    if self.m_enabled and self:has_timed_out() then
+        return
+    end
+
+    -- Handle radiation not sending hit callbacks
+    local time_since_last_hit = time_global() - self.m_last_hit_time
+    if time_since_last_hit > 1000 and db.actor.radiation > 0 then
+        self.m_last_hit_type = hit_types_enum.radiation
+    end
+
+    -- Check if hit can be recovered
+    if not self.m_recoverable_hit_types[self.m_last_hit_type] then
+        return
+    end
+
+    -- Check if should defibrillate
+    local should_defibrillate = self:should_defibrillate()
+
+    -- Maintain player alive
+    if should_defibrillate or self.m_enabled then
+        flags.ret_value = false
+        db.actor.health = 0.01
+    end
+
+    -- Defibrillate if needed
+    if should_defibrillate then
+        self:defibrillate()
+    end
+end
+
+function defibrillator:actor_item_to_belt(obj)
+    -- FIXME: Should create a actor_before_item_to_belt callback
+    if obj:section() ~= "nanosuit_defibrillator" then
+        db.actor:move_to_ruck(obj)
+    end
+end

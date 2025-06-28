@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 28/04/2025                                                                                            -->
+<!--    Date : 22/06/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -28,63 +28,54 @@
     </string>
 
     <!--=============================================================================================================-->
-    <!--    Nanosuit menu UI                                                                                         -->
+    <!--    Nanosuit defibrillator item                                                                              -->
     <!--=============================================================================================================-->
 
-    <string id="st_nanosuit_ui_menu_armor_title">
-        <text>Armor</text>
+    <string id="st_nanosuit_defibrillator">
+        <text>Nanosuit defibrillator powerbank</text>
     </string>
 
-    <string id="st_nanosuit_ui_menu_armor_descr">
-        <text>Armor mode</text>
+    <string id="st_nanosuit_defibrillator_s">
+        <text>Powerbank</text>
     </string>
 
-    <string id="st_nanosuit_ui_menu_cloak_title">
-        <text>Cloak</text>
+    <string id="st_nanosuit_defibrillator_descr">
+        <text>This powerbank is a compact, high-capacity energy storage device designed to power the Nanosuit's built-in defibrillator system. It allows the user to revive themselves, providing a critical advantage in combat situations. The powerbank is single use, and must be replaced after use.\n \n</text>
     </string>
 
-    <string id="st_nanosuit_ui_menu_cloak_descr">
-        <text>Cloak mode</text>
+    <!--=============================================================================================================-->
+    <!--    Nanosuit built-in defibrillator                                                                          -->
+    <!--=============================================================================================================-->
+
+    <string id="st_nanosuit_defibrillator_charging">
+        <text>DEFIBRILLATOR CHARGING... %s</text>
     </string>
 
-    <string id="st_nanosuit_ui_menu_power_title">
-        <text>Strength</text>
-    </string>
-
-    <string id="st_nanosuit_ui_menu_power_descr">
-        <text>Strength mode</text>
-    </string>
-
-    <string id="st_nanosuit_ui_menu_speed_title">
-        <text>Speed</text>
-    </string>
-
-    <string id="st_nanosuit_ui_menu_speed_descr">
-        <text>Speed mode</text>
+    <string id="st_nanosuit_defibrillator_ready">
+        <text>DEFIBRILLATOR READY</text>
     </string>
 
     <!--=============================================================================================================-->
     <!--    Nanosuit voice lines                                                                                     -->
     <!--=============================================================================================================-->
 
-    <string id="nanosuit\mode_armor_voice">
-        <text>nanosuit\mode_armor_voice</text>
+    <string id="nanosuit\voice\mode_armor_voice">
+        <text>nanosuit\voice\mode_armor_voice</text>
     </string>
 
-    <string id="nanosuit\mode_cloak_voice">
-        <text>nanosuit\mode_cloak_voice</text>
+    <string id="nanosuit\voice\mode_cloak_voice">
+        <text>nanosuit\voice\mode_cloak_voice</text>
     </string>
 
-    <string id="nanosuit\mode_power_voice">
-        <text>nanosuit\mode_power_voice</text>
+    <string id="nanosuit\voice\mode_power_voice">
+        <text>nanosuit\voice\mode_power_voice</text>
     </string>
 
-    <string id="nanosuit\mode_speed_voice">
-        <text>nanosuit\mode_speed_voice</text>
+    <string id="nanosuit\voice\mode_speed_voice">
+        <text>nanosuit\voice\mode_speed_voice</text>
     </string>
 
-    <string id="nanosuit\energy_low_voice">
-        <text>nanosuit\energy_low_voice</text>
+    <string id="nanosuit\voice\energy_low_voice">
+        <text>nanosuit\voice\energy_low_voice</text>
     </string>
-
 </string_table>

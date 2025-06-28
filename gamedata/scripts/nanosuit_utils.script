@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/05/2025                                                                                             ---
+---    Date : 21/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -18,11 +18,12 @@ debug_mode = true
 
 -- Enum
 actor_slots_enum = { knife = 1, pistol = 2, rifle = 3, grenade = 4, binoculars = 5, bolt = 6, outfit = 7, pda = 8, detector = 9, torch = 10, artefact = 11, helmet = 12, backpack = 13, animation = 14 }
-hit_types_enum   = { burn = 0, shock = 1, chemical_burn = 2, radiation = 3, telepathic = 4, wound = 5, fire_wound = 6, strike = 7, explosion = 8, wound_2 = 9, light_burn = 10 }
-hit_types_names_enum   = { [0] = "burn", [1] = "shock", [2] = "chemical_burn", [3] = "radiation", [4] = "telepathic", [5] = "wound", [6] = "fire_wound", [7] = "strike", [8] = "explosion", [9] = "wound_2", [10] = "light_burn" }
+hit_types_enum = { burn = 0, shock = 1, chemical_burn = 2, radiation = 3, telepathic = 4, wound = 5, fire_wound = 6, strike = 7, explosion = 8, wound_2 = 9, light_burn = 10 }
+hit_types_names_enum = { [0] = "burn", [1] = "shock", [2] = "chemical_burn", [3] = "radiation", [4] = "telepathic", [5] = "wound", [6] = "fire_wound", [7] = "strike", [8] = "explosion", [9] = "wound_2", [10] = "light_burn" }
 armor_modes_enum = { armor = "armor", power = "power", speed = "speed", cloak = "cloak" }
 fire_modes_enum = { single = 1, burst_2 = 2, burst_3 = 3, auto = -1 }
-fire_modes_names_enums = { [1] = "single", [2] = "burst_2", [3] = "burst_3", [-1] = "auto" }
+fire_modes_names_enum = { [1] = "single", [2] = "burst_2", [3] = "burst_3", [-1] = "auto" }
+actor_cameras_enum = { first_eye = 0, look_at = 1, free_look = 2, fixed_look_at = 3 }
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Debug Functions
@@ -53,7 +54,7 @@ end
 --- @param rhs vector
 --- @return number
 function vec2_distance_to(lhs, rhs)
-    return math.sqrt((rhs.x - lhs.x)^2 + (rhs.y - lhs.y)^2)
+    return math.sqrt((rhs.x - lhs.x) ^ 2 + (rhs.y - lhs.y) ^ 2)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -72,6 +73,13 @@ function float_to_argb(clr)
     }
 end
 
+--- Function used to convert a ARGB table to a string representation used for UIs.
+--- @param clr table
+--- @return string
+function argb_to_ui(clr)
+    return strformat("%c[%s,%s,%s,%s]", clr.a, clr.r, clr.g, clr.b)
+end
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Sound functions
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -85,6 +93,52 @@ end
 --- @return sound_object
 function localized_sound_object(path)
     return sound_object(game.translate_string(path))
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Translation functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to know if there exists a translation for a given game string.
+--- @param str string
+--- @return boolean
+function has_translation(str)
+    return game.translate_string(str) ~= str
+end
+
+--- Function used to get the translation of a given string by its ID.
+--- The function can interpolate %s in the string with the given arguments.
+--- @param str string
+--- @param ... any
+--- @return string
+function get_translation(str, ...)
+    if not has_translation(str) then
+        return str .. "[Missing translation]"
+    end
+
+    local string = game.translate_string(str)
+
+    if (select('#', ...) >= 1) then
+        local i = 0
+        local p = { ... }
+        local function sr()
+            i = i + 1
+            if (type(p[i]) == "userdata") then
+                return "userdata"
+            end
+            return tostring(p[i])
+        end
+        string = string.gsub(string, "%%s", sr)
+    end
+
+    return string
+end
+
+--- Function used to print the a textual version of a DIK key.
+--- @param dik DIK_keys
+--- @return string
+function get_key_translation(dik)
+    return dik_to_keyname(dik, true)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -107,6 +161,47 @@ function string_pad_l(var, char, length)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
+-- Post-process effectors functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+local active_pp_effectors = {}
+
+function add_pp_effector(name, id, looped)
+    if has_pp_effector(id) then
+        remove_pp_effector(id)
+    end
+    level.add_pp_effector(name, id, looped)
+    if looped then
+        active_pp_effectors[id] = { name = name, factor = 1 }
+    end
+end
+
+function remove_pp_effector(id)
+    if has_pp_effector(id) then
+        level.remove_pp_effector(id)
+        active_pp_effectors[id] = nil
+    end
+end
+
+function has_pp_effector(id)
+    return active_pp_effectors[id] ~= nil
+end
+
+function set_pp_effector_factor(id, factor)
+    if has_pp_effector(id) then
+        level.set_pp_effector_factor(id, factor)
+        active_pp_effectors[id].factor = factor
+    end
+end
+
+function get_pp_effector_factor(id)
+    if has_pp_effector(id) then
+        return active_pp_effectors[id].factor
+    end
+    return 0
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
 -- Other functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
@@ -119,4 +214,26 @@ function is_legs(obj)
         return true
     end
     return false
+end
+
+--- Function used to add a unique call (function called every frame) to the level.
+--- @param callback function
+--- @return function
+function add_unique_call(callback, ...)
+    local args = { ... }
+    local wrapper = function()
+        if callback(unpack(args)) then
+            return true
+        end
+        return false
+    end
+    AddUniqueCall(wrapper)
+    return wrapper
+end
+
+--- Function used to remove a unique call (function called every frame) from the level.
+--- @param callback function
+--- @return nil
+function remove_unique_call(callback)
+    RemoveUniqueCall(callback)
 end

@@ -1,0 +1,49 @@
+;;====================================================================================================================;;
+;;                                                                                                                    ;;
+;;    Original Author(s) : NLTP_ASHES                                                                                 ;;
+;;    Edited : N/A                                                                                                    ;;
+;;    Date : 22/06/2025                                                                                               ;;
+;;    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)             ;;
+;;                                                                                                                    ;;
+;;    Config file used to add items to the game.                                                                      ;;
+;;                                                                                                                    ;;
+;;====================================================================================================================;;
+
+;;====================================================================================================================;;
+;;    Defibrillator                                                                                                   ;;
+;;====================================================================================================================;;
+
+[nanosuit_defibrillator]:af_base
+$spawn				          = "artefacts\nanosuit_defibrillator"
+class				          = SCRPTART
+icons_texture                 = nanosuit\ui\icons
+kind			              = i_attach
+
+visual                        = nanosuit\nanosuit_defibrillator.ogf
+inv_name                      = st_nanosuit_defibrillator
+inv_name_short                = st_nanosuit_defibrillator_s
+description                   = st_nanosuit_defibrillator_descr
+inv_weight			          = 0.2
+inv_grid_width                = 1
+inv_grid_height               = 1
+inv_grid_x                    = 0
+inv_grid_y                    = 3
+cost				          = 19500
+
+lights_enabled                = false
+hit_absorbation_sect		  = nanosuit_defibrillator_absorption
+repair_part_bonus	 	      = 0
+
+af_rank				          = 0
+tier                          = 2
+
+[nanosuit_defibrillator_absorption]
+burn_immunity 			      = 0
+strike_immunity 		      = 0
+shock_immunity 			      = 0
+wound_immunity 			      = 0
+radiation_immunity 		      = 0
+telepatic_immunity 		      = 0
+chemical_burn_immunity 		  = 0
+explosion_immunity 			  = 0
+fire_wound_immunity  		  = 0

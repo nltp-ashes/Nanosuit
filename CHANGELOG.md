@@ -1,14 +1,23 @@
-## **v0.6.0 - 29/05/2025 - Alpha Build**
+## **v0.7.0 - 28/06/2025 - Alpha Build**
 
-[![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.6.0/total?label=Downloads)]()
+[![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.7.0/total?label=Downloads)]()
 
 **• Additions :**
-> • Added a first version of the Nanosuit's HUD. The HUD will override the vanilla HUD when the Nanosuit is equipped;
+> • Added a new feature : vaporization. When the player dies wearing the suit, they will be vaporized, leaving no body behind;
+> • Added a new feature : malfunctions. The suit turns off and the HUD turns red. Used in a variety of game-events, and will be used in the future during storylines;
+> • Added a new feature : defibrillator. If the player dies with a defibrillator powerbank equipped, an animated sequence plays, giving the option to get a second chance;
+> • Added a little animation when hovering an option in the menu;
 
 **• Changes :**
-> • Changed how boosters take effect, they now apply to slots instead of "active items" (didn't include torch, detectors, ...);
-> • Changed how the Nanosuit is initialized and destroyed : will now wait 1 tick to let callbacks go through;
-> • Refactored carry weight bonus into a booster;
+> • Changed the behavior of the HUD and some sound effects after the player dies;
+> • Changed how the main HUD behaves when the Nanosuit menu is open, so it now stays visible;
+> • Replaced, recolored and reduced size of the Nanosuit menu cursor;
+> • Made Nanosuit menu icons bigger;
+> • Moved Nanosuit menu icons more to the center;
+> • Removed Nanosuit menu hovered option background;
+> • Made Nanosuit menu icons yellow when hovered;
 
 **• Bug fixes :**
-> • Fixed active item tracking not being correct and letting some effects apply to non-active item objects;
+> • Fixed localized voice-lines not working properly;
+> • The Nanosuit menu now doesn't show when the main HUD is hidden;
+> • Fixed a crash when an indicator (added by another addon) has no override from the Nanosuit HUD;

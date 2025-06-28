@@ -1,0 +1,72 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 21/06/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit tactical map UI.                                                           ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Tactical map UI class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "ui_defibrillator" (CUIScriptWnd)
+
+function ui_defibrillator:__init(core, parent) super()
+    -- Variables
+    self.m_core = core
+    self.m_parent = parent
+
+    -- Build UI
+    self.m_xml = CScriptXmlInit()
+    self.m_xml:ParseFile("ui_nanosuit_defibrillator.xml")
+
+    self.m_ui_message = self.m_xml:InitTextWnd("message", self)
+    arm.scale_ui(self.m_ui_message, true, true, "center")
+
+    self.m_ui_key = self.m_xml:InitTextWnd("key", self)
+    self.m_ui_key:SetTextColor(self.m_parent.m_colors.active)
+    arm.scale_ui(self.m_ui_key, true, true, "center")
+end
+
+function ui_defibrillator:__finalize()
+end
+
+function ui_defibrillator:destroy()
+end
+
+function ui_defibrillator:Update(force)
+    CUIScriptWnd.Update(self)
+
+    if not db.actor:alive() or not self.m_core.m_defibrillator.m_enabled then
+        self:Show(false)
+        return
+    else
+        self:Show(true)
+    end
+
+    -- Reset UI
+    self.m_ui_message:SetText("")
+    self.m_ui_key:SetText("")
+
+    -- Update message
+    if self.m_core.m_defibrillator:is_charging() then
+        local time_remaining = self.m_core.m_defibrillator.m_charging_time_remaining
+        time_remaining = time_remaining / 1000
+        time_remaining = round(time_remaining)
+        self.m_ui_message:SetText(nanosuit_utils.get_translation("st_nanosuit_defibrillator_charging", tostring(time_remaining)))
+    end
+
+    -- Update key
+    if self.m_core.m_defibrillator:is_ready() then
+        self.m_ui_message:SetText(nanosuit_utils.get_translation("st_nanosuit_defibrillator_ready"))
+        self.m_ui_key:SetText("[" .. nanosuit_utils.get_key_translation(self.m_core.m_defibrillator.m_keybind) .. "]")
+    end
+end
