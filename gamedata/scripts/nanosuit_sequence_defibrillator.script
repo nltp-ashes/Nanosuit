@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/06/2025                                                                                             ---
+---    Date : 28/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the animated sequence of the defibrillator.                                             ---
@@ -73,6 +73,7 @@ end
 function defibrillator_sequence:action_wait()
     if db.actor:alive() and self.m_defibrillator:has_timed_out() then
         db.actor:kill(db.actor)
+        level.enable_input()
         return true
     end
 
@@ -84,21 +85,27 @@ function defibrillator_sequence:action_wait()
 end
 
 function defibrillator_sequence:action_fade_out()
-    nanosuit_utils.remove_pp_effector(self.m_effectors.blackout.id)
-    nanosuit_utils.add_pp_effector(self.m_effectors.fade_out.path, self.m_effectors.fade_out.id, false)
-    level.add_cam_effector(self.m_effectors.stand.path, self.m_effectors.stand.id, false, "", 0, false, 1)
+    if db.actor:alive() then
+        nanosuit_utils.remove_pp_effector(self.m_effectors.blackout.id)
+        nanosuit_utils.add_pp_effector(self.m_effectors.fade_out.path, self.m_effectors.fade_out.id, false)
+        level.add_cam_effector(self.m_effectors.stand.path, self.m_effectors.stand.id, false, "", 0, false, 1)
+    end
     return true
 end
 
 function defibrillator_sequence:action_enable_input()
-    level.enable_input()
-    db.actor:activate_slot(self.m_last_active_slot)
+    if db.actor:alive() then
+        level.enable_input()
+        db.actor:activate_slot(self.m_last_active_slot)
+    end
     return true
 end
 
 function defibrillator_sequence:action_end()
-    nanosuit_utils.remove_pp_effector(self.m_effectors.blur.id)
-    db.actor.health = 0.2
-    self.m_defibrillator.m_enabled = false
+    if db.actor:alive() then
+        nanosuit_utils.remove_pp_effector(self.m_effectors.blur.id)
+        db.actor.health = 0.2
+        self.m_defibrillator.m_enabled = false
+    end
     return true
 end
