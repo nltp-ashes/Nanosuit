@@ -61,6 +61,7 @@ function vaporization_sequence:update()
         local bones = obj:list_bones(hud_mode)
         for bone_id, bone_name in pairs(bones) do
             if not self.m_particles[bone_name] then
+                -- FIXME : Should make a copy of that pfx in the addon's files
                 self.m_particles[bone_name] = particles_object([[damage_fx\burn_creatures]])
             end
 
