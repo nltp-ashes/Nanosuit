@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 11/05/2025                                                                                             ---
+---    Date : 27/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -21,6 +21,9 @@ armor_modes_enum        = nanosuit_utils.armor_modes_enum
 -- Singleton
 instance                = nil
 
+-- Variables
+loaded_m_data           = {}
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- General functions
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -28,11 +31,8 @@ instance                = nil
 function actor_item_to_slot(_)
     nextTick(function()
         local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-        if outfit ~= nil and outfit:section() == "outfit_nanosuit" and instance == nil then
-            if instance == nil then
-                printf("Nanosuit core initializing")
-                instance = core()
-            end
+        if outfit ~= nil and outfit:section() == "outfit_nanosuit" then
+            create_instance_if_not_exists()
         end
         return true
     end)
@@ -41,10 +41,8 @@ end
 function actor_item_to_ruck(_)
     nextTick(function()
         local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-        if (outfit == nil or outfit:section() ~= "outfit_nanosuit") and instance ~= nil then
-            instance:destroy()
-            instance = nil
-            printf("Nanosuit core destroyed")
+        if outfit == nil or outfit:section() ~= "outfit_nanosuit" then
+            destroy_instance_if_exists()
         end
         return true
     end)
@@ -53,20 +51,46 @@ end
 function actor_on_item_drop(_)
     nextTick(function()
         local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-        if (outfit == nil or outfit:section() ~= "outfit_nanosuit") and instance ~= nil then
-            instance:destroy()
-            instance = nil
-            printf("Nanosuit core destroyed")
+        if outfit == nil or outfit:section() ~= "outfit_nanosuit" then
+            destroy_instance_if_exists()
         end
         return true
     end)
 end
 
 function actor_on_net_destroy()
+    destroy_instance_if_exists()
+end
+
+function save_state(m_data)
     if instance ~= nil then
+        m_data.nanosuit = {}
+        instance:save(m_data.nanosuit)
+    end
+end
+
+function load_state(m_data)
+    loaded_m_data = m_data.nanosuit or loaded_m_data
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Instance management functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function create_instance_if_not_exists()
+    if instance == nil then
+        printf("[NS] Nanosuit core initializing")
+        instance = core()
+        printf("[NS] Nanosuit core initialized")
+    end
+end
+
+function destroy_instance_if_exists()
+    if instance ~= nil then
+        printf("[NS] Nanosuit core destroying")
         instance:destroy()
         instance = nil
-        printf("Nanosuit core destroyed")
+        printf("[NS] Nanosuit core destroyed")
     end
 end
 
@@ -77,6 +101,8 @@ end
 --- Function used to register callbacks.
 --- @return nil
 function on_game_start()
+    RegisterScriptCallback("save_state", save_state)
+    RegisterScriptCallback("load_state", load_state)
     RegisterScriptCallback("actor_item_to_slot", actor_item_to_slot)
     RegisterScriptCallback("actor_item_to_ruck", actor_item_to_ruck)
     RegisterScriptCallback("actor_on_item_drop", actor_on_item_drop)
@@ -90,19 +116,21 @@ end
 class "core"
 
 function core:__init()
-    -- Energy related variables
-    self.m_energy = 100
+    -- Constants
     self.m_energy_regen_rate = 100
     self.m_energy_regen_delay = 5000
+    self.m_energy_low_threshold = 20
+    self.m_energy_very_low_threshold = 10
+    self.m_energy_off_threshold = 0
+    self.m_energy_on_threshold = 0
+
+    -- Variables
+    self.m_energy = 100
     self.m_energy_last_use = 0
     self.m_energy_last_regen = 0
-    self.m_energy_low_threshold = 20
     self.m_energy_low_voiced = true
-    self.m_energy_very_low_threshold = 10
     self.m_energy_very_low_voiced = true
-    self.m_energy_off_threshold = 0
     self.m_energy_off_voiced = true
-    self.m_energy_on_threshold = 0
     self.m_energy_on_voiced = true
 
     -- Sound effects
@@ -124,15 +152,24 @@ function core:__init()
     -- Default mode initialization
     self.m_default_mode = armor_modes_enum.armor
     self.m_current_mode = self.m_modes[self.m_default_mode]
-    self.m_current_mode:apply()
+    self.m_current_mode:apply(false)
 
     -- UIs
-    self.m_uis = {
-        menu = nanosuit_ui_menu.ui_menu(self),
-        hud = nanosuit_ui_hud.ui_hud(self),
-    }
+    self.m_hud = nanosuit_ui_hud.ui_hud(self)
+
+    -- Others
+    self.m_vaporizer = nanosuit_vaporizer.vaporizer(self)
+    self.m_malfunctor = nanosuit_malfunctor.malfunctor(self)
+    self.m_defibrillator = nanosuit_defibrillator.defibrillator(self)
+
+    -- Load
+    if loaded_m_data then
+        self:load(loaded_m_data)
+        loaded_m_data = nil
+    end
 
     -- Register callbacks
+    RegisterScriptCallback("actor_on_death", self)
     RegisterScriptCallback("actor_on_update", self)
     RegisterScriptCallback("on_option_change", self)
 end
@@ -140,6 +177,7 @@ end
 function core:destroy()
     self.m_current_mode:remove()
 
+    UnregisterScriptCallback("actor_on_death", self)
     UnregisterScriptCallback("actor_on_update", self)
     UnregisterScriptCallback("on_option_change", self)
 
@@ -150,8 +188,57 @@ function core:destroy()
         [armor_modes_enum.cloak] = nil
     }
 
-    self.m_uis.menu:destroy()
-    self.m_uis.hud:destroy()
+    self.m_hud:destroy()
+    self.m_vaporizer:destroy()
+    self.m_malfunctor:destroy()
+    self.m_defibrillator:destroy()
+end
+
+function core:save(m_data)
+    m_data.energy = self.m_energy
+    m_data.energy_last_use = self.m_energy_last_use
+    m_data.energy_last_regen = self.m_energy_last_regen
+    m_data.energy_low_voiced = self.m_energy_low_voiced
+    m_data.energy_very_low_voiced = self.m_energy_very_low_voiced
+    m_data.energy_off_voiced = self.m_energy_off_voiced
+    m_data.energy_on_voiced = self.m_energy_on_voiced
+
+    m_data.modes = {}
+    for name, mode in pairs(self.m_modes) do
+        m_data.modes[name] = mode.save and mode:save() or {}
+    end
+
+    m_data.vaporizer = self.m_vaporizer.save and self.m_vaporizer:save() or {}
+    m_data.malfunctor = self.m_malfunctor.save and self.m_malfunctor:save() or {}
+    m_data.defibrillator = self.m_defibrillator.save and self.m_defibrillator:save() or {}
+end
+
+function core:load(m_data)
+    self.m_energy = m_data.energy or self.m_energy
+    self.m_energy_last_use = m_data.energy_last_use or self.m_energy_last_use
+    self.m_energy_last_regen = m_data.energy_last_regen or self.m_energy_last_regen
+    self.m_energy_low_voiced = m_data.energy_low_voiced or self.m_energy_low_voiced
+    self.m_energy_very_low_voiced = m_data.energy_very_low_voiced or self.m_energy_very_low_voiced
+    self.m_energy_off_voiced = m_data.energy_off_voiced or self.m_energy_off_voiced
+    self.m_energy_on_voiced = m_data.energy_on_voiced or self.m_energy_on_voiced
+
+    for name, mode in pairs(self.m_modes) do
+        if m_data.modes and m_data.modes[name] and mode.load then
+            mode:load(m_data.modes[name])
+        end
+    end
+
+    if m_data.vaporizer and self.m_vaporizer.load then
+        self.m_vaporizer:load(m_data.vaporizer)
+    end
+
+    if m_data.malfunctor and self.m_malfunctor.load then
+        self.m_malfunctor:load(m_data.malfunctor)
+    end
+
+    if m_data.defibrillator and self.m_defibrillator.load then
+        self.m_defibrillator:load(m_data.defibrillator)
+    end
 end
 
 function core:use_energy(amount)
@@ -159,25 +246,30 @@ function core:use_energy(amount)
     self.m_energy_last_use = time_global()
 end
 
-function core:change_mode(mode)
+function core:change_mode(mode, play_voice)
     if self.m_current_mode ~= self.m_modes[mode] then
         self.m_current_mode:remove()
         self.m_current_mode = self.m_modes[mode]
-        self.m_current_mode:apply()
+        self.m_current_mode:apply(play_voice)
     end
 end
 
 function core:on_option_change()
-    -- Restart UIs
-    self.m_uis.menu:destroy()
-    self.m_uis.hud:destroy()
-    self.m_uis.menu = nanosuit_ui_menu.ui_menu(self)
-    self.m_uis.hud = nanosuit_ui_hud.ui_hud(self)
+    self.m_hud:destroy()
+    self.m_hud = nanosuit_ui_hud.ui_hud(self)
+end
+
+function core:actor_on_death()
+    for _, sfx in pairs(self.m_sounds) do
+        if sfx:playing() then
+            sfx:stop()
+        end
+    end
 end
 
 function core:actor_on_update()
     -- Delay energy regen 5s after last energy use
-    if time_global() - self.m_energy_last_use > self.m_energy_regen_delay then
+    if time_global() - self.m_energy_last_use > self.m_energy_regen_delay and not self.m_malfunctor.m_enabled and not self.m_defibrillator.m_enabled then
         -- Throttle energy regen once every 100ms
         if time_global() - self.m_energy_last_regen > self.m_energy_regen_rate then
             self.m_energy = clamp(self.m_energy + 1, 0, 100)
@@ -185,22 +277,22 @@ function core:actor_on_update()
         end
     end
 
-    -- Energy low
-    if self.m_energy <= self.m_energy_low_threshold and not self.m_energy_low_voiced then
+    -- Energy low voice
+    if self.m_energy <= self.m_energy_low_threshold and not self.m_energy_low_voiced and not self.m_malfunctor.m_enabled then
         self.m_sounds.energy_low_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         self.m_energy_low_voiced = true
     end
-    if self.m_energy > self.m_energy_low_threshold and self.m_energy_low_voiced then
+    if (self.m_malfunctor.m_enabled or self.m_energy > self.m_energy_low_threshold) and self.m_energy_low_voiced then
         self.m_sounds.energy_low_voice:stop()
         self.m_energy_low_voiced = false
     end
 
     -- Energy very low
-    if self.m_energy <= self.m_energy_very_low_threshold and not self.m_energy_very_low_voiced then
+    if self.m_energy <= self.m_energy_very_low_threshold and not self.m_energy_very_low_voiced and not self.m_malfunctor.m_enabled then
         self.m_sounds.energy_very_low:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
         self.m_energy_very_low_voiced = true
     end
-    if self.m_energy > self.m_energy_very_low_threshold and self.m_energy_very_low_voiced then
+    if (self.m_malfunctor.m_enabled or self.m_energy > self.m_energy_very_low_threshold) and self.m_energy_very_low_voiced then
         self.m_sounds.energy_very_low:stop()
         self.m_energy_very_low_voiced = false
     end
