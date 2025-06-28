@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 27/06/2025                                                                                             ---
+---    Date : 28/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the malfunction logic of the Nanosuit addon.                                            ---
@@ -14,7 +14,49 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- Imports
-armor_modes_enum        = nanosuit_utils.armor_modes_enum
+armor_modes_enum                    = nanosuit_utils.armor_modes_enum
+
+-- Constants
+pulse_anomaly_malfunction_dist_sqr  = 50 ^ 2
+psi_storm_malfunction_dist_sqr      = 150 ^ 2
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+bind_anomaly_field_pulse_anomaly_hit = bind_anomaly_field.pulse_anomaly_hit
+bind_anomaly_field.pulse_anomaly_hit = function(particle_pos)
+    local ret = bind_anomaly_field_pulse_anomaly_hit(particle_pos)
+
+    local instance = nanosuit_core.instance and nanosuit_core.instance.m_malfunctor
+    if not instance then
+        return
+    end
+
+    local dist_sqr = distance_2d_sqr(db.actor:position(), particle_pos)
+    if dist_sqr <= pulse_anomaly_malfunction_dist_sqr then
+        instance:enable_malfunction(false)
+    end
+
+    return ret
+end
+
+psi_storm_manager_CPsiStormManager_vortex_actor_hit = psi_storm_manager.CPsiStormManager.vortex_actor_hit
+psi_storm_manager.CPsiStormManager.vortex_actor_hit = function(self, vortex)
+    local ret = psi_storm_manager_CPsiStormManager_vortex_actor_hit(self, vortex)
+
+    local instance = nanosuit_core.instance and nanosuit_core.instance.m_malfunctor
+    if not instance then
+        return
+    end
+
+    local dist_sqr = distance_2d_sqr(db.actor:position(), vortex.particle_pos)
+    if dist_sqr <= psi_storm_malfunction_dist_sqr then
+        instance:enable_malfunction(false)
+    end
+
+    return ret
+end
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Malfunction class
@@ -33,13 +75,11 @@ function malfunctor:__init(core)
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_death", self)
-    RegisterScriptCallback("actor_on_interaction", self)
 end
 
 function malfunctor:destroy()
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_death", self)
-    UnregisterScriptCallback("actor_on_interaction", self)
 end
 
 function malfunctor:save()
@@ -71,6 +111,8 @@ function malfunctor:enable_malfunction(stay_off)
                 return true
             end)
         end
+    elseif not self.m_stay_off then
+        ResetTimeEvent("nanosuit_malfunction", "disable", self.m_anomaly_hit_duration)
     end
 end
 
@@ -79,12 +121,6 @@ function malfunctor:disable_malfunction()
         self.m_enabled = false
         self.m_core:change_mode(self.m_core.m_default_mode, true)
         self.m_core.m_energy_last_use = time_global()
-    end
-end
-
-function malfunctor:actor_on_interaction(typ, obj, name)
-    if typ == "anomalies" and name == "pulse" then
-        self:enable_malfunction(false)
     end
 end
 
