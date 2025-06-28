@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/06/2025                                                                                             ---
+---    Date : 28/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the animated sequence of the vaporization.                                              ---
@@ -159,7 +159,7 @@ function vaporization_sequence:action_hide_body()
     -- Hide body
     for _, hud_mode in pairs({ true, false }) do
         for idx in pairs(obj:get_shaders()) do
-            obj:set_shader(idx, [[models\window]], [[nanosuit\no_draw]], hud_mode)
+            obj:set_shader(idx, [[models\lightplanes]], [[nanosuit\no_draw]], hud_mode)
         end
     end
 
