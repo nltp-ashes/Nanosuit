@@ -109,6 +109,7 @@ For past updates, please refer to the description of each release, in the [relea
 
 ### KNOWN ISSUES
 
+- The thumb of the left arm is fucked. I don't really know how to fix it, so it'll stay like this for a bit
 - Cloak mode does not work if the NPC sees the actor before the cloak is applied, right now you need to break vision for it to work
 - Cloak mode does not work on mutants
 - The key-bind to open the suit menu is not configurable. It should be configurable
