@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/06/2025                                                                                             ---
+---    Date : 29/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -65,10 +65,14 @@ function ui_tacmap:Update(force)
 
     if self.m_parent.m_core.m_malfunctor.m_enabled then
         self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.red)
-        self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map_malfunction")
     else
         self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
+    end
+
+    if self:is_enabled() then
         self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map")
+    else
+        self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map_malfunction")
     end
 
     self:update_icons()
@@ -93,7 +97,7 @@ function ui_tacmap:update_icons()
     -- Update tracked objects or destroy untracked ones
     for obj_id,data in pairs(self.m_tracked_objects) do
         local pos_tacmap = self:world_to_tacmap(data.pos)
-        if not self.m_parent.m_core.m_malfunctor.m_enabled and data.refreshed and self:is_within_bounds(pos_tacmap) then
+        if self:is_enabled() and data.refreshed and self:is_within_bounds(pos_tacmap) then
             arm.move_and_center_element(data.static, pos_tacmap.x, pos_tacmap.y)
         else
             self:detach_icon(obj_id)
@@ -201,4 +205,8 @@ function ui_tacmap:is_within_bounds(pos)
     end
 
     return inside
+end
+
+function ui_tacmap:is_enabled()
+    return not self.m_parent.m_core.m_malfunctor.m_enabled and ui_options.get([[video/hud/show_minimap]])
 end
