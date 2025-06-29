@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : Tronex                                                                                   ---
 ---    Edited : Rewrote to improve linking between config table & slots (NLTP_ASHES - 29/05/2025)                    ---
----    Date : 21/06/2025                                                                                             ---
+---    Date : 29/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit indicators UI.                                                             ---
@@ -58,18 +58,7 @@ function ui_indicators:__init(core, parent) super()
     self.m_ui_dialog:Show(false)
 
     self:iterate_indicators(function(name, _, i)
-        self.m_slots[i] = {}
-        self.m_slots[i].name = name
-
-        self.m_slots[i].background = self.m_xml:InitStatic("indicators:static", self.m_ui_dialog)
-        local background_x = (i-1) * (self.m_slots[i].background:GetWidth() + self.m_spacing)
-        self.m_slots[i].background:SetWndPos(vector2():set(background_x, 0))
-        utils_xml.correct_ratio(self.m_slots[i].background)
-
-        self.m_slots[i].icon = self.m_xml:InitStatic("indicators:static", self.m_ui_dialog)
-        local icon_x = (i-1) * (self.m_slots[i].icon:GetWidth() + self.m_spacing)
-        self.m_slots[i].icon:SetWndPos(vector2():set(icon_x, 0))
-        utils_xml.correct_ratio(self.m_slots[i].icon)
+        self:create_static(name, i)
     end)
 end
 
@@ -111,6 +100,21 @@ function ui_indicators:Update(force)
     self.m_ui_dialog:Show(index > 0)
 end
 
+function ui_indicators:create_static(name, i)
+    self.m_slots[i] = {}
+    self.m_slots[i].name = name
+
+    self.m_slots[i].background = self.m_xml:InitStatic("indicators:static", self.m_ui_dialog)
+    local background_x = (i-1) * (self.m_slots[i].background:GetWidth() + self.m_spacing)
+    self.m_slots[i].background:SetWndPos(vector2():set(background_x, 0))
+    utils_xml.correct_ratio(self.m_slots[i].background)
+
+    self.m_slots[i].icon = self.m_xml:InitStatic("indicators:static", self.m_ui_dialog)
+    local icon_x = (i-1) * (self.m_slots[i].icon:GetWidth() + self.m_spacing)
+    self.m_slots[i].icon:SetWndPos(vector2():set(icon_x, 0))
+    utils_xml.correct_ratio(self.m_slots[i].icon)
+end
+
 function ui_indicators:update_static(config, i, value, name, key, anim_flag)
     if config[key] then
         if config.typ == "booster" then
@@ -142,6 +146,9 @@ end
 function ui_indicators:iterate_indicators(func)
     local i = 1
     for name,config in spairs(actor_status.indicators, actor_status.func_index) do
+        if not self.m_slots[i] then
+            self:create_static(name, i)
+        end
         func(name, config, i)
         i = i + 1
     end
