@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 28/06/2025                                                                                             ---
+---    Date : 29/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the malfunction logic of the Nanosuit addon.                                            ---
@@ -92,7 +92,7 @@ end
 function malfunctor:load(m_data)
     self.m_stay_off = m_data.stay_off or false
 
-    if m_data.enabled and not m_data.stay_off then
+    if m_data.enabled then
         self:enable_malfunction(m_data.stay_off)
     end
 end
