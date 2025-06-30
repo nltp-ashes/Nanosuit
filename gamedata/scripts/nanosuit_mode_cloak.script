@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 15/06/2025                                                                                             ---
+---    Date : 30/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
@@ -24,7 +24,7 @@ actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 class "cloak" (nanosuit_mode.abstract_mode)
 
-function cloak:__init(core, name) super(core, name)
+function cloak:__init(name) super(name)
     -- Energy related variables
     self.m_energy_use_min = 0.1
     self.m_energy_use_max = 1
@@ -191,8 +191,8 @@ end
 
 function cloak:actor_on_update()
     -- Switch to armor mode when out of energy
-    if self.m_core.m_energy <= 0 then
-        self.m_core:change_mode(self.m_core.m_default_mode, true)
+    if nanosuit_core.instance.m_energy <= 0 then
+        nanosuit_core.instance:change_mode(nanosuit_core.instance.m_default_mode, true)
         return
     end
 
@@ -202,13 +202,13 @@ function cloak:actor_on_update()
         local speed_mps = nanosuit_utils.vec_magnitude_xz(movement)
         local energy_use = self.m_energy_use_min + normalize(speed_mps, 0, 6) * self.m_energy_use_max
 
-        self.m_core:use_energy(energy_use)
+        nanosuit_core.instance:use_energy(energy_use)
         self.m_energy_last_use = time_global()
     end
 end
 
 function cloak:actor_on_weapon_fired()
     self.m_sounds.cloak_shoot:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
-    self.m_core:use_energy(100)
-    self.m_core:change_mode(self.m_core.m_default_mode, true)
+    nanosuit_core.instance:use_energy(100)
+    nanosuit_core.instance:change_mode(nanosuit_core.instance.m_default_mode, true)
 end

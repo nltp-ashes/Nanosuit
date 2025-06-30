@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 28/06/2025                                                                                             ---
+---    Date : 30/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -44,9 +44,8 @@ end
 
 class "ui_hud" (CUIScriptWnd)
 
-function ui_hud:__init(core) super()
+function ui_hud:__init() super()
     -- Variables
-    self.m_core = core
     self.m_next_update = time_global()
     self.m_update_rate = 1000
     self.m_colors = {
@@ -63,22 +62,22 @@ function ui_hud:__init(core) super()
     }
 
     -- Build UI
-    self.m_ui_menu = nanosuit_ui_menu.ui_menu(core, self)
+    self.m_ui_menu = nanosuit_ui_menu.ui_menu(self)
     self:AttachChild(self.m_ui_menu)
 
-    self.m_ui_status = nanosuit_ui_status.ui_status(core, self)
+    self.m_ui_status = nanosuit_ui_status.ui_status(self)
     self.m_ui_status:Show(true)
     self:AttachChild(self.m_ui_status)
 
-    self.m_ui_tacmap = nanosuit_ui_tacmap.ui_tacmap(core, self)
+    self.m_ui_tacmap = nanosuit_ui_tacmap.ui_tacmap(self)
     self.m_ui_tacmap:Show(true)
     self:AttachChild(self.m_ui_tacmap)
 
-    self.m_ui_indicators = nanosuit_ui_indicators.ui_indicators(core, self)
+    self.m_ui_indicators = nanosuit_ui_indicators.ui_indicators(self)
     self.m_ui_indicators:Show(true)
     self:AttachChild(self.m_ui_indicators)
 
-    self.m_ui_defibrillator = nanosuit_ui_defibrillator.ui_defibrillator(core, self)
+    self.m_ui_defibrillator = nanosuit_ui_defibrillator.ui_defibrillator(self)
     self:AttachChild(self.m_ui_defibrillator)
 
     self:Show(false)

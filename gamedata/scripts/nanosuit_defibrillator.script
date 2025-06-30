@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 28/06/2025                                                                                             ---
+---    Date : 30/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's built-in defibrillator.                                                  ---
@@ -23,9 +23,8 @@ actor_cameras_enum       = nanosuit_utils.actor_cameras_enum
 
 class "defibrillator"
 
-function defibrillator:__init(core)
+function defibrillator:__init()
     -- Constants
-    self.m_core = core
     self.m_keybind = DIK_keys.DIK_SPACE
     self.m_blackout_length = 4
     self.m_kill_timeout = 3000
@@ -82,7 +81,7 @@ function defibrillator:defibrillate()
     end
     self.m_enabled = true
 
-    self.m_sequence = nanosuit_sequence_defibrillator.defibrillator_sequence(self, self.m_core)
+    self.m_sequence = nanosuit_sequence_defibrillator.defibrillator_sequence(self)
     self.m_sequence:from(self.m_sequence.action_start)
     self.m_sequence:after(self.m_sequence.action_blur, 0)
     self.m_sequence:after(self.m_sequence.action_fade_in, 7)

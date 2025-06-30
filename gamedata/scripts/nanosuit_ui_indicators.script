@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : Tronex                                                                                   ---
 ---    Edited : Rewrote to improve linking between config table & slots (NLTP_ASHES - 29/05/2025)                    ---
----    Date : 29/06/2025                                                                                             ---
+---    Date : 30/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit indicators UI.                                                             ---
@@ -19,9 +19,8 @@
 
 class "ui_indicators" (CUIScriptWnd)
 
-function ui_indicators:__init(core, parent) super()
+function ui_indicators:__init(parent) super()
     -- Variables
-    self.m_core = core
     self.m_parent = parent
 
     self.m_spacing = 10
@@ -71,7 +70,7 @@ function ui_indicators:Update(force)
     -- Clear all
     self:hide_all()
 
-    if self.m_parent.m_core.m_malfunctor.m_enabled then
+    if nanosuit_core.instance.m_malfunctor.m_enabled then
         self.m_ui_dialog:Show(false)
         return
     end

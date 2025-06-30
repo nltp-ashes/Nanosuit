@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 04/05/2025                                                                                             ---
+---    Date : 30/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a ADS (Aim Down Sights) booster usable by a Nanosuit mode.                 ---
@@ -22,7 +22,7 @@ actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 class "ads" (nanosuit_booster.abstract_booster)
 
-function ads:__init(core, name) super(core, name)
+function ads:__init(name) super(name)
     self.m_ads_factor = 0.6
 
     -- Cache

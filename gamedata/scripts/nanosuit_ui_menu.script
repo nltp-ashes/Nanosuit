@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 16/06/2025                                                                                             ---
+---    Date : 30/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit mode selection UI.                                                         ---
@@ -22,8 +22,7 @@ armor_modes_enum        = nanosuit_utils.armor_modes_enum
 
 class "ui_menu" (arm.UIRadialMenu)
 
-function ui_menu:__init(core, parent) super()
-    self.m_core = core
+function ui_menu:__init(parent) super()
     self.m_parent = parent
     self.m_keybind = DIK_keys.DIK_V
     self.m_last_selected_option_idx = nil
@@ -74,7 +73,7 @@ function ui_menu:__init(core, parent) super()
         end)
         self:AddOption(opt)
         self:RegisterCallback(mode, function(flags)
-            self.m_core:change_mode(mode, true)
+            nanosuit_core.instance:change_mode(mode, true)
             flags.close_gui = true
         end)
     end
@@ -127,7 +126,7 @@ function ui_menu:on_key_press(dik)
         return
     end
 
-    if self.m_parent.m_core.m_malfunctor.m_enabled then
+    if nanosuit_core.instance.m_malfunctor.m_enabled then
         return
     end
 

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 15/06/2025                                                                                             ---
+---    Date : 30/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of speed mode of the Nanosuit addon.                                          ---
@@ -22,7 +22,7 @@ localized_sound_object  = nanosuit_utils.localized_sound_object
 
 class "speed" (nanosuit_mode.abstract_mode)
 
-function speed:__init(core, name) super(core, name)
+function speed:__init(name) super(name)
     -- Energy related variables
     self.m_energy_use = 1
     self.m_energy_last_use = 0
@@ -68,7 +68,7 @@ function speed:remove()
     nanosuit_mode.abstract_mode.remove(self)
 
     -- Play sounds
-    if self.m_core.m_energy >= self.m_core.m_energy_low_threshold and self.m_sounds.speed_loop:playing() then
+    if nanosuit_core.instance.m_energy >= nanosuit_core.instance.m_energy_low_threshold and self.m_sounds.speed_loop:playing() then
         self.m_sounds.speed_loop:stop()
         self.m_sounds.speed_stop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     end
@@ -85,13 +85,13 @@ function speed:remove()
 end
 
 function speed:actor_on_update()
-    local has_enough_energy_low = self.m_core.m_energy >= self.m_core.m_energy_low_threshold
-    local has_enough_energy_very_low = self.m_core.m_energy >= self.m_core.m_energy_very_low_threshold
+    local has_enough_energy_low = nanosuit_core.instance.m_energy >= nanosuit_core.instance.m_energy_low_threshold
+    local has_enough_energy_very_low = nanosuit_core.instance.m_energy >= nanosuit_core.instance.m_energy_very_low_threshold
 
     -- Use energy
     local energy_rate = has_enough_energy_very_low and self.m_energy_rate or self.m_energy_low_rate
     if IsMoveState("mcSprint") and time_global() - self.m_energy_last_use > energy_rate then
-        self.m_core:use_energy(self.m_energy_use)
+        nanosuit_core.instance:use_energy(self.m_energy_use)
         self.m_energy_last_use = time_global()
     end
 

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 29/06/2025                                                                                             ---
+---    Date : 30/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -19,9 +19,8 @@
 
 class "ui_tacmap" (CUIScriptWnd)
 
-function ui_tacmap:__init(core, parent) super()
+function ui_tacmap:__init(parent) super()
     -- Variables
-    self.m_core = core
     self.m_parent = parent
 
     self.m_player = vector2():set(118, 651)
@@ -63,7 +62,7 @@ end
 function ui_tacmap:Update(force)
     CUIScriptWnd.Update(self)
 
-    if self.m_parent.m_core.m_malfunctor.m_enabled then
+    if nanosuit_core.instance.m_malfunctor.m_enabled then
         self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.red)
     else
         self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
@@ -208,5 +207,5 @@ function ui_tacmap:is_within_bounds(pos)
 end
 
 function ui_tacmap:is_enabled()
-    return not self.m_parent.m_core.m_malfunctor.m_enabled and ui_options.get([[video/hud/show_minimap]])
+    return not nanosuit_core.instance.m_malfunctor.m_enabled and ui_options.get([[video/hud/show_minimap]])
 end

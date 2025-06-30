@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 15/06/2025                                                                                             ---
+---    Date : 30/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of strength mode of the Nanosuit addon.                                       ---
@@ -24,7 +24,7 @@ hit_types_enum          = nanosuit_utils.hit_types_enum
 
 class "power" (nanosuit_mode.abstract_mode)
 
-function power:__init(core, name) super(core, name)
+function power:__init(name) super(name)
     -- Energy related variables
     self.m_energy_use_shoot = 4
     self.m_energy_use_melee = 10
@@ -96,30 +96,30 @@ function power:npc_on_before_hit(npc, scripted_hit, bone_id, flags)
     end
 
     -- Use energy
-    self.m_core:use_energy(self.m_energy_use_melee)
+    nanosuit_core.instance:use_energy(self.m_energy_use_melee)
 
     -- Calculate new damage
-    local power_multiplier = 1 + (self.m_wound_power_bonus * self.m_core.m_energy / 100)
+    local power_multiplier = 1 + (self.m_wound_power_bonus * nanosuit_core.instance.m_energy / 100)
     scripted_hit.power = scripted_hit.power * power_multiplier
-    local impulse_multiplier = 1 + (self.m_wound_impulse_bonus * self.m_core.m_energy / 100)
+    local impulse_multiplier = 1 + (self.m_wound_impulse_bonus * nanosuit_core.instance.m_energy / 100)
     scripted_hit.impulse = scripted_hit.impulse * impulse_multiplier
 end
 
 function power:actor_on_jump()
     -- Play sounds
-    if self.m_core.m_energy >= self.m_energy_use_power_jump then
+    if nanosuit_core.instance.m_energy >= self.m_energy_use_power_jump then
         self.m_sounds.power_jump:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     end
 
     -- Use energy
-    self.m_core:use_energy(self.m_energy_use_power_jump)
+    nanosuit_core.instance:use_energy(self.m_energy_use_power_jump)
 
     -- Set jump speed (inversely proportional to energy)
-    local jump_multiplier = 1 + self.m_core.m_energy / 100
+    local jump_multiplier = 1 + nanosuit_core.instance.m_energy / 100
     db.actor:set_actor_jump_speed(self.m_cache.jump_speed * jump_multiplier)
 end
 
 function power:actor_on_weapon_fired()
-    self.m_core:use_energy(self.m_energy_use_shoot)
+    nanosuit_core.instance:use_energy(self.m_energy_use_shoot)
 end
 
