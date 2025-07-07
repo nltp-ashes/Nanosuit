@@ -7,6 +7,7 @@
 
 **• Changes :**
 > • Made it so the suit turn off sound effect always plays when entering malfunction state;
+> • Changed the shader used for cloak mode with an improved one (Thanks LVutner);
 
 **• Bug fixes :**
 > • Fixed a memory leak causing the nanosuit code to keep running after removing the suit;

@@ -109,14 +109,17 @@ For past updates, please refer to the description of each release, in the [relea
 
 ### KNOWN ISSUES
 
-- The thumb of the left arm is fucked. I don't really know how to fix it, so it'll stay like this for a bit
+The following issues will be fixed in the near future :
 - Cloak mode does not work if the NPC sees the actor before the cloak is applied, right now you need to break vision for it to work
 - Cloak mode does not work on mutants
 - The key-bind to open the suit menu is not configurable. It should be configurable
 - When wearing the suit, the player footsteps do not change. They should use custom sounds
-- The shader and textures used for cloak mode are not the best. They should be improved
-- Speed mode should increase reload speed. This is impossible due to engine limitations. Will probably never be fixed
-- If actor interacts with an NPC while they're getting vaporized, the game will crash
+- The game crashes if actor interacts with an NPC while they're getting vaporized
+- The game crashes if player reloads a save while cloak mode is enabled
+
+The following issues are either technical limitations, or skill limitations, and will not be fixed in the foreseeable future :
+- Speed mode should increase reload speed
+- The thumb of the left arm is fucked
 
 If you truly believe your problem is new, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).
 
@@ -137,6 +140,7 @@ Credit goes to these people for their work contained in this addon :
 
 |                                Name                                 |                                          Motive                                           |         License         |
 |:-------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:-----------------------:|
+|              **[LVutner](https://github.com/LVutner)**              |                      Provided an improved shader for the cloak mode                       |           MIT           |
 |         **[Crepis](https://www.moddb.com/members/cr3pis)**          |              Provided an inventory icon for the defibrillator powerbank item              |       Proprietary       |
 |                             **Tronex**                              |                  Reused their "Indicators" HUD from actor_status.script                   |       Proprietary       |
 |                          **Stalker_Boss**                           |                             Translated the addon into Russian                             |       Proprietary       |

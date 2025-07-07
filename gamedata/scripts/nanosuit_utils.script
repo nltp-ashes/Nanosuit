@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 21/06/2025                                                                                             ---
+---    Date : 09/07/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -24,6 +24,7 @@ armor_modes_enum = { armor = "armor", power = "power", speed = "speed", cloak = 
 fire_modes_enum = { single = 1, burst_2 = 2, burst_3 = 3, auto = -1 }
 fire_modes_names_enum = { [1] = "single", [2] = "burst_2", [3] = "burst_3", [-1] = "auto" }
 actor_cameras_enum = { first_eye = 0, look_at = 1, free_look = 2, fixed_look_at = 3 }
+renderers_enum = { dx11 = "dx11", dx10 = "dx10", dx9 = "dx9", dx8 = "dx8" }
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Debug Functions
@@ -199,6 +200,38 @@ function get_pp_effector_factor(id)
         return active_pp_effectors[id].factor
     end
     return 0
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Renderer functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to get the current renderer used by the game.
+--- @return renderers_enum
+function get_renderer()
+    local renderers = {
+        ["renderer_r4"] = renderers_enum.dx11,
+        ["renderer_r3"] = renderers_enum.dx10,
+        ["renderer_r2a"] = renderers_enum.dx9,
+        ["renderer_r2.5"] = renderers_enum.dx9,
+        ["renderer_r1"] = renderers_enum.dx8,
+    }
+
+    return renderers[get_console_cmd(0, "renderer")]
+end
+
+--- Function used to get a value if the current renderer is in the list of renderers in arguments, if not, use the default value.
+--- @param renderers table
+--- @param value any
+--- @param default any
+function get_if_renderer_is_or_default(renderers, value, default)
+    local renderer = get_renderer()
+    for _, r in pairs(renderers) do
+        if r == renderer then
+            return value
+        end
+    end
+    return default
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
