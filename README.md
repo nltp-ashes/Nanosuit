@@ -41,6 +41,7 @@ Cloak mode :
 - Shooting while in cloak mode completely depletes the suit's energy
 - The player is cloaked from NPC's vision while cloak mode is active
 - When getting too close to an NPC while in cloak mode, they will start to notice you
+- On semi-modern renderers (DirectX 10 & 11), the cloak mode uses a custom-made shader
 
 HUD :
 - Added a custom HUD when wearing the suit. HUD dynamically switches from vanilla HUD to the Nanosuit's and back
@@ -85,17 +86,20 @@ To **install** the addon :
 1. Download and install the requirements;
 2. Download this addon;
 3. Using MO2, click the "Install a mod from an archive" button;
-4. Follow the instructions.
+4. Follow the instructions;
+5. Clear the shader cache.
 
 To **update** the addon :
 1. In MO2, disable and delete the previous version of the addon;
 2. Make sure to update the requirements;
 3. Make sure to check the changelog for extra steps;
-4. Follow the installation instructions.
+4. Follow the installation instructions;
+5. Clear the shader cache.
 
 To **uninstall** the addon :
 1. Un-wear the suit if you have it equipped;
-2. Close your game, disable and delete the addon from MO2.
+2. Close your game, disable and delete the addon from MO2;
+3. Clear the shader cache.
 
 ---
 
