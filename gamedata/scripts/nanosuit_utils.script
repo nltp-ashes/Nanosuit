@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 09/07/2025                                                                                             ---
+---    Date : 14/07/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -220,18 +220,46 @@ function get_renderer()
     return renderers[get_console_cmd(0, "renderer")]
 end
 
---- Function used to get a value if the current renderer is in the list of renderers in arguments, if not, use the default value.
---- @param renderers table
---- @param value any
---- @param default any
-function get_if_renderer_is_or_default(renderers, value, default)
-    local renderer = get_renderer()
-    for _, r in pairs(renderers) do
-        if r == renderer then
-            return value
-        end
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Optional wrapper functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "optional"
+
+function optional:__init(value)
+    self.value = value
+end
+
+function optional:is_present()
+    return self.value ~= nil
+end
+
+function optional:get()
+    if self:is_present() then
+        return self.value
     end
-    return default
+    return nil
+end
+
+function optional:get_or_else(default_value)
+    if self:is_present() then
+        return self.value
+    end
+    return default_value
+end
+
+function optional:map(func)
+    if self:is_present() then
+        return optional(func(self.value))
+    end
+    return optional(nil)
+end
+
+function optional:filter(func)
+    if self:is_present() and func(self.value) then
+        return self
+    end
+    return optional(nil)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------

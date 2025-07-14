@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 09/07/2025                                                                                             ---
+---    Date : 14/07/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
@@ -34,8 +34,13 @@ function cloak:__init(name) super(name)
 
     -- Cloak related variables
     self.m_cloak_npc_see_distance = 5
-    self.m_cloak_texture = nanosuit_utils.get_if_renderer_is_or_default({ renderers_enum.dx11, renderers_enum.dx10 }, [[nanosuit\cloak_pattern]], [[nanosuit\cloak_pattern_old]])
-    self.m_cloak_shader = nanosuit_utils.get_if_renderer_is_or_default({ renderers_enum.dx11, renderers_enum.dx10 }, [[models\nanosuit_cloak]], [[models\xanomaly]])
+    self.m_cloak_texture = nanosuit_utils.optional([[nanosuit\cloak_pattern]])
+        :filter(function(path) return nanosuit_utils.get_renderer() == renderers_enum.dx11 or nanosuit_utils.get_renderer() == renderers_enum.dx10 end)
+        :get_or_else([[nanosuit\cloak_pattern_old]])
+
+    self.m_cloak_shader = nanosuit_utils.optional([[models\nanosuit_cloak]])
+        :filter(function(path) return nanosuit_utils.get_renderer() == renderers_enum.dx11 or nanosuit_utils.get_renderer() == renderers_enum.dx10 end)
+        :get_or_else([[models\xanomaly]])
 
     -- Cache
     self.m_cache.visibility_functor = nil
