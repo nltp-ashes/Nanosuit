@@ -1,8 +1,9 @@
-## **v0.8.0 - 09/07/2025 - Alpha Build**
+## **v0.8.0 - 21/07/2025 - Alpha Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.8.0/total?label=Downloads)]()
 
 **• Additions :**
+> • Added an MCM menu, allowing you to change some settings on the fly;
 > • Added corners on the top left and top right of the HUD as in Crysis;
 
 **• Changes :**

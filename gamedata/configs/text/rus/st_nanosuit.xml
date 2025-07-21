@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
-<!--    Date : 22/06/2025                                                                                            -->
+<!--    Date : 21/07/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -77,5 +77,53 @@
 
     <string id="nanosuit\voice\energy_low_voice">
         <text>nanosuit\voice\energy_low_voice_rus</text>
+    </string>
+
+    <!--=============================================================================================================-->
+    <!--    MCM                                                                                                      -->
+    <!--=============================================================================================================-->
+
+    <!-- Titles -->
+    <string id="ui_mcm_nanosuit_title">
+        <text>Нанокостюм</text>
+    </string>
+
+    <string id="ui_mcm_menu_nanosuit">
+        <text>Нанокостюм</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_keybindings_title">
+        <text>ПАРАМЕТРЫ НАСТРОЕК КЛАВИШ</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_technical_settings_title">
+        <text>ТЕХНИЧЕСКИЕ НАСТРОЙКИ</text>
+    </string>
+
+    <!-- Use defibrillator -->
+    <string id="ui_mcm_nanosuit_defibrillate">
+        <text>Использовать дефибриллятор</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_defibrillate_desc">
+        <text>Клавиша, используемая для активации дефибриллятора.</text>
+    </string>
+
+    <!-- Open suit menu -->
+    <string id="ui_mcm_nanosuit_suit_menu">
+        <text>Открыть меню костюма</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_suit_menu_desc">
+        <text>Клавиша, используемая для открытия меню режимов костюма.</text>
+    </string>
+
+    <!-- Debug mode -->
+    <string id="ui_mcm_nanosuit_debug_mode">
+        <text>Режим отладки</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_debug_mode_desc">
+        <text>Позволяет дополнению выводить некоторую информацию в консоль/логи, для последующего использования при попытке выявить проблемы.</text>
     </string>
 </string_table>

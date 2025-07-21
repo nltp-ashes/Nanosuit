@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 22/06/2025                                                                                            -->
+<!--    Date : 21/07/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -77,5 +77,53 @@
 
     <string id="nanosuit\voice\energy_low_voice">
         <text>nanosuit\voice\energy_low_voice</text>
+    </string>
+
+    <!--=============================================================================================================-->
+    <!--    MCM                                                                                                      -->
+    <!--=============================================================================================================-->
+
+    <!-- Titles -->
+    <string id="ui_mcm_nanosuit_title">
+        <text>Nanosuit</text>
+    </string>
+
+    <string id="ui_mcm_menu_nanosuit">
+        <text>Nanosuit</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_keybindings_title">
+        <text>KEY-BIND SETTINGS</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_technical_settings_title">
+        <text>TECHNICAL SETTINGS</text>
+    </string>
+
+    <!-- Use defibrillator -->
+    <string id="ui_mcm_nanosuit_defibrillate">
+        <text>Use defibrillator</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_defibrillate_desc">
+        <text>Key-bind used to activate the defibrillator.</text>
+    </string>
+
+    <!-- Open suit menu -->
+    <string id="ui_mcm_nanosuit_suit_menu">
+        <text>Open suit menu</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_suit_menu_desc">
+        <text>Key-bind used to open the suit's modes menu.</text>
+    </string>
+
+    <!-- Debug mode -->
+    <string id="ui_mcm_nanosuit_debug_mode">
+        <text>Debug mode</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_debug_mode_desc">
+        <text>Makes the addon print out some information in the console/logs, for later reference when trying to identify problems.</text>
     </string>
 </string_table>

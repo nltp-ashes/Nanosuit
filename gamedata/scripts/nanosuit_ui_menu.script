@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/06/2025                                                                                             ---
+---    Date : 21/07/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit mode selection UI.                                                         ---
@@ -24,7 +24,6 @@ class "ui_menu" (arm.UIRadialMenu)
 
 function ui_menu:__init(parent) super()
     self.m_parent = parent
-    self.m_keybind = DIK_keys.DIK_V
     self.m_last_selected_option_idx = nil
     self.m_last_selected_option_time = nil
     self.m_icon_anim_duration = 250
@@ -118,7 +117,7 @@ function ui_menu:UpdateIcon(i)
 end
 
 function ui_menu:on_key_press(dik)
-    if dik ~= self.m_keybind then
+    if dik ~= nanosuit_mcm.get_config("suit_menu") then
         return
     end
 
