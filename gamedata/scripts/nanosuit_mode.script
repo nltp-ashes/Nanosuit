@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/06/2025                                                                                             ---
+---    Date : 21/07/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract suit mode of the Nanosuit addon.                               ---
@@ -14,6 +14,7 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 actor_slots_enum        = nanosuit_utils.actor_slots_enum
+localized_sound_object  = nanosuit_utils.localized_sound_object
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Mode class
@@ -21,9 +22,11 @@ actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 class "abstract_mode"
 
-function abstract_mode:__init(name)
+function abstract_mode:__init(name, voice_path)
     self.m_name = name
-    self.m_sounds = {}
+    self.m_sounds = {
+        voice = localized_sound_object(voice_path),
+    }
     self.m_cache = {}
     self.m_protection_map = {}
     self.m_boosters = {}
@@ -36,6 +39,11 @@ end
 function abstract_mode:apply(play_voice)
     -- Register callbacks
     RegisterScriptCallback("actor_on_before_hit", self)
+
+    -- Play sounds
+    if play_voice then
+        self.m_sounds.voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    end
 end
 
 function abstract_mode:remove()

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 14/07/2025                                                                                             ---
+---    Date : 21/07/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
@@ -14,7 +14,6 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- Imports
-localized_sound_object  = nanosuit_utils.localized_sound_object
 armor_modes_enum        = nanosuit_utils.armor_modes_enum
 actor_slots_enum        = nanosuit_utils.actor_slots_enum
 renderers_enum          = nanosuit_utils.renderers_enum
@@ -25,7 +24,7 @@ renderers_enum          = nanosuit_utils.renderers_enum
 
 class "cloak" (nanosuit_mode.abstract_mode)
 
-function cloak:__init(name) super(name)
+function cloak:__init(name) super(name, [[nanosuit\voice\mode_cloak_voice]])
     -- Energy related variables
     self.m_energy_use_min = 0.1
     self.m_energy_use_max = 1
@@ -48,7 +47,6 @@ function cloak:__init(name) super(name)
     self.m_cache.actor_shaders = { hud = nil, world = nil }
 
     -- Sound effects
-    self.m_sounds.cloak_voice = localized_sound_object([[nanosuit\voice\mode_cloak_voice]])
     self.m_sounds.cloak_loop = sound_object([[nanosuit\modes\cloak\mode_cloak_loop]])
     self.m_sounds.cloak_shoot = sound_object([[nanosuit\modes\cloak\mode_cloak_shoot]])
     self.m_sounds.cloak_on = sound_object([[nanosuit\modes\cloak\mode_cloak_on]])
@@ -62,9 +60,6 @@ function cloak:apply(play_voice)
     nanosuit_mode.abstract_mode.apply(self, play_voice)
 
     -- Play sounds
-    if play_voice then
-        self.m_sounds.cloak_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
-    end
     self.m_sounds.cloak_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_sounds.cloak_loop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
 
