@@ -117,6 +117,20 @@ For past updates, please refer to the description of each release, in the [relea
 
 ---
 
+### FUTURE WORKS
+
+Here is a list of planned features for the addon :
+- Add a storyline that will allow the player to acquire the suit;
+- Add the Korean version of the nanosuit;
+- Add a female version of the nanosuit;
+- Add option to use female voice for the nanosuit modes;
+
+If you would like to help development for future updates, you can :
+1. Contribute to the addon, either by [getting in touch with me](https://github.com/nltp-ashes/Nanosuit#support--suggestions) or [creating a fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of the addon and [creating a pull-request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) on the addon's [GitHub repository](https://github.com/nltp-ashes/Nanosuit);
+2. Help by play-testing updates by [getting Release Candidates builds](https://github.com/nltp-ashes/Nanosuit/releases/) on the addon's GitHub repository.
+
+---
+
 ### KNOWN ISSUES
 
 The following issues will be fixed in the near future :
