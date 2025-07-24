@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/06/2025                                                                                             ---
+---    Date : 25/07/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to execute debug functions to help in development.                                                ---
@@ -19,6 +19,7 @@ x_transforms            = 0
 y_transforms            = 0
 poly_point              = 0
 seq                     = nil
+clr_idx, clr            = 1, { [1] = 125, [2] = 125, [3] = 102 }
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- General functions
@@ -28,15 +29,15 @@ function on_key_press_tacmap(dik)
     if dik == DIK_keys.DIK_LCONTROL then
         holding_ctrl = true
     end
-    if not nanosuit_core.instance then
+    if not nanosuit_core.get_instance() then
         return
     end
 
     local pos = nil
     if poly_point == 0 then
-        pos = nanosuit_core.instance.m_hud.m_ui_tacmap.m_player
+        pos = nanosuit_core.get_instance().m_hud.m_ui_tacmap.m_player
     else
-        pos = nanosuit_core.instance.m_hud.m_ui_tacmap.m_tacmap_bounds[poly_point]
+        pos = nanosuit_core.get_instance().m_hud.m_ui_tacmap.m_tacmap_bounds[poly_point]
     end
 
     local transform = holding_ctrl and 10 or 1
@@ -71,7 +72,7 @@ function on_key_press_status(dik)
     if dik == DIK_keys.DIK_LCONTROL then
         holding_ctrl = true
     end
-    if not nanosuit_core.instance then
+    if not nanosuit_core.get_instance() then
         return
     end
 
@@ -100,7 +101,7 @@ end
 
 function on_key_press_vap(dik)
     if dik == DIK_keys.DIK_J then
-        nanosuit_core.instance.m_vaporizer:vaporize(db.actor)
+        nanosuit_core.get_instance().m_vaporizer:vaporize(db.actor)
     end
 
     local obj = level.get_target_obj()
@@ -111,22 +112,22 @@ function on_key_press_vap(dik)
     if dik == DIK_keys.DIK_L then
         obj:set_visual_name([[nanosuit\nanosuit_tp]])
     elseif dik == DIK_keys.DIK_K then
-        nanosuit_core.instance.m_vaporizer:vaporize(obj)
+        nanosuit_core.get_instance().m_vaporizer:vaporize(obj)
     end
 end
 
 function on_key_press_malfunction(dik)
     if dik == DIK_keys.DIK_K then
-        nanosuit_core.instance.m_malfunctor:enable_malfunction(true)
+        nanosuit_core.get_instance().m_malfunctor:enable_malfunction(true)
         elseif dik == DIK_keys.DIK_L then
-        nanosuit_core.instance.m_malfunctor:disable_malfunction()
+        nanosuit_core.get_instance().m_malfunctor:disable_malfunction()
     end
 end
 
 function on_key_press_defib(dik)
     if dik == DIK_keys.DIK_K then
-        if not nanosuit_core.instance.m_defibrillator.m_enabled then
-            nanosuit_core.instance.m_defibrillator:defibrillate()
+        if not nanosuit_core.get_instance().m_defibrillator.m_enabled then
+            nanosuit_core.get_instance().m_defibrillator:defibrillate()
         else
             level.remove_cam_effector(nanosuit_defibrillator.cam_effector_start_id)
             nanosuit_utils.remove_pp_effector(nanosuit_defibrillator.pp_effector_b_id)
@@ -137,17 +138,17 @@ end
 
 function on_key_press_defib_ui(dik)
     if dik == DIK_keys.DIK_K then
-        nanosuit_core.instance.m_defibrillator.m_enabled = true
-        nanosuit_core.instance.m_defibrillator.m_charging = not nanosuit_core.instance.m_defibrillator.m_charging
-        nanosuit_core.instance.m_defibrillator.m_charging_time_remaining = 3000
-        nanosuit_core.instance.m_defibrillator.m_charging_time_last_update = time_global()
+        nanosuit_core.get_instance().m_defibrillator.m_enabled = true
+        nanosuit_core.get_instance().m_defibrillator.m_charging = not nanosuit_core.get_instance().m_defibrillator.m_charging
+        nanosuit_core.get_instance().m_defibrillator.m_charging_time_remaining = 3000
+        nanosuit_core.get_instance().m_defibrillator.m_charging_time_last_update = time_global()
     end
 end
 
 function on_key_press_chainable(dik)
     if dik == DIK_keys.DIK_K then
         if not seq then
-            seq = dummy_sequence(nanosuit_core.instance)
+            seq = dummy_sequence(nanosuit_core.get_instance())
             seq:from(seq.action_1)
             seq:after(seq.action_2, 5)
             seq:after(seq.action_3, 0)
@@ -158,6 +159,32 @@ function on_key_press_chainable(dik)
             seq = nil
         end
     end
+end
+
+function on_key_press_color(dik)
+    if dik == DIK_keys.DIK_LCONTROL then
+        holding_ctrl = true
+    end
+
+    if dik == DIK_keys.DIK_DOWN then
+        clr[clr_idx] = clr[clr_idx] - (holding_ctrl and 5 or 1)
+    elseif dik == DIK_keys.DIK_UP then
+        clr[clr_idx] = clr[clr_idx] + (holding_ctrl and 5 or 1)
+    elseif dik == DIK_keys.DIK_LEFT then
+        clr_idx = clr_idx - 1
+        if clr_idx < 1 then
+            clr_idx = 3
+        end
+    elseif dik == DIK_keys.DIK_RIGHT then
+        clr_idx = clr_idx + 1
+        if clr_idx > 3 then
+            clr_idx = 1
+        end
+    elseif dik == DIK_keys.DIK_HOME then
+        printf("[NS] Color : %s,%s,%s", clr[1], clr[2], clr[3])
+    end
+
+    nanosuit_core.get_instance().m_hud.m_colors.background = GetARGB(200, nanosuit_debug.clr[1], nanosuit_debug.clr[2], nanosuit_debug.clr[3])
 end
 
 function on_key_release(dik)
@@ -180,6 +207,7 @@ function on_game_start()
     --RegisterScriptCallback("on_key_press", on_key_press_defib)
     --RegisterScriptCallback("on_key_press", on_key_press_defib_ui)
     --RegisterScriptCallback("on_key_press", on_key_press_chainable)
+    --RegisterScriptCallback("on_key_press", on_key_press_color)
     --RegisterScriptCallback("on_key_release", on_key_release)
 end
 

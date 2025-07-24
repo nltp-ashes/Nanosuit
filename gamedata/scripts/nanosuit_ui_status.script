@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/06/2025                                                                                             ---
+---    Date : 25/07/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit status hub (energy, health, ammo, etc) UI.                                 ---
@@ -103,7 +103,7 @@ end
 function ui_status:Update(force)
     CUIScriptWnd.Update(self)
 
-    if nanosuit_core.instance.m_malfunctor.m_enabled then
+    if self.m_parent.m_core.m_malfunctor.m_enabled then
         -- Outline
         self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.red)
         self.m_ui_top_left_corner:SetTextureColor(self.m_parent.m_colors.red)
@@ -144,12 +144,12 @@ function ui_status:Update(force)
     self.m_ui_top_right_corner:SetTextureColor(self.m_parent.m_colors.background)
 
     -- Current suit mode
-    local suit_mode = "ui_nanosuit_status_" .. nanosuit_core.instance.m_current_mode.m_name
+    local suit_mode = "ui_nanosuit_status_" .. self.m_parent.m_core.m_current_mode.m_name
     self.m_ui_suit_mode:InitTexture(suit_mode)
     self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_colors.background)
 
     -- Energy
-    local energy = nanosuit_core.instance.m_energy
+    local energy = self.m_parent.m_core.m_energy
     energy = round(energy)
     self.m_ui_energy_bar:SetColor(energy > 20 and self.m_parent.m_colors.energy or self.m_parent.m_colors.red)
     self.m_ui_energy_bar:SetProgressPos(energy)

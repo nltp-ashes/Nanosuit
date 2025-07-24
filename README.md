@@ -14,6 +14,11 @@ This addon adds a fully operational Nanosuit from Crysis.
 
 Bellow is a list of features that are currently available in the addon :
 
+Miscellaneous :
+- The nanosuit comes with third person, first person and world models; inventory icons and character portraits (and even legs model if you use [First Person Visible Body](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version))
+- The Nanosuit voice-lines are available in English, French and Russian, depending on the game language
+- The addon features an MCM menu, allowing you to change some settings on the fly
+
 Armor mode :
 - Absorbs all incoming damage as long as the suit has energy
 - The more powerful is the impact, the more energy it consumes
@@ -66,10 +71,6 @@ Vaporization :
 - When the player (or an NPC) dies wearing the suit, they will be vaporized, leaving no body behind
 - When NPCs get vaporized alive, they enter a special animation
 
-Miscellaneous :
-- The Nanosuit voice-lines are available in English, French and Russian, depending on the game language
-- The addon features an MCM menu, allowing you to change some settings on the fly
-
 ---
 
 ### REQUIREMENTS
@@ -121,9 +122,12 @@ For past updates, please refer to the description of each release, in the [relea
 
 Here is a list of planned features for the addon :
 - Add a storyline that will allow the player to acquire the suit;
-- Add the Korean version of the nanosuit;
 - Add a female version of the nanosuit;
 - Add option to use female voice for the nanosuit modes;
+- Add built-in binoculars;
+- Add built-in night vision;
+- Add nanovision (using HeatVision as back-end) (as an upgrade?);
+- Custom footsteps when wearing the suit;
 
 If you would like to help development for future updates, you can :
 1. Contribute to the addon, either by [getting in touch with me](https://github.com/nltp-ashes/Nanosuit#support--suggestions) or [creating a fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of the addon and [creating a pull-request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) on the addon's [GitHub repository](https://github.com/nltp-ashes/Nanosuit);
@@ -136,13 +140,11 @@ If you would like to help development for future updates, you can :
 The following issues will be fixed in the near future :
 - Cloak mode does not work if the NPC sees the actor before the cloak is applied, right now you need to break vision for it to work
 - Cloak mode does not work on mutants
-- When wearing the suit, the player footsteps do not change. They should use custom sounds
 - The game crashes if actor interacts with an NPC while they're getting vaporized
 - The game crashes if player reloads a save while cloak mode is enabled
 
 The following issues are either technical limitations, or skill limitations, and will not be fixed in the foreseeable future :
 - Speed mode should increase reload speed
-- The thumb of the left arm is fucked
 
 If you truly believe your problem is new, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).
 
@@ -163,20 +165,24 @@ Credit goes to these people for their work contained in this addon :
 
 |                                Name                                 |                                          Motive                                           |         License         |
 |:-------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:-----------------------:|
+|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |         Improved the texture quality of the Korean nanosuit's third person model          | See [LICENSE](#license) |
+|                         **wookie, 3vtiger**                         |                      Port of the Korean nanosuit third person model                       |       Proprietary       |
+|                          **punished__joe**                          |       Ported the nanosuit hands and edited them to fit S.T.A.L.K.E.R.'s proportions       |       Proprietary       |
 |       **[xfightervn](https://www.deviantart.com/xfightervn)**       |                            Reused their art for the MCM banner                            |       Proprietary       |
 |              **[LVutner](https://github.com/LVutner)**              |                      Provided an improved shader for the cloak mode                       | See [LICENSE](#license) |
 |         **[Crepis](https://www.moddb.com/members/cr3pis)**          |              Provided an inventory icon for the defibrillator powerbank item              |       Proprietary       |
 |                             **Tronex**                              |                  Reused their "Indicators" HUD from actor_status.script                   |       Proprietary       |
 |                          **Stalker_Boss**                           |                             Translated the addon into Russian                             |       Proprietary       |
 |         **[Crepis](https://www.moddb.com/members/cr3pis)**          | Greatly improved the quality of the inventory icon, upgrade icon and character portraits  |       Proprietary       |
-|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     | Greatly improved the texture quality of the first and third person models of the Nanosuit | See [LICENSE](#license) |
-| **[\_Paramonov Alexander\_](https://users.playground.ru/1997780/)** |             Port of the Nanosuit first person, third person and world models              |       Proprietary       |
+|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     | Greatly improved the texture quality of the first and third person models of the nanosuit | See [LICENSE](#license) |
+| **[\_Paramonov Alexander\_](https://users.playground.ru/1997780/)** |             Port of the nanosuit first person, third person and world models              |       Proprietary       |
 |             **[Crytek GmbH](https://www.crytek.com/)**              |                     Various assets (textures, sound effects, models)                      |       Proprietary       |
 
 Special thanks to these people for their help in the making of this addon :
 
 |                      Name                      |                                                     Motive                                                     |
 |:----------------------------------------------:|:--------------------------------------------------------------------------------------------------------------:|
+|                 **Medialuna**                  |    For all the tips and tricks with modeling/textures that objectively made my life a little less miserable    |
 | **[Lucy](https://www.moddb.com/members/r3zy)** | For adding engine support to change, at runtime and using scripts, the textures and shaders of any game_object |
 
 ---

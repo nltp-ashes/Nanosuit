@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/06/2025                                                                                             ---
+---    Date : 25/07/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -44,18 +44,20 @@ end
 
 class "ui_hud" (CUIScriptWnd)
 
-function ui_hud:__init() super()
+function ui_hud:__init(core) super()
+    self.m_core = core
+
     -- Variables
     self.m_next_update = time_global()
     self.m_update_rate = 1000
     self.m_colors = {
-        text = GetARGB(255, 129, 183, 135),
-        background = GetARGB(200, 99, 125, 102),
+        text = nanosuit_utils.get_constant(nil, "hud_colors_text", GetARGB(255, 129, 183, 135)),
+        background = nanosuit_utils.get_constant(nil, "hud_colors_background", GetARGB(200, 99, 125, 102)),
         active = GetARGB(200, 250, 173, 44),
-        energy = GetARGB(255, 0, 107, 179),
+        energy = nanosuit_utils.get_constant(nil, "hud_colors_energy", GetARGB(255, 0, 107, 179)),
         energy_bg = GetARGB(200, 18, 40, 46),
         energy_off_bg = GetARGB(200, 24, 24, 24),
-        health = GetARGB(255, 85, 148, 17),
+        health = nanosuit_utils.get_constant(nil, "hud_colors_health", GetARGB(255, 85, 148, 17)),
         health_bg = GetARGB(200, 27, 33, 21),
         health_off_bg = GetARGB(200, 24, 24, 24),
         red = GetARGB(255, 255, 0, 0)
@@ -105,6 +107,8 @@ function ui_hud:destroy()
     self.m_ui_tacmap:destroy()
     self.m_ui_indicators:destroy()
     self.m_ui_defibrillator:destroy()
+
+    self.m_core = nil
 
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_update", self)

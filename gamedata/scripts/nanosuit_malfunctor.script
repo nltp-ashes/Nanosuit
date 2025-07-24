@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/06/2025                                                                                             ---
+---    Date : 25/07/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the malfunction logic of the Nanosuit addon.                                            ---
@@ -28,7 +28,7 @@ bind_anomaly_field_pulse_anomaly_hit = bind_anomaly_field.pulse_anomaly_hit
 bind_anomaly_field.pulse_anomaly_hit = function(particle_pos)
     local ret = bind_anomaly_field_pulse_anomaly_hit(particle_pos)
 
-    local instance = nanosuit_core.instance and nanosuit_core.instance.m_malfunctor
+    local instance = nanosuit_core.get_instance() and nanosuit_core.get_instance().m_malfunctor
     if not instance then
         return
     end
@@ -45,7 +45,7 @@ psi_storm_manager_CPsiStormManager_vortex_actor_hit = psi_storm_manager.CPsiStor
 psi_storm_manager.CPsiStormManager.vortex_actor_hit = function(self, vortex)
     local ret = psi_storm_manager_CPsiStormManager_vortex_actor_hit(self, vortex)
 
-    local instance = nanosuit_core.instance and nanosuit_core.instance.m_malfunctor
+    local instance = nanosuit_core.get_instance() and nanosuit_core.get_instance().m_malfunctor
     if not instance then
         return
     end
@@ -64,7 +64,9 @@ end
 
 class "malfunctor"
 
-function malfunctor:__init()
+function malfunctor:__init(core)
+    self.m_core = core
+
     -- Constants
     self.m_anomaly_hit_duration = 20
 
@@ -77,6 +79,8 @@ function malfunctor:__init()
 end
 
 function malfunctor:destroy()
+    self.m_core = nil
+
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_death", self)
 end
@@ -101,11 +105,11 @@ function malfunctor:enable_malfunction(stay_off)
         self.m_enabled = true
         self.m_stay_off = stay_off or false
 
-        nanosuit_core.instance:change_mode(armor_modes_enum.armor, false)
-        nanosuit_core.instance:use_energy(100)
+        self.m_core:change_mode(armor_modes_enum.armor, false)
+        self.m_core:use_energy(100)
 
-        if nanosuit_core.instance.m_energy_off_voiced and not nanosuit_core.instance.m_sounds.energy_off:playing() then
-            nanosuit_core.instance.m_sounds.energy_off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+        if self.m_core.m_energy_off_voiced and not self.m_core.m_sounds.energy_off:playing() then
+            self.m_core.m_sounds.energy_off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         end
 
         if not self.m_stay_off then
@@ -122,8 +126,8 @@ end
 function malfunctor:disable_malfunction()
     if self.m_enabled then
         self.m_enabled = false
-        nanosuit_core.instance:change_mode(nanosuit_core.instance.m_default_mode, true)
-        nanosuit_core.instance.m_energy_last_use = time_global()
+        self.m_core:change_mode(self.m_core.m_default_mode, true)
+        self.m_core.m_energy_last_use = time_global()
     end
 end
 

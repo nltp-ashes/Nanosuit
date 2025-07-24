@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/06/2025                                                                                             ---
+---    Date : 25/07/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract booster usable by a Nanosuit mode.                             ---
@@ -22,7 +22,8 @@ actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 class "abstract_booster"
 
-function abstract_booster:__init(name)
+function abstract_booster:__init(core, name)
+    self.m_core = core
     self.m_name = name
     self.m_cache = {
         [actor_slots_enum.knife] = { enabled = false, obj_id = nil },
@@ -44,6 +45,10 @@ end
 
 function abstract_booster:__eq(other)
     return self.m_name == other.m_name
+end
+
+function abstract_booster:destroy()
+    self.m_core = nil
 end
 
 function abstract_booster:apply()

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/06/2025                                                                                             ---
+---    Date : 26/07/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's vaporization process.                                                    ---
@@ -102,7 +102,9 @@ end
 
 class "vaporizer"
 
-function vaporizer:__init()
+function vaporizer:__init(core)
+    self.m_core = core
+
     -- Variables
     self.m_storage = {}
 
@@ -111,6 +113,13 @@ function vaporizer:__init()
 end
 
 function vaporizer:destroy()
+    self.m_core = nil
+
+    for _, sequence in pairs(self.m_storage) do
+        sequence:destroy()
+    end
+    self.m_storage = nil
+
     -- Callbacks
     UnregisterScriptCallback("actor_on_death", self)
 end
@@ -156,11 +165,11 @@ function evaluator_nanosuit_vaporize:evaluate()
         db.storage[self.object:id()] = {}
     end
 
-    if not nanosuit_core.instance then
+    if not nanosuit_core.get_instance() then
         return false
     end
 
-    local sequence = nanosuit_core.instance.m_vaporizer.m_storage[self.object:name()]
+    local sequence = nanosuit_core.get_instance().m_vaporizer.m_storage[self.object:name()]
     if not sequence then
         return false
     end
