@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 15/06/2025                                                                                             ---
+---    Date : 21/07/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract suit mode of the Nanosuit addon.                               ---
@@ -14,6 +14,7 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 actor_slots_enum        = nanosuit_utils.actor_slots_enum
+localized_sound_object  = nanosuit_utils.localized_sound_object
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Mode class
@@ -21,10 +22,11 @@ actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 class "abstract_mode"
 
-function abstract_mode:__init(core, name)
-    self.m_core = core
+function abstract_mode:__init(name, voice_path)
     self.m_name = name
-    self.m_sounds = {}
+    self.m_sounds = {
+        voice = localized_sound_object(voice_path),
+    }
     self.m_cache = {}
     self.m_protection_map = {}
     self.m_boosters = {}
@@ -37,6 +39,11 @@ end
 function abstract_mode:apply(play_voice)
     -- Register callbacks
     RegisterScriptCallback("actor_on_before_hit", self)
+
+    -- Play sounds
+    if play_voice then
+        self.m_sounds.voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    end
 end
 
 function abstract_mode:remove()
@@ -46,7 +53,7 @@ end
 
 function abstract_mode:apply_booster(booster, name)
     if not self.m_boosters[name] then
-        self.m_boosters[name] = booster(self.m_core, name)
+        self.m_boosters[name] = booster(name)
         self.m_boosters[name]:apply()
     end
 end
@@ -67,16 +74,16 @@ function abstract_mode:actor_on_before_hit(scripted_hit, bone_id, flags)
 
     -- Calculate energy to use and damage to absorb
     local absorb_energy_req = scripted_hit.power / max_absorb_power * 100
-    local absorb_energy_use = math.min(self.m_core.m_energy, absorb_energy_req)
+    local absorb_energy_use = math.min(nanosuit_core.instance.m_energy, absorb_energy_req)
     local absorb_power = absorb_energy_use / 100 * max_absorb_power
 
     -- Use energy
-    self.m_core:use_energy(absorb_energy_use)
+    nanosuit_core.instance:use_energy(absorb_energy_use)
 
     -- Absorb hit
     scripted_hit.power = scripted_hit.power - absorb_power
 
-    if self.m_core.m_energy > 0 then
+    if nanosuit_core.instance.m_energy > 0 then
         -- Game is stupid and still registers damage sometimes even with power set to 0
         flags.ret_value = false
     end

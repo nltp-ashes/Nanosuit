@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 21/06/2025                                                                                             ---
+---    Date : 30/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -19,9 +19,8 @@
 
 class "ui_defibrillator" (CUIScriptWnd)
 
-function ui_defibrillator:__init(core, parent) super()
+function ui_defibrillator:__init(parent) super()
     -- Variables
-    self.m_core = core
     self.m_parent = parent
 
     -- Build UI
@@ -45,7 +44,7 @@ end
 function ui_defibrillator:Update(force)
     CUIScriptWnd.Update(self)
 
-    if not db.actor:alive() or not self.m_core.m_defibrillator.m_enabled then
+    if not db.actor:alive() or not nanosuit_core.instance.m_defibrillator.m_enabled then
         self:Show(false)
         return
     else
@@ -57,16 +56,16 @@ function ui_defibrillator:Update(force)
     self.m_ui_key:SetText("")
 
     -- Update message
-    if self.m_core.m_defibrillator:is_charging() then
-        local time_remaining = self.m_core.m_defibrillator.m_charging_time_remaining
+    if nanosuit_core.instance.m_defibrillator:is_charging() then
+        local time_remaining = nanosuit_core.instance.m_defibrillator.m_charging_time_remaining
         time_remaining = time_remaining / 1000
         time_remaining = round(time_remaining)
         self.m_ui_message:SetText(nanosuit_utils.get_translation("st_nanosuit_defibrillator_charging", tostring(time_remaining)))
     end
 
     -- Update key
-    if self.m_core.m_defibrillator:is_ready() then
+    if nanosuit_core.instance.m_defibrillator:is_ready() then
         self.m_ui_message:SetText(nanosuit_utils.get_translation("st_nanosuit_defibrillator_ready"))
-        self.m_ui_key:SetText("[" .. nanosuit_utils.get_key_translation(self.m_core.m_defibrillator.m_keybind) .. "]")
+        self.m_ui_key:SetText("[" .. nanosuit_utils.get_key_translation(nanosuit_core.instance.m_defibrillator.m_keybind) .. "]")
     end
 end
