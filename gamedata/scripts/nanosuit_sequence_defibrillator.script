@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 28/06/2025                                                                                             ---
+---    Date : 30/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the animated sequence of the defibrillator.                                             ---
@@ -19,7 +19,7 @@
 
 class "defibrillator_sequence" (nanosuit_sequence.scripted_sequence)
 
-function defibrillator_sequence:__init(defibrillator, core) super(core)
+function defibrillator_sequence:__init(defibrillator) super()
     self.m_defibrillator = defibrillator
     self.m_effectors = {
         blur = { id = 3419, path = [[surge_shock_old.ppe]] },

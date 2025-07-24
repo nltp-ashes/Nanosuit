@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 28/06/2025                                                                                             ---
+---    Date : 30/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the malfunction logic of the Nanosuit addon.                                            ---
@@ -64,9 +64,8 @@ end
 
 class "malfunctor"
 
-function malfunctor:__init(core)
+function malfunctor:__init()
     -- Constants
-    self.m_core = core
     self.m_anomaly_hit_duration = 20
 
     -- Variables
@@ -92,7 +91,7 @@ end
 function malfunctor:load(m_data)
     self.m_stay_off = m_data.stay_off or false
 
-    if m_data.enabled and not m_data.stay_off then
+    if m_data.enabled then
         self:enable_malfunction(m_data.stay_off)
     end
 end
@@ -102,8 +101,12 @@ function malfunctor:enable_malfunction(stay_off)
         self.m_enabled = true
         self.m_stay_off = stay_off or false
 
-        self.m_core:change_mode(armor_modes_enum.armor, false)
-        self.m_core:use_energy(100)
+        nanosuit_core.instance:change_mode(armor_modes_enum.armor, false)
+        nanosuit_core.instance:use_energy(100)
+
+        if nanosuit_core.instance.m_energy_off_voiced and not nanosuit_core.instance.m_sounds.energy_off:playing() then
+            nanosuit_core.instance.m_sounds.energy_off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+        end
 
         if not self.m_stay_off then
             CreateTimeEvent("nanosuit_malfunction", "disable", self.m_anomaly_hit_duration, function()
@@ -119,8 +122,8 @@ end
 function malfunctor:disable_malfunction()
     if self.m_enabled then
         self.m_enabled = false
-        self.m_core:change_mode(self.m_core.m_default_mode, true)
-        self.m_core.m_energy_last_use = time_global()
+        nanosuit_core.instance:change_mode(nanosuit_core.instance.m_default_mode, true)
+        nanosuit_core.instance.m_energy_last_use = time_global()
     end
 end
 

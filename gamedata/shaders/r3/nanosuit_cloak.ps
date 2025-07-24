@@ -1,0 +1,49 @@
+//====================================================================================================================//
+//                                                                                                                    //
+//     Original Author(s) : LVutner                                                                                   //
+//     Edited : Removed dependency on SSS (NLTP_ASHES - 07/07/2025)                                                   //
+//     Date : 07/07/2025                                                                                              //
+//     License : See README.md                                                                                        //
+//                                                                                                                    //
+//     Pixel shader for the Nanosuit cloak mode.                                                                      //
+//                                                                                                                    //
+//====================================================================================================================//
+
+#include "common.h"
+
+Texture2D s;
+void main(p_bumped r, float4 f: SV_Position, out float4 x: SV_Target, out float4 z: SV_Target2) {
+  f_deffer w;
+  float3 o = -normalize(r.position.xyz);
+  float3x3 i = float3x3(r.M1, r.M2, r.M3);
+  float3 y = s.Sample(smp_linear, r.tcdh.xy * 8).xyz * 2. - 1.;
+  y = mul(i, y);
+  y = normalize(y);
+  float m = dot(y, o);
+  float3 t = -2. * m * y + o;
+  m = saturate(m);
+  float3 e;
+  e.x = dot(t, i[0]);
+  e.y = dot(t, i[1]);
+  e.z = dot(t, i[2]);
+  float a = exp2(-9.28 * m);
+  float2 n = f.xy;
+  n *= screen_res.zw;
+  //n += ssfx_jitter.xy * float2(.5, -.5);
+  n = n.xy + e.xy / e.z * .01;
+  n = saturate(n);
+  float3 v = s_image.SampleLevel(smp_rtlinear, n, 0.);
+  float4 d = 0;
+  for (int p = 0; p < 2; p++)
+    for (int l = 0; l < 2; l++) {
+      float3 h = s_image.SampleLevel(smp_rtlinear, n + float2(p, l) * screen_res.zw, 0.).xyz;
+      h.x = s_image.SampleLevel(smp_rtlinear, n + float2(p, l) * screen_res.zw + float2(.0014, .0014), 0.).x;
+      h.z = s_image.SampleLevel(smp_rtlinear, n + float2(p, l) * screen_res.zw - float2(.0014, .0014), 0.).z;
+      d += float4(h, 1);
+    }
+  d.xyz /= d.w;
+  v = d;
+  v = float3(.955, .95, 1.1) * v + float3(.4, .5, 1.) * a * .15;
+  x = float4(v, 1.);
+  z = 0; //ssfx_mv_calc(r.vel_curr, r.vel_prev, 1, 0);
+}

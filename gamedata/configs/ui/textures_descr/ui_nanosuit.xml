@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 15/06/2025                                                                                            -->
+<!--    Date : 21/07/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Texture description file for the Nanosuit addon's UI textures.                                               -->
@@ -12,6 +12,11 @@
     <!-- Misc -->
     <file name="nanosuit\no_draw.dds">
         <texture id="ui_nanosuit_no_draw"                     x="0"       y="0"      width="1"       height="1" />
+    </file>
+
+    <!-- MCM -->
+    <file name="nanosuit\ui\mcm.dds">
+        <texture id="ui_nanosuit_mcm_banner"                  x="0"       y="0"      width="512"     height="50" />
     </file>
 
     <!-- Portraits -->
@@ -39,6 +44,8 @@
     </file>
     <file name="nanosuit\ui\hud\status\outline.dds">
         <texture id="ui_nanosuit_status_outline"              x="0"       y="0"      width="987"     height="562" />
+        <texture id="ui_nanosuit_status_tlc_outline"          x="0"       y="562"    width="116"     height="33" />
+        <texture id="ui_nanosuit_status_trc_outline"          x="116"     y="562"    width="116"     height="33" />
     </file>
     <file name="nanosuit\ui\hud\status\energy.dds">
         <texture id="ui_nanosuit_status_energy_bar"           x="0"       y="0"      width="495"     height="80" />

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 27/06/2025                                                                                             ---
+---    Date : 30/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -143,10 +143,10 @@ function core:__init()
 
     -- Armor modes
     self.m_modes = {
-        [armor_modes_enum.armor] = nanosuit_mode_armor[armor_modes_enum.armor](self, armor_modes_enum.armor),
-        [armor_modes_enum.power] = nanosuit_mode_power[armor_modes_enum.power](self, armor_modes_enum.power),
-        [armor_modes_enum.speed] = nanosuit_mode_speed[armor_modes_enum.speed](self, armor_modes_enum.speed),
-        [armor_modes_enum.cloak] = nanosuit_mode_cloak[armor_modes_enum.cloak](self, armor_modes_enum.cloak)
+        [armor_modes_enum.armor] = nanosuit_mode_armor[armor_modes_enum.armor](armor_modes_enum.armor),
+        [armor_modes_enum.power] = nanosuit_mode_power[armor_modes_enum.power](armor_modes_enum.power),
+        [armor_modes_enum.speed] = nanosuit_mode_speed[armor_modes_enum.speed](armor_modes_enum.speed),
+        [armor_modes_enum.cloak] = nanosuit_mode_cloak[armor_modes_enum.cloak](armor_modes_enum.cloak)
     }
 
     -- Default mode initialization
@@ -155,23 +155,21 @@ function core:__init()
     self.m_current_mode:apply(false)
 
     -- UIs
-    self.m_hud = nanosuit_ui_hud.ui_hud(self)
+    self.m_hud = nanosuit_ui_hud.ui_hud()
 
     -- Others
-    self.m_vaporizer = nanosuit_vaporizer.vaporizer(self)
-    self.m_malfunctor = nanosuit_malfunctor.malfunctor(self)
-    self.m_defibrillator = nanosuit_defibrillator.defibrillator(self)
-
-    -- Load
-    if loaded_m_data then
-        self:load(loaded_m_data)
-        loaded_m_data = nil
-    end
+    self.m_vaporizer = nanosuit_vaporizer.vaporizer()
+    self.m_malfunctor = nanosuit_malfunctor.malfunctor()
+    self.m_defibrillator = nanosuit_defibrillator.defibrillator()
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_death", self)
     RegisterScriptCallback("actor_on_update", self)
     RegisterScriptCallback("on_option_change", self)
+end
+
+function core:__finalize()
+    printf("[NS] Nanosuit core garbage collected")
 end
 
 function core:destroy()
@@ -181,12 +179,11 @@ function core:destroy()
     UnregisterScriptCallback("actor_on_update", self)
     UnregisterScriptCallback("on_option_change", self)
 
-    self.m_modes = {
-        [armor_modes_enum.armor] = nil,
-        [armor_modes_enum.power] = nil,
-        [armor_modes_enum.speed] = nil,
-        [armor_modes_enum.cloak] = nil
-    }
+    for _, sfx in pairs(self.m_sounds) do
+        if sfx:playing() then
+            sfx:stop()
+        end
+    end
 
     self.m_hud:destroy()
     self.m_vaporizer:destroy()
@@ -196,8 +193,8 @@ end
 
 function core:save(m_data)
     m_data.energy = self.m_energy
-    m_data.energy_last_use = self.m_energy_last_use
-    m_data.energy_last_regen = self.m_energy_last_regen
+    --m_data.energy_last_use = time_global() - self.m_energy_last_use
+    --m_data.energy_last_regen = time_global() - self.m_energy_last_regen
     m_data.energy_low_voiced = self.m_energy_low_voiced
     m_data.energy_very_low_voiced = self.m_energy_very_low_voiced
     m_data.energy_off_voiced = self.m_energy_off_voiced
@@ -215,8 +212,8 @@ end
 
 function core:load(m_data)
     self.m_energy = m_data.energy or self.m_energy
-    self.m_energy_last_use = m_data.energy_last_use or self.m_energy_last_use
-    self.m_energy_last_regen = m_data.energy_last_regen or self.m_energy_last_regen
+    --self.m_energy_last_use = (m_data.energy_last_use and time_global() + m_data.energy_last_use) or self.m_energy_last_use
+    --self.m_energy_last_regen = (m_data.energy_last_regen and time_global() + m_data.energy_last_regen) or self.m_energy_last_regen
     self.m_energy_low_voiced = m_data.energy_low_voiced or self.m_energy_low_voiced
     self.m_energy_very_low_voiced = m_data.energy_very_low_voiced or self.m_energy_very_low_voiced
     self.m_energy_off_voiced = m_data.energy_off_voiced or self.m_energy_off_voiced
@@ -268,6 +265,12 @@ function core:actor_on_death()
 end
 
 function core:actor_on_update()
+    -- Load
+    if loaded_m_data then
+        self:load(loaded_m_data)
+        loaded_m_data = nil
+    end
+
     -- Delay energy regen 5s after last energy use
     if time_global() - self.m_energy_last_use > self.m_energy_regen_delay and not self.m_malfunctor.m_enabled and not self.m_defibrillator.m_enabled then
         -- Throttle energy regen once every 100ms

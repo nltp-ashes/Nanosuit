@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 04/05/2025                                                                                             ---
+---    Date : 30/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a recoil lowering booster usable by a Nanosuit mode.                       ---
@@ -22,9 +22,9 @@ actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 class "recoil" (nanosuit_booster.abstract_booster)
 
-function recoil:__init(core, name) super(core, name)
+function recoil:__init(name) super(name)
     self.m_recoil_factor = 0.1
-    self.m_low_energy = core.m_energy <= core.m_energy_low_threshold
+    self.m_low_energy = nanosuit_core.instance.m_energy <= nanosuit_core.instance.m_energy_low_threshold
 
     -- Cache
     self.m_cache[actor_slots_enum.knife] = { enabled = true, obj_id = nil, dispersion = nil, dispersion_zoom = nil }
@@ -80,7 +80,7 @@ function recoil:unset(obj, slot)
 end
 
 function recoil:actor_on_update()
-    local has_enough_energy = self.m_core.m_energy >= self.m_core.m_energy_low_threshold
+    local has_enough_energy = nanosuit_core.instance.m_energy >= nanosuit_core.instance.m_energy_low_threshold
 
     local should_set = has_enough_energy and self.m_low_energy
     local should_unset = not has_enough_energy and not self.m_low_energy

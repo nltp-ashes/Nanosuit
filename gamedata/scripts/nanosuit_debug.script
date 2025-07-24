@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 27/06/2025                                                                                             ---
+---    Date : 30/06/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to execute debug functions to help in development.                                                ---
@@ -189,7 +189,7 @@ end
 
 class "dummy_sequence" (nanosuit_sequence.scripted_sequence)
 
-function dummy_sequence:__init(core) super(core)
+function dummy_sequence:__init() super()
 end
 
 function dummy_sequence:destroy()

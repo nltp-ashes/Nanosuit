@@ -1,0 +1,72 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : RavenAscendant                                                                           ---
+---    Edited : NLTP_ASHES                                                                                           ---
+---    Date : 21/07/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to define the options in MCM.                                                                     ---
+---                                                                                                                  ---
+---    If you do not have MCM installed, you can directly modify the values in the 'defaults' table just bellow.     ---
+---    Note that editing that table will require you to reload your save before changes can take effect.             ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+mcm_types_enum = nanosuit_utils.mcm_types_enum
+
+-- If you don't use MCM, change your defaults from here.
+defaults = {
+    ["defibrillate"] = DIK_keys.DIK_SPACE,
+    ["suit_menu"] = DIK_keys.DIK_V,
+    ["debug_mode"] = false
+}
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to get a given setting defined in MCM.
+--- If MCM isn't installed, it will default back to a value in defaults table.
+--- @param key string
+--- @return any
+function get_config(key)
+    if ui_mcm then
+        return ui_mcm.get("nanosuit/" .. key)
+    else
+        return defaults[key]
+    end
+end
+
+--- Function used to set the value of a given setting defined in MCM.
+--- If MCM isn't installed, it will temporarily change the value of the setting in the defaults table.
+--- @param key string
+--- @return any
+function set_config(key, value)
+    if ui_mcm then
+        return ui_mcm.set("nanosuit/" .. key, value)
+    else
+        defaults[key] = value
+    end
+end
+
+--- MCM UI definition.
+--- @return table
+function on_mcm_load()
+    op = { id="nanosuit", sh=true, gr={
+         {                       type="slide",       text="ui_mcm_nanosuit_title",    link="ui_nanosuit_mcm_banner",    spacing=20,    size={512,50} },
+         {                       type="line"                                                                                                         },
+         {                       type="title",       text="ui_mcm_nanosuit_keybindings_title"                                                        },
+         { id="defibrillate",    type="key_bind",    val=mcm_types_enum.number,       def=defaults["defibrillate"]                                   },
+         { id="suit_menu",       type="key_bind",    val=mcm_types_enum.number,       def=defaults["suit_menu"]                                      },
+         {                       type="line"                                                                                                         },
+         {                       type="title",       text="ui_mcm_nanosuit_technical_settings_title"                                                 },
+         { id="debug_mode",      type="check",       val=mcm_types_enum.boolean,      def=defaults["debug_mode"]                                     },
+    } }
+
+    return op
+end
