@@ -5,5 +5,6 @@
 **• Additions :**
 
 **• Changes :**
+> - Made "First Person Visible Body" addon an optional dependency rather than a hard requirement.
 
 **• Bug fixes :**
