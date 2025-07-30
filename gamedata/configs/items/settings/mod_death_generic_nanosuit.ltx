@@ -5,20 +5,10 @@
 ;;    Date : 31/07/2025                                                                                               ;;
 ;;    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)             ;;
 ;;                                                                                                                    ;;
-;;    DLTX config file used to add new hands and legs models.                                                         ;;
+;;    DLT config file used to define which outfit item to spawn in dead bodies for a given model.                     ;;
 ;;                                                                                                                    ;;
 ;;====================================================================================================================;;
 
-[actor_hud_nanosuit]:actor_hud
-visual         			= nanosuit\nanosuit\nanosuit_fp
-
-[actor_hud_nanosuit_asian]:actor_hud
-visual         			= nanosuit\nanosuit_asian\nanosuit_asian_fp
-
-@[actor_legs]
-
-[outfit_nanosuit_legs]:actor_legs
-visual                  = nanosuit\nanosuit\nanosuit_legs
-
-[outfit_nanosuit_asian_legs]:actor_legs
-visual                  = nanosuit\nanosuit_asian\nanosuit_asian_legs
+![outfit_by_visual]
+nanosuit_tp        = outfit_nanosuit
+nanosuit_asian_tp  = outfit_nanosuit_asian

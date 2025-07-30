@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 26/07/2025                                                                                             ---
+---    Date : 31/07/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's vaporization process.                                                    ---
@@ -125,7 +125,6 @@ function vaporizer:destroy()
 end
 
 function vaporizer:vaporize(obj)
-    -- Initialize storage
     if self.m_storage[obj:name()] then
         return
     end
@@ -144,10 +143,7 @@ function vaporizer:vaporize(obj)
 end
 
 function vaporizer:actor_on_death()
-    local sequence = self.m_storage[db.actor:name()]
-    if not sequence then
-        self:vaporize(db.actor)
-    end
+    self:vaporize(db.actor)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
