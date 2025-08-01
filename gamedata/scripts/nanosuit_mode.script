@@ -15,6 +15,7 @@
 
 actor_slots_enum        = nanosuit_utils.actor_slots_enum
 localized_sound_object  = nanosuit_utils.localized_sound_object
+hit_types_enum          = nanosuit_utils.hit_types_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Mode class
