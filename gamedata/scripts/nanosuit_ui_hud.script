@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/07/2025                                                                                             ---
+---    Date : 02/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -60,6 +60,9 @@ function ui_hud:__init(core) super()
         health = nanosuit_utils.get_constant(nil, "hud_colors_health", GetARGB(255, 85, 148, 17)),
         health_bg = GetARGB(200, 27, 33, 21),
         health_off_bg = GetARGB(200, 24, 24, 24),
+        stamina = nanosuit_utils.get_constant(nil, "hud_colors_stamina", GetARGB(255, 255, 255, 0)),
+        stamina_bg = GetARGB(200, 46, 46, 24),
+        stamina_off_bg = GetARGB(200, 24, 24, 24),
         red = GetARGB(255, 255, 0, 0)
     }
 

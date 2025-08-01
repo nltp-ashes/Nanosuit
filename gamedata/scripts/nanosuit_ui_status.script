@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/07/2025                                                                                             ---
+---    Date : 02/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit status hub (energy, health, ammo, etc) UI.                                 ---
@@ -73,6 +73,22 @@ function ui_status:__init(parent) super()
     self.m_ui_health_icon:SetTextureColor(self.m_parent.m_colors.text)
     arm.scale_ui(self.m_ui_health_icon, true, true, "right")
 
+    self.m_ui_stamina = self.m_xml:InitTextWnd("stamina", self)
+    self.m_ui_stamina:SetTextColor(self.m_parent.m_colors.text)
+    arm.scale_ui(self.m_ui_stamina, true, true, "right")
+
+    self.m_ui_stamina_bar_background = self.m_xml:InitStatic("stamina_bar_background", self)
+    self.m_ui_stamina_bar_background:SetTextureColor(self.m_parent.m_colors.stamina_bg)
+    arm.scale_ui(self.m_ui_stamina_bar_background, true, true, "right")
+
+    self.m_ui_stamina_bar = self.m_xml:InitProgressBar("stamina_bar", self)
+    arm.scale_ui(self.m_ui_stamina_bar, true, true, "right")
+    arm.scale_ui(self.m_ui_stamina_bar:GetProgressStatic(), true, true, "left", self.m_ui_stamina_bar:GetWidth())
+
+    self.m_ui_stamina_icon = self.m_xml:InitStatic("stamina_icon", self)
+    self.m_ui_stamina_icon:SetTextureColor(self.m_parent.m_colors.text)
+    arm.scale_ui(self.m_ui_stamina_icon, true, true, "right")
+
     self.m_ui_ammo_count = self.m_xml:InitTextWnd("ammo_count", self)
     self.m_ui_ammo_count:SetTextColor(self.m_parent.m_colors.text)
     arm.scale_ui(self.m_ui_ammo_count, true, true, "right")
@@ -127,6 +143,13 @@ function ui_status:Update(force)
         self.m_ui_health_bar_background:SetTextureColor(self.m_parent.m_colors.health_off_bg)
         self.m_ui_health_icon:SetTextureColor(self.m_parent.m_colors.red)
 
+        -- Stamina
+        self.m_ui_stamina:SetText("!")
+        self.m_ui_stamina:SetTextColor(self.m_parent.m_colors.red)
+        self.m_ui_stamina_bar:SetProgressPos(0)
+        self.m_ui_stamina_bar_background:SetTextureColor(self.m_parent.m_colors.stamina_off_bg)
+        self.m_ui_stamina_icon:SetTextureColor(self.m_parent.m_colors.red)
+
         -- Ammo count
         self.m_ui_ammo_count:SetText("")
 
@@ -151,6 +174,7 @@ function ui_status:Update(force)
     -- Energy
     local energy = self.m_parent.m_core.m_energy
     energy = round(energy)
+    energy = clamp(energy, 0, 100)
     self.m_ui_energy_bar:SetColor(energy > 20 and self.m_parent.m_colors.energy or self.m_parent.m_colors.red)
     self.m_ui_energy_bar:SetProgressPos(energy)
     self.m_ui_energy_bar_background:SetTextureColor(self.m_parent.m_colors.energy_bg)
@@ -162,8 +186,8 @@ function ui_status:Update(force)
     -- Health
     local health = db.actor.health
     health = health * 100
-    health = clamp(health, 0, 100)
     health = round(health)
+    health = clamp(health, 0, 100)
     self.m_ui_health_bar:SetColor(health > 20 and self.m_parent.m_colors.health or self.m_parent.m_colors.red)
     self.m_ui_health_bar:SetProgressPos(health)
     self.m_ui_health_bar_background:SetTextureColor(self.m_parent.m_colors.health_bg)
@@ -171,6 +195,19 @@ function ui_status:Update(force)
     self.m_ui_health:SetText(health)
     self.m_ui_health:SetTextColor(self.m_parent.m_colors.text)
     self.m_ui_health_icon:SetTextureColor(self.m_parent.m_colors.text)
+
+    -- Stamina
+    local stamina = db.actor.power
+    stamina = stamina * 100
+    stamina = round(stamina)
+    stamina = clamp(stamina, 0, 100)
+    self.m_ui_stamina_bar:SetColor(stamina > 20 and self.m_parent.m_colors.stamina or self.m_parent.m_colors.red)
+    self.m_ui_stamina_bar:SetProgressPos(stamina)
+    self.m_ui_stamina_bar_background:SetTextureColor(self.m_parent.m_colors.stamina_bg)
+    stamina = tostring(stamina)
+    self.m_ui_stamina:SetText(stamina)
+    self.m_ui_stamina:SetTextColor(self.m_parent.m_colors.text)
+    self.m_ui_stamina_icon:SetTextureColor(self.m_parent.m_colors.text)
 
     local active_item = db.actor:active_item()
     local weapon_obj = active_item and IsWeapon(active_item) and active_item

@@ -5,6 +5,8 @@
 **• Additions :**
 > - Added the Korean version of the nanosuit (Thanks Blackgrowl);
 > - Added radiation protection to all modes;
+> - The player now gets vaporized when they let an enemy stalker that saw them get away;
+> - Added a stamina bar to the nanosuit's HUD;
 
 **• Changes :**
 > - Made "First Person Visible Body" addon an optional dependency rather than a hard requirement.
