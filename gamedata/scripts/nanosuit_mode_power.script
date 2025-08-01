@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 27/07/2025                                                                                             ---
+---    Date : 01/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of strength mode of the Nanosuit addon.                                       ---
@@ -15,7 +15,6 @@
 
 -- Imports
 actor_slots_enum        = nanosuit_utils.actor_slots_enum
-hit_types_enum          = nanosuit_utils.hit_types_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Strength mode class
@@ -28,9 +27,6 @@ function power:__init(core, name) super(core, name, [[nanosuit\voice\mode_power_
     self.m_energy_use_shoot = 4
     self.m_energy_use_melee = 10
     self.m_energy_use_power_jump = 20
-
-    -- Protection related variables (value is hit power armor can absorb)
-    self.m_protection_map[hit_types_enum.strike] = 0.5
 
     -- Strength related variables
     self.m_wound_power_bonus = 1

@@ -23,16 +23,6 @@ hit_types_enum          = nanosuit_utils.hit_types_enum
 class "armor" (nanosuit_mode.abstract_mode)
 
 function armor:__init(core, name) super(core, name, [[nanosuit\voice\mode_armor_voice]])
-    -- Protection related variables (value is hit power armor can absorb)
-    self.m_protection_map[hit_types_enum.burn] = 5.0
-    self.m_protection_map[hit_types_enum.shock] = 1.0
-    self.m_protection_map[hit_types_enum.chemical_burn] = 2.0
-    self.m_protection_map[hit_types_enum.wound] = 2.0
-    self.m_protection_map[hit_types_enum.fire_wound] = nanosuit_utils.get_constant(nil, "armor_protection_fire_wound", 3.5)
-    self.m_protection_map[hit_types_enum.explosion] = 1.0
-    self.m_protection_map[hit_types_enum.wound_2] = 1.0
-    self.m_protection_map[hit_types_enum.light_burn] = 5.0
-
     -- Sound effects
     self.m_sounds.armor_on = sound_object([[nanosuit\modes\armor\mode_armor_on]])
     self.m_sounds.impacts = {

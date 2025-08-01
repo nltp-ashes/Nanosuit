@@ -30,20 +30,12 @@ function abstract_mode:__init(core, name, voice_path)
         voice = localized_sound_object(voice_path),
     }
     self.m_cache = {}
-    self.m_protection_map = {
-        [hit_types_enum.burn] = nil,
-        [hit_types_enum.shock] = nil,
-        [hit_types_enum.chemical_burn] = nil,
-        [hit_types_enum.radiation] = 0.5,
-        [hit_types_enum.telepathic] = nil,
-        [hit_types_enum.wound] = nil,
-        [hit_types_enum.fire_wound] = nil,
-        [hit_types_enum.strike] = nil,
-        [hit_types_enum.explosion] = nil,
-        [hit_types_enum.wound_2] = nil,
-        [hit_types_enum.light_burn] = nil
-    }
     self.m_boosters = {}
+    self.m_protection_map = {}
+    
+    for hit_name, hit_id in pairs(hit_types_enum) do
+        self.m_protection_map[hit_id] = nanosuit_utils.get_constant(nil, name .. "_protection_" .. hit_name, nil)
+    end
 end
 
 function abstract_mode:__eq(other)

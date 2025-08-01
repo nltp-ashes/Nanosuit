@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 27/07/2025                                                                                             ---
+---    Date : 01/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -31,7 +31,50 @@ gender_enum           = { male = "male", female = "female" }
 
 -- Constants
 constants_type_map         = {
+    ["armor_protection_burn"] = constants_types_enum.number,
+    ["armor_protection_shock"] = constants_types_enum.number,
+    ["armor_protection_chemical_burn"] = constants_types_enum.number,
+    ["armor_protection_radiation"] = constants_types_enum.number,
+    ["armor_protection_telepathic"] = constants_types_enum.number,
+    ["armor_protection_wound"] = constants_types_enum.number,
     ["armor_protection_fire_wound"] = constants_types_enum.number,
+    ["armor_protection_strike"] = constants_types_enum.number,
+    ["armor_protection_explosion"] = constants_types_enum.number,
+    ["armor_protection_wound_2"] = constants_types_enum.number,
+    ["armor_protection_light_burn"] = constants_types_enum.number,
+    ["cloak_protection_burn"] = constants_types_enum.number,
+    ["cloak_protection_shock"] = constants_types_enum.number,
+    ["cloak_protection_chemical_burn"] = constants_types_enum.number,
+    ["cloak_protection_radiation"] = constants_types_enum.number,
+    ["cloak_protection_telepathic"] = constants_types_enum.number,
+    ["cloak_protection_wound"] = constants_types_enum.number,
+    ["cloak_protection_fire_wound"] = constants_types_enum.number,
+    ["cloak_protection_strike"] = constants_types_enum.number,
+    ["cloak_protection_explosion"] = constants_types_enum.number,
+    ["cloak_protection_wound_2"] = constants_types_enum.number,
+    ["cloak_protection_light_burn"] = constants_types_enum.number,
+    ["power_protection_burn"] = constants_types_enum.number,
+    ["power_protection_shock"] = constants_types_enum.number,
+    ["power_protection_chemical_burn"] = constants_types_enum.number,
+    ["power_protection_radiation"] = constants_types_enum.number,
+    ["power_protection_telepathic"] = constants_types_enum.number,
+    ["power_protection_wound"] = constants_types_enum.number,
+    ["power_protection_fire_wound"] = constants_types_enum.number,
+    ["power_protection_strike"] = constants_types_enum.number,
+    ["power_protection_explosion"] = constants_types_enum.number,
+    ["power_protection_wound_2"] = constants_types_enum.number,
+    ["power_protection_light_burn"] = constants_types_enum.number,
+    ["speed_protection_burn"] = constants_types_enum.number,
+    ["speed_protection_shock"] = constants_types_enum.number,
+    ["speed_protection_chemical_burn"] = constants_types_enum.number,
+    ["speed_protection_radiation"] = constants_types_enum.number,
+    ["speed_protection_telepathic"] = constants_types_enum.number,
+    ["speed_protection_wound"] = constants_types_enum.number,
+    ["speed_protection_fire_wound"] = constants_types_enum.number,
+    ["speed_protection_strike"] = constants_types_enum.number,
+    ["speed_protection_explosion"] = constants_types_enum.number,
+    ["speed_protection_wound_2"] = constants_types_enum.number,
+    ["speed_protection_light_burn"] = constants_types_enum.number,
     ["hud_colors_text"] = constants_types_enum.color,
     ["hud_colors_background"] = constants_types_enum.color,
     ["hud_colors_energy"] = constants_types_enum.color,
