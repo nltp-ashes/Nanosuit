@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 27/07/2025                                                                                             ---
+---    Date : 01/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of armor mode of the Nanosuit addon.                                          ---
@@ -27,11 +27,8 @@ function armor:__init(core, name) super(core, name, [[nanosuit\voice\mode_armor_
     self.m_protection_map[hit_types_enum.burn] = 5.0
     self.m_protection_map[hit_types_enum.shock] = 1.0
     self.m_protection_map[hit_types_enum.chemical_burn] = 2.0
-    self.m_protection_map[hit_types_enum.radiation] = 0.5
-    self.m_protection_map[hit_types_enum.telepathic] = nil
     self.m_protection_map[hit_types_enum.wound] = 2.0
-    self.m_protection_map[hit_types_enum.fire_wound] = nanosuit_utils.get_constant(nil, "armor_protection_fire_wound", 2.0)
-    self.m_protection_map[hit_types_enum.strike] = nil
+    self.m_protection_map[hit_types_enum.fire_wound] = nanosuit_utils.get_constant(nil, "armor_protection_fire_wound", 3.5)
     self.m_protection_map[hit_types_enum.explosion] = 1.0
     self.m_protection_map[hit_types_enum.wound_2] = 1.0
     self.m_protection_map[hit_types_enum.light_burn] = 5.0
