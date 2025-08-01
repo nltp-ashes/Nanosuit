@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 31/07/2025                                                                                             ---
+---    Date : 01/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's vaporization process.                                                    ---
@@ -46,10 +46,8 @@ function add_to_binder(npc, ini, scheme, section, storage, temp)
     manager:add_evaluator(evaluator_id, evaluator_nanosuit_vaporize(npc, "evaluator_nanosuit_vaporize", storage))
 
     temp.action = action_nanosuit_vaporize(npc, "action_nanosuit_vaporize", storage)
-
     temp.action:add_precondition(world_property(stalker_ids.property_alive, true))
     temp.action:add_precondition(world_property(evaluator_id, true))
-
     temp.action:add_effect(world_property(evaluator_id, false))
 
     manager:add_action(action_id, temp.action)
@@ -106,10 +104,15 @@ function vaporizer:__init(core)
     self.m_core = core
 
     -- Variables
+    self.m_witness_list = {}
+    self.m_witness_max_dist_sqr = 10000
+    self.m_witness_update_rate = 2000
+    self.m_witness_next_update = 0
     self.m_storage = {}
 
     -- Callbacks
     RegisterScriptCallback("actor_on_death", self)
+    RegisterScriptCallback("actor_on_update", self)
 end
 
 function vaporizer:destroy()
@@ -122,15 +125,21 @@ function vaporizer:destroy()
 
     -- Callbacks
     UnregisterScriptCallback("actor_on_death", self)
+    UnregisterScriptCallback("actor_on_update", self)
 end
 
-function vaporizer:vaporize(obj)
-    if self.m_storage[obj:name()] then
+function vaporizer:vaporize(obj, has_witness)
+    if self:is_vaporizing(obj) then
         return
     end
 
     local sequence = nanosuit_sequence_vaporization.vaporization_sequence(obj:id())
-    sequence:from(sequence.action_sounds)
+    if has_witness then
+        sequence:from(sequence.action_notify_witness)
+        sequence:after(sequence.action_sounds, 5)
+    else
+        sequence:from(sequence.action_sounds)
+    end
     sequence:after(sequence.action_burn, 1.2)
     sequence:after(sequence.action_kill, 1.3)
     sequence:after(sequence.action_force_kill, 0.1)
@@ -144,6 +153,42 @@ end
 
 function vaporizer:actor_on_death()
     self:vaporize(db.actor)
+end
+
+function vaporizer:actor_on_update()
+    -- Throttle update
+    local tg = time_global()
+    if self.m_witness_next_update >= tg then
+        return
+    else
+        self.m_witness_next_update = tg + self.m_witness_update_rate
+    end
+
+    -- Update witness list
+    for id in pairs(xr_combat_ignore.fighting_with_actor_npcs) do
+        local obj = level.object_by_id(id)
+        if obj and IsStalker(obj) and db.actor:position():distance_to_sqr(obj:position()) <= self.m_witness_max_dist_sqr then
+            printf("[NS] Vaporizer | Adding witness %s to list", id)
+            self.m_witness_list[id] = true
+        end
+    end
+
+    -- Detect witness getting away
+    for id in pairs(self.m_witness_list) do
+        local obj = level.object_by_id(id)
+        if not obj or not obj:alive() then
+            printf("[NS] Vaporizer | Removing witness %s, object is gone or dead", id)
+            self.m_witness_list[id] = nil
+        elseif not xr_combat_ignore.fighting_with_actor_npcs[id] and db.actor:position():distance_to_sqr(obj:position()) > self.m_witness_max_dist_sqr then
+            printf("[NS] Vaporizer | Removing witness %s, object got away - starting vaporization", id)
+            self.m_witness_list[id] = nil
+            self:vaporize(db.actor, true)
+        end
+    end
+end
+
+function vaporizer:is_vaporizing(obj)
+    return self.m_storage[obj:name()] ~= nil
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------

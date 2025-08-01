@@ -10,7 +10,11 @@ Fend off the Zone's dangers with the Nanosuit, a powerful and extremely versatil
 
 ### ABOUT
 
-This addon adds a fully operational Nanosuit from Crysis. 
+This addon adds a fully operational Nanosuit from Crysis.
+
+**Important :** This addon is still in development. It is stable enough that I feel confident people can start having fun with it. But it isn't complete. YOU HAVE TO SPAWN THE OUTFIT USING THE [DEBUG MENU ITEM SPAWNER](https://igigog.github.io/anomaly-modding-book/modding-tools/in-game-editors/item-spawner.html).
+
+**Important :** Expect a lot of soft-conflicts (aka it will work, but it won't look nice) with UI mods. Please report as many UI related issues as you can.
 
 Bellow is a list of features that are currently available in the addon :
 
@@ -69,6 +73,7 @@ Malfunctions :
 
 Vaporization :
 - When the player (or an NPC) dies wearing the suit, they will be vaporized, leaving no body behind
+- When the player enters combat with an NPC, and then tries to escape the fight, they will be vaporized
 - When NPCs get vaporized alive, they enter a special animation
 
 ---
