@@ -1,17 +1,16 @@
-## **v0.9.0 - 01/08/2025 - Alpha Build**
+## **v0.9.0 - 02/08/2025 - Alpha Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.9.0/total?label=Downloads)]()
 
 **• Additions :**
 > - Added the Korean version of the nanosuit (Thanks Blackgrowl);
-> - Added radiation protection to all modes;
 > - The player now gets vaporized when they let an enemy stalker that saw them get away (experimental - see MCM);
 > - Added a stamina bar to the nanosuit's HUD;
 
 **• Changes :**
 > - Made "First Person Visible Body" addon an optional dependency rather than a hard requirement;
-> - All suit modes now protect against radiation;
-> - Increased armor mode's protection against gun shots;
+> - All suit modes now protect against radiation at the cost of energy;
+> - All suit modes now have basic ballistic, rupture and explosive protection (similar to the Sunrise suit);
 > - Increased the suit's carrying capacity by 20kg;
 
 **• Bug fixes :**
