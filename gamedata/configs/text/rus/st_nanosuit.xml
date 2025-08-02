@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
-<!--    Date : 24/07/2025                                                                                            -->
+<!--    Date : 02/08/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -68,6 +68,18 @@
     </string>
 
     <!--=============================================================================================================-->
+    <!--    Nanosuit built-in vaporizer                                                                              -->
+    <!--=============================================================================================================-->
+
+    <string id="st_nanosuit_vaporizer_header">
+        <text>Нанокостюм</text>
+    </string>
+
+    <string id="st_nanosuit_vaporizer_message">
+        <text>Нарушение протокола. Вы позволили кому-то, кто вас видел, сбежать, вы будете ликвидированы.</text>
+    </string>
+
+    <!--=============================================================================================================-->
     <!--    Nanosuit voice lines                                                                                     -->
     <!--=============================================================================================================-->
 
@@ -104,12 +116,25 @@
         <text>Нанокостюм</text>
     </string>
 
+    <string id="ui_mcm_nanosuit_general_title">
+        <text>ОБЩИЕ НАСТРОЙКИ</text>
+    </string>
+
     <string id="ui_mcm_nanosuit_keybindings_title">
         <text>ПАРАМЕТРЫ НАСТРОЕК КЛАВИШ</text>
     </string>
 
     <string id="ui_mcm_nanosuit_technical_settings_title">
         <text>ТЕХНИЧЕСКИЕ НАСТРОЙКИ</text>
+    </string>
+
+    <!-- Enable vaporize on witness get-away -->
+    <string id="ui_mcm_nanosuit_use_witness">
+        <text>Выпаривать свидетелей при побеге</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_use_witness_desc">
+        <text>Протокол заключается в том, чтобы не оставлять свидетелей вашего присутствия. Если включено, игрок будет выпарен, когда он позволит противнику сбежать после боя.</text>
     </string>
 
     <!-- Use defibrillator -->

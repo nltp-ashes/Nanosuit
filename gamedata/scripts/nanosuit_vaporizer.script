@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 01/08/2025                                                                                             ---
+---    Date : 02/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's vaporization process.                                                    ---
@@ -182,7 +182,9 @@ function vaporizer:actor_on_update()
         elseif not xr_combat_ignore.fighting_with_actor_npcs[id] and db.actor:position():distance_to_sqr(obj:position()) > self.m_witness_max_dist_sqr then
             printf("[NS] Vaporizer | Removing witness %s, object got away - starting vaporization", id)
             self.m_witness_list[id] = nil
-            self:vaporize(db.actor, true)
+            if nanosuit_mcm.get_config("use_witness") then
+                self:vaporize(db.actor, true)
+            end
         end
     end
 end

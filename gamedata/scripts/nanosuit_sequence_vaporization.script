@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 26/07/2025                                                                                             ---
+---    Date : 02/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the animated sequence of the vaporization.                                              ---
@@ -104,8 +104,8 @@ function vaporization_sequence:wait_for_state()
 end
 
 function vaporization_sequence:action_notify_witness()
-    local header = nanosuit_utils.get_translation("Nanosuit") -- TODO : Translate that
-    local message = nanosuit_utils.get_translation("You have let someone who saw you escape, you will be terminated.") -- TODO : Translate that
+    local header = nanosuit_utils.get_translation("st_nanosuit_vaporizer_header")
+    local message = nanosuit_utils.get_translation("st_nanosuit_vaporizer_message")
     local duration = 5
     local icon = "ui_inGame2_no_data"
     dynamic_news_helper.send_tip(message, header, nil, duration, icon, "beep_1", "npc")

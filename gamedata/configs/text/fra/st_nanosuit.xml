@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 24/07/2025                                                                                            -->
+<!--    Date : 02/08/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -68,6 +68,18 @@
     </string>
 
     <!--=============================================================================================================-->
+    <!--    Nanosuit built-in vaporizer                                                                              -->
+    <!--=============================================================================================================-->
+
+    <string id="st_nanosuit_vaporizer_header">
+        <text>Nano-combinaison</text>
+    </string>
+
+    <string id="st_nanosuit_vaporizer_message">
+        <text>Rupture du protocole. Vous avez laissé s'échapper quelqu'un qui vous a vu, vous allez être éliminé.</text>
+    </string>
+
+    <!--=============================================================================================================-->
     <!--    Nanosuit voice lines                                                                                     -->
     <!--=============================================================================================================-->
 
@@ -104,12 +116,25 @@
         <text>Nanocombinaison</text>
     </string>
 
+    <string id="ui_mcm_nanosuit_general_title">
+        <text>PARAMÈTRES GÉNÉRAUX</text>
+    </string>
+
     <string id="ui_mcm_nanosuit_keybindings_title">
-        <text>PARAMÉTRAGE DES TOUCHES</text>
+        <text>PARAMÈTRES DES TOUCHES</text>
     </string>
 
     <string id="ui_mcm_nanosuit_technical_settings_title">
         <text>PARAMÈTRES TECHNIQUES</text>
+    </string>
+
+    <!-- Enable vaporize on witness get-away -->
+    <string id="ui_mcm_nanosuit_use_witness">
+        <text>Vaporisation quand un témoin s'échappe</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_use_witness_desc">
+        <text>Le protocole est de ne laisser aucun témoin de votre présence. Si activé, le joueur sera vaporisé s'il laisse un ennemi s'échapper après avoir été en combat.</text>
     </string>
 
     <!-- Use defibrillator -->
