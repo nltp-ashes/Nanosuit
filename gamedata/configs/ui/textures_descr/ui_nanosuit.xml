@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 02/08/2025                                                                                            -->
+<!--    Date : 06/08/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Texture description file for the Nanosuit addon's UI textures.                                               -->
@@ -25,6 +25,7 @@
         <texture id="ui_nanosuit_portrait_2"                  x="165"     y="0"      width="165"     height="108" />
         <texture id="ui_nanosuit_portrait_3"                  x="0"       y="108"    width="165"     height="108" />
         <texture id="ui_nanosuit_portrait_4"                  x="165"     y="108"    width="165"     height="108" />
+        <texture id="ui_nanosuit_asian_portrait_1"            x="330"     y="0"      width="165"     height="108" />
     </file>
 
     <!-- Menu UI -->
