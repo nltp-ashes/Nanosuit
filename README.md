@@ -145,6 +145,7 @@ If you would like to help development for future updates, you can :
 The following issues will be fixed in the near future :
 - Cloak mode does not work if the NPC sees the actor before the cloak is applied, right now you need to break vision for it to work
 - Cloak mode does not work on mutants
+- Cloak mode sometimes messes with the equipped items' textures when switching slot while in the mode (workaround : perform a save/load)
 - The game crashes if actor interacts with an NPC while they're getting vaporized
 - The game crashes if player reloads a save while cloak mode is enabled
 
@@ -188,6 +189,7 @@ Special thanks to these people for their help in the making of this addon :
 
 |                      Name                      |                                                     Motive                                                     |
 |:----------------------------------------------:|:--------------------------------------------------------------------------------------------------------------:|
+|                 **Vanquisher**                 |                             For extensive play-testing and all the feedback given                              |
 |                 **Medialuna**                  |    For all the tips and tricks with modeling/textures that objectively made my life a little less miserable    |
 | **[Lucy](https://www.moddb.com/members/r3zy)** | For adding engine support to change, at runtime and using scripts, the textures and shaders of any game_object |
 
@@ -204,7 +206,7 @@ This means you're allowed to redistribute and/or adapt the work, as long as you 
 
 Content made by Blackgrowl can be reused, as long as you credit him for the work he did in this addon (texture work, model fixes).
 
-Content made by LVutner is licensed under the following license :
+Content made by LVutner is provided under the following license :
 ```
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```

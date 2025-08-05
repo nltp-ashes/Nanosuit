@@ -210,7 +210,7 @@ function ui_status:Update(force)
     self.m_ui_stamina_icon:SetTextureColor(self.m_parent.m_colors.text)
 
     local active_item = db.actor:active_item()
-    local weapon_obj = active_item and IsWeapon(active_item) and active_item
+    local weapon_obj = active_item and IsWeapon(active_item) and not IsMelee(active_item) and active_item
     local weapon_class = weapon_obj and weapon_obj:cast_Weapon()
 
     -- Ammo count
@@ -233,6 +233,6 @@ function ui_status:Update(force)
     local fire_mode = weapon_class and weapon_class:GetFireMode()
     fire_mode = fire_mode and fire_modes_names_enum[fire_mode]
     fire_mode = fire_mode and "ui_nanosuit_status_" .. fire_mode
-    fire_mode = fire_mode or "ui_nanosuit_status_auto"
+    fire_mode = fire_mode or "ui_nanosuit_no_draw"
     self.m_ui_fire_mode:InitTexture(fire_mode)
 end
