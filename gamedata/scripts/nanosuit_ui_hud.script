@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 02/08/2025                                                                                             ---
+---    Date : 06/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -50,6 +50,7 @@ function ui_hud:__init(core) super()
     -- Variables
     self.m_next_update = time_global()
     self.m_update_rate = 1000
+    self.m_set_msg_functor = nil
     self.m_colors = {
         text = nanosuit_utils.get_constant(nil, "hud_colors_text", GetARGB(255, 129, 183, 135)),
         background = nanosuit_utils.get_constant(nil, "hud_colors_background", GetARGB(200, 99, 125, 102)),
@@ -120,18 +121,43 @@ end
 
 function ui_hud:switch_hud(take_control)
     -- Get main HUD
+    local hud = get_hud()
     local main_hud = ActorMenu.get_maingame()
 
     if take_control then
         -- Attach to main HUD
-        get_hud():AddDialogToRender(self)
+        hud:AddDialogToRender(self)
+
+        -- Remove PDA icon
+        self:remove_pda_icon()
+
+        self.m_set_msg_functor = actor_menu.set_msg
+        actor_menu.set_msg = function(...)
+            local res = self.m_set_msg_functor(...)
+            self:remove_pda_icon()
+            return res
+        end
+
+        self.m_set_notification_functor = actor_menu.set_notification
+        actor_menu.set_notification = function(...)
+            local res = self.m_set_notification_functor(...)
+            self:remove_pda_icon()
+            return res
+        end
 
         -- Hide minimap
         main_hud.UIZoneMap.disabled = true
         main_hud.UIMotionIcon:Show(false)
     else
         -- Detach from main HUD
-        get_hud():RemoveDialogToRender(self)
+        hud:RemoveDialogToRender(self)
+
+        -- Restore PDA icon
+        actor_menu.set_msg = self.m_set_msg_functor
+        self.m_set_msg_functor = nil
+
+        actor_menu.set_notification = self.m_set_notification_functor
+        self.m_set_notification_functor = nil
 
         -- Show minimap
         main_hud.UIZoneMap.disabled = not ui_options.get([[video/hud/show_minimap]])
@@ -160,7 +186,6 @@ function ui_hud:switch_hud(take_control)
 end
 
 function ui_hud:get_elements_to_move()
-    local hud = get_hud()
     local main_hud = ActorMenu.get_maingame()
 
     local elements_to_move = {
@@ -179,14 +204,6 @@ function ui_hud:get_elements_to_move()
     if factionid_hud_mcm and factionid_hud_mcm.HUD then
         table.insert(elements_to_move, { element = factionid_hud_mcm.HUD, x = 115 })
     end
-
-    -- Lil shit
-    local notify_cs = hud:GetCustomStatic("notify_icon")
-    if not notify_cs then
-        hud:AddCustomStatic("notify_icon", true)
-        notify_cs = hud:GetCustomStatic("notify_icon")
-    end
-    table.insert(elements_to_move, { element = notify_cs:wnd(), hide = true })
 
     return elements_to_move
 end
@@ -231,4 +248,12 @@ function ui_hud:Update(force)
     self.m_ui_tacmap:Update(force)
     self.m_ui_indicators:Update(force)
     self.m_ui_defibrillator:Update(force)
+end
+
+function ui_hud:remove_pda_icon()
+    local hud = get_hud()
+    if hud and hud:GetCustomStatic("notify_icon") then
+        -- Lil shit
+        hud:RemoveCustomStatic("notify_icon")
+    end
 end
