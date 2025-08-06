@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 02/08/2025                                                                                            -->
+<!--    Date : 06/08/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -36,7 +36,7 @@
     </string>
 
     <string id="st_nanosuit_asian_outfit_descr">
-        <text>The Korean nanosuit is an advanced tactical-combat armor developed by North Korean scientists, designed to enhance the physical and combat capabilities of its operator. Utilizing proprietary nanofiber technology, the suit offers four operational modes — Armor, Strength, Speed, and Cloak — alongside robust environmental controls. It employs traditional ceramic plates to compensate for the fact that its nanofibers have difficulties contracting, a key feature required for ballistic protection. It also features cloaking capabilities, although instabilities in the system may expose the wearer due to occasional sparking. The suit features a distinctive Japanese woodland camouflage pattern and a yellow-orange visor. Even with its few issues, the Korean nanosuit remains a formidable asset on the battlefield, granting its wearer superhuman abilities and increased survivability.\n \n</text>
+        <text>The Korean nanosuit is an advanced tactical-combat armor developed by North Korean scientists, designed to enhance the physical and combat capabilities of its operator. Utilizing proprietary nanofiber technology, the suit offers four operational modes — Armor, Strength, Speed, and Cloak — alongside robust environmental controls. It employs traditional ceramic plates to compensate for the fact that its nanofibers have difficulties contracting, a key feature required for ballistic protection. It also features cloaking capabilities, although instabilities in the system may expose the wearer due to occasional sparking. The suit features a distinctive Japanese woodland camouflage pattern. Even with its few issues, the Korean nanosuit remains a formidable asset on the battlefield, granting its wearer superhuman abilities and increased survivability.\n \n</text>
     </string>
 
     <!--=============================================================================================================-->

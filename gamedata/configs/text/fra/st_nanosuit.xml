@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 02/08/2025                                                                                            -->
+<!--    Date : 06/08/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -36,7 +36,7 @@
     </string>
 
     <string id="st_nanosuit_asian_outfit_descr">
-        <text>La nano-combinaison nord-coréenne est un ensemble tactique avancé développé par des scientifiques nord-coréens, conçue pour améliorer les capacités physiques et de combat de son opérateur. Utilisant une technologie de nano-fibres propriétaires, la combinaison offre quatre modes opérationnels — Armure, Force, Vitesse et Camouflage — ainsi que des contrôles environnementaux robustes. Elle utilise des plaques céramiques traditionnelles pour compenser le fait que ses nano-fibres ont des difficultés à se contracter, une caractéristique clé requise pour la protection balistique. Elle est également capable de camoufler son opérateur, bien que des instabilités dans le système puissent exposer le porteur en raison d'étincelles occasionnelles. La combinaison présente un motif de camouflage japonais distinctif et un viseur jaune-orange. Malgré ses quelques problèmes, la nano-combinaison nord-coréenne reste un atout redoutable sur le champ de bataille, offrant à son porteur des capacités surhumaines et une espérance de survie accrue.\n \n</text>
+        <text>La nano-combinaison nord-coréenne est un ensemble tactique avancé développé par des scientifiques nord-coréens, conçue pour améliorer les capacités physiques et de combat de son opérateur. Utilisant une technologie de nano-fibres propriétaires, la combinaison offre quatre modes opérationnels — Armure, Force, Vitesse et Camouflage — ainsi que des contrôles environnementaux robustes. Elle utilise des plaques céramiques traditionnelles pour compenser le fait que ses nano-fibres ont des difficultés à se contracter, une caractéristique clé requise pour la protection balistique. Elle est également capable de camoufler son opérateur, bien que des instabilités dans le système puissent exposer le porteur en raison d'étincelles occasionnelles. La combinaison présente un motif de camouflage japonais distinctif. Malgré ses quelques problèmes, la nano-combinaison nord-coréenne reste un atout redoutable sur le champ de bataille, offrant à son porteur des capacités surhumaines et une espérance de survie accrue.\n \n</text>
     </string>
 
     <!--=============================================================================================================-->
