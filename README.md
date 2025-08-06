@@ -10,7 +10,7 @@ Fend off the Zone's dangers with the Nanosuit, a powerful and extremely versatil
 
 ### ABOUT
 
-This addon adds a fully operational Nanosuit from Crysis.
+This addon adds a fully operational US and Korean nanosuits from Crysis.
 
 **Important :** This addon is still in development. It is stable enough that I feel confident people can start having fun with it. But it isn't complete. YOU HAVE TO SPAWN THE OUTFIT USING THE [DEBUG MENU ITEM SPAWNER](https://igigog.github.io/anomaly-modding-book/modding-tools/in-game-editors/item-spawner.html).
 
@@ -22,13 +22,14 @@ Miscellaneous :
 - The nanosuit comes with third person, first person and world models; inventory icons and character portraits (and even legs model if you use [First Person Visible Body](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version))
 - The Nanosuit voice-lines are available in English, French and Russian, depending on the game language
 - The addon features an MCM menu, allowing you to change some settings on the fly
+- All suit modes protect from incoming radiation, at the cost of energy
 
 Armor mode :
 - Absorbs all incoming damage as long as the suit has energy
 - The more powerful is the impact, the more energy it consumes
 - Some damage types consume more energy than others
 - When the suit is out of energy, all incoming damage is transferred to the player
-- The suit does not protect against psi-emissions and blunt force (fall-damage, poltergeist throws, etc.)
+- The mode does not protect against psi-emissions and blunt force (fall-damage, poltergeist throws, etc.)
 
 Speed mode :
 - Increases walk speed by 25%, does not consume energy
@@ -41,6 +42,7 @@ Strength mode :
 - Increases jump height by 100%, proportionally to the suit's energy level
 - Increases carrying capacity by 25kg
 - Decreases weapon recoil by a factor of 10, for as long as the suit has energy
+- Protects against fall damage, as long as the suit has energy
 - Shooting while in strength mode consumes energy
 - When low on energy, recoil goes back to normal
 
@@ -55,16 +57,16 @@ Cloak mode :
 HUD :
 - Added a custom HUD when wearing the suit. HUD dynamically switches from vanilla HUD to the Nanosuit's and back
 - HUD is divided in 3 parts : the menu, the left side shows a minimap, the right side shows the suit's status
-- The menu (opened by pressing V) allows you to switch from one mode to another
+- The menu (opened by pressing V, configurable in MCM) allows you to switch from one mode to another
 - The minimap shows all human objects around the player
-- The status hub shows the suit's current mode, energy level, health, ammo count, ammo reserve and fire mode
+- The status hub shows the suit's current mode, energy level, health, stamina, ammo count, ammo reserve and fire mode
 
 Defibrillator :
 - If the player dies, under certain conditions, an animated sequence will play, giving the option to get a second chance
 - The defibrillator can only be used when dying from certain damage types (fall damage, radiation, lacerations)
 - A defibrillator powerbank is required for the defibrillator to activate
 - Powerbanks are single use, and need to be replaced after being revived
-- During the defibrillator sequence, the player has a 3 seconds window to press the dedicated key, after which the player dies
+- During the defibrillator sequence, the player has a 3 seconds window to press Space (configurable in MCM), after which the player dies
 
 Malfunctions :
 - The suit can malfunction, turning it off (protection and bonuses are removed) and disabling the HUD (turns red and indicators are offline)
@@ -74,6 +76,7 @@ Malfunctions :
 Vaporization :
 - When the player (or an NPC) dies wearing the suit, they will be vaporized, leaving no body behind
 - When the player enters combat with an NPC, and then tries to escape the fight, they will be vaporized
+- The player is allowed to walk away from a fight with zombies, or Monolith fighters
 - When NPCs get vaporized alive, they enter a special animation
 
 ---
