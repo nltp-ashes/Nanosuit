@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 02/08/2025                                                                                             ---
+---    Date : 06/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's vaporization process.                                                    ---
@@ -167,7 +167,7 @@ function vaporizer:actor_on_update()
     -- Update witness list
     for id in pairs(xr_combat_ignore.fighting_with_actor_npcs) do
         local obj = level.object_by_id(id)
-        if obj and IsStalker(obj) and db.actor:position():distance_to_sqr(obj:position()) <= self.m_witness_max_dist_sqr then
+        if self:is_witness(obj) then
             printf("[NS] Vaporizer | Adding witness %s to list", id)
             self.m_witness_list[id] = true
         end
@@ -187,6 +187,15 @@ function vaporizer:actor_on_update()
             end
         end
     end
+end
+
+function vaporizer:is_witness(obj)
+    return obj ~= nil
+        and IsStalker(obj)
+        and obj:alive()
+        and obj:character_community() ~= "monolith"
+        and obj:character_community() ~= "zombied"
+        and db.actor:position():distance_to_sqr(obj:position()) <= self.m_witness_max_dist_sqr
 end
 
 function vaporizer:is_vaporizing(obj)
