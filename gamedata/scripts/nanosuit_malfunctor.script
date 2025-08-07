@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/07/2025                                                                                             ---
+---    Date : 07/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the malfunction logic of the Nanosuit addon.                                            ---
@@ -29,12 +29,8 @@ bind_anomaly_field.pulse_anomaly_hit = function(particle_pos)
     local ret = bind_anomaly_field_pulse_anomaly_hit(particle_pos)
 
     local instance = nanosuit_core.get_instance() and nanosuit_core.get_instance().m_malfunctor
-    if not instance then
-        return
-    end
-
-    local dist_sqr = distance_2d_sqr(db.actor:position(), particle_pos)
-    if dist_sqr <= pulse_anomaly_malfunction_dist_sqr then
+    local is_in_range = distance_2d_sqr(db.actor:position(), particle_pos) <= pulse_anomaly_malfunction_dist_sqr
+    if instance and is_in_range then
         instance:enable_malfunction(false)
     end
 
@@ -46,12 +42,8 @@ psi_storm_manager.CPsiStormManager.vortex_actor_hit = function(self, vortex)
     local ret = psi_storm_manager_CPsiStormManager_vortex_actor_hit(self, vortex)
 
     local instance = nanosuit_core.get_instance() and nanosuit_core.get_instance().m_malfunctor
-    if not instance then
-        return
-    end
-
-    local dist_sqr = distance_2d_sqr(db.actor:position(), vortex.particle_pos)
-    if dist_sqr <= psi_storm_malfunction_dist_sqr then
+    local is_in_range = distance_2d_sqr(db.actor:position(), vortex.particle_pos) <= psi_storm_malfunction_dist_sqr
+    if instance and is_in_range then
         instance:enable_malfunction(false)
     end
 
