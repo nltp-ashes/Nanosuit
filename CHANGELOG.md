@@ -13,6 +13,7 @@
 > - All suit modes now protect against radiation at the cost of energy;
 > - All suit modes now have basic ballistic, rupture and explosive protection (similar to the Sunrise suit);
 > - Increased the suit's carrying capacity by 20kg;
+> - Hid an additional HUD element (the number of UGBL grenades in stock) from the vanilla HUD when the nanosuit is equipped;
 
 **• Bug fixes :**
 > - Fixed the nanosuit's hands (Huge thanks @punished__joe);
