@@ -33,10 +33,12 @@ function ui_indicators:__init(parent) super()
         [5] = GetARGB(255,255,50,50), -- red
     }
     self.m_config_override = {
+        -- Indicators
         ["Radiation"] = { icon = "ui_nanosuit_ind_booster_rad", background = "ui_nanosuit_ind_indicator_slot" },
         ["Hunger"] = { icon = "ui_nanosuit_ind_indicator_hunger", background = "ui_nanosuit_ind_indicator_slot" },
         ["Overweight"] = { icon = "ui_nanosuit_ind_indicator_overweight", background = "ui_nanosuit_ind_indicator_slot" },
 
+        -- Boosters
         ["HpRestore"] = { icon = "ui_nanosuit_ind_booster_health", background = "ui_nanosuit_ind_booster_slot" },
         ["BleedingRestore"] = { icon = "ui_nanosuit_ind_booster_bleed", background = "ui_nanosuit_ind_booster_slot" },
         ["RadiationRestore"] = { icon = "ui_nanosuit_ind_booster_rad", background = "ui_nanosuit_ind_booster_slot" },
@@ -44,7 +46,11 @@ function ui_indicators:__init(parent) super()
         ["PowerRestore"] = { icon = "ui_nanosuit_ind_booster_power", background = "ui_nanosuit_ind_booster_slot" },
         ["RadiationProtection"] = { icon = "ui_nanosuit_ind_booster_ext_rad", background = "ui_nanosuit_ind_booster_slot" },
         ["TelepaticProtection"] = { icon = "ui_nanosuit_ind_booster_psi", background = "ui_nanosuit_ind_booster_slot" },
-        ["ChemicalBurnProtection"] = { icon = "ui_nanosuit_ind_booster_chem", background = "ui_nanosuit_ind_booster_slot" }
+        ["ChemicalBurnProtection"] = { icon = "ui_nanosuit_ind_booster_chem", background = "ui_nanosuit_ind_booster_slot" },
+
+        -- Hunger, thirst, sleepiness bars addon
+        ["Thirst"] = { icon = "ui_nanosuit_ind_indicator_thirst", background = "ui_nanosuit_ind_indicator_slot" },
+        ["Sleep"] = { icon = "ui_nanosuit_ind_indicator_sleep", background = "ui_nanosuit_ind_indicator_slot" }
     }
 
     actor_status.prepare_indictors_list()
