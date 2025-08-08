@@ -1,4 +1,4 @@
-## **v0.9.0 - 07/08/2025 - Alpha Build**
+## **v0.9.0 - 08/08/2025 - Alpha Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.9.0/total?label=Downloads)]()
 
@@ -25,3 +25,5 @@
 > - Fixed pulse anomalies spawning a permanent "damage area" after discharge (Thanks zes91);
 
 **Note :** This update requires [S.T.A.L.K.E.R. Anomaly Modded Exes 01.08.2025 (or newer)](https://github.com/themrdemonized/xray-monolith)
+
+**Note :** From this update onwards, [First Person Visible Body](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version) is no longer required for the addon to work.

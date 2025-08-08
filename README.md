@@ -174,6 +174,7 @@ Credit goes to these people for their work contained in this addon :
 
 |                                Name                                 |                                                    Motive                                                    |         License         |
 |:-------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------:|:-----------------------:|
+|                            **Medialuna**                            |                           Fixed the Korean nanosuit's world model collision volume                           |       Proprietary       |
 |         **[Crepis](https://www.moddb.com/members/cr3pis)**          |      Provided high quality inventory icon, upgrade icon and character portrait for the Korean nanosuit       |       Proprietary       |
 |     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |                   Improved the texture quality of the Korean nanosuit's third person model                   | See [LICENSE](#license) |
 |                         **wookie, 3vtiger**                         |                                Port of the Korean nanosuit third person model                                |       Proprietary       |
