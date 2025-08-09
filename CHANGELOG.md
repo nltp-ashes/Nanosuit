@@ -3,7 +3,7 @@
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.9.0/total?label=Downloads)]()
 
 **• Additions :**
-> - Added the Korean version of the nanosuit (Thanks Blackgrowl);
+> - Added the Korean version of the nanosuit (Thanks Blackgrowl, Crepis, Medialuna);
 > - The player now gets vaporized when they let an enemy stalker that saw them get away (experimental - see MCM);
 > - Added a stamina bar to the nanosuit's HUD;
 > - Added custom indicator icons for [Hunger, thirst, sleepiness bars](https://www.moddb.com/mods/stalker-anomaly/addons/hunger-thirst-sleepiness-bars) addon;
@@ -11,7 +11,8 @@
 **• Changes :**
 > - Made "First Person Visible Body" addon an optional dependency rather than a hard requirement;
 > - All suit modes now protect against radiation at the cost of energy;
-> - All suit modes now have basic ballistic, rupture and explosive protection (similar to the Sunrise suit);
+> - The suit now has ballistic, rupture and explosive protection (to a level similar to the Sunrise suit);
+> - The suit now has radiation protection (to a level similar to the Nomad suit). Higher radiation will be absorbed by the suit while it has energy;
 > - Increased the suit's carrying capacity by 20kg;
 > - Hid an additional HUD element (the number of UGBL grenades in stock) from the vanilla HUD when the nanosuit is equipped;
 

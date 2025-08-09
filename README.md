@@ -22,13 +22,15 @@ Miscellaneous :
 - The nanosuit comes with third person, first person and world models; inventory icons and character portraits (and even legs model if you use [First Person Visible Body](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version))
 - The Nanosuit voice-lines are available in English, French and Russian, depending on the game language
 - The addon features an MCM menu, allowing you to change some settings on the fly
-- All suit modes protect from incoming radiation, at the cost of energy
+- When the suit is out of energy, all incoming damage is transferred to the player
+- The suit has basic ballistic, rupture and explosive protection when out of energy
+- The suit will absorb low amounts of radiation, without consuming energy
+- The suit will also absorb higher amounts of radiation, but at the cost of energy
 
 Armor mode :
 - Absorbs all incoming damage as long as the suit has energy
 - The more powerful is the impact, the more energy it consumes
 - Some damage types consume more energy than others
-- When the suit is out of energy, all incoming damage is transferred to the player
 - The mode does not protect against psi-emissions and blunt force (fall-damage, poltergeist throws, etc.)
 
 Speed mode :
