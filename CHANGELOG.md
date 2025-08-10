@@ -6,7 +6,8 @@
 > - Added the Korean version of the nanosuit (Thanks Blackgrowl, Crepis, Medialuna);
 > - The player now gets vaporized when they let an enemy stalker that saw them get away (experimental - see MCM);
 > - Added a stamina bar to the nanosuit's HUD;
-> - Added custom indicator icons for [Hunger, thirst, sleepiness bars](https://www.moddb.com/mods/stalker-anomaly/addons/hunger-thirst-sleepiness-bars) addon;
+> - Added custom indicator icons for [Hunger, thirst, sleepiness bars v1.01](https://www.moddb.com/mods/stalker-anomaly/addons/hunger-thirst-sleepiness-bars) addon;
+> - Added custom indicator icons for [Campfire Healing And Designated Savepoint indicator v2.1](https://www.moddb.com/mods/stalker-anomaly/addons/campfire-healing-and-designated-savepoint-indicator) addon;
 
 **• Changes :**
 > - Made "First Person Visible Body" addon an optional dependency rather than a hard requirement;
