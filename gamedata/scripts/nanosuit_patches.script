@@ -1,0 +1,24 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 12/08/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle all the necessary intercepts to make the Nanosuit addon compatible with other addons.   ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Compatibility with Powered Exoskeletons v2.2
+-- ---------------------------------------------------------------------------------------------------------------------
+
+item_exo_device_is_exo = item_exo_device.is_exo
+item_exo_device.is_exo = function(obj)
+    local res = item_exo_device_is_exo(obj)
+    return not nanosuit_utils.is_nanosuit(obj) and res
+end
