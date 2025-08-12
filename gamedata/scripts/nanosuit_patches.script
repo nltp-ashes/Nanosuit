@@ -150,7 +150,7 @@ nanosuit_ui_indicators.ui_indicators.get_config_override = function(self, name, 
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Compatibility with Powered Exoskeletons v2.2
+-- Powered Exoskeletons v2.2
 -- ---------------------------------------------------------------------------------------------------------------------
 
 item_exo_device_is_exo = item_exo_device.is_exo
