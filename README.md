@@ -154,6 +154,7 @@ The following issues will be fixed in the near future :
 - Cloak mode does not work if the NPC sees the actor before the cloak is applied, right now you need to break vision for it to work
 - Cloak mode does not work on mutants
 - Cloak mode sometimes messes with the equipped items' textures when switching slot while in the mode (workaround : perform a save/load)
+- Cloak mode does not cloak the knife during the mutant skinning animation with FDDA
 - The game crashes if actor interacts with an NPC while they're getting vaporized
 - The game crashes if player reloads a save while cloak mode is enabled
 
