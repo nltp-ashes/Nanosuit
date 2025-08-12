@@ -90,8 +90,8 @@ These addons are **absolutely required** in order for the addon to work :
 2. [S.T.A.L.K.E.R. Anomaly Modded Exes 01.08.2025 (or newer)](https://github.com/themrdemonized/xray-monolith)
 
 The addon natively integrates[^native_integrations] with the following addons, but they **aren't required** :
-1. [Mod Configuration Menu](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu) (allows you to customize some options about the addon);
-2. [First Person Visible Body](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version) (allows you to see your character's body in first person);
+1. [Mod Configuration Menu v1.7](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu) (allows you to customize some options about the addon);
+2. [First Person Visible Body v6.0](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version) (allows you to see your character's body in first person);
 3. [Hunger, thirst, sleepiness bars v1.01](https://www.moddb.com/mods/stalker-anomaly/addons/hunger-thirst-sleepiness-bars) (adds HUD indicators for hunger, thirst and sleepiness);
 4. [Campfire Healing And Designated Savepoint indicator v2.1](https://www.moddb.com/mods/stalker-anomaly/addons/campfire-healing-and-designated-savepoint-indicator) (adds HUD indicators for campfire healing and savepoint);
 5. [Powered Exoskeletons v2.2](https://github.com/ahuyn/anomaly-exo) (adds exoskeleton power sources to the game);
