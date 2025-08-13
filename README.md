@@ -199,6 +199,7 @@ Special thanks to these people for their help in the making of this addon :
 
 |                      Name                      |                                                     Motive                                                     |
 |:----------------------------------------------:|:--------------------------------------------------------------------------------------------------------------:|
+|                    **MFB**                     |                        Tips about invisible walls and how they work in the X-Ray engine                        |
 |                 **Vanquisher**                 |                             For extensive play-testing and all the feedback given                              |
 |                 **Medialuna**                  |    For all the tips and tricks with modeling/textures that objectively made my life a little less miserable    |
 | **[Lucy](https://www.moddb.com/members/r3zy)** | For adding engine support to change, at runtime and using scripts, the textures and shaders of any game_object |
