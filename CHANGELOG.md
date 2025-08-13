@@ -1,4 +1,4 @@
-## **v0.9.0 - 12/08/2025 - Beta Build**
+## **v0.9.0 - 13/08/2025 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.9.0/total?label=Downloads)]()
 
@@ -28,6 +28,7 @@
 > - Fixed nanosuit HUD showing ammo count and ammo reserve when holding melee weapons;
 > - Fixed PDA notification icon re-appearing after being receiving two notifications;
 > - Fixed pulse anomalies spawning a permanent "damage area" after discharge (Thanks zes91);
+> - Fixed the speed loop sound effect playing even after switching to another mode exactly at the same time as entering "energy critical" state;
 
 **Note :** This update requires [S.T.A.L.K.E.R. Anomaly Modded Exes 01.08.2025 (or newer)](https://github.com/themrdemonized/xray-monolith)
 
