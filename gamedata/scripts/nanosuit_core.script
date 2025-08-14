@@ -202,6 +202,7 @@ function core:__init()
     RegisterScriptCallback("actor_on_death", self)
     RegisterScriptCallback("actor_on_update", self)
     RegisterScriptCallback("on_option_change", self)
+    RegisterScriptCallback("npc_on_before_hit", self)
 end
 
 function core:__finalize()
@@ -218,6 +219,7 @@ function core:destroy()
     UnregisterScriptCallback("actor_on_death", self)
     UnregisterScriptCallback("actor_on_update", self)
     UnregisterScriptCallback("on_option_change", self)
+    UnregisterScriptCallback("npc_on_before_hit", self)
 
     for _, sfx in pairs(self.m_sounds) do
         if sfx:playing() then
@@ -230,6 +232,21 @@ function core:destroy()
     self.m_malfunctor:destroy()
     self.m_defibrillator:destroy()
 end
+
+function core:npc_on_before_hit(npc, scripted_hit, bone_id, flags)
+    -- Only apply to actor hits
+    if not scripted_hit.draftsman or scripted_hit.draftsman:id() ~= AC_ID then
+        return
+    end
+
+    -- Only apply to melee hits
+    if scripted_hit.type ~= hit.wound then
+        return
+    end
+
+    printf("[NS] npc_on_before_hit %s %s %s", npc:name(), scripted_hit.power, scripted_hit.impulse)
+end
+
 
 function core:save()
     local storage = {}

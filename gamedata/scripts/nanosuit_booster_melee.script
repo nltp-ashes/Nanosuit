@@ -1,0 +1,56 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 14/08/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the logic of a melee damage booster usable by a Nanosuit mode.                          ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+actor_slots_enum        = nanosuit_utils.actor_slots_enum
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Speed mode class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "melee" (nanosuit_booster.abstract_booster)
+
+function melee:__init(core, name) super(core, name)
+    self.m_wound_power_factor = 2
+    self.m_wound_impulse_factor = 200
+
+    -- Cache
+    self.m_cache[actor_slots_enum.knife] = { enabled = true, obj_id = nil }
+end
+
+function melee:filter(obj, slot)
+    if not nanosuit_booster.abstract_booster.filter(self, obj, slot) then
+        return false
+    end
+    return IsMelee(obj) and obj:cast_Weapon()
+end
+
+function melee:set(obj, slot)
+    nanosuit_booster.abstract_booster.set(self, obj, slot)
+
+    local wpn_obj = obj:cast_Weapon()
+    wpn_obj:SetHitPower(wpn_obj:GetHitPower() * self.m_wound_power_factor)
+    wpn_obj:SetHitPowerCritical(wpn_obj:GetHitPowerCritical() * self.m_wound_power_factor)
+    wpn_obj:SetHitImpulse(wpn_obj:GetHitImpulse() * self.m_wound_impulse_factor)
+end
+
+function melee:unset(obj, slot)
+    local wpn_obj = obj:cast_Weapon()
+    wpn_obj:SetHitPower(wpn_obj:GetHitPower() / self.m_wound_power_factor)
+    wpn_obj:SetHitPowerCritical(wpn_obj:GetHitPowerCritical() / self.m_wound_power_factor)
+    wpn_obj:SetHitImpulse(wpn_obj:GetHitImpulse() / self.m_wound_impulse_factor)
+
+    nanosuit_booster.abstract_booster.unset(self, obj, slot)
+end
