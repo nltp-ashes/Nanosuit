@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 12/08/2025                                                                                             ---
+---    Date : 16/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle all the necessary intercepts to make the Nanosuit addon compatible with other addons.   ---
@@ -17,20 +17,20 @@
 -- First Person Visible Body v6.0
 -- ---------------------------------------------------------------------------------------------------------------------
 
-nanosuit_mode_cloak_cloak___init = nanosuit_mode_cloak.cloak.__init
-nanosuit_mode_cloak.cloak.__init = function(self, core, name)
-    local res = nanosuit_mode_cloak_cloak___init(self, core, name)
+if se_legs then
+    nanosuit_mode_cloak_cloak___init = nanosuit_mode_cloak.cloak.__init
+    nanosuit_mode_cloak.cloak.__init = function(self, core, name)
+        local res = nanosuit_mode_cloak_cloak___init(self, core, name)
 
-    self.m_cache.legs_shaders = { world = nil }
+        self.m_cache.legs_shaders = { world = nil }
 
-    return res
-end
+        return res
+    end
 
-nanosuit_mode_cloak_cloak_apply = nanosuit_mode_cloak.cloak.apply
-nanosuit_mode_cloak.cloak.apply = function(self, play_voice)
-    local res = nanosuit_mode_cloak_cloak_apply(self, play_voice)
+    nanosuit_mode_cloak_cloak_apply = nanosuit_mode_cloak.cloak.apply
+    nanosuit_mode_cloak.cloak.apply = function(self, play_voice)
+        local res = nanosuit_mode_cloak_cloak_apply(self, play_voice)
 
-    if se_legs then
         RegisterScriptCallback("game_object_on_net_spawn", self)
         RegisterScriptCallback("game_object_on_net_destroy", self)
 
@@ -39,16 +39,14 @@ nanosuit_mode_cloak.cloak.apply = function(self, play_voice)
         if legs_obj then
             self:set_legs_invisible(legs_obj)
         end
+
+        return res
     end
 
-    return res
-end
+    nanosuit_mode_cloak_cloak_remove = nanosuit_mode_cloak.cloak.remove
+    nanosuit_mode_cloak.cloak.remove = function(self, is_destroying)
+        local res = nanosuit_mode_cloak_cloak_remove(self, is_destroying)
 
-nanosuit_mode_cloak_cloak_remove = nanosuit_mode_cloak.cloak.remove
-nanosuit_mode_cloak.cloak.remove = function(self, is_destroying)
-    local res = nanosuit_mode_cloak_cloak_remove(self, is_destroying)
-
-    if se_legs then
         UnregisterScriptCallback("game_object_on_net_spawn", self)
         UnregisterScriptCallback("game_object_on_net_destroy", self)
 
@@ -57,40 +55,40 @@ nanosuit_mode_cloak.cloak.remove = function(self, is_destroying)
         if legs_obj then
             self:set_legs_visible(legs_obj)
         end
+
+        return res
     end
 
-    return res
-end
-
-nanosuit_mode_cloak.cloak.set_legs_visible = function(self, legs_obj)
-    for idx,save in pairs(self.m_cache.legs_shaders.world) do
-        legs_obj:set_shader(idx, save.shader, save.texture)
+    nanosuit_mode_cloak.cloak.set_legs_visible = function(self, legs_obj)
+        for idx, save in pairs(self.m_cache.legs_shaders.world) do
+            legs_obj:set_shader(idx, save.shader, save.texture)
+        end
+        self.m_cache.legs_shaders = { world = nil }
     end
-    self.m_cache.legs_shaders = { world = nil }
-end
 
-nanosuit_mode_cloak.cloak.set_legs_invisible = function(self, legs_obj)
-    self.m_cache.legs_shaders = { world = legs_obj:get_shaders() }
-    for idx,_ in pairs(self.m_cache.legs_shaders.world) do
-        legs_obj:set_shader(idx, self.m_cloak_shader, self.m_cloak_texture)
+    nanosuit_mode_cloak.cloak.set_legs_invisible = function(self, legs_obj)
+        self.m_cache.legs_shaders = { world = legs_obj:get_shaders() }
+        for idx, _ in pairs(self.m_cache.legs_shaders.world) do
+            legs_obj:set_shader(idx, self.m_cloak_shader, self.m_cloak_texture)
+        end
     end
-end
 
-nanosuit_mode_cloak.cloak.game_object_on_net_spawn = function(self, obj)
-    if se_legs and nanosuit_utils.is_legs(obj) then
-        CreateTimeEvent("nanosuit_legs_spawn", obj:name(), 0, function(id)
-            local obj_now = level.object_by_id(id)
-            if obj_now then
-                self:set_legs_invisible(obj_now)
-            end
-            return true
-        end, obj:id())
+    nanosuit_mode_cloak.cloak.game_object_on_net_spawn = function(self, obj)
+        if nanosuit_utils.is_legs(obj) then
+            CreateTimeEvent("nanosuit_legs_spawn", obj:name(), 0, function(id)
+                local obj_now = level.object_by_id(id)
+                if obj_now then
+                    self:set_legs_invisible(obj_now)
+                end
+                return true
+            end, obj:id())
+        end
     end
-end
 
-nanosuit_mode_cloak.cloak.game_object_on_net_destroy = function(self, obj)
-    if se_legs and nanosuit_utils.is_legs(obj) then
+    nanosuit_mode_cloak.cloak.game_object_on_net_destroy = function(self, obj)
+        if nanosuit_utils.is_legs(obj) then
         self:set_legs_visible(obj)
+        end
     end
 end
 
@@ -112,50 +110,92 @@ end
 -- Campfire Healing And Designated Savepoint indicator v2.1
 -- ---------------------------------------------------------------------------------------------------------------------
 
-nanosuit_ui_indicators_ui_indicators___init_chdsi = nanosuit_ui_indicators.ui_indicators.__init
-nanosuit_ui_indicators.ui_indicators.__init = function(self, parent)
-    local res = nanosuit_ui_indicators_ui_indicators___init_chdsi(self, parent)
+if actor_status_campfire then
+    nanosuit_ui_indicators_ui_indicators___init_chdsi = nanosuit_ui_indicators.ui_indicators.__init
+    nanosuit_ui_indicators.ui_indicators.__init = function(self, parent)
+        local res = nanosuit_ui_indicators_ui_indicators___init_chdsi(self, parent)
 
-    self.m_config_override["CampfireIcon"] = { icon = "ui_nanosuit_ind_booster_cf", background = "ui_nanosuit_ind_booster_slot" }
+        self.m_config_override["CampfireIcon"] = { icon = "ui_nanosuit_ind_booster_cf", background = "ui_nanosuit_ind_booster_slot" }
 
-    self.m_campfire_overrides = {
-        ["ui_indicator_zone_campfire"] = "ui_nanosuit_ind_booster_cf",
-        ["ui_indicator_zone_campfire_heal"] = "ui_nanosuit_ind_booster_cf_heal",
-        ["ui_indicator_zone_campfire_save"] = "ui_nanosuit_ind_booster_cf_save",
-        ["ui_indicator_zone_campfire_healsave"] = "ui_nanosuit_ind_booster_cf_healsave",
-        ["ui_indicator_zone_campfire_alt_color"] = "ui_nanosuit_ind_booster_cf",
-        ["ui_indicator_zone_campfire_heal_alt_color"] = "ui_nanosuit_ind_booster_cf_heal",
-        ["ui_indicator_zone_campfire_save_alt_color"] = "ui_nanosuit_ind_booster_cf_save",
-        ["ui_indicator_zone_campfire_healsave_alt_color"] = "ui_nanosuit_ind_booster_cf_healsave",
-        ["ui_indicator_zone_campfire_alt_bw"] = "ui_nanosuit_ind_booster_cf",
-        ["ui_indicator_zone_campfire_heal_alt_bw"] = "ui_nanosuit_ind_booster_cf_heal",
-        ["ui_indicator_zone_campfire_save_alt_bw"] = "ui_nanosuit_ind_booster_cf_save",
-        ["ui_indicator_zone_campfire_healsave_alt_bw"] = "ui_nanosuit_ind_booster_cf_healsave"
-    }
+        self.m_campfire_overrides = {
+            ["ui_indicator_zone_campfire"] = "ui_nanosuit_ind_booster_cf",
+            ["ui_indicator_zone_campfire_heal"] = "ui_nanosuit_ind_booster_cf_heal",
+            ["ui_indicator_zone_campfire_save"] = "ui_nanosuit_ind_booster_cf_save",
+            ["ui_indicator_zone_campfire_healsave"] = "ui_nanosuit_ind_booster_cf_healsave",
+            ["ui_indicator_zone_campfire_alt_color"] = "ui_nanosuit_ind_booster_cf",
+            ["ui_indicator_zone_campfire_heal_alt_color"] = "ui_nanosuit_ind_booster_cf_heal",
+            ["ui_indicator_zone_campfire_save_alt_color"] = "ui_nanosuit_ind_booster_cf_save",
+            ["ui_indicator_zone_campfire_healsave_alt_color"] = "ui_nanosuit_ind_booster_cf_healsave",
+            ["ui_indicator_zone_campfire_alt_bw"] = "ui_nanosuit_ind_booster_cf",
+            ["ui_indicator_zone_campfire_heal_alt_bw"] = "ui_nanosuit_ind_booster_cf_heal",
+            ["ui_indicator_zone_campfire_save_alt_bw"] = "ui_nanosuit_ind_booster_cf_save",
+            ["ui_indicator_zone_campfire_healsave_alt_bw"] = "ui_nanosuit_ind_booster_cf_healsave"
+        }
 
-    return res
-end
-
-nanosuit_ui_indicators_ui_indicators_get_config_override_chdsi = nanosuit_ui_indicators.ui_indicators.get_config_override
-nanosuit_ui_indicators.ui_indicators.get_config_override = function(self, name, key)
-    local res = nanosuit_ui_indicators_ui_indicators_get_config_override_chdsi(self, name, key)
-
-    if actor_status_campfire and name == "CampfireIcon" and key == "icon" then
-        local indicator = actor_status.indicators["CampfireIcon"]
-        local override = indicator and self.m_campfire_overrides[indicator.icon]
-        return override or "ui_nanosuit_ind_booster_cf"
+        return res
     end
 
-    return res
+    nanosuit_ui_indicators_ui_indicators_get_config_override_chdsi = nanosuit_ui_indicators.ui_indicators.get_config_override
+    nanosuit_ui_indicators.ui_indicators.get_config_override = function(self, name, key)
+        local res = nanosuit_ui_indicators_ui_indicators_get_config_override_chdsi(self, name, key)
+
+        if name == "CampfireIcon" and key == "icon" then
+            local indicator = actor_status.indicators["CampfireIcon"]
+            local override = indicator and self.m_campfire_overrides[indicator.icon]
+            return override or "ui_nanosuit_ind_booster_cf"
+        end
+
+        return res
+    end
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Powered Exoskeletons v2.2
 -- ---------------------------------------------------------------------------------------------------------------------
 
-item_exo_device_is_exo = item_exo_device.is_exo
-item_exo_device.is_exo = function(obj)
-    local res = item_exo_device_is_exo(obj)
+if item_exo_device then
+    item_exo_device_is_exo = item_exo_device.is_exo
+    item_exo_device.is_exo = function(obj)
+        local res = item_exo_device_is_exo(obj)
 
-    return not nanosuit_utils.is_nanosuit(obj) and res
+        return not nanosuit_utils.is_nanosuit(obj) and res
+    end
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Body Health System Redux v2.0.2
+-- ---------------------------------------------------------------------------------------------------------------------
+
+if zzz_player_injuries then
+    zzz_player_injuries_HUDUpdate = zzz_player_injuries.HUDUpdate
+    zzz_player_injuries.HUDUpdate = function()
+        local res = zzz_player_injuries_HUDUpdate()
+
+        local bhs_cs = {
+            ["body_health_system_text"] = true,
+            ["cop_debug"] = true,
+            ["body_health_system"] = true,
+            ["bhs_health_head_bar_green"] = true,
+            ["bhs_health_torso_bar_green"] = true,
+            ["bhs_health_rightarm_bar_green"] = true,
+            ["bhs_health_leftarm_bar_green"] = true,
+            ["bhs_health_rightleg_bar_green"] = true,
+            ["bhs_health_leftleg_bar_green"] = true,
+            ["bhs_stamina_bar"] = true,
+            ["bhs_health_bar"] = true,
+            ["bhs_health_head_bar"] = true,
+            ["bhs_health_torso_bar"] = true,
+            ["bhs_health_rightarm_bar"] = true,
+            ["bhs_health_leftarm_bar"] = true,
+            ["bhs_health_rightleg_bar"] = true,
+            ["bhs_health_leftleg_bar"] = true,
+        }
+
+        local hud = get_hud()
+        for cs_name in pairs(bhs_cs) do
+            hud:RemoveCustomStatic(cs_name)
+        end
+
+        return res
+    end
 end

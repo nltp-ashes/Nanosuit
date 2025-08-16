@@ -1,4 +1,4 @@
-## **v0.9.0 - 14/08/2025 - Beta Build**
+## **v0.9.0 - 16/08/2025 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.9.0/total?label=Downloads)]()
 
@@ -9,6 +9,7 @@
 > - Added custom indicator icons for [Hunger, thirst, sleepiness bars v1.01](https://www.moddb.com/mods/stalker-anomaly/addons/hunger-thirst-sleepiness-bars) addon;
 > - Added custom indicator icons for [Campfire Healing And Designated Savepoint indicator v2.1](https://www.moddb.com/mods/stalker-anomaly/addons/campfire-healing-and-designated-savepoint-indicator) addon;
 > - Added built-in compatibility patch for [Powered Exoskeletons v2.2](https://github.com/ahuyn/anomaly-exo) addon (Thanks reenalejano);
+> - Added built-in compatibility patch for [Body Health System Redux v2.0.2](https://www.moddb.com/mods/stalker-anomaly/addons/100-groks-body-health-system-redux-for-151) addon;
 > - Disabled all collisions with all invisible walls on all locations (thanks MFB);
 
 **• Changes :**

@@ -95,6 +95,7 @@ The addon natively integrates[^native_integrations] with the following addons, b
 3. [Hunger, thirst, sleepiness bars v1.01](https://www.moddb.com/mods/stalker-anomaly/addons/hunger-thirst-sleepiness-bars) (adds HUD indicators for hunger, thirst and sleepiness);
 4. [Campfire Healing And Designated Savepoint indicator v2.1](https://www.moddb.com/mods/stalker-anomaly/addons/campfire-healing-and-designated-savepoint-indicator) (adds HUD indicators for campfire healing and savepoint);
 5. [Powered Exoskeletons v2.2](https://github.com/ahuyn/anomaly-exo) (adds exoskeleton power sources to the game);
+6. [Body Health System Redux v2.0.2](https://www.moddb.com/mods/stalker-anomaly/addons/100-groks-body-health-system-redux-for-151) (adds EFT-like health system);
 
 [^native_integrations]: Native integration are similar to compatibility patches, except they are built-into the addon. If the other addon is installed, the features will be available, if not, they will be disabled, all without requiring any extra steps from the user.
 
@@ -141,6 +142,8 @@ Here is a list of planned features for the addon :
 - Add built-in night vision;
 - Add nanovision (using HeatVision as back-end) (as an upgrade?);
 - Custom footsteps when wearing the suit;
+
+**A note on BHS :** Given the tentacular nature of BHS and its suite of addons, and how terrible its code is, I will not further improve the compatibility patch for it. I am open to take contributions if someone comes up with a better patch than mine, given mine is essentially just removing BHS's UI if it exists.
 
 If you would like to help development for future updates, you can :
 1. Contribute to the addon, either by [getting in touch with me](https://github.com/nltp-ashes/Nanosuit#support--suggestions) or [creating a fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of the addon and [creating a pull-request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) on the addon's [GitHub repository](https://github.com/nltp-ashes/Nanosuit);
