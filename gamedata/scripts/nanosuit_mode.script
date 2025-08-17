@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 21/07/2025                                                                                             ---
+---    Date : 09/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract suit mode of the Nanosuit addon.                               ---
@@ -15,6 +15,7 @@
 
 actor_slots_enum        = nanosuit_utils.actor_slots_enum
 localized_sound_object  = nanosuit_utils.localized_sound_object
+hit_types_enum          = nanosuit_utils.hit_types_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Mode class
@@ -22,23 +23,32 @@ localized_sound_object  = nanosuit_utils.localized_sound_object
 
 class "abstract_mode"
 
-function abstract_mode:__init(name, voice_path)
+function abstract_mode:__init(core, name, voice_path)
+    self.m_core = core
     self.m_name = name
     self.m_sounds = {
         voice = localized_sound_object(voice_path),
     }
     self.m_cache = {}
-    self.m_protection_map = {}
     self.m_boosters = {}
+    self.m_protection_map = {}
+    
+    for hit_name, hit_id in pairs(hit_types_enum) do
+        self.m_protection_map[hit_id] = nanosuit_utils.get_constant(nil, name .. "_protection_" .. hit_name, nil)
+    end
 end
 
 function abstract_mode:__eq(other)
     return self.m_name == other.m_name
 end
 
+function abstract_mode:destroy()
+    self.m_core = nil
+end
+
 function abstract_mode:apply(play_voice)
     -- Register callbacks
-    RegisterScriptCallback("actor_on_before_hit", self)
+    RegisterScriptCallback("on_before_hit_after_calcs", self)
 
     -- Play sounds
     if play_voice then
@@ -46,14 +56,14 @@ function abstract_mode:apply(play_voice)
     end
 end
 
-function abstract_mode:remove()
+function abstract_mode:remove(is_destroying)
     -- Unregister callbacks
-    UnregisterScriptCallback("actor_on_before_hit", self)
+    UnregisterScriptCallback("on_before_hit_after_calcs", self)
 end
 
 function abstract_mode:apply_booster(booster, name)
     if not self.m_boosters[name] then
-        self.m_boosters[name] = booster(name)
+        self.m_boosters[name] = booster(self.m_core, name)
         self.m_boosters[name]:apply()
     end
 end
@@ -61,11 +71,17 @@ end
 function abstract_mode:remove_booster(name)
     if self.m_boosters[name] then
         self.m_boosters[name]:remove()
+        self.m_boosters[name]:destroy()
         self.m_boosters[name] = nil
     end
 end
 
-function abstract_mode:actor_on_before_hit(scripted_hit, bone_id, flags)
+function abstract_mode:on_before_hit_after_calcs(scripted_hit, target, bone_id)
+    -- Only apply to actor
+    if target:id() ~= AC_ID then
+        return
+    end
+
     -- Get amount of damage suit can absorb (if any)
     local max_absorb_power = self.m_protection_map[scripted_hit.type]
     if not max_absorb_power then
@@ -74,17 +90,18 @@ function abstract_mode:actor_on_before_hit(scripted_hit, bone_id, flags)
 
     -- Calculate energy to use and damage to absorb
     local absorb_energy_req = scripted_hit.power / max_absorb_power * 100
-    local absorb_energy_use = math.min(nanosuit_core.instance.m_energy, absorb_energy_req)
+    local absorb_energy_use = math.min(self.m_core.m_energy, absorb_energy_req)
     local absorb_power = absorb_energy_use / 100 * max_absorb_power
 
     -- Use energy
-    nanosuit_core.instance:use_energy(absorb_energy_use)
+    self.m_core:use_energy(absorb_energy_use)
 
     -- Absorb hit
     scripted_hit.power = scripted_hit.power - absorb_power
 
-    if nanosuit_core.instance.m_energy > 0 then
+    if self.m_core.m_energy > 0 then
         -- Game is stupid and still registers damage sometimes even with power set to 0
-        flags.ret_value = false
+        -- TODO : on_before_hit_after_calcs doesn't support flags, see if this is still needed anyway
+        -- flags.ret_value = false
     end
 end

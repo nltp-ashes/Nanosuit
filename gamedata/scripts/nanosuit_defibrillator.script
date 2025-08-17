@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 21/07/2025                                                                                             ---
+---    Date : 25/07/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's built-in defibrillator.                                                  ---
@@ -23,7 +23,9 @@ actor_cameras_enum       = nanosuit_utils.actor_cameras_enum
 
 class "defibrillator"
 
-function defibrillator:__init()
+function defibrillator:__init(core)
+    self.m_core = core
+
     -- Constants
     self.m_blackout_length = 4
     self.m_kill_timeout = 3000
@@ -63,7 +65,10 @@ function defibrillator:destroy()
     -- Destroy sequence
     if self.m_sequence then
         self.m_sequence:destroy()
+        self.m_sequence = nil
     end
+
+    self.m_core = nil
 
     -- Callbacks
     UnregisterScriptCallback("actor_on_update", self)

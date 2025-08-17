@@ -1,0 +1,44 @@
+;;====================================================================================================================;;
+;;                                                                                                                    ;;
+;;    Original Author(s) : Unknown                                                                                    ;;
+;;    Edited : Duplicated file to avoid conflicts with other addons (NLTP_ASHES - 26/07/2025)                         ;;
+;;    Date : 26/07/2025                                                                                               ;;
+;;    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)             ;;
+;;                                                                                                                    ;;
+;;    Particle group configuration file for the effect used during the vaporization process of the nanosuit.          ;;
+;;                                                                                                                    ;;
+;;====================================================================================================================;;
+
+[_group]
+        effects_count                    = 3
+        flags                            = 0
+        timelimit                        = 1.000000
+        version                          = 3
+ 
+[effect_0000]
+        effect_name                      = nanosuit\vaporize\vaporize_burn
+        flags                            = 4
+        on_birth_child                   =
+        on_death_child                   =
+        on_play_child                    =
+        time0                            = 0.000000
+        time1                            = 0.000000
+ 
+[effect_0001]
+        effect_name                      = nanosuit\vaporize\vaporize_smoke
+        flags                            = 4
+        on_birth_child                   =
+        on_death_child                   =
+        on_play_child                    =
+        time0                            = 0.000000
+        time1                            = 0.000000
+ 
+[effect_0002]
+        effect_name                      = nanosuit\vaporize\vaporize_glow
+        flags                            = 4
+        on_birth_child                   =
+        on_death_child                   =
+        on_play_child                    =
+        time0                            = 0.000000
+        time1                            = 0.000000
+ 

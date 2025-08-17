@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/06/2025                                                                                             ---
+---    Date : 02/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit status hub (energy, health, ammo, etc) UI.                                 ---
@@ -73,6 +73,22 @@ function ui_status:__init(parent) super()
     self.m_ui_health_icon:SetTextureColor(self.m_parent.m_colors.text)
     arm.scale_ui(self.m_ui_health_icon, true, true, "right")
 
+    self.m_ui_stamina = self.m_xml:InitTextWnd("stamina", self)
+    self.m_ui_stamina:SetTextColor(self.m_parent.m_colors.text)
+    arm.scale_ui(self.m_ui_stamina, true, true, "right")
+
+    self.m_ui_stamina_bar_background = self.m_xml:InitStatic("stamina_bar_background", self)
+    self.m_ui_stamina_bar_background:SetTextureColor(self.m_parent.m_colors.stamina_bg)
+    arm.scale_ui(self.m_ui_stamina_bar_background, true, true, "right")
+
+    self.m_ui_stamina_bar = self.m_xml:InitProgressBar("stamina_bar", self)
+    arm.scale_ui(self.m_ui_stamina_bar, true, true, "right")
+    arm.scale_ui(self.m_ui_stamina_bar:GetProgressStatic(), true, true, "left", self.m_ui_stamina_bar:GetWidth())
+
+    self.m_ui_stamina_icon = self.m_xml:InitStatic("stamina_icon", self)
+    self.m_ui_stamina_icon:SetTextureColor(self.m_parent.m_colors.text)
+    arm.scale_ui(self.m_ui_stamina_icon, true, true, "right")
+
     self.m_ui_ammo_count = self.m_xml:InitTextWnd("ammo_count", self)
     self.m_ui_ammo_count:SetTextColor(self.m_parent.m_colors.text)
     arm.scale_ui(self.m_ui_ammo_count, true, true, "right")
@@ -103,7 +119,7 @@ end
 function ui_status:Update(force)
     CUIScriptWnd.Update(self)
 
-    if nanosuit_core.instance.m_malfunctor.m_enabled then
+    if self.m_parent.m_core.m_malfunctor.m_enabled then
         -- Outline
         self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.red)
         self.m_ui_top_left_corner:SetTextureColor(self.m_parent.m_colors.red)
@@ -127,6 +143,13 @@ function ui_status:Update(force)
         self.m_ui_health_bar_background:SetTextureColor(self.m_parent.m_colors.health_off_bg)
         self.m_ui_health_icon:SetTextureColor(self.m_parent.m_colors.red)
 
+        -- Stamina
+        self.m_ui_stamina:SetText("!")
+        self.m_ui_stamina:SetTextColor(self.m_parent.m_colors.red)
+        self.m_ui_stamina_bar:SetProgressPos(0)
+        self.m_ui_stamina_bar_background:SetTextureColor(self.m_parent.m_colors.stamina_off_bg)
+        self.m_ui_stamina_icon:SetTextureColor(self.m_parent.m_colors.red)
+
         -- Ammo count
         self.m_ui_ammo_count:SetText("")
 
@@ -144,13 +167,14 @@ function ui_status:Update(force)
     self.m_ui_top_right_corner:SetTextureColor(self.m_parent.m_colors.background)
 
     -- Current suit mode
-    local suit_mode = "ui_nanosuit_status_" .. nanosuit_core.instance.m_current_mode.m_name
+    local suit_mode = "ui_nanosuit_status_" .. self.m_parent.m_core.m_current_mode.m_name
     self.m_ui_suit_mode:InitTexture(suit_mode)
     self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_colors.background)
 
     -- Energy
-    local energy = nanosuit_core.instance.m_energy
+    local energy = self.m_parent.m_core.m_energy
     energy = round(energy)
+    energy = clamp(energy, 0, 100)
     self.m_ui_energy_bar:SetColor(energy > 20 and self.m_parent.m_colors.energy or self.m_parent.m_colors.red)
     self.m_ui_energy_bar:SetProgressPos(energy)
     self.m_ui_energy_bar_background:SetTextureColor(self.m_parent.m_colors.energy_bg)
@@ -162,8 +186,8 @@ function ui_status:Update(force)
     -- Health
     local health = db.actor.health
     health = health * 100
-    health = clamp(health, 0, 100)
     health = round(health)
+    health = clamp(health, 0, 100)
     self.m_ui_health_bar:SetColor(health > 20 and self.m_parent.m_colors.health or self.m_parent.m_colors.red)
     self.m_ui_health_bar:SetProgressPos(health)
     self.m_ui_health_bar_background:SetTextureColor(self.m_parent.m_colors.health_bg)
@@ -172,8 +196,21 @@ function ui_status:Update(force)
     self.m_ui_health:SetTextColor(self.m_parent.m_colors.text)
     self.m_ui_health_icon:SetTextureColor(self.m_parent.m_colors.text)
 
+    -- Stamina
+    local stamina = db.actor.power
+    stamina = stamina * 100
+    stamina = round(stamina)
+    stamina = clamp(stamina, 0, 100)
+    self.m_ui_stamina_bar:SetColor(stamina > 20 and self.m_parent.m_colors.stamina or self.m_parent.m_colors.red)
+    self.m_ui_stamina_bar:SetProgressPos(stamina)
+    self.m_ui_stamina_bar_background:SetTextureColor(self.m_parent.m_colors.stamina_bg)
+    stamina = tostring(stamina)
+    self.m_ui_stamina:SetText(stamina)
+    self.m_ui_stamina:SetTextColor(self.m_parent.m_colors.text)
+    self.m_ui_stamina_icon:SetTextureColor(self.m_parent.m_colors.text)
+
     local active_item = db.actor:active_item()
-    local weapon_obj = active_item and IsWeapon(active_item) and active_item
+    local weapon_obj = active_item and IsWeapon(active_item) and not IsMelee(active_item) and active_item
     local weapon_class = weapon_obj and weapon_obj:cast_Weapon()
 
     -- Ammo count
@@ -196,6 +233,6 @@ function ui_status:Update(force)
     local fire_mode = weapon_class and weapon_class:GetFireMode()
     fire_mode = fire_mode and fire_modes_names_enum[fire_mode]
     fire_mode = fire_mode and "ui_nanosuit_status_" .. fire_mode
-    fire_mode = fire_mode or "ui_nanosuit_status_auto"
+    fire_mode = fire_mode or "ui_nanosuit_no_draw"
     self.m_ui_fire_mode:InitTexture(fire_mode)
 end

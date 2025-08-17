@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : RavenAscendant                                                                           ---
 ---    Edited : NLTP_ASHES                                                                                           ---
----    Date : 21/07/2025                                                                                             ---
+---    Date : 09/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define the options in MCM.                                                                     ---
@@ -21,6 +21,7 @@ mcm_types_enum = nanosuit_utils.mcm_types_enum
 
 -- If you don't use MCM, change your defaults from here.
 defaults = {
+    ["use_witness"] = false,
     ["defibrillate"] = DIK_keys.DIK_SPACE,
     ["suit_menu"] = DIK_keys.DIK_V,
     ["debug_mode"] = false
@@ -59,6 +60,9 @@ end
 function on_mcm_load()
     op = { id="nanosuit", sh=true, gr={
          {                       type="slide",       text="ui_mcm_nanosuit_title",    link="ui_nanosuit_mcm_banner",    spacing=20,    size={512,50} },
+         {                       type="line"                                                                                                         },
+         {                       type="title",       text="ui_mcm_nanosuit_general_title"                                                            },
+         { id="use_witness",     type="check",       val=mcm_types_enum.boolean,      def=defaults["use_witness"]                                    },
          {                       type="line"                                                                                                         },
          {                       type="title",       text="ui_mcm_nanosuit_keybindings_title"                                                        },
          { id="defibrillate",    type="key_bind",    val=mcm_types_enum.number,       def=defaults["defibrillate"]                                   },

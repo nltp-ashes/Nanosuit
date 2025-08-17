@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/06/2025                                                                                             ---
+---    Date : 26/07/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to run chained scripted events, with custom delay and precedence between scripts.                 ---
@@ -22,7 +22,7 @@ class "scripted_sequence"
 function scripted_sequence:__init()
     self.m_init_func = nil
     self.m_chain = {}
-    self.m_cursor = 0
+    self.m_cursor = -1
     self.m_last_update = time_global()
     self.m_unique_call_wrapper = nil
 end
@@ -44,12 +44,17 @@ end
 
 function scripted_sequence:execute()
     printf("[NS] Scripted sequence started")
+    assert(not self.m_unique_call_wrapper, "Scripted sequence already running, cannot execute again")
     self.m_unique_call_wrapper = nanosuit_utils.add_unique_call(self.update, self)
+    self.m_cursor = 0
 end
 
 function scripted_sequence:update()
+    local tg = time_global()
+
     if self.m_cursor == 0 and self:m_init_func() then
         self.m_cursor = 1
+        self.m_last_update = tg
         printf("[NS] Init step done, moving to next step %s", self.m_cursor)
         return
     end
@@ -61,13 +66,16 @@ function scripted_sequence:update()
         return
     end
 
-    local tg = time_global()
     local current = self.m_chain[self.m_cursor]
     if (tg - self.m_last_update) >= current.delay and current.func(self) then
         self.m_cursor = self.m_cursor + 1
         self.m_last_update = tg
         printf("[NS] Step done, moving to next step %s", self.m_cursor)
     end
+end
+
+function scripted_sequence:is_running()
+    return not self:is_done() and self.m_cursor ~= -1
 end
 
 function scripted_sequence:is_done()

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/06/2025                                                                                             ---
+---    Date : 27/07/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -18,95 +18,131 @@ localized_sound_object  = nanosuit_utils.localized_sound_object
 actor_slots_enum        = nanosuit_utils.actor_slots_enum
 armor_modes_enum        = nanosuit_utils.armor_modes_enum
 
--- Singleton
-instance                = nil
-
--- Variables
-loaded_m_data           = {}
-
 -- ---------------------------------------------------------------------------------------------------------------------
 -- General functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
-function actor_item_to_slot(_)
-    nextTick(function()
-        local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-        if outfit ~= nil and outfit:section() == "outfit_nanosuit" then
-            create_instance_if_not_exists()
-        end
-        return true
-    end)
+function bind(obj)
+    obj:bind_object(nanosuit_binder(obj))
 end
 
-function actor_item_to_ruck(_)
-    nextTick(function()
-        local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-        if outfit == nil or outfit:section() ~= "outfit_nanosuit" then
-            destroy_instance_if_exists()
-        end
-        return true
-    end)
+function get_instance()
+    local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
+    if not outfit then
+        return nil
+    end
+    local binder = outfit:binded_object()
+    if not binder then
+        return nil
+    end
+    return binder.m_instance
 end
 
-function actor_on_item_drop(_)
-    nextTick(function()
-        local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-        if outfit == nil or outfit:section() ~= "outfit_nanosuit" then
-            destroy_instance_if_exists()
-        end
-        return true
-    end)
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Nanosuit binder class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "nanosuit_binder" (object_binder)
+
+function nanosuit_binder:__init(obj) super(obj)
+    printf("[NS] Binding object %s", obj:name())
+    self.m_object = obj
+    self.m_instance = nil
+    self.m_loaded_storage = nil
+
+    RegisterScriptCallback("actor_item_to_slot", self)
+    RegisterScriptCallback("actor_item_to_ruck", self)
+    RegisterScriptCallback("actor_on_item_drop", self)
+    RegisterScriptCallback("actor_on_net_destroy", self)
 end
 
-function actor_on_net_destroy()
-    destroy_instance_if_exists()
+function nanosuit_binder:net_destroy()
+    self:destroy_instance_if_exists()
+    self.m_object = nil
+    self.m_instance = nil
+    self.m_loaded_storage = nil
+
+    UnregisterScriptCallback("actor_item_to_slot", self)
+    UnregisterScriptCallback("actor_item_to_ruck", self)
+    UnregisterScriptCallback("actor_on_item_drop", self)
+    UnregisterScriptCallback("actor_on_net_destroy", self)
 end
 
-function save_state(m_data)
-    if instance ~= nil then
-        m_data.nanosuit = {}
-        instance:save(m_data.nanosuit)
+function nanosuit_binder:save(output_packet)
+    object_binder.save(self, output_packet)
+
+    if self.m_instance ~= nil then
+        printf("[NS] Nanosuit saving variables")
+        se_save_var(self.object:id(), nil, "nanosuit_storage", self.m_instance:save())
+        printf("[NS] Nanosuit saved variables")
     end
 end
 
-function load_state(m_data)
-    loaded_m_data = m_data.nanosuit or loaded_m_data
+function nanosuit_binder:load(input_packet)
+    object_binder.load(self, input_packet)
+
+    printf("[NS] Nanosuit pre-loading variables")
+    self.m_loaded_storage = se_load_var(self.object:id(), nil, "nanosuit_storage") or {}
 end
 
--- ---------------------------------------------------------------------------------------------------------------------
--- Instance management functions
--- ---------------------------------------------------------------------------------------------------------------------
-
-function create_instance_if_not_exists()
-    if instance == nil then
+function nanosuit_binder:create_instance_if_not_exists()
+    if self.m_instance == nil then
         printf("[NS] Nanosuit core initializing")
-        instance = core()
+        self.m_instance = core()
+        if self.m_loaded_storage ~= nil then
+            printf("[NS] Nanosuit loading variables")
+            self.m_instance:load(self.m_loaded_storage)
+            self.m_loaded_storage = nil
+            printf("[NS] Nanosuit loaded variables")
+        end
         printf("[NS] Nanosuit core initialized")
     end
 end
 
-function destroy_instance_if_exists()
-    if instance ~= nil then
+function nanosuit_binder:destroy_instance_if_exists()
+    if self.m_instance ~= nil then
         printf("[NS] Nanosuit core destroying")
-        instance:destroy()
-        instance = nil
+        self.m_instance:destroy()
+        self.m_instance = nil
         printf("[NS] Nanosuit core destroyed")
     end
 end
 
--- ---------------------------------------------------------------------------------------------------------------------
--- Callbacks registration
--- ---------------------------------------------------------------------------------------------------------------------
+function nanosuit_binder:actor_item_to_slot(obj)
+    local obj_id = obj:id()
+    nextTick(function()
+        local obj_now = level.object_by_id(obj_id)
+        if obj_now and obj_now:id() == self.m_object:id() then
+            self:create_instance_if_not_exists()
+        end
+        return true
+    end)
+end
 
---- Function used to register callbacks.
---- @return nil
-function on_game_start()
-    RegisterScriptCallback("save_state", save_state)
-    RegisterScriptCallback("load_state", load_state)
-    RegisterScriptCallback("actor_item_to_slot", actor_item_to_slot)
-    RegisterScriptCallback("actor_item_to_ruck", actor_item_to_ruck)
-    RegisterScriptCallback("actor_on_item_drop", actor_on_item_drop)
-    RegisterScriptCallback("actor_on_net_destroy", actor_on_net_destroy)
+function nanosuit_binder:actor_item_to_ruck(obj)
+    local obj_id = obj:id()
+    nextTick(function()
+        local obj_now = level.object_by_id(obj_id)
+        if obj_now and obj_now:id() == self.m_object:id() then
+            self:destroy_instance_if_exists()
+        end
+        return true
+    end)
+end
+
+function nanosuit_binder:actor_on_item_drop(obj)
+    local obj_id = obj:id()
+    nextTick(function()
+        local obj_now = level.object_by_id(obj_id)
+        if obj_now and obj_now:id() == self.m_object:id() then
+            self:destroy_instance_if_exists()
+        end
+        return true
+    end)
+end
+
+function nanosuit_binder:actor_on_net_destroy()
+    self:destroy_instance_if_exists()
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -143,10 +179,10 @@ function core:__init()
 
     -- Armor modes
     self.m_modes = {
-        [armor_modes_enum.armor] = nanosuit_mode_armor[armor_modes_enum.armor](armor_modes_enum.armor),
-        [armor_modes_enum.power] = nanosuit_mode_power[armor_modes_enum.power](armor_modes_enum.power),
-        [armor_modes_enum.speed] = nanosuit_mode_speed[armor_modes_enum.speed](armor_modes_enum.speed),
-        [armor_modes_enum.cloak] = nanosuit_mode_cloak[armor_modes_enum.cloak](armor_modes_enum.cloak)
+        [armor_modes_enum.armor] = nanosuit_mode_armor[armor_modes_enum.armor](self, armor_modes_enum.armor),
+        [armor_modes_enum.power] = nanosuit_mode_power[armor_modes_enum.power](self, armor_modes_enum.power),
+        [armor_modes_enum.speed] = nanosuit_mode_speed[armor_modes_enum.speed](self, armor_modes_enum.speed),
+        [armor_modes_enum.cloak] = nanosuit_mode_cloak[armor_modes_enum.cloak](self, armor_modes_enum.cloak)
     }
 
     -- Default mode initialization
@@ -155,12 +191,12 @@ function core:__init()
     self.m_current_mode:apply(false)
 
     -- UIs
-    self.m_hud = nanosuit_ui_hud.ui_hud()
+    self.m_hud = nanosuit_ui_hud.ui_hud(self)
 
     -- Others
-    self.m_vaporizer = nanosuit_vaporizer.vaporizer()
-    self.m_malfunctor = nanosuit_malfunctor.malfunctor()
-    self.m_defibrillator = nanosuit_defibrillator.defibrillator()
+    self.m_vaporizer = nanosuit_vaporizer.vaporizer(self)
+    self.m_malfunctor = nanosuit_malfunctor.malfunctor(self)
+    self.m_defibrillator = nanosuit_defibrillator.defibrillator(self)
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_death", self)
@@ -173,7 +209,11 @@ function core:__finalize()
 end
 
 function core:destroy()
-    self.m_current_mode:remove()
+    self.m_current_mode:remove(true)
+
+    for _, mode in pairs(self.m_modes) do
+        mode:destroy()
+    end
 
     UnregisterScriptCallback("actor_on_death", self)
     UnregisterScriptCallback("actor_on_update", self)
@@ -191,50 +231,49 @@ function core:destroy()
     self.m_defibrillator:destroy()
 end
 
-function core:save(m_data)
-    m_data.energy = self.m_energy
-    --m_data.energy_last_use = time_global() - self.m_energy_last_use
-    --m_data.energy_last_regen = time_global() - self.m_energy_last_regen
-    m_data.energy_low_voiced = self.m_energy_low_voiced
-    m_data.energy_very_low_voiced = self.m_energy_very_low_voiced
-    m_data.energy_off_voiced = self.m_energy_off_voiced
-    m_data.energy_on_voiced = self.m_energy_on_voiced
+function core:save()
+    local storage = {}
+    storage.energy = self.m_energy
+    storage.energy_low_voiced = self.m_energy_low_voiced
+    storage.energy_very_low_voiced = self.m_energy_very_low_voiced
+    storage.energy_off_voiced = self.m_energy_off_voiced
+    storage.energy_on_voiced = self.m_energy_on_voiced
 
-    m_data.modes = {}
+    storage.modes = {}
     for name, mode in pairs(self.m_modes) do
-        m_data.modes[name] = mode.save and mode:save() or {}
+        storage.modes[name] = mode.save and mode:save() or {}
     end
 
-    m_data.vaporizer = self.m_vaporizer.save and self.m_vaporizer:save() or {}
-    m_data.malfunctor = self.m_malfunctor.save and self.m_malfunctor:save() or {}
-    m_data.defibrillator = self.m_defibrillator.save and self.m_defibrillator:save() or {}
+    storage.vaporizer = self.m_vaporizer.save and self.m_vaporizer:save() or {}
+    storage.malfunctor = self.m_malfunctor.save and self.m_malfunctor:save() or {}
+    storage.defibrillator = self.m_defibrillator.save and self.m_defibrillator:save() or {}
+
+    return storage
 end
 
-function core:load(m_data)
-    self.m_energy = m_data.energy or self.m_energy
-    --self.m_energy_last_use = (m_data.energy_last_use and time_global() + m_data.energy_last_use) or self.m_energy_last_use
-    --self.m_energy_last_regen = (m_data.energy_last_regen and time_global() + m_data.energy_last_regen) or self.m_energy_last_regen
-    self.m_energy_low_voiced = m_data.energy_low_voiced or self.m_energy_low_voiced
-    self.m_energy_very_low_voiced = m_data.energy_very_low_voiced or self.m_energy_very_low_voiced
-    self.m_energy_off_voiced = m_data.energy_off_voiced or self.m_energy_off_voiced
-    self.m_energy_on_voiced = m_data.energy_on_voiced or self.m_energy_on_voiced
+function core:load(storage)
+    self.m_energy = storage.energy or self.m_energy
+    self.m_energy_low_voiced = storage.energy_low_voiced or self.m_energy_low_voiced
+    self.m_energy_very_low_voiced = storage.energy_very_low_voiced or self.m_energy_very_low_voiced
+    self.m_energy_off_voiced = storage.energy_off_voiced or self.m_energy_off_voiced
+    self.m_energy_on_voiced = storage.energy_on_voiced or self.m_energy_on_voiced
 
     for name, mode in pairs(self.m_modes) do
-        if m_data.modes and m_data.modes[name] and mode.load then
-            mode:load(m_data.modes[name])
+        if storage.modes and storage.modes[name] and mode.load then
+            mode:load(storage.modes[name])
         end
     end
 
-    if m_data.vaporizer and self.m_vaporizer.load then
-        self.m_vaporizer:load(m_data.vaporizer)
+    if storage.vaporizer and self.m_vaporizer.load then
+        self.m_vaporizer:load(storage.vaporizer)
     end
 
-    if m_data.malfunctor and self.m_malfunctor.load then
-        self.m_malfunctor:load(m_data.malfunctor)
+    if storage.malfunctor and self.m_malfunctor.load then
+        self.m_malfunctor:load(storage.malfunctor)
     end
 
-    if m_data.defibrillator and self.m_defibrillator.load then
-        self.m_defibrillator:load(m_data.defibrillator)
+    if storage.defibrillator and self.m_defibrillator.load then
+        self.m_defibrillator:load(storage.defibrillator)
     end
 end
 
@@ -245,7 +284,7 @@ end
 
 function core:change_mode(mode, play_voice)
     if self.m_current_mode ~= self.m_modes[mode] then
-        self.m_current_mode:remove()
+        self.m_current_mode:remove(false)
         self.m_current_mode = self.m_modes[mode]
         self.m_current_mode:apply(play_voice)
     end
@@ -265,12 +304,6 @@ function core:actor_on_death()
 end
 
 function core:actor_on_update()
-    -- Load
-    if loaded_m_data then
-        self:load(loaded_m_data)
-        loaded_m_data = nil
-    end
-
     -- Delay energy regen 5s after last energy use
     if time_global() - self.m_energy_last_use > self.m_energy_regen_delay and not self.m_malfunctor.m_enabled and not self.m_defibrillator.m_enabled then
         -- Throttle energy regen once every 100ms
