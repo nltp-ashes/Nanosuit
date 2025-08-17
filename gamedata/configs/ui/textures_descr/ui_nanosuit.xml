@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 21/07/2025                                                                                            -->
+<!--    Date : 10/08/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Texture description file for the Nanosuit addon's UI textures.                                               -->
@@ -25,6 +25,7 @@
         <texture id="ui_nanosuit_portrait_2"                  x="165"     y="0"      width="165"     height="108" />
         <texture id="ui_nanosuit_portrait_3"                  x="0"       y="108"    width="165"     height="108" />
         <texture id="ui_nanosuit_portrait_4"                  x="165"     y="108"    width="165"     height="108" />
+        <texture id="ui_nanosuit_asian_portrait_1"            x="330"     y="0"      width="165"     height="108" />
     </file>
 
     <!-- Menu UI -->
@@ -48,12 +49,16 @@
         <texture id="ui_nanosuit_status_trc_outline"          x="116"     y="562"    width="116"     height="33" />
     </file>
     <file name="nanosuit\ui\hud\status\energy.dds">
-        <texture id="ui_nanosuit_status_energy_bar"           x="0"       y="0"      width="495"     height="80" />
+        <texture id="ui_nanosuit_status_energy_bar"           x="0"       y="0"      width="495"     height="65" />
         <texture id="ui_nanosuit_status_energy_icon"          x="0"       y="80"     width="50"      height="50" />
     </file>
     <file name="nanosuit\ui\hud\status\health.dds">
-        <texture id="ui_nanosuit_status_health_bar"           x="0"       y="0"      width="495"     height="80" />
+        <texture id="ui_nanosuit_status_health_bar"           x="0"       y="0"      width="495"     height="65" />
         <texture id="ui_nanosuit_status_health_icon"          x="0"       y="80"     width="50"      height="50" />
+    </file>
+    <file name="nanosuit\ui\hud\status\stamina.dds">
+        <texture id="ui_nanosuit_status_stamina_bar"          x="0"       y="0"      width="495"     height="65" />
+        <texture id="ui_nanosuit_status_stamina_icon"         x="0"       y="80"     width="50"      height="50" />
     </file>
     <file name="nanosuit\ui\hud\status\suit_modes.dds">
         <texture id="ui_nanosuit_status_armor"                x="0"       y="0"      width="1024"    height="1024" />
@@ -103,5 +108,10 @@
         <texture id="ui_nanosuit_ind_booster_health"          x="172"     y="43"     width="43"      height="43" />
         <texture id="ui_nanosuit_ind_booster_psi"             x="215"     y="43"     width="43"      height="43" />
         <texture id="ui_nanosuit_ind_booster_chem"            x="258"     y="43"     width="43"      height="43" />
+
+        <texture id="ui_nanosuit_ind_booster_cf"              x="301"     y="0"      width="43"      height="43" />
+        <texture id="ui_nanosuit_ind_booster_cf_heal"         x="344"     y="0"      width="43"      height="43" />
+        <texture id="ui_nanosuit_ind_booster_cf_save"         x="301"     y="43"     width="43"      height="43" />
+        <texture id="ui_nanosuit_ind_booster_cf_healsave"     x="344"     y="43"     width="43"      height="43" />
     </file>
 </w>

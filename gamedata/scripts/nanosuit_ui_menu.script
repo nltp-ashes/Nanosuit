@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 21/07/2025                                                                                             ---
+---    Date : 25/07/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit mode selection UI.                                                         ---
@@ -72,7 +72,7 @@ function ui_menu:__init(parent) super()
         end)
         self:AddOption(opt)
         self:RegisterCallback(mode, function(flags)
-            nanosuit_core.instance:change_mode(mode, true)
+            self.m_parent.m_core:change_mode(mode, true)
             flags.close_gui = true
         end)
     end
@@ -125,7 +125,7 @@ function ui_menu:on_key_press(dik)
         return
     end
 
-    if nanosuit_core.instance.m_malfunctor.m_enabled then
+    if self.m_parent.m_core.m_malfunctor.m_enabled then
         return
     end
 

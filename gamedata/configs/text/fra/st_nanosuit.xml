@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 21/07/2025                                                                                            -->
+<!--    Date : 06/08/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -16,15 +16,27 @@
     <!--=============================================================================================================-->
 
     <string id="st_nanosuit_outfit_name">
-        <text>CryNet Nanocombinaison 1.0</text>
+        <text>Nano-combinaison CryNet 1.0</text>
     </string>
 
     <string id="st_nanosuit_outfit_name_s">
-        <text>Nanocombinaison</text>
+        <text>Nano-combinaison</text>
     </string>
 
-    <string id="st_nanosuit_outfit_name_descr">
-        <text>La Nanocombinaison (aussi connue sous le nom combinaison nano-muscle) est un ensemble tactique puissant et extrêmement polyvalent initialement conçu pour combattre la menace [CLASSIFIÉ] et minimiser l'écart technologique entre l'humanité et les [CLASSIFIÉ]. Rétro-ingénierée à partir de technologies [CLASSIFIÉ], les fibres musculaires CryFibril de la combinaison peuvent être programmés pour diverses applications (comme la rigidité, force accrue ou encore camouflage optique), permettant de dramatiquement augmenter les capacités de combat et physiques, rendant possible des exploits surhumains à son opérateur.\n \n</text>
+    <string id="st_nanosuit_outfit_descr">
+        <text>La nano-combinaison (aussi connue sous le nom combinaison nano-muscle) est un ensemble tactique puissant et extrêmement polyvalent initialement conçu pour combattre la menace [CLASSIFIÉ] et minimiser l'écart technologique entre l'humanité et les [CLASSIFIÉ]. Rétro-ingénierée à partir de technologies [CLASSIFIÉ], les fibres musculaires CryFibril de la combinaison peuvent être programmés pour diverses applications (comme la rigidité, force accrue ou encore camouflage optique), permettant de dramatiquement augmenter les capacités de combat et physiques, rendant possible des exploits surhumains à son opérateur.\n \n</text>
+    </string>
+
+    <string id="st_nanosuit_asian_outfit_name">
+        <text>Nano-combinaison nord-coréenne</text>
+    </string>
+
+    <string id="st_nanosuit_asian_outfit_name_s">
+        <text>Nano-combinaison</text>
+    </string>
+
+    <string id="st_nanosuit_asian_outfit_descr">
+        <text>La nano-combinaison nord-coréenne est un ensemble tactique avancé développé par des scientifiques nord-coréens, conçue pour améliorer les capacités physiques et de combat de son opérateur. Utilisant une technologie de nano-fibres propriétaires, la combinaison offre quatre modes opérationnels — Armure, Force, Vitesse et Camouflage — ainsi que des contrôles environnementaux robustes. Elle utilise des plaques céramiques traditionnelles pour compenser le fait que ses nano-fibres ont des difficultés à se contracter, une caractéristique clé requise pour la protection balistique. Elle est également capable de camoufler son opérateur, bien que des instabilités dans le système puissent exposer le porteur en raison d'étincelles occasionnelles. La combinaison présente un motif de camouflage japonais distinctif. Malgré ses quelques problèmes, la nano-combinaison nord-coréenne reste un atout redoutable sur le champ de bataille, offrant à son porteur des capacités surhumaines et une espérance de survie accrue.\n \n</text>
     </string>
 
     <!--=============================================================================================================-->
@@ -32,7 +44,7 @@
     <!--=============================================================================================================-->
 
     <string id="st_nanosuit_defibrillator">
-        <text>Batterie pour défibrillateur Nanocombinaison</text>
+        <text>Batterie pour défibrillateur nano-combinaison</text>
     </string>
 
     <string id="st_nanosuit_defibrillator_s">
@@ -40,7 +52,7 @@
     </string>
 
     <string id="st_nanosuit_defibrillator_descr">
-        <text>Cette batterie est un dispositif de stockage d'énergie compact et de haute-capacité conçu pour alimenter le système de défibrillation intégré à la Nanocombinaison. Elle permet à l'utilisateur de se réanimer, offrant un avantage décisif en situation de combat. La batterie est à usage unique et doit être remplacée après utilisation.\n \n</text>
+        <text>Cette batterie est un dispositif de stockage d'énergie compact et de haute-capacité conçu pour alimenter le système de défibrillation intégré à la nano-combinaison. Elle permet à l'utilisateur de se réanimer, offrant un avantage décisif en situation de combat. La batterie est à usage unique et doit être remplacée après utilisation.\n \n</text>
     </string>
 
     <!--=============================================================================================================-->
@@ -53,6 +65,18 @@
 
     <string id="st_nanosuit_defibrillator_ready">
         <text>DÉFIBRILLATEUR PRÊT</text>
+    </string>
+
+    <!--=============================================================================================================-->
+    <!--    Nanosuit built-in vaporizer                                                                              -->
+    <!--=============================================================================================================-->
+
+    <string id="st_nanosuit_vaporizer_header">
+        <text>Nano-combinaison</text>
+    </string>
+
+    <string id="st_nanosuit_vaporizer_message">
+        <text>Rupture du protocole. Vous avez laissé s'échapper quelqu'un qui vous a vu, vous allez être éliminé.</text>
     </string>
 
     <!--=============================================================================================================-->
@@ -92,12 +116,25 @@
         <text>Nanocombinaison</text>
     </string>
 
+    <string id="ui_mcm_nanosuit_general_title">
+        <text>PARAMÈTRES GÉNÉRAUX</text>
+    </string>
+
     <string id="ui_mcm_nanosuit_keybindings_title">
-        <text>PARAMÉTRAGE DES TOUCHES</text>
+        <text>PARAMÈTRES DES TOUCHES</text>
     </string>
 
     <string id="ui_mcm_nanosuit_technical_settings_title">
         <text>PARAMÈTRES TECHNIQUES</text>
+    </string>
+
+    <!-- Enable vaporize on witness get-away -->
+    <string id="ui_mcm_nanosuit_use_witness">
+        <text>Vaporisation quand un témoin s'échappe</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_use_witness_desc">
+        <text>Le protocole est de ne laisser aucun témoin de votre présence. Si activé, le joueur sera vaporisé s'il laisse un ennemi s'échapper après avoir été en combat.</text>
     </string>
 
     <!-- Use defibrillator -->

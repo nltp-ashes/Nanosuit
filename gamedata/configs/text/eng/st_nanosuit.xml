@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 21/07/2025                                                                                            -->
+<!--    Date : 06/08/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -16,15 +16,27 @@
     <!--=============================================================================================================-->
 
     <string id="st_nanosuit_outfit_name">
-        <text>CryNet Nanosuit 1.0</text>
+        <text>CryNet nanosuit 1.0</text>
     </string>
 
     <string id="st_nanosuit_outfit_name_s">
         <text>Nanosuit</text>
     </string>
 
-    <string id="st_nanosuit_outfit_name_descr">
-        <text>The Nanosuit (also known as Nano-muscle suit) is a powerful and extremely versatile set of tactical-combat armor originally designed to counter the [CLASSIFIED] threat and circumvent the technological margin between Mankind and [CLASSIFIED]. Reverse-engineered from captured [CLASSIFIED] technology, the suits' CryFibril muscle fibers can be programmed for a variety of purposes (such as hardening, muscle augmentation or camouflage), leading to drastically enhanced combat and physical performance, allowing the operator to execute superhuman feats.\n \n</text>
+    <string id="st_nanosuit_outfit_descr">
+        <text>The nanosuit (also known as Nano-muscle suit) is a powerful and extremely versatile set of tactical-combat armor originally designed to counter the [CLASSIFIED] threat and circumvent the technological margin between Mankind and [CLASSIFIED]. Reverse-engineered from captured [CLASSIFIED] technology, the suits' CryFibril muscle fibers can be programmed for a variety of purposes (such as hardening, muscle augmentation or camouflage), leading to drastically enhanced combat and physical performance, allowing the operator to execute superhuman feats.\n \n</text>
+    </string>
+
+    <string id="st_nanosuit_asian_outfit_name">
+        <text>Korean nanosuit</text>
+    </string>
+
+    <string id="st_nanosuit_asian_outfit_name_s">
+        <text>Nanosuit</text>
+    </string>
+
+    <string id="st_nanosuit_asian_outfit_descr">
+        <text>The Korean nanosuit is an advanced tactical-combat armor developed by North Korean scientists, designed to enhance the physical and combat capabilities of its operator. Utilizing proprietary nanofiber technology, the suit offers four operational modes — Armor, Strength, Speed, and Cloak — alongside robust environmental controls. It employs traditional ceramic plates to compensate for the fact that its nanofibers have difficulties contracting, a key feature required for ballistic protection. It also features cloaking capabilities, although instabilities in the system may expose the wearer due to occasional sparking. The suit features a distinctive Japanese woodland camouflage pattern. Even with its few issues, the Korean nanosuit remains a formidable asset on the battlefield, granting its wearer superhuman abilities and increased survivability.\n \n</text>
     </string>
 
     <!--=============================================================================================================-->
@@ -40,7 +52,7 @@
     </string>
 
     <string id="st_nanosuit_defibrillator_descr">
-        <text>This powerbank is a compact, high-capacity energy storage device designed to power the Nanosuit's built-in defibrillator system. It allows the user to revive themselves, providing a critical advantage in combat situations. The powerbank is single use, and must be replaced after use.\n \n</text>
+        <text>This powerbank is a compact, high-capacity energy storage device designed to power the nanosuit's built-in defibrillator system. It allows the user to revive themselves, providing a critical advantage in combat situations. The powerbank is single use, and must be replaced after use.\n \n</text>
     </string>
 
     <!--=============================================================================================================-->
@@ -53,6 +65,18 @@
 
     <string id="st_nanosuit_defibrillator_ready">
         <text>DEFIBRILLATOR READY</text>
+    </string>
+
+    <!--=============================================================================================================-->
+    <!--    Nanosuit built-in vaporizer                                                                              -->
+    <!--=============================================================================================================-->
+
+    <string id="st_nanosuit_vaporizer_header">
+        <text>Nanosuit</text>
+    </string>
+
+    <string id="st_nanosuit_vaporizer_message">
+        <text>Breach of protocol. You have let someone who saw you escape, you will be terminated.</text>
     </string>
 
     <!--=============================================================================================================-->
@@ -92,12 +116,25 @@
         <text>Nanosuit</text>
     </string>
 
+    <string id="ui_mcm_nanosuit_general_title">
+        <text>GENERAL SETTINGS</text>
+    </string>
+
     <string id="ui_mcm_nanosuit_keybindings_title">
         <text>KEY-BIND SETTINGS</text>
     </string>
 
     <string id="ui_mcm_nanosuit_technical_settings_title">
         <text>TECHNICAL SETTINGS</text>
+    </string>
+
+    <!-- Enable vaporize on witness get-away -->
+    <string id="ui_mcm_nanosuit_use_witness">
+        <text>Vaporize on witness get-away</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_use_witness_desc">
+        <text>The protocol is to leave no witnesses of your presence. If enabled, the player gets vaporized when they let an enemy get away after they have been in combat.</text>
     </string>
 
     <!-- Use defibrillator -->

@@ -10,16 +10,28 @@ Fend off the Zone's dangers with the Nanosuit, a powerful and extremely versatil
 
 ### ABOUT
 
-This addon adds a fully operational Nanosuit from Crysis. 
+This addon adds a fully operational US and Korean nanosuits from Crysis.
+
+**Important :** This addon is still in development. It is stable enough that I feel confident people can start having fun with it. But it isn't complete. YOU HAVE TO SPAWN THE OUTFIT USING THE [DEBUG MENU ITEM SPAWNER](https://igigog.github.io/anomaly-modding-book/modding-tools/in-game-editors/item-spawner.html).
+
+**Important :** Expect a lot of soft-conflicts (aka it will work, but it won't look nice) with UI mods. Please report as many UI related issues as you can.
 
 Bellow is a list of features that are currently available in the addon :
+
+Miscellaneous :
+- The nanosuit comes with third person, first person and world models; inventory icons and character portraits (and even legs model if you use [First Person Visible Body](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version))
+- The Nanosuit voice-lines are available in English, French and Russian, depending on the game language
+- The addon features an MCM menu, allowing you to change some settings on the fly
+- When the suit is out of energy, all incoming damage is transferred to the player
+- The suit has basic ballistic, rupture and explosive protection when out of energy
+- The suit will absorb low amounts of radiation, without consuming energy
+- The suit will also absorb higher amounts of radiation, but at the cost of energy
 
 Armor mode :
 - Absorbs all incoming damage as long as the suit has energy
 - The more powerful is the impact, the more energy it consumes
 - Some damage types consume more energy than others
-- When the suit is out of energy, all incoming damage is transferred to the player
-- The suit does not protect against psi-emissions and blunt force (fall-damage, poltergeist throws, etc.)
+- The mode does not protect against psi-emissions and blunt force (fall-damage, poltergeist throws, etc.)
 
 Speed mode :
 - Increases walk speed by 25%, does not consume energy
@@ -32,6 +44,7 @@ Strength mode :
 - Increases jump height by 100%, proportionally to the suit's energy level
 - Increases carrying capacity by 25kg
 - Decreases weapon recoil by a factor of 10, for as long as the suit has energy
+- Protects against fall damage, as long as the suit has energy
 - Shooting while in strength mode consumes energy
 - When low on energy, recoil goes back to normal
 
@@ -46,16 +59,16 @@ Cloak mode :
 HUD :
 - Added a custom HUD when wearing the suit. HUD dynamically switches from vanilla HUD to the Nanosuit's and back
 - HUD is divided in 3 parts : the menu, the left side shows a minimap, the right side shows the suit's status
-- The menu (opened by pressing V) allows you to switch from one mode to another
+- The menu (opened by pressing V, configurable in MCM) allows you to switch from one mode to another
 - The minimap shows all human objects around the player
-- The status hub shows the suit's current mode, energy level, health, ammo count, ammo reserve and fire mode
+- The status hub shows the suit's current mode, energy level, health, stamina, ammo count, ammo reserve and fire mode
 
 Defibrillator :
 - If the player dies, under certain conditions, an animated sequence will play, giving the option to get a second chance
 - The defibrillator can only be used when dying from certain damage types (fall damage, radiation, lacerations)
 - A defibrillator powerbank is required for the defibrillator to activate
 - Powerbanks are single use, and need to be replaced after being revived
-- During the defibrillator sequence, the player has a 3 seconds window to press the dedicated key, after which the player dies
+- During the defibrillator sequence, the player has a 3 seconds window to press Space (configurable in MCM), after which the player dies
 
 Malfunctions :
 - The suit can malfunction, turning it off (protection and bonuses are removed) and disabling the HUD (turns red and indicators are offline)
@@ -64,11 +77,9 @@ Malfunctions :
 
 Vaporization :
 - When the player (or an NPC) dies wearing the suit, they will be vaporized, leaving no body behind
+- When the player enters combat with an NPC, and then tries to escape the fight, they will be vaporized
+- The player is allowed to walk away from a fight with zombies, or Monolith fighters
 - When NPCs get vaporized alive, they enter a special animation
-
-Miscellaneous :
-- The Nanosuit voice-lines are available in English, French and Russian, depending on the game language
-- The addon features an MCM menu, allowing you to change some settings on the fly
 
 ---
 
@@ -76,11 +87,15 @@ Miscellaneous :
 
 These addons are **absolutely required** in order for the addon to work :
 1. [S.T.A.L.K.E.R. Anomaly 1.5.3](https://www.moddb.com/mods/stalker-anomaly/downloads/stalker-anomaly-153).
-2. [S.T.A.L.K.E.R. Anomaly Modded Exes 03.06.2025 (or newer)](https://github.com/themrdemonized/xray-monolith)
-3. [First Person Visible Body](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version) (this dependency will be optional in the final release, but is needed for now)
+2. [S.T.A.L.K.E.R. Anomaly Modded Exes 01.08.2025 (or newer)](https://github.com/themrdemonized/xray-monolith)
 
 The addon natively integrates[^native_integrations] with the following addons, but they **aren't required** :
-1. [Mod Configuration Menu](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu) (allows you to customize some options about the addon);
+1. [Mod Configuration Menu v1.7](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu) (allows you to customize some options about the addon);
+2. [First Person Visible Body v6.0](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version) (allows you to see your character's body in first person);
+3. [Hunger, thirst, sleepiness bars v1.01](https://www.moddb.com/mods/stalker-anomaly/addons/hunger-thirst-sleepiness-bars) (adds HUD indicators for hunger, thirst and sleepiness);
+4. [Campfire Healing And Designated Savepoint indicator v2.1](https://www.moddb.com/mods/stalker-anomaly/addons/campfire-healing-and-designated-savepoint-indicator) (adds HUD indicators for campfire healing and savepoint);
+5. [Powered Exoskeletons v2.2](https://github.com/ahuyn/anomaly-exo) (adds exoskeleton power sources to the game);
+6. [Body Health System Redux v2.0.2](https://www.moddb.com/mods/stalker-anomaly/addons/100-groks-body-health-system-redux-for-151) (adds EFT-like health system);
 
 [^native_integrations]: Native integration are similar to compatibility patches, except they are built-into the addon. If the other addon is installed, the features will be available, if not, they will be disabled, all without requiring any extra steps from the user.
 
@@ -121,9 +136,14 @@ For past updates, please refer to the description of each release, in the [relea
 
 Here is a list of planned features for the addon :
 - Add a storyline that will allow the player to acquire the suit;
-- Add the Korean version of the nanosuit;
 - Add a female version of the nanosuit;
 - Add option to use female voice for the nanosuit modes;
+- Add built-in binoculars;
+- Add built-in night vision;
+- Add nanovision (using HeatVision as back-end) (as an upgrade?);
+- Custom footsteps when wearing the suit;
+
+**A note on BHS :** Given the tentacular nature of BHS and its suite of addons, and how terrible its code is, I will not further improve the compatibility patch for it. I am open to take contributions if someone comes up with a better patch than mine, given mine is essentially just removing BHS's UI if it exists.
 
 If you would like to help development for future updates, you can :
 1. Contribute to the addon, either by [getting in touch with me](https://github.com/nltp-ashes/Nanosuit#support--suggestions) or [creating a fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) of the addon and [creating a pull-request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) on the addon's [GitHub repository](https://github.com/nltp-ashes/Nanosuit);
@@ -136,13 +156,13 @@ If you would like to help development for future updates, you can :
 The following issues will be fixed in the near future :
 - Cloak mode does not work if the NPC sees the actor before the cloak is applied, right now you need to break vision for it to work
 - Cloak mode does not work on mutants
-- When wearing the suit, the player footsteps do not change. They should use custom sounds
+- Cloak mode sometimes messes with the equipped items' textures when switching slot while in the mode (workaround : perform a save/load)
+- Cloak mode does not cloak the knife during the mutant skinning animation with FDDA
 - The game crashes if actor interacts with an NPC while they're getting vaporized
 - The game crashes if player reloads a save while cloak mode is enabled
 
 The following issues are either technical limitations, or skill limitations, and will not be fixed in the foreseeable future :
 - Speed mode should increase reload speed
-- The thumb of the left arm is fucked
 
 If you truly believe your problem is new, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).
 
@@ -161,22 +181,30 @@ If you need help with anything, or if you have any suggestions, you can :
 
 Credit goes to these people for their work contained in this addon :
 
-|                                Name                                 |                                          Motive                                           |         License         |
-|:-------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------:|:-----------------------:|
-|       **[xfightervn](https://www.deviantart.com/xfightervn)**       |                            Reused their art for the MCM banner                            |       Proprietary       |
-|              **[LVutner](https://github.com/LVutner)**              |                      Provided an improved shader for the cloak mode                       | See [LICENSE](#license) |
-|         **[Crepis](https://www.moddb.com/members/cr3pis)**          |              Provided an inventory icon for the defibrillator powerbank item              |       Proprietary       |
-|                             **Tronex**                              |                  Reused their "Indicators" HUD from actor_status.script                   |       Proprietary       |
-|                          **Stalker_Boss**                           |                             Translated the addon into Russian                             |       Proprietary       |
-|         **[Crepis](https://www.moddb.com/members/cr3pis)**          | Greatly improved the quality of the inventory icon, upgrade icon and character portraits  |       Proprietary       |
-|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     | Greatly improved the texture quality of the first and third person models of the Nanosuit | See [LICENSE](#license) |
-| **[\_Paramonov Alexander\_](https://users.playground.ru/1997780/)** |             Port of the Nanosuit first person, third person and world models              |       Proprietary       |
-|             **[Crytek GmbH](https://www.crytek.com/)**              |                     Various assets (textures, sound effects, models)                      |       Proprietary       |
+|                                Name                                 |                                                    Motive                                                    |         License         |
+|:-------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------:|:-----------------------:|
+|                            **Medialuna**                            |                           Fixed the Korean nanosuit's world model collision volume                           |       Proprietary       |
+|         **[Crepis](https://www.moddb.com/members/cr3pis)**          |      Provided high quality inventory icon, upgrade icon and character portrait for the Korean nanosuit       |       Proprietary       |
+|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |                   Improved the texture quality of the Korean nanosuit's third person model                   | See [LICENSE](#license) |
+|                         **wookie, 3vtiger**                         |                                Port of the Korean nanosuit third person model                                |       Proprietary       |
+|                          **punished__joe**                          |                Ported the nanosuit hands and edited them to fit S.T.A.L.K.E.R.'s proportions                 |       Proprietary       |
+|       **[xfightervn](https://www.deviantart.com/xfightervn)**       |                                     Reused their art for the MCM banner                                      |       Proprietary       |
+|              **[LVutner](https://github.com/LVutner)**              |                                Provided an improved shader for the cloak mode                                | See [LICENSE](#license) |
+|         **[Crepis](https://www.moddb.com/members/cr3pis)**          |                       Provided an inventory icon for the defibrillator powerbank item                        |       Proprietary       |
+|                             **Tronex**                              |                            Reused their "Indicators" HUD from actor_status.script                            |       Proprietary       |
+|                          **Stalker_Boss**                           |                                      Translated the addon into Russian                                       |       Proprietary       |
+|         **[Crepis](https://www.moddb.com/members/cr3pis)**          | Greatly improved the quality of the inventory icon, upgrade icon and character portraits for the US nanosuit |       Proprietary       |
+|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |          Greatly improved the texture quality of the first and third person models of the nanosuit           | See [LICENSE](#license) |
+| **[\_Paramonov Alexander\_](https://users.playground.ru/1997780/)** |                       Port of the nanosuit first person, third person and world models                       |       Proprietary       |
+|             **[Crytek GmbH](https://www.crytek.com/)**              |                               Various assets (textures, sound effects, models)                               |       Proprietary       |
 
 Special thanks to these people for their help in the making of this addon :
 
 |                      Name                      |                                                     Motive                                                     |
 |:----------------------------------------------:|:--------------------------------------------------------------------------------------------------------------:|
+|                    **MFB**                     |                        Tips about invisible walls and how they work in the X-Ray engine                        |
+|                 **Vanquisher**                 |                             For extensive play-testing and all the feedback given                              |
+|                 **Medialuna**                  |    For all the tips and tricks with modeling/textures that objectively made my life a little less miserable    |
 | **[Lucy](https://www.moddb.com/members/r3zy)** | For adding engine support to change, at runtime and using scripts, the textures and shaders of any game_object |
 
 ---
@@ -192,7 +220,7 @@ This means you're allowed to redistribute and/or adapt the work, as long as you 
 
 Content made by Blackgrowl can be reused, as long as you credit him for the work he did in this addon (texture work, model fixes).
 
-Content made by LVutner is licensed under the following license :
+Content made by LVutner is provided under the following license :
 ```
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```

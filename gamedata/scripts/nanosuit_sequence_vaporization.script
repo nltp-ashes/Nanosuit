@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/06/2025                                                                                             ---
+---    Date : 02/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the animated sequence of the vaporization.                                              ---
@@ -18,7 +18,7 @@ hit_types_enum          = nanosuit_utils.hit_types_enum
 actor_cameras_enum      = nanosuit_utils.actor_cameras_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Defibrillator sequence class
+-- Vaporization sequence class
 -- ---------------------------------------------------------------------------------------------------------------------
 
 class "vaporization_sequence" (nanosuit_sequence.scripted_sequence)
@@ -36,6 +36,15 @@ end
 
 function vaporization_sequence:destroy()
     nanosuit_sequence.scripted_sequence.destroy(self)
+
+    self.m_particles = {}
+end
+
+function vaporization_sequence:execute()
+    nanosuit_sequence.scripted_sequence.execute(self)
+
+    -- Reset particles
+    self.m_particles = {}
 end
 
 function vaporization_sequence:update()
@@ -61,8 +70,7 @@ function vaporization_sequence:update()
         local bones = obj:list_bones(hud_mode)
         for bone_id, bone_name in pairs(bones) do
             if not self.m_particles[bone_name] then
-                -- FIXME : Should make a copy of that pfx in the addon's files
-                self.m_particles[bone_name] = particles_object([[damage_fx\burn_creatures]])
+                self.m_particles[bone_name] = particles_object([[nanosuit\vaporize\vaporize]])
             end
 
             if not self.m_particles[bone_name]:playing() then
@@ -93,6 +101,16 @@ function vaporization_sequence:wait_for_state()
     end
 
     return false
+end
+
+function vaporization_sequence:action_notify_witness()
+    local header = nanosuit_utils.get_translation("st_nanosuit_vaporizer_header")
+    local message = nanosuit_utils.get_translation("st_nanosuit_vaporizer_message")
+    local duration = 5
+    local icon = "ui_inGame2_no_data"
+    dynamic_news_helper.send_tip(message, header, nil, duration, icon, "beep_1", "npc")
+
+    return true
 end
 
 function vaporization_sequence:action_sounds()
