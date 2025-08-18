@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 16/08/2025                                                                                             ---
+---    Date : 18/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle all the necessary intercepts to make the Nanosuit addon compatible with other addons.   ---
@@ -195,6 +195,31 @@ if zzz_player_injuries then
         for cs_name in pairs(bhs_cs) do
             hud:RemoveCustomStatic(cs_name)
         end
+
+        return res
+    end
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Heat Vision v1.3
+-- ---------------------------------------------------------------------------------------------------------------------
+
+if z_heatvision then
+    nanosuit_core_core___init = nanosuit_core.core.__init
+    nanosuit_core.core.__init = function(self, name)
+        local res = nanosuit_core_core___init(self, name)
+
+        self.m_nanovision = nanosuit_nanovision.nanovision(self)
+
+        return res
+    end
+
+    nanosuit_core_core_destroy = nanosuit_core.core.destroy
+    nanosuit_core.core.destroy = function(self)
+        local res = nanosuit_core_core_destroy(self)
+
+        self.m_nanovision:destroy()
+        self.m_nanovision = nil
 
         return res
     end

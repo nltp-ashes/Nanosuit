@@ -81,6 +81,12 @@ Vaporization :
 - The player is allowed to walk away from a fight with zombies, or Monolith fighters
 - When NPCs get vaporized alive, they enter a special animation
 
+Nanovision :
+- If [HeatVision v1.3](https://www.moddb.com/mods/stalker-anomaly/addons/heatvision-v02-extension-for-beefs-nvg-dx11engine-mod) is installed, the suit will have built-in nanovision
+- Nanovision consumes 2% of energy per second when enabled
+- When out of energy, nanovision will be disabled
+- Having any device equipped in the night-vision slot will make the nanovision unavailable
+
 ---
 
 ### REQUIREMENTS
@@ -90,12 +96,13 @@ These addons are **absolutely required** in order for the addon to work :
 2. [S.T.A.L.K.E.R. Anomaly Modded Exes 01.08.2025 (or newer)](https://github.com/themrdemonized/xray-monolith)
 
 The addon natively integrates[^native_integrations] with the following addons, but they **aren't required** :
-1. [Mod Configuration Menu v1.7](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu) (allows you to customize some options about the addon);
-2. [First Person Visible Body v6.0](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version) (allows you to see your character's body in first person);
-3. [Hunger, thirst, sleepiness bars v1.01](https://www.moddb.com/mods/stalker-anomaly/addons/hunger-thirst-sleepiness-bars) (adds HUD indicators for hunger, thirst and sleepiness);
-4. [Campfire Healing And Designated Savepoint indicator v2.1](https://www.moddb.com/mods/stalker-anomaly/addons/campfire-healing-and-designated-savepoint-indicator) (adds HUD indicators for campfire healing and savepoint);
-5. [Powered Exoskeletons v2.2](https://github.com/ahuyn/anomaly-exo) (adds exoskeleton power sources to the game);
-6. [Body Health System Redux v2.0.2](https://www.moddb.com/mods/stalker-anomaly/addons/100-groks-body-health-system-redux-for-151) (adds EFT-like health system);
+1. [Mod Configuration Menu v1.7](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu) (customizable options for the addon);
+2. [First Person Visible Body v6.0](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version) (custom leg models, if installed);
+3. [Hunger, thirst, sleepiness bars v1.01](https://www.moddb.com/mods/stalker-anomaly/addons/hunger-thirst-sleepiness-bars) (custom nanosuit styling for hunger, thirst and sleepiness indicator);
+4. [Campfire Healing And Designated Savepoint indicator v2.1](https://www.moddb.com/mods/stalker-anomaly/addons/campfire-healing-and-designated-savepoint-indicator) (custom nanosuit styling for campfire indicators);
+5. [Powered Exoskeletons v2.2](https://github.com/ahuyn/anomaly-exo) (built-in compatibility, to prevent the nanosuit from being considered an exoskeleton);
+6. [Body Health System Redux v2.0.2](https://www.moddb.com/mods/stalker-anomaly/addons/100-groks-body-health-system-redux-for-151) (built-in compatibility, to prevent UI overlaps);
+7. [HeatVision v1.3](https://www.moddb.com/mods/stalker-anomaly/addons/heatvision-v02-extension-for-beefs-nvg-dx11engine-mod) (adds nanovision to the suit, if installed);
 
 [^native_integrations]: Native integration are similar to compatibility patches, except they are built-into the addon. If the other addon is installed, the features will be available, if not, they will be disabled, all without requiring any extra steps from the user.
 
