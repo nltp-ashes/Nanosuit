@@ -1,0 +1,112 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 18/08/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit's built-in nanovision system.                                              ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+actor_slots_enum          = nanosuit_utils.actor_slots_enum
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Defibrillator class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "nanovision"
+
+function nanovision:__init(core)
+    self.m_core = core
+    self.m_energy_rate = 500
+    self.m_energy_use = 1
+    self.m_energy_last_use = 0
+    self.m_sounds = {
+        on = sound_object([[nanosuit\nanovision\nanovision_on]]),
+        off = sound_object([[nanosuit\nanovision\nanovision_off]]),
+        loop = sound_object([[nanosuit\nanovision\nanovision_loop]])
+    }
+
+    RegisterScriptCallback("on_key_press", self)
+    RegisterScriptCallback("actor_on_update", self)
+end
+
+function nanovision:destroy()
+    self.m_core = nil
+
+    UnregisterScriptCallback("on_key_press", self)
+    UnregisterScriptCallback("actor_on_update", self)
+end
+
+function nanovision:activate()
+    if not self:can_activate() then
+        return
+    end
+
+    -- Play sounds
+    self.m_sounds.on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    self.m_sounds.loop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
+
+    -- Turn shader on
+    local n_tubes = tostring(20) -- Num Tubes (1,2,4,1.1,1.2) outputs x.10, x.20, x.40, x.11, or x.12
+    local vignette = tostring(math.floor(0)) -- Vignette Amount (0.0 to 1.0) outputs 0.z to 100.z in 1. increment
+    local flip_down = tostring(math.floor(100)) -- Flip down amount - outputs 1.x to 100.x
+    local radius = tostring(math.floor(9)) -- Radius for NVG effect - outputs 0.0 to 0.9
+
+    get_console():execute("r__heatvision 1")
+    get_console():execute("heat_vision_args_1 (0." .. n_tubes .. ",0.0," .. vignette .. ".0,0.0)")
+    get_console():execute("heat_vision_args_2 (" .. flip_down .. ".0,0." .. radius .. ",0.0,0.0)")
+end
+
+function nanovision:deactivate()
+    -- Play sounds
+    self.m_sounds.off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    self.m_sounds.loop:stop()
+
+    -- Turn shader off
+    get_console():execute("r__heatvision 0")
+    get_console():execute("heat_vision_args_1 (0.0,0.0,0.0,0.0)")
+    get_console():execute("heat_vision_args_2 (0.0,0.0,0.0,0.0)")
+end
+
+function nanovision:can_activate()
+    return db.actor:item_in_slot(actor_slots_enum.torch) == nil and self.m_core.m_energy > 0
+end
+
+function nanovision:is_active()
+    return get_console():get_bool("r__heatvision")
+end
+
+function nanovision:on_key_press(dik)
+    if dik == DIK_keys.DIK_N then -- TODO : Move that to MCM
+        if self:is_active() then
+            self:deactivate()
+        else
+            self:activate()
+        end
+    end
+end
+
+function nanovision:actor_on_update()
+    if not self:is_active() then
+        return
+    end
+
+    -- Turn off when out of energy
+    if not self:can_activate() then
+        self:deactivate()
+        return
+    end
+
+    -- Energy use
+    if time_global() - self.m_energy_last_use > self.m_energy_rate then
+        self.m_core:use_energy(self.m_energy_use)
+        self.m_energy_last_use = time_global()
+    end
+end
