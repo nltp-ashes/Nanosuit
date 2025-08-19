@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : Tronex                                                                                   ---
 ---    Edited : Rewrote to improve linking between config table & slots (NLTP_ASHES - 29/05/2025)                    ---
----    Date : 18/08/2025                                                                                             ---
+---    Date : 20/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit indicators UI.                                                             ---
@@ -21,7 +21,7 @@ actor_status_types_enum = nanosuit_utils.actor_status_types_enum
 -- ---------------------------------------------------------------------------------------------------------------------
 
 function get_psy_health(visual)
-    local psy_health = arszi_psy.get_psy_health()
+    local psy_health = arszi_psy.psy_table.actor_psy_health
     if not visual then
         return psy_health
     end
