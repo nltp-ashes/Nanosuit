@@ -1,0 +1,114 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 28/08/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit's built-in nanovision system.                                              ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+actor_slots_enum          = nanosuit_utils.actor_slots_enum
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Defibrillator class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "nightvision"
+
+function nightvision:__init(core)
+    self.m_core = core
+    self.m_energy_rate = 500
+    self.m_energy_use = 1
+    self.m_energy_last_use = 0
+    self.m_effector_id = 35552
+    self.m_effector_name = [[nightvision_1.ppe]]
+    self.m_effector_factor = 0.2
+    self.m_is_active = false
+    self.m_sounds = {
+        on = sound_object([[nanosuit\nanovision\nanovision_on]]),
+        off = sound_object([[nanosuit\nanovision\nanovision_off]]),
+        loop = sound_object([[nanosuit\nanovision\nanovision_loop]])
+    }
+
+    RegisterScriptCallback("on_key_press", self)
+    RegisterScriptCallback("actor_on_update", self)
+end
+
+function nightvision:destroy()
+    self.m_core = nil
+
+    UnregisterScriptCallback("on_key_press", self)
+    UnregisterScriptCallback("actor_on_update", self)
+end
+
+function nightvision:activate()
+    if not self:can_activate() then
+        return
+    end
+
+    self.m_is_active = true
+
+    -- Play sounds
+    self.m_sounds.on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    self.m_sounds.loop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
+
+    -- Turn post process effector on
+    level.add_pp_effector(self.m_effector_name, self.m_effector_id, true)
+    game.set_nv_lumfactor(self.m_effector_factor)
+end
+
+function nightvision:deactivate()
+    -- Play sounds
+    self.m_sounds.off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    self.m_sounds.loop:stop()
+
+    -- Turn post process effector off
+    level.remove_pp_effector(self.m_effector_id)
+    game.set_nv_lumfactor(0)
+
+    self.m_is_active = false
+end
+
+function nightvision:can_activate()
+    return db.actor:item_in_slot(actor_slots_enum.torch) == nil and self.m_core.m_energy > 0
+end
+
+function nightvision:is_active()
+    return self.m_is_active
+end
+
+function nightvision:on_key_press(dik)
+    if dik == DIK_keys.DIK_M then -- TODO : Move that to MCM
+        if self:is_active() then
+            self:deactivate()
+        else
+            self:activate()
+        end
+    end
+end
+
+function nightvision:actor_on_update()
+    if not self:is_active() then
+        return
+    end
+
+    -- Turn off when out of energy
+    if not self:can_activate() then
+        self:deactivate()
+        return
+    end
+
+    -- Energy use
+    -- TODO : This should use its own energy bar instead of the suit's energy
+    if time_global() - self.m_energy_last_use > self.m_energy_rate then
+        self.m_core:use_energy(self.m_energy_use)
+        self.m_energy_last_use = time_global()
+    end
+end
