@@ -7,5 +7,6 @@
 > - Added nanovision built-into the suit if [HeatVision v1.3](https://www.moddb.com/mods/stalker-anomaly/addons/heatvision-v02-extension-for-beefs-nvg-dx11engine-mod) addon is installed;
 
 **• Changes :**
+> - Strength mode now boosts melee damage against all object types, and not just human NPCs;
 
 **• Bug fixes :**

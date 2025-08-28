@@ -40,7 +40,7 @@ Speed mode :
 - When low on energy, the bonuses get temporarily disabled
 
 Strength mode :
-- Increases melee damage by up to 100%, proportionally to the suit's energy level
+- Increases melee damage by 100%
 - Increases jump height by 100%, proportionally to the suit's energy level
 - Increases carrying capacity by 25kg
 - Decreases weapon recoil by a factor of 10, for as long as the suit has energy
