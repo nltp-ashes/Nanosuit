@@ -1,4 +1,4 @@
-## **v0.10.0 - 26/08/2025 - Beta Build**
+## **v0.10.0 - 28/08/2025 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.10.0/total?label=Downloads)]()
 
@@ -8,6 +8,7 @@
 
 **• Changes :**
 > - Improved BHS patch so it has a higher chance of hiding the entire BHS UI;
+> - Strength mode now boosts melee damage against all object types, and not just human NPCs;
 
 **• Bug fixes :**
 > - Fixed BHS patch removing BHS' UI even when the nanosuit isn't equipped;
