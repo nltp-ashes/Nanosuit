@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 26/08/2025                                                                                             ---
+---    Date : 31/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a melee damage booster usable by a Nanosuit mode.                          ---
@@ -23,8 +23,8 @@ actor_slots_enum        = nanosuit_utils.actor_slots_enum
 class "melee" (nanosuit_booster.abstract_booster)
 
 function melee:__init(core, name) super(core, name)
-    self.m_wound_power_factor = 2
-    self.m_wound_impulse_factor = 200
+    self.m_power_factor = 2
+    self.m_impulse_factor = 10
 
     -- Cache
     self.m_cache[actor_slots_enum.knife] = { enabled = true, obj_id = nil }
@@ -41,22 +41,22 @@ function melee:set(obj, slot)
     nanosuit_booster.abstract_booster.set(self, obj, slot)
 
     local wpn_obj = obj:cast_Knife()
-    wpn_obj:SetHit1Power(wpn_obj:GetHit1Power() * self.m_wound_power_factor)
-    wpn_obj:SetHit2Power(wpn_obj:GetHit2Power() * self.m_wound_power_factor)
-    wpn_obj:SetHit1PowerCritical(wpn_obj:GetHit1PowerCritical() * self.m_wound_power_factor)
-    wpn_obj:SetHit2PowerCritical(wpn_obj:GetHit2PowerCritical() * self.m_wound_power_factor)
-    wpn_obj:SetHit1Impulse(wpn_obj:GetHit1Impulse() * self.m_wound_impulse_factor)
-    wpn_obj:SetHit2Impulse(wpn_obj:GetHit2Impulse() * self.m_wound_impulse_factor)
+    wpn_obj:SetHit1Power(wpn_obj:GetHit1Power() * self.m_power_factor)
+    wpn_obj:SetHit2Power(wpn_obj:GetHit2Power() * self.m_power_factor)
+    wpn_obj:SetHit1PowerCritical(wpn_obj:GetHit1PowerCritical() * self.m_power_factor)
+    wpn_obj:SetHit2PowerCritical(wpn_obj:GetHit2PowerCritical() * self.m_power_factor)
+    wpn_obj:SetHit1Impulse(wpn_obj:GetHit1Impulse() * self.m_impulse_factor)
+    wpn_obj:SetHit2Impulse(wpn_obj:GetHit2Impulse() * self.m_impulse_factor)
 end
 
 function melee:unset(obj, slot)
     local wpn_obj = obj:cast_Knife()
-    wpn_obj:SetHit1Power(wpn_obj:GetHit1Power() / self.m_wound_power_factor)
-    wpn_obj:SetHit2Power(wpn_obj:GetHit2Power() / self.m_wound_power_factor)
-    wpn_obj:SetHit1PowerCritical(wpn_obj:GetHit1PowerCritical() / self.m_wound_power_factor)
-    wpn_obj:SetHit2PowerCritical(wpn_obj:GetHit2PowerCritical() / self.m_wound_power_factor)
-    wpn_obj:SetHit1Impulse(wpn_obj:GetHit1Impulse() / self.m_wound_impulse_factor)
-    wpn_obj:SetHit2Impulse(wpn_obj:GetHit2Impulse() / self.m_wound_impulse_factor)
+    wpn_obj:SetHit1Power(wpn_obj:GetHit1Power() / self.m_power_factor)
+    wpn_obj:SetHit2Power(wpn_obj:GetHit2Power() / self.m_power_factor)
+    wpn_obj:SetHit1PowerCritical(wpn_obj:GetHit1PowerCritical() / self.m_power_factor)
+    wpn_obj:SetHit2PowerCritical(wpn_obj:GetHit2PowerCritical() / self.m_power_factor)
+    wpn_obj:SetHit1Impulse(wpn_obj:GetHit1Impulse() / self.m_impulse_factor)
+    wpn_obj:SetHit2Impulse(wpn_obj:GetHit2Impulse() / self.m_impulse_factor)
 
     nanosuit_booster.abstract_booster.unset(self, obj, slot)
 end

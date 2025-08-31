@@ -1,4 +1,4 @@
-## **v0.10.0 - 28/08/2025 - Beta Build**
+## **v0.10.0 - 31/08/2025 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.10.0/total?label=Downloads)]()
 
@@ -12,3 +12,5 @@
 
 **• Bug fixes :**
 > - Fixed BHS patch removing BHS' UI even when the nanosuit isn't equipped;
+
+**Note :** This build requires [Modded Exes version 27.08.2025](https://github.com/themrdemonized/xray-monolith/releases/tag/2025.8.27) melee rework and BHS patch to work.
