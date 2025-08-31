@@ -5,7 +5,7 @@
 ---    Date : 31/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
----    Script used to handle the logic of armor mode of the Nanosuit addon.                                          ---
+---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -13,51 +13,60 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
--- Imports
-hit_types_enum          = nanosuit_utils.hit_types_enum
-
 -- ---------------------------------------------------------------------------------------------------------------------
--- Armor mode class
+-- Core class
 -- ---------------------------------------------------------------------------------------------------------------------
 
-class "armor" (nanosuit_mode.abstract_mode)
+class "energy"
 
-function armor:__init(core, name) super(core, name, [[nanosuit\voice\mode_armor_voice]])
-    -- Sound effects
-    self.m_sounds.armor_on = sound_object([[nanosuit\modes\armor\mode_armor_on]])
-    self.m_sounds.impacts = {
-        sound_object([[nanosuit\modes\armor\mode_armor_hit_01]]),
-        sound_object([[nanosuit\modes\armor\mode_armor_hit_02]]),
-        sound_object([[nanosuit\modes\armor\mode_armor_hit_03]]),
-        sound_object([[nanosuit\modes\armor\mode_armor_hit_04]]),
-        sound_object([[nanosuit\modes\armor\mode_armor_hit_05]])
-    }
+function energy:__init()
+    -- Variables
+    self.m_level = 100
+    self.m_last_use = 0
+    self.m_last_regen = 0
+    self.m_regen_rate = 100
+    self.m_regen_delay = 5000
+    self.m_regen_conditions = {}
+
+    -- Register callbacks
+    RegisterScriptCallback("actor_on_update", self)
+
+    self:add_regen_condition(function() return time_global() - self.m_last_use > self.m_regen_delay end)
 end
 
-function armor:apply(play_voice)
-    nanosuit_mode.abstract_mode.apply(self, play_voice)
-
-    -- Play sounds
-    self.m_sounds.armor_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+function energy:destroy()
+    UnregisterScriptCallback("actor_on_update", self)
 end
 
-function armor:remove(is_destroying)
-    nanosuit_mode.abstract_mode.remove(self, is_destroying)
+function energy:use_energy(amount)
+    self.m_level = clamp(self.m_level - amount, 0, 100)
+    self.m_last_use = time_global()
 end
 
-function armor:on_before_hit_after_calcs(scripted_hit, target, bone_id)
-    nanosuit_mode.abstract_mode.on_before_hit_after_calcs(self, scripted_hit, target, bone_id)
+function energy:regen_energy(amount)
+    self.m_level = clamp(self.m_level + amount, 0, 100)
+    self.m_last_regen = time_global()
+end
 
-    -- Only apply to actor
-    if target:id() ~= AC_ID then
+function energy:add_regen_condition(condition)
+    table.insert(self.m_regen_conditions, condition)
+end
+
+function energy:can_regen()
+    for _, condition in pairs(self.m_regen_conditions) do
+        if condition() == false then
+            return false
+        end
+    end
+    return true
+end
+
+function energy:actor_on_update()
+    if not self:can_regen() then
         return
     end
 
-    -- Play sound
-    if self.m_core.m_energy.m_level > 0 then
-        if scripted_hit.type == hit_types_enum.fire_wound then
-            local sfx = self.m_sounds.impacts[math.random(1, #self.m_sounds.impacts)]
-            sfx:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
-        end
+    if time_global() - self.m_last_regen > self.m_regen_rate then
+        self:regen_energy(1)
     end
 end

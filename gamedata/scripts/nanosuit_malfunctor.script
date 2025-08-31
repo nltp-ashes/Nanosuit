@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 07/08/2025                                                                                             ---
+---    Date : 31/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the malfunction logic of the Nanosuit addon.                                            ---
@@ -119,7 +119,7 @@ function malfunctor:disable_malfunction()
     if self.m_enabled then
         self.m_enabled = false
         self.m_core:change_mode(self.m_core.m_default_mode, true)
-        self.m_core.m_energy_last_use = time_global()
+        self.m_core.m_energy.m_last_use = time_global()
     end
 end
 

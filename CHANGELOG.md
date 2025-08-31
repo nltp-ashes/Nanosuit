@@ -12,3 +12,4 @@
 
 **• Bug fixes :**
 > - Fixed BHS patch removing BHS' UI even when the nanosuit isn't equipped;
+> - Fixed tacmap not displaying objects correctly when standing higher or lower than them;

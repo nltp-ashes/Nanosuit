@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 13/08/2025                                                                                             ---
+---    Date : 31/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of speed mode of the Nanosuit addon.                                          ---
@@ -78,8 +78,8 @@ function speed:remove(is_destroying)
 end
 
 function speed:actor_on_update()
-    local has_enough_energy_low = self.m_core.m_energy >= self.m_core.m_energy_low_threshold
-    local has_enough_energy_very_low = self.m_core.m_energy >= self.m_core.m_energy_very_low_threshold
+    local has_enough_energy_low = self.m_core.m_energy.m_level >= self.m_core.m_energy_low_threshold
+    local has_enough_energy_very_low = self.m_core.m_energy.m_level >= self.m_core.m_energy_very_low_threshold
 
     -- Use energy
     local energy_rate = has_enough_energy_very_low and self.m_energy_rate or self.m_energy_low_rate

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 28/08/2025                                                                                             ---
+---    Date : 31/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -161,7 +161,6 @@ function core:__init()
     self.m_energy_on_threshold = 0
 
     -- Variables
-    self.m_energy = 100
     self.m_energy_last_use = 0
     self.m_energy_last_regen = 0
     self.m_energy_low_voiced = true
@@ -192,6 +191,9 @@ function core:__init()
 
     -- UIs
     self.m_hud = nanosuit_ui_hud.ui_hud(self)
+
+    -- Energy
+    self.m_energy = nanosuit_energy.energy()
 
     -- Others
     self.m_vaporizer = nanosuit_vaporizer.vaporizer(self)
@@ -227,6 +229,7 @@ function core:destroy()
     end
 
     self.m_hud:destroy()
+    self.m_energy:destroy()
     self.m_vaporizer:destroy()
     self.m_malfunctor:destroy()
     self.m_defibrillator:destroy()
@@ -235,7 +238,7 @@ end
 
 function core:save()
     local storage = {}
-    storage.energy = self.m_energy
+    storage.energy = self.m_energy.m_level
     storage.energy_low_voiced = self.m_energy_low_voiced
     storage.energy_very_low_voiced = self.m_energy_very_low_voiced
     storage.energy_off_voiced = self.m_energy_off_voiced
@@ -254,7 +257,7 @@ function core:save()
 end
 
 function core:load(storage)
-    self.m_energy = storage.energy or self.m_energy
+    self.m_energy.m_level = storage.energy or self.m_energy.m_level
     self.m_energy_low_voiced = storage.energy_low_voiced or self.m_energy_low_voiced
     self.m_energy_very_low_voiced = storage.energy_very_low_voiced or self.m_energy_very_low_voiced
     self.m_energy_off_voiced = storage.energy_off_voiced or self.m_energy_off_voiced
@@ -280,8 +283,7 @@ function core:load(storage)
 end
 
 function core:use_energy(amount)
-    self.m_energy = clamp(self.m_energy - amount, 0, 100)
-    self.m_energy_last_use = time_global()
+    self.m_energy:use_energy(amount)
 end
 
 function core:change_mode(mode, play_voice)
@@ -306,51 +308,42 @@ function core:actor_on_death()
 end
 
 function core:actor_on_update()
-    -- Delay energy regen 5s after last energy use
-    if time_global() - self.m_energy_last_use > self.m_energy_regen_delay and not self.m_malfunctor.m_enabled and not self.m_defibrillator.m_enabled then
-        -- Throttle energy regen once every 100ms
-        if time_global() - self.m_energy_last_regen > self.m_energy_regen_rate then
-            self.m_energy = clamp(self.m_energy + 1, 0, 100)
-            self.m_energy_last_regen = time_global()
-        end
-    end
-
     -- Energy low voice
-    if self.m_energy <= self.m_energy_low_threshold and not self.m_energy_low_voiced and not self.m_malfunctor.m_enabled then
+    if self.m_energy.m_level <= self.m_energy_low_threshold and not self.m_energy_low_voiced and not self.m_malfunctor.m_enabled then
         self.m_sounds.energy_low_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         self.m_energy_low_voiced = true
     end
-    if (self.m_malfunctor.m_enabled or self.m_energy > self.m_energy_low_threshold) and self.m_energy_low_voiced then
+    if (self.m_malfunctor.m_enabled or self.m_energy.m_level > self.m_energy_low_threshold) and self.m_energy_low_voiced then
         self.m_sounds.energy_low_voice:stop()
         self.m_energy_low_voiced = false
     end
 
     -- Energy very low
-    if self.m_energy <= self.m_energy_very_low_threshold and not self.m_energy_very_low_voiced and not self.m_malfunctor.m_enabled then
+    if self.m_energy.m_level <= self.m_energy_very_low_threshold and not self.m_energy_very_low_voiced and not self.m_malfunctor.m_enabled then
         self.m_sounds.energy_very_low:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
         self.m_energy_very_low_voiced = true
     end
-    if (self.m_malfunctor.m_enabled or self.m_energy > self.m_energy_very_low_threshold) and self.m_energy_very_low_voiced then
+    if (self.m_malfunctor.m_enabled or self.m_energy.m_level > self.m_energy_very_low_threshold) and self.m_energy_very_low_voiced then
         self.m_sounds.energy_very_low:stop()
         self.m_energy_very_low_voiced = false
     end
 
     -- Energy off
-    if self.m_energy <= self.m_energy_off_threshold and not self.m_energy_off_voiced then
+    if self.m_energy.m_level <= self.m_energy_off_threshold and not self.m_energy_off_voiced then
         self.m_sounds.energy_off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         self.m_energy_off_voiced = true
     end
-    if self.m_energy > self.m_energy_off_threshold and self.m_energy_off_voiced then
+    if self.m_energy.m_level > self.m_energy_off_threshold and self.m_energy_off_voiced then
         self.m_sounds.energy_off:stop()
         self.m_energy_off_voiced = false
     end
 
     -- Energy on
-    if self.m_energy > self.m_energy_on_threshold and not self.m_energy_on_voiced then
+    if self.m_energy.m_level > self.m_energy_on_threshold and not self.m_energy_on_voiced then
         self.m_sounds.energy_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         self.m_energy_on_voiced = true
     end
-    if self.m_energy <= self.m_energy_on_threshold and self.m_energy_on_voiced then
+    if self.m_energy.m_level <= self.m_energy_on_threshold and self.m_energy_on_voiced then
         self.m_sounds.energy_on:stop()
         self.m_energy_on_voiced = false
     end

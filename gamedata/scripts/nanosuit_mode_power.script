@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 14/08/2025                                                                                             ---
+---    Date : 31/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of strength mode of the Nanosuit addon.                                       ---
@@ -72,7 +72,7 @@ end
 
 function power:actor_on_jump()
     -- Play sounds
-    if self.m_core.m_energy >= self.m_energy_use_power_jump then
+    if self.m_core.m_energy.m_level >= self.m_energy_use_power_jump then
         self.m_sounds.power_jump:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     end
 
@@ -80,7 +80,7 @@ function power:actor_on_jump()
     self.m_core:use_energy(self.m_energy_use_power_jump)
 
     -- Set jump speed (inversely proportional to energy)
-    local jump_multiplier = 1 + self.m_core.m_energy / 100
+    local jump_multiplier = 1 + self.m_core.m_energy.m_level / 100
     db.actor:set_actor_jump_speed(self.m_cache.jump_speed * jump_multiplier)
 end
 

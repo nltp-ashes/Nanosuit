@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 02/08/2025                                                                                             ---
+---    Date : 31/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit status hub (energy, health, ammo, etc) UI.                                 ---
@@ -172,7 +172,7 @@ function ui_status:Update(force)
     self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_colors.background)
 
     -- Energy
-    local energy = self.m_parent.m_core.m_energy
+    local energy = self.m_parent.m_core.m_energy.m_level
     energy = round(energy)
     energy = clamp(energy, 0, 100)
     self.m_ui_energy_bar:SetColor(energy > 20 and self.m_parent.m_colors.energy or self.m_parent.m_colors.red)
