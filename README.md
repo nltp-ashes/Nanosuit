@@ -68,6 +68,7 @@ Defibrillator :
 - The defibrillator can only be used when dying from certain damage types (fall damage, radiation, lacerations)
 - A defibrillator powerbank is required for the defibrillator to activate
 - Powerbanks are single use, and need to be replaced after being revived
+- Powerbanks are the only item that can be attached the player's belt when wearing the suit
 - During the defibrillator sequence, the player has a 3 seconds window to press Space (configurable in MCM), after which the player dies
 
 Malfunctions :

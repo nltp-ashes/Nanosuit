@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 31/08/2025                                                                                             ---
+---    Date : 02/09/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit status hub (energy, health, ammo, etc) UI.                                 ---
@@ -100,14 +100,6 @@ function ui_status:__init(parent) super()
     self.m_ui_fire_mode = self.m_xml:InitStatic("fire_mode", self)
     self.m_ui_fire_mode:SetTextureColor(self.m_parent.m_colors.background)
     arm.scale_ui(self.m_ui_fire_mode, true, true, "right")
-
-    self.m_ui_top_left_corner = self.m_xml:InitStatic("top_left_corner", self)
-    self.m_ui_top_left_corner:SetTextureColor(self.m_parent.m_colors.background)
-    arm.scale_ui(self.m_ui_top_left_corner, true, true, "left")
-
-    self.m_ui_top_right_corner = self.m_xml:InitStatic("top_right_corner", self)
-    self.m_ui_top_right_corner:SetTextureColor(self.m_parent.m_colors.background)
-    arm.scale_ui(self.m_ui_top_right_corner, true, true, "right")
 end
 
 function ui_status:__finalize()
@@ -122,8 +114,6 @@ function ui_status:Update(force)
     if self.m_parent.m_core.m_malfunctor.m_enabled then
         -- Outline
         self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.red)
-        self.m_ui_top_left_corner:SetTextureColor(self.m_parent.m_colors.red)
-        self.m_ui_top_right_corner:SetTextureColor(self.m_parent.m_colors.red)
 
         -- Current suit mode
         self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_colors.red)
@@ -163,8 +153,6 @@ function ui_status:Update(force)
 
     -- Outline
     self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
-    self.m_ui_top_left_corner:SetTextureColor(self.m_parent.m_colors.background)
-    self.m_ui_top_right_corner:SetTextureColor(self.m_parent.m_colors.background)
 
     -- Current suit mode
     local suit_mode = "ui_nanosuit_status_" .. self.m_parent.m_core.m_current_mode.m_name
