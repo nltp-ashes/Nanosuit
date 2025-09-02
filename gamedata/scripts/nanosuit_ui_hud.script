@@ -64,8 +64,8 @@ function ui_hud:__init(core) super()
         stamina = nanosuit_utils.get_constant(nil, "hud_colors_stamina", GetARGB(255, 255, 255, 0)),
         stamina_bg = GetARGB(200, 46, 46, 24),
         stamina_off_bg = GetARGB(200, 24, 24, 24),
-        nv_energy = GetARGB(255, 248, 190, 45),
-        nv_energy_bg = GetARGB(200, 24, 24, 24),
+        nv_energy = GetARGB(255, 253, 254, 50),
+        nv_energy_bg = GetARGB(200, 142, 155, 23),
         red = GetARGB(255, 255, 0, 0)
     }
 

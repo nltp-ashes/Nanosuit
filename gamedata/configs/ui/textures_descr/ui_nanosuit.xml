@@ -45,8 +45,6 @@
     </file>
     <file name="nanosuit\ui\hud\status\outline.dds">
         <texture id="ui_nanosuit_status_outline"               x="0"       y="0"      width="987"     height="562" />
-        <texture id="ui_nanosuit_status_tlc_outline"           x="0"       y="562"    width="116"     height="33" />
-        <texture id="ui_nanosuit_status_trc_outline"           x="116"     y="562"    width="116"     height="33" />
     </file>
     <file name="nanosuit\ui\hud\status\energy.dds">
         <texture id="ui_nanosuit_status_energy_bar"            x="0"       y="0"      width="495"     height="65" />
@@ -91,12 +89,11 @@
     </file>
 
     <!-- Auxiliaries UI -->
-    <file name="nanosuit\ui\hud\status\outline.dds">
-        <texture id="ui_nanosuit_auxiliaries_tlc_outline"      x="0"       y="562"    width="116"     height="33" />
-        <texture id="ui_nanosuit_auxiliaries_trc_outline"      x="116"     y="562"    width="116"     height="33" />
-    </file>
-    <file name="nanosuit\ui\hud\status\health.dds">
-        <texture id="ui_nanosuit_auxiliaries_nv_energy_bar"    x="0"       y="0"      width="495"     height="65" />
+    <file name="nanosuit\ui\hud\auxiliaries\outline.dds">
+        <texture id="ui_nanosuit_auxiliaries_tlc_outline"      x="0"       y="0"      width="116"     height="33" />
+        <texture id="ui_nanosuit_auxiliaries_trc_outline"      x="908"     y="0"      width="116"     height="33" />
+        <texture id="ui_nanosuit_auxiliaries_nv_outline"       x="454"     y="0"      width="436"     height="60" />
+        <texture id="ui_nanosuit_auxiliaries_nv_energy_bar"    x="0"       y="33"     width="416"     height="55" />
     </file>
 
     <!-- Indicators UI -->

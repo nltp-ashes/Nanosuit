@@ -19,6 +19,9 @@
     </top_right_corner>
 
     <!-- NV battery -->
+    <nv_energy_outline x="10" y="10" width="29" height="8" stretch="1">
+        <texture a="200">ui_nanosuit_auxiliaries_tlc_outline</texture>
+    </nv_energy_outline>
     <nv_energy_bar_background x="779" y="10" width="122" height="16" stretch="1">
         <texture a="200">ui_nanosuit_auxiliaries_nv_energy_bar</texture>
     </nv_energy_bar_background>

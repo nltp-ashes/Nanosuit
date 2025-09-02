@@ -38,6 +38,10 @@ function ui_auxiliaries:__init(parent) super()
     self.m_ui_top_right_corner:SetTextureColor(self.m_parent.m_colors.background)
     arm.scale_ui(self.m_ui_top_right_corner, true, true, "right")
 
+    self.m_ui_nv_energy_outline = self.m_xml:InitStatic("nv_energy_outline", self)
+    self.m_ui_nv_energy_outline:SetTextureColor(self.m_parent.m_colors.background)
+    arm.scale_ui(self.m_ui_nv_energy_outline, true, true, "left")
+
     self.m_ui_nv_energy_bar_background = self.m_xml:InitStatic("nv_energy_bar_background", self)
     self.m_ui_nv_energy_bar_background:SetTextureColor(self.m_parent.m_colors.stamina_bg)
     arm.scale_ui(self.m_ui_nv_energy_bar_background, true, true, "right")
@@ -60,6 +64,7 @@ function ui_auxiliaries:Update(force)
         -- Outline
         self.m_ui_top_left_corner:SetTextureColor(self.m_parent.m_colors.red)
         self.m_ui_top_right_corner:SetTextureColor(self.m_parent.m_colors.red)
+        self.m_ui_nv_energy_outline:SetTextureColor(self.m_parent.m_colors.red)
 
         -- NV energy
         self.m_ui_nv_energy_bar:SetProgressPos(0)
@@ -70,6 +75,7 @@ function ui_auxiliaries:Update(force)
     -- Outline
     self.m_ui_top_left_corner:SetTextureColor(self.m_parent.m_colors.background)
     self.m_ui_top_right_corner:SetTextureColor(self.m_parent.m_colors.background)
+    self.m_ui_nv_energy_outline:SetTextureColor(self.m_parent.m_colors.background)
 
     -- NV energy
     local nv_energy = self.m_parent.m_core.m_nightvision.m_energy.m_level
