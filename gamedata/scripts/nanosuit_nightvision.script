@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 02/09/2025                                                                                             ---
+---    Date : 03/09/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's built-in nanovision system.                                              ---
@@ -28,7 +28,7 @@ function nightvision:__init(core)
     self.m_energy_use = 1
     self.m_energy_use_rate = 500
     self.m_effector_id = 35552
-    self.m_effector_name = [[nightvision_1.ppe]]
+    self.m_effector_name = [[nanosuit\nightvision.ppe]]
     self.m_effector_factor = 0.2
     self.m_is_active = false
     self.m_sounds = {
