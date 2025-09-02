@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 02/09/2025                                                                                            -->
+<!--    Date : 03/09/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Texture description file for the Nanosuit addon's UI textures.                                               -->
@@ -93,7 +93,7 @@
         <texture id="ui_nanosuit_auxiliaries_tlc_outline"      x="0"       y="0"      width="116"     height="33" />
         <texture id="ui_nanosuit_auxiliaries_trc_outline"      x="908"     y="0"      width="116"     height="33" />
         <texture id="ui_nanosuit_auxiliaries_nv_outline"       x="454"     y="0"      width="436"     height="60" />
-        <texture id="ui_nanosuit_auxiliaries_nv_energy_bar"    x="0"       y="33"     width="416"     height="55" />
+        <texture id="ui_nanosuit_auxiliaries_nv_energy_bar"    x="0"       y="33"     width="400"     height="53" />
     </file>
 
     <!-- Indicators UI -->

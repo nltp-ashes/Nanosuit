@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 02/09/2025                                                                                             ---
+---    Date : 03/09/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit status hub (energy, health, ammo, etc) UI.                                 ---
@@ -40,7 +40,7 @@ function ui_auxiliaries:__init(parent) super()
 
     self.m_ui_nv_energy_outline = self.m_xml:InitStatic("nv_energy_outline", self)
     self.m_ui_nv_energy_outline:SetTextureColor(self.m_parent.m_colors.background)
-    arm.scale_ui(self.m_ui_nv_energy_outline, true, true, "left")
+    arm.scale_ui(self.m_ui_nv_energy_outline, true, true, "right")
 
     self.m_ui_nv_energy_bar_background = self.m_xml:InitStatic("nv_energy_bar_background", self)
     self.m_ui_nv_energy_bar_background:SetTextureColor(self.m_parent.m_colors.stamina_bg)
@@ -68,7 +68,7 @@ function ui_auxiliaries:Update(force)
 
         -- NV energy
         self.m_ui_nv_energy_bar:SetProgressPos(0)
-        self.m_ui_nv_energy_bar_background:SetTextureColor(self.m_parent.m_colors.stamina_off_bg)
+        self.m_ui_nv_energy_bar_background:SetTextureColor(self.m_parent.m_colors.nv_energy_off_bg)
         return
     end
 
@@ -88,8 +88,10 @@ function ui_auxiliaries:Update(force)
     if nv_energy >= 100 then
         self.m_ui_nv_energy_bar:Show(false)
         self.m_ui_nv_energy_bar_background:Show(false)
+        self.m_ui_nv_energy_outline:Show(false)
     else
         self.m_ui_nv_energy_bar:Show(true)
         self.m_ui_nv_energy_bar_background:Show(true)
+        self.m_ui_nv_energy_outline:Show(true)
     end
 end
