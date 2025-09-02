@@ -19,13 +19,13 @@
     </top_right_corner>
 
     <!-- NV battery -->
-    <nv_energy_outline x="865" y="10" width="115" height="15" stretch="1">
+    <nv_energy_outline x="808" y="10" width="172" height="15" stretch="1">
         <texture a="200">ui_nanosuit_auxiliaries_nv_outline</texture>
     </nv_energy_outline>
-    <nv_energy_bar_background x="871" y="20" width="109" height="16" stretch="1">
+    <nv_energy_bar_background x="817" y="20" width="163" height="16" stretch="1">
         <texture a="200">ui_nanosuit_auxiliaries_nv_energy_bar</texture>
     </nv_energy_bar_background>
-    <nv_energy_bar x="871" y="20" width="109" height="16" mode="back" min="0" max="100" pos="100">
+    <nv_energy_bar x="817" y="20" width="163" height="16" mode="back" min="0" max="100" pos="100">
         <progress stretch="1">
             <texture>ui_nanosuit_auxiliaries_nv_energy_bar</texture>
         </progress>
