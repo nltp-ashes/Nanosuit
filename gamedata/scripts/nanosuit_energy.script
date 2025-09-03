@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 31/08/2025                                                                                             ---
+---    Date : 03/09/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -27,6 +27,7 @@ function energy:__init()
     self.m_regen_rate = 100
     self.m_regen_delay = 5000
     self.m_regen_conditions = {}
+    self.m_drains = {}
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_update", self)
@@ -35,6 +36,9 @@ function energy:__init()
 end
 
 function energy:destroy()
+    self.m_regen_conditions = nil
+    self.m_drains = nil
+
     UnregisterScriptCallback("actor_on_update", self)
 end
 
@@ -61,12 +65,31 @@ function energy:can_regen()
     return true
 end
 
+function energy:has_drain(name)
+    return self.m_drains[name] ~= nil
+end
+
+function energy:add_drain(name, freq, amount_or_func)
+    printf("[NS] Energy | Adding drain '%s' (freq: %s, amount_or_func: %s)", name, freq, amount_or_func)
+    self.m_drains[name] = { amount_or_func = amount_or_func, freq = freq, last_drain = 0 }
+end
+
+function energy:remove_drain(name)
+    printf("[NS] Energy | Removing drain '%s'", name)
+    self.m_drains[name] = nil
+end
+
 function energy:actor_on_update()
-    if not self:can_regen() then
-        return
+    for _, drain in pairs(self.m_drains) do
+        if time_global() - drain.last_drain > drain.freq then
+            local amount = type(drain.amount_or_func) == "function" and drain.amount_or_func() or drain.amount_or_func
+            self:use_energy(amount)
+            drain.last_drain = time_global()
+        end
     end
 
-    if time_global() - self.m_last_regen > self.m_regen_rate then
+    -- Energy regen
+    if self:can_regen() and time_global() - self.m_last_regen > self.m_regen_rate then
         self:regen_energy(1)
     end
 end

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 31/08/2025                                                                                             ---
+---    Date : 03/09/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -252,6 +252,7 @@ function core:save()
     storage.vaporizer = self.m_vaporizer.save and self.m_vaporizer:save() or {}
     storage.malfunctor = self.m_malfunctor.save and self.m_malfunctor:save() or {}
     storage.defibrillator = self.m_defibrillator.save and self.m_defibrillator:save() or {}
+    storage.nightvision = self.m_nightvision.save and self.m_nightvision:save() or {}
 
     return storage
 end
@@ -280,10 +281,10 @@ function core:load(storage)
     if storage.defibrillator and self.m_defibrillator.load then
         self.m_defibrillator:load(storage.defibrillator)
     end
-end
 
-function core:use_energy(amount)
-    self.m_energy:use_energy(amount)
+    if storage.nightvision and self.m_nightvision.load then
+        self.m_nightvision:load(storage.nightvision)
+    end
 end
 
 function core:change_mode(mode, play_voice)

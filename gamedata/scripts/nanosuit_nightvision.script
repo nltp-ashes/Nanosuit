@@ -15,6 +15,7 @@
 
 -- Imports
 actor_slots_enum          = nanosuit_utils.actor_slots_enum
+energy_drain_enum         = nanosuit_utils.energy_drain_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Defibrillator class
@@ -48,12 +49,24 @@ function nightvision:destroy()
     UnregisterScriptCallback("actor_on_update", self)
 end
 
+function nightvision:save()
+    return {
+        energy = self.m_energy.m_level
+    }
+end
+
+function nightvision:load(m_data)
+    self.m_energy.m_level = m_data.energy or self.m_energy.m_level
+end
+
 function nightvision:activate()
     if not self:can_activate() then
         return
     end
 
     self.m_is_active = true
+
+    self.m_energy:add_drain(energy_drain_enum.nightvision, self.m_energy_use_rate, self.m_energy_use)
 
     -- Play sounds
     self.m_sounds.on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
@@ -65,6 +78,8 @@ function nightvision:activate()
 end
 
 function nightvision:deactivate()
+    self.m_energy:remove_drain(energy_drain_enum.nightvision)
+
     -- Play sounds
     self.m_sounds.off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_sounds.loop:stop()
@@ -103,10 +118,5 @@ function nightvision:actor_on_update()
     if not self:can_activate() then
         self:deactivate()
         return
-    end
-
-    -- Energy use
-    if time_global() - self.m_energy.m_last_use > self.m_energy_use_rate then
-        self.m_energy:use_energy(self.m_energy_use)
     end
 end

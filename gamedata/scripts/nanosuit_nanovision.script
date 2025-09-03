@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 31/08/2025                                                                                             ---
+---    Date : 03/09/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's built-in nanovision system.                                              ---
@@ -15,6 +15,7 @@
 
 -- Imports
 actor_slots_enum          = nanosuit_utils.actor_slots_enum
+energy_drain_enum         = nanosuit_utils.energy_drain_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Defibrillator class
@@ -24,9 +25,8 @@ class "nanovision"
 
 function nanovision:__init(core)
     self.m_core = core
-    self.m_energy_rate = 500
     self.m_energy_use = 1
-    self.m_energy_last_use = 0
+    self.m_energy_use_rate = 500
     self.m_sounds = {
         on = sound_object([[nanosuit\nanovision\nanovision_on]]),
         off = sound_object([[nanosuit\nanovision\nanovision_off]]),
@@ -49,6 +49,8 @@ function nanovision:activate()
         return
     end
 
+    self.m_core.m_energy:add_drain(energy_drain_enum.nanovision, self.m_energy_use_rate, self.m_energy_use)
+
     -- Play sounds
     self.m_sounds.on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_sounds.loop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
@@ -65,6 +67,8 @@ function nanovision:activate()
 end
 
 function nanovision:deactivate()
+    self.m_core.m_energy:remove_drain(energy_drain_enum.nanovision)
+
     -- Play sounds
     self.m_sounds.off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_sounds.loop:stop()
@@ -102,11 +106,5 @@ function nanovision:actor_on_update()
     if not self:can_activate() then
         self:deactivate()
         return
-    end
-
-    -- Energy use
-    if time_global() - self.m_energy_last_use > self.m_energy_rate then
-        self.m_core:use_energy(self.m_energy_use)
-        self.m_energy_last_use = time_global()
     end
 end

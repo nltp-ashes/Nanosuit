@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 31/08/2025                                                                                             ---
+---    Date : 03/09/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the malfunction logic of the Nanosuit addon.                                            ---
@@ -98,7 +98,7 @@ function malfunctor:enable_malfunction(stay_off)
         self.m_stay_off = stay_off or false
 
         self.m_core:change_mode(armor_modes_enum.armor, false)
-        self.m_core:use_energy(100)
+        self.m_core.m_energy:use_energy(100)
 
         if self.m_core.m_energy_off_voiced and not self.m_core.m_sounds.energy_off:playing() then
             self.m_core.m_sounds.energy_off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
