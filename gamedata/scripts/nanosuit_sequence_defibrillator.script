@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/06/2025                                                                                             ---
+---    Date : 22/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the animated sequence of the defibrillator.                                             ---
@@ -37,6 +37,8 @@ function defibrillator_sequence:destroy()
             nanosuit_utils.remove_pp_effector(config.id)
         end
     end
+
+    self.m_defibrillator = nil
 
     level.enable_input()
 
