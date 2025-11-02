@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 03/09/2025                                                                                             ---
+---    Date : 02/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's built-in nanovision system.                                              ---
@@ -38,6 +38,10 @@ function nanovision:__init(core)
 end
 
 function nanovision:destroy()
+    if self:is_active() then
+        self:deactivate()
+    end
+
     self.m_core = nil
 
     UnregisterScriptCallback("on_key_press", self)
@@ -45,10 +49,6 @@ function nanovision:destroy()
 end
 
 function nanovision:activate()
-    if not self:can_activate() then
-        return
-    end
-
     self.m_core.m_energy:add_drain(energy_drain_enum.nanovision, self.m_energy_use_rate, self.m_energy_use)
 
     -- Play sounds
@@ -80,7 +80,7 @@ function nanovision:deactivate()
 end
 
 function nanovision:can_activate()
-    return db.actor:item_in_slot(actor_slots_enum.torch) == nil and self.m_core.m_energy.m_level > 0
+    return db.actor:item_in_slot(actor_slots_enum.torch) == nil and self.m_core.m_energy.m_level > 0 and not self.m_core.m_nightvision:is_active()
 end
 
 function nanovision:is_active()
@@ -91,7 +91,7 @@ function nanovision:on_key_press(dik)
     if dik == DIK_keys.DIK_N then -- TODO : Move that to MCM
         if self:is_active() then
             self:deactivate()
-        else
+        elseif self:can_activate() then
             self:activate()
         end
     end

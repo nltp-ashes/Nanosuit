@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 28/08/2025                                                                                             ---
+---    Date : 02/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle all the necessary intercepts to make the Nanosuit addon compatible with other addons.   ---
@@ -195,5 +195,13 @@ if z_heatvision then
         self.m_nanovision:destroy()
 
         return res
+    end
+
+    -- FIXME : This does not work
+    nanosuit_nightvision_can_activate = nanosuit_nightvision.can_activate
+    nanosuit_nightvision.can_activate = function(self)
+        local res = nanosuit_nightvision_can_activate(self)
+
+        return res and not self.m_core.m_nanovision:is_active()
     end
 end
