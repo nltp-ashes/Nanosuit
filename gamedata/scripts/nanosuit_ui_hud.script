@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 26/08/2025                                                                                             ---
+---    Date : 03/09/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -64,6 +64,9 @@ function ui_hud:__init(core) super()
         stamina = nanosuit_utils.get_constant(nil, "hud_colors_stamina", GetARGB(255, 255, 255, 0)),
         stamina_bg = GetARGB(200, 46, 46, 24),
         stamina_off_bg = GetARGB(200, 24, 24, 24),
+        nv_energy = GetARGB(255, 253, 254, 50),
+        nv_energy_bg = GetARGB(200, 142, 155, 23),
+        nv_energy_off_bg = GetARGB(200, 24, 24, 24),
         red = GetARGB(255, 255, 0, 0)
     }
 
@@ -78,6 +81,10 @@ function ui_hud:__init(core) super()
     self.m_ui_tacmap = nanosuit_ui_tacmap.ui_tacmap(self)
     self.m_ui_tacmap:Show(true)
     self:AttachChild(self.m_ui_tacmap)
+
+    self.m_ui_auxiliaries = nanosuit_ui_auxiliaries.ui_auxiliaries(self)
+    self.m_ui_auxiliaries:Show(true)
+    self:AttachChild(self.m_ui_auxiliaries)
 
     self.m_ui_indicators = nanosuit_ui_indicators.ui_indicators(self)
     self.m_ui_indicators:Show(true)
@@ -109,6 +116,7 @@ function ui_hud:destroy()
     self.m_ui_menu:destroy()
     self.m_ui_status:destroy()
     self.m_ui_tacmap:destroy()
+    self.m_ui_auxiliaries:destroy()
     self.m_ui_indicators:destroy()
     self.m_ui_defibrillator:destroy()
 
@@ -255,6 +263,7 @@ function ui_hud:Update(force)
     self.m_ui_menu:Update(force)
     self.m_ui_status:Update(force)
     self.m_ui_tacmap:Update(force)
+    self.m_ui_auxiliaries:Update(force)
     self.m_ui_indicators:Update(force)
     self.m_ui_defibrillator:Update(force)
 end

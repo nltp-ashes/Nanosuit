@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : RavenAscendant                                                                           ---
 ---    Edited : NLTP_ASHES                                                                                           ---
----    Date : 09/08/2025                                                                                             ---
+---    Date : 08/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define the options in MCM.                                                                     ---
@@ -24,6 +24,8 @@ defaults = {
     ["use_witness"] = false,
     ["defibrillate"] = DIK_keys.DIK_SPACE,
     ["suit_menu"] = DIK_keys.DIK_V,
+    ["nanovision"] = DIK_keys.DIK_N,
+    ["nightvision"] = DIK_keys.DIK_M,
     ["debug_mode"] = false
 }
 
@@ -65,8 +67,10 @@ function on_mcm_load()
          { id="use_witness",     type="check",       val=mcm_types_enum.boolean,      def=defaults["use_witness"]                                    },
          {                       type="line"                                                                                                         },
          {                       type="title",       text="ui_mcm_nanosuit_keybindings_title"                                                        },
-         { id="defibrillate",    type="key_bind",    val=mcm_types_enum.number,       def=defaults["defibrillate"]                                   },
          { id="suit_menu",       type="key_bind",    val=mcm_types_enum.number,       def=defaults["suit_menu"]                                      },
+         { id="nanovision",      type="key_bind",    val=mcm_types_enum.number,       def=defaults["nanovision"]                                     },
+         { id="nightvision",     type="key_bind",    val=mcm_types_enum.number,       def=defaults["nightvision"]                                    },
+         { id="defibrillate",    type="key_bind",    val=mcm_types_enum.number,       def=defaults["defibrillate"]                                   },
          {                       type="line"                                                                                                         },
          {                       type="title",       text="ui_mcm_nanosuit_technical_settings_title"                                                 },
          { id="debug_mode",      type="check",       val=mcm_types_enum.boolean,      def=defaults["debug_mode"]                                     },

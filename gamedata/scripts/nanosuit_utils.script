@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 18/08/2025                                                                                             ---
+---    Date : 03/09/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -29,6 +29,7 @@ mcm_types_enum          = { string = 0, boolean = 1, number = 2 }
 constants_types_enum    = { string = "string", boolean = "boolean", number = "number", color = "color", vector2 = "vector2", vector3 = "vector3" }
 gender_enum             = { male = "male", female = "female" }
 actor_status_types_enum = { indicator = "state", booster = "booster" }
+energy_drain_enum       = { nightvision = "nightvision", nanovision = "nanovision", sprint = "sprint", cloak = "cloak" }
 
 -- Constants
 constants_type_map         = {
