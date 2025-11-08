@@ -1,0 +1,97 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 02/11/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit auxiliaries (night-vision) UI.                                 ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+fire_modes_names_enum  = nanosuit_utils.fire_modes_names_enum
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Status UI class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "ui_auxiliaries" (CUIScriptWnd)
+
+function ui_auxiliaries:__init(parent) super()
+    -- Variables
+    self.m_parent = parent
+
+    -- Build UI
+    self.m_xml = CScriptXmlInit()
+    self.m_xml:ParseFile("ui_nanosuit_auxiliaries.xml")
+
+    self.m_ui_top_left_corner = self.m_xml:InitStatic("top_left_corner", self)
+    self.m_ui_top_left_corner:SetTextureColor(self.m_parent.m_colors.background)
+    arm.scale_ui(self.m_ui_top_left_corner, true, true, "left")
+
+    self.m_ui_top_right_corner = self.m_xml:InitStatic("top_right_corner", self)
+    self.m_ui_top_right_corner:SetTextureColor(self.m_parent.m_colors.background)
+    arm.scale_ui(self.m_ui_top_right_corner, true, true, "right")
+
+    self.m_ui_nv_energy_outline = self.m_xml:InitStatic("nv_energy_outline", self)
+    self.m_ui_nv_energy_outline:SetTextureColor(self.m_parent.m_colors.background)
+    arm.scale_ui(self.m_ui_nv_energy_outline, true, true, "right")
+
+    self.m_ui_nv_energy_bar_background = self.m_xml:InitStatic("nv_energy_bar_background", self)
+    self.m_ui_nv_energy_bar_background:SetTextureColor(self.m_parent.m_colors.stamina_bg)
+    arm.scale_ui(self.m_ui_nv_energy_bar_background, true, true, "right")
+
+    self.m_ui_nv_energy_bar = self.m_xml:InitProgressBar("nv_energy_bar", self)
+    arm.scale_ui(self.m_ui_nv_energy_bar, true, true, "right")
+    arm.scale_ui(self.m_ui_nv_energy_bar:GetProgressStatic(), true, true, "left", self.m_ui_nv_energy_bar:GetWidth())
+end
+
+function ui_auxiliaries:__finalize()
+end
+
+function ui_auxiliaries:destroy()
+end
+
+function ui_auxiliaries:Update(force)
+    CUIScriptWnd.Update(self)
+
+    if self.m_parent.m_core.m_malfunctor.m_enabled then
+        -- Outline
+        self.m_ui_top_left_corner:SetTextureColor(self.m_parent.m_colors.red)
+        self.m_ui_top_right_corner:SetTextureColor(self.m_parent.m_colors.red)
+        self.m_ui_nv_energy_outline:SetTextureColor(self.m_parent.m_colors.red)
+
+        -- NV energy
+        self.m_ui_nv_energy_bar:SetProgressPos(0)
+        self.m_ui_nv_energy_bar_background:SetTextureColor(self.m_parent.m_colors.nv_energy_off_bg)
+        return
+    end
+
+    -- Outline
+    self.m_ui_top_left_corner:SetTextureColor(self.m_parent.m_colors.background)
+    self.m_ui_top_right_corner:SetTextureColor(self.m_parent.m_colors.background)
+    self.m_ui_nv_energy_outline:SetTextureColor(self.m_parent.m_colors.background)
+
+    -- NV energy
+    local nv_energy = self.m_parent.m_core.m_nightvision.m_energy.m_level
+    nv_energy = round(nv_energy)
+    nv_energy = clamp(nv_energy, 0, 100)
+    self.m_ui_nv_energy_bar:SetColor(self.m_parent.m_colors.nv_energy)
+    self.m_ui_nv_energy_bar:SetProgressPos(nv_energy)
+    self.m_ui_nv_energy_bar_background:SetTextureColor(self.m_parent.m_colors.nv_energy_bg)
+
+    if nv_energy >= 100 then
+        self.m_ui_nv_energy_bar:Show(false)
+        self.m_ui_nv_energy_bar_background:Show(false)
+        self.m_ui_nv_energy_outline:Show(false)
+    else
+        self.m_ui_nv_energy_bar:Show(true)
+        self.m_ui_nv_energy_bar_background:Show(true)
+        self.m_ui_nv_energy_outline:Show(true)
+    end
+end

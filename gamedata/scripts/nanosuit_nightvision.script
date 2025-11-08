@@ -5,7 +5,7 @@
 ---    Date : 08/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
----    Script used to handle the Nanosuit's built-in nanovision system.                                              ---
+---    Script used to handle the Nanosuit's built-in nightvision system.                                              ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -21,12 +21,17 @@ energy_drain_enum         = nanosuit_utils.energy_drain_enum
 -- Defibrillator class
 -- ---------------------------------------------------------------------------------------------------------------------
 
-class "nanovision"
+class "nightvision"
 
-function nanovision:__init(core)
+function nightvision:__init(core)
     self.m_core = core
+    self.m_energy = nanosuit_energy.energy()
     self.m_energy_use = 1
     self.m_energy_use_rate = 500
+    self.m_effector_id = 35552
+    self.m_effector_name = [[nanosuit\nightvision.ppe]]
+    self.m_effector_factor = 0.2
+    self.m_is_active = false
     self.m_sounds = {
         on = sound_object([[nanosuit\nanovision\nanovision_on]]),
         off = sound_object([[nanosuit\nanovision\nanovision_off]]),
@@ -37,7 +42,7 @@ function nanovision:__init(core)
     RegisterScriptCallback("actor_on_update", self)
 end
 
-function nanovision:destroy()
+function nightvision:destroy()
     if self:is_active() then
         self:deactivate()
     end
@@ -48,47 +53,54 @@ function nanovision:destroy()
     UnregisterScriptCallback("actor_on_update", self)
 end
 
-function nanovision:activate()
-    self.m_core.m_energy:add_drain(energy_drain_enum.nanovision, self.m_energy_use_rate, self.m_energy_use)
+function nightvision:save()
+    return {
+        energy = self.m_energy.m_level
+    }
+end
+
+function nightvision:load(m_data)
+    self.m_energy.m_level = m_data.energy or self.m_energy.m_level
+end
+
+function nightvision:activate()
+    self.m_is_active = true
+
+    self.m_energy:add_drain(energy_drain_enum.nightvision, self.m_energy_use_rate, self.m_energy_use)
 
     -- Play sounds
     self.m_sounds.on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_sounds.loop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
 
-    -- Turn shader on
-    local n_tubes = tostring(20) -- Num Tubes (1,2,4,1.1,1.2) outputs x.10, x.20, x.40, x.11, or x.12
-    local vignette = tostring(math.floor(0)) -- Vignette Amount (0.0 to 1.0) outputs 0.z to 100.z in 1. increment
-    local flip_down = tostring(math.floor(100)) -- Flip down amount - outputs 1.x to 100.x
-    local radius = tostring(math.floor(9)) -- Radius for NVG effect - outputs 0.0 to 0.9
-
-    get_console():execute("r__heatvision 1")
-    get_console():execute("heat_vision_args_1 (0." .. n_tubes .. ",0.0," .. vignette .. ".0,0.0)")
-    get_console():execute("heat_vision_args_2 (" .. flip_down .. ".0,0." .. radius .. ",0.0,0.0)")
+    -- Turn post process effector on
+    level.add_pp_effector(self.m_effector_name, self.m_effector_id, true)
+    game.set_nv_lumfactor(self.m_effector_factor)
 end
 
-function nanovision:deactivate()
-    self.m_core.m_energy:remove_drain(energy_drain_enum.nanovision)
+function nightvision:deactivate()
+    self.m_energy:remove_drain(energy_drain_enum.nightvision)
 
     -- Play sounds
     self.m_sounds.off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_sounds.loop:stop()
 
-    -- Turn shader off
-    get_console():execute("r__heatvision 0")
-    get_console():execute("heat_vision_args_1 (0.0,0.0,0.0,0.0)")
-    get_console():execute("heat_vision_args_2 (0.0,0.0,0.0,0.0)")
+    -- Turn post process effector off
+    level.remove_pp_effector(self.m_effector_id)
+    game.set_nv_lumfactor(0)
+
+    self.m_is_active = false
 end
 
-function nanovision:can_activate()
-    return db.actor:item_in_slot(actor_slots_enum.torch) == nil and self.m_core.m_energy.m_level > 0 and not self.m_core.m_nightvision:is_active()
+function nightvision:can_activate()
+    return db.actor:item_in_slot(actor_slots_enum.torch) == nil and self.m_energy.m_level > 0
 end
 
-function nanovision:is_active()
-    return get_console():get_bool("r__heatvision")
+function nightvision:is_active()
+    return self.m_is_active
 end
 
-function nanovision:on_key_press(dik)
-    if dik == nanosuit_mcm.get_config("nanovision") then
+function nightvision:on_key_press(dik)
+    if dik == nanosuit_mcm.get_config("nightvision") then
         if self:is_active() then
             self:deactivate()
         elseif self:can_activate() then
@@ -97,7 +109,7 @@ function nanovision:on_key_press(dik)
     end
 end
 
-function nanovision:actor_on_update()
+function nightvision:actor_on_update()
     if not self:is_active() then
         return
     end

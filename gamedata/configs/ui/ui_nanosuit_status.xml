@@ -2,12 +2,10 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 02/08/2025                                                                                            -->
+<!--    Date : 02/09/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    UI template for the Nanosuit status hub.                                                                     -->
-<!--                                                                                                                 -->
-<!--    Background : #637D66 Text : #81B787                                                                          -->
 <!--                                                                                                                 -->
 <!--=================================================================================================================-->
 <w>
@@ -83,13 +81,4 @@
 
     <!-- Fire mode -->
     <fire_mode x="935" y="624" width="25" height="25" stretch="1" />
-
-    <!-- Corners -->
-    <top_left_corner x="10" y="10" width="29" height="8" stretch="1">
-        <texture a="200">ui_nanosuit_status_tlc_outline</texture>
-    </top_left_corner>
-
-    <top_right_corner x="985" y="10" width="29" height="8" stretch="1">
-        <texture a="200">ui_nanosuit_status_trc_outline</texture>
-    </top_right_corner>
 </w>

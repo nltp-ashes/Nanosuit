@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 09/08/2025                                                                                             ---
+---    Date : 31/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of armor mode of the Nanosuit addon.                                          ---
@@ -54,7 +54,7 @@ function armor:on_before_hit_after_calcs(scripted_hit, target, bone_id)
     end
 
     -- Play sound
-    if self.m_core.m_energy > 0 then
+    if self.m_core.m_energy.m_level > 0 then
         if scripted_hit.type == hit_types_enum.fire_wound then
             local sfx = self.m_sounds.impacts[math.random(1, #self.m_sounds.impacts)]
             sfx:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)

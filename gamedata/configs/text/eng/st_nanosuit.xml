@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 06/08/2025                                                                                            -->
+<!--    Date : 08/11/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -137,15 +137,6 @@
         <text>The protocol is to leave no witnesses of your presence. If enabled, the player gets vaporized when they let an enemy get away after they have been in combat.</text>
     </string>
 
-    <!-- Use defibrillator -->
-    <string id="ui_mcm_nanosuit_defibrillate">
-        <text>Use defibrillator</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_defibrillate_desc">
-        <text>Key-bind used to activate the defibrillator.</text>
-    </string>
-
     <!-- Open suit menu -->
     <string id="ui_mcm_nanosuit_suit_menu">
         <text>Open suit menu</text>
@@ -153,6 +144,33 @@
 
     <string id="ui_mcm_nanosuit_suit_menu_desc">
         <text>Key-bind used to open the suit's modes menu.</text>
+    </string>
+
+    <!-- Toggle nanovision -->
+    <string id="ui_mcm_nanosuit_nanovision">
+        <text>Toggle nanovision</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanovision_desc">
+        <text>Key-bind used to toggle nanovision (thermal imaging).</text>
+    </string>
+
+    <!-- Toggle nightvision -->
+    <string id="ui_mcm_nanosuit_nightvision">
+        <text>Toggle nightvision</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nightvision_desc">
+        <text>Key-bind used to toggle the suit's built-in nightvision.</text>
+    </string>
+
+    <!-- Use defibrillator -->
+    <string id="ui_mcm_nanosuit_defibrillate">
+        <text>Use defibrillator</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_defibrillate_desc">
+        <text>Key-bind used to activate the defibrillator.</text>
     </string>
 
     <!-- Debug mode -->

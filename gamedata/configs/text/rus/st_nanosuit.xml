@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
-<!--    Date : 06/08/2025                                                                                            -->
+<!--    Date : 08/11/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -137,15 +137,6 @@
         <text>Протокол заключается в том, чтобы не оставлять свидетелей вашего присутствия. Если включено, игрок будет выпарен, когда он позволит противнику сбежать после боя.</text>
     </string>
 
-    <!-- Use defibrillator -->
-    <string id="ui_mcm_nanosuit_defibrillate">
-        <text>Использовать дефибриллятор</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_defibrillate_desc">
-        <text>Клавиша, используемая для активации дефибриллятора.</text>
-    </string>
-
     <!-- Open suit menu -->
     <string id="ui_mcm_nanosuit_suit_menu">
         <text>Открыть меню костюма</text>
@@ -153,6 +144,33 @@
 
     <string id="ui_mcm_nanosuit_suit_menu_desc">
         <text>Клавиша, используемая для открытия меню режимов костюма.</text>
+    </string>
+
+    <!-- Toggle nanovision -->
+    <string id="ui_mcm_nanosuit_nanovision">
+        <text>Нановидение</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanovision_desc">
+        <text>Клавиша, используемая для активации нановидения (тепловизионного изображения).</text>
+    </string>
+
+    <!-- Toggle nightvision -->
+    <string id="ui_mcm_nanosuit_nightvision">
+        <text>Ночное видение</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nightvision_desc">
+        <text>Клавиша, используемая для активации встроенного в костюм ночного видения.</text>
+    </string>
+
+    <!-- Use defibrillator -->
+    <string id="ui_mcm_nanosuit_defibrillate">
+        <text>Использовать дефибриллятор</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_defibrillate_desc">
+        <text>Клавиша, используемая для активации дефибриллятора.</text>
     </string>
 
     <!-- Debug mode -->
