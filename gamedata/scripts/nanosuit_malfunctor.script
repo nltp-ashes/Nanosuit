@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 03/09/2025                                                                                             ---
+---    Date : 08/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the malfunction logic of the Nanosuit addon.                                            ---
@@ -65,16 +65,10 @@ function malfunctor:__init(core)
     -- Variables
     self.m_enabled = false
     self.m_stay_off = false
-
-    -- Register callbacks
-    RegisterScriptCallback("actor_on_death", self)
 end
 
 function malfunctor:destroy()
     self.m_core = nil
-
-    -- Unregister callbacks
-    UnregisterScriptCallback("actor_on_death", self)
 end
 
 function malfunctor:save()
@@ -121,8 +115,4 @@ function malfunctor:disable_malfunction()
         self.m_core:change_mode(self.m_core.m_default_mode, true)
         self.m_core.m_energy.m_last_use = time_global()
     end
-end
-
-function malfunctor:actor_on_death()
-    self:enable_malfunction(true)
 end

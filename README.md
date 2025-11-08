@@ -94,7 +94,7 @@ Nanovision :
 
 These addons are **absolutely required** in order for the addon to work :
 1. [S.T.A.L.K.E.R. Anomaly 1.5.3](https://www.moddb.com/mods/stalker-anomaly/downloads/stalker-anomaly-153).
-2. [S.T.A.L.K.E.R. Anomaly Modded Exes 01.08.2025 (or newer)](https://github.com/themrdemonized/xray-monolith)
+2. [S.T.A.L.K.E.R. Anomaly Modded Exes 27.08.2025 (or newer)](https://github.com/themrdemonized/xray-monolith)
 
 The addon natively integrates[^native_integrations] with the following addons, but they **aren't required** :
 1. [Mod Configuration Menu v1.7](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu) (customizable options for the addon);
@@ -148,8 +148,10 @@ Here is a list of planned features for the addon :
 - Add option to use female voice for the nanosuit modes;
 - Add built-in binoculars;
 - Add built-in night vision;
-- Add nanovision (using HeatVision as back-end) (as an upgrade?);
 - Custom footsteps when wearing the suit;
+- Add suit modes shortcuts;
+- Display range on the minimap (and finish the minimap...);
+- Add custom indicators to replace BHS UI;
 
 **A note on BHS :** Given the tentacular nature of BHS and its suite of addons, and how terrible its code is, I will not further improve the compatibility patch for it. I am open to take contributions if someone comes up with a better patch than mine, given mine is essentially just removing BHS's UI if it exists.
 

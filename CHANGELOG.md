@@ -1,4 +1,4 @@
-## **v0.10.0 - 28/08/2025 - Beta Build**
+## **v0.10.0 - 08/11/2025 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.10.0/total?label=Downloads)]()
 
@@ -10,7 +10,10 @@
 **• Changes :**
 > - Improved BHS patch so it has a higher chance of hiding the entire BHS UI;
 > - Strength mode now boosts melee damage against all object types, and not just human NPCs;
+> - Changed how malfunction gets triggered to improve vaporization sequence when a witness gets away;
 
 **• Bug fixes :**
 > - Fixed BHS patch removing BHS' UI even when the nanosuit isn't equipped;
 > - Fixed tacmap not displaying objects correctly when standing higher or lower than them;
+
+**Note :** This build requires [Modded Exes version 27.08.2025](https://github.com/themrdemonized/xray-monolith/releases/tag/2025.8.27) for the melee rework and BHS patch to work.
