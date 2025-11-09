@@ -17,8 +17,8 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- Imports
-mcm_types_enum          = nanosuit_utils.mcm_types_enum
-actor_slots_enum        = nanosuit_utils.actor_slots_enum
+mcm_types_enum = nanosuit_utils.mcm_types_enum
+actor_slots_enum = nanosuit_utils.actor_slots_enum
 
 -- If you don't use MCM, change your defaults from here.
 defaults = {
@@ -43,11 +43,11 @@ defaults = {
     ["outfit_nanosuit_protection_power_radiation"] = 0.5,
     ["outfit_nanosuit_protection_power_strike"] = 0.5,
     ["outfit_nanosuit_protection_speed_radiation"] = 0.5,
-    ["outfit_nanosuit_hud_colors_text"] = GetARGB(255, 129, 183, 135),
-    ["outfit_nanosuit_hud_colors_background"] = GetARGB(200, 99, 125, 102),
-    ["outfit_nanosuit_hud_colors_energy"] = GetARGB(255, 0, 107, 179),
-    ["outfit_nanosuit_hud_colors_health"] = GetARGB(255, 85, 148, 17),
-    ["outfit_nanosuit_hud_colors_stamina"] = GetARGB(255, 255, 255, 0),
+    ["outfit_nanosuit_hud_colors_text"] = "255,129,183,135",
+    ["outfit_nanosuit_hud_colors_background"] = "200,99,125,102",
+    ["outfit_nanosuit_hud_colors_energy"] = "255,0,107,179",
+    ["outfit_nanosuit_hud_colors_health"] = "255,85,148,17",
+    ["outfit_nanosuit_hud_colors_stamina"] = "255,255,255,0",
     ["outfit_nanosuit_asian_protection_armor_burn"] = 5.0,
     ["outfit_nanosuit_asian_protection_armor_shock"] = 1.0,
     ["outfit_nanosuit_asian_protection_armor_chemical_burn"] = 2.0,
@@ -62,22 +62,13 @@ defaults = {
     ["outfit_nanosuit_asian_protection_power_radiation"] = 0.5,
     ["outfit_nanosuit_asian_protection_power_strike"] = 0.5,
     ["outfit_nanosuit_asian_protection_speed_radiation"] = 0.5,
-    ["outfit_nanosuit_asian_hud_colors_text"] = GetARGB(255, 142, 142, 117),
-    ["outfit_nanosuit_asian_hud_colors_background"] = GetARGB(200, 125, 125, 102),
-    ["outfit_nanosuit_asian_hud_colors_energy"] = GetARGB(255, 0, 59, 99),
-    ["outfit_nanosuit_asian_hud_colors_health"] = GetARGB(255, 79, 96, 60),
-    ["outfit_nanosuit_asian_hud_colors_stamina"] = GetARGB(255, 255, 255, 0),
+    ["outfit_nanosuit_asian_hud_colors_text"] = "255,142,142,117",
+    ["outfit_nanosuit_asian_hud_colors_background"] = "200,125,125,102",
+    ["outfit_nanosuit_asian_hud_colors_energy"] = "255,0,59,99",
+    ["outfit_nanosuit_asian_hud_colors_health"] = "255,79,96,60",
+    ["outfit_nanosuit_asian_hud_colors_stamina"] = "255,255,255,0",
     -- Technical
     ["debug_mode"] = false
-}
-
--- TODO : Need a better way to handle colors, maybe Catspaw's script?
-constants = {
-    ["hud_colors_text"] = true,
-    ["hud_colors_background"] = true,
-    ["hud_colors_energy"] = true,
-    ["hud_colors_health"] = true,
-    ["hud_colors_stamina"] = true,
 }
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -89,10 +80,20 @@ constants = {
 --- @param key string
 --- @return any
 function get_config(category, key)
-    if ui_mcm and not constants[key] then
+    if ui_mcm then
         return ui_mcm.get("nanosuit/nanosuit_" .. category .. "/" .. key)
     end
     return defaults[key]
+end
+
+--- Function used to get a color constant based on the currently equipped outfit.
+--- @param short_key string
+--- @param default any
+--- @return any
+function get_constant_color(short_key, default)
+    local res = get_constant(short_key, default)
+    res = str_explode(res, ",")
+    return GetARGB(res[1], res[2], res[3], res[4])
 end
 
 --- Function used to get a configuration constant based on the currently equipped outfit.
@@ -106,22 +107,10 @@ function get_constant(short_key, default)
         return default
     end
     local key = section .. "_" .. short_key
-    if ui_mcm and not constants[short_key] then
+    if ui_mcm then
         return ui_mcm.get("nanosuit/nanosuit_configuration/" .. key) or default
     end
     return defaults[key] or default
-end
-
---- Function used to set the value of a given setting defined in MCM.
---- If MCM isn't installed, it will temporarily change the value of the setting in the defaults table.
---- @param key string
---- @return any
-function set_config(key, value)
-    if ui_mcm then
-        return ui_mcm.set("nanosuit/" .. key, value)
-    else
-        defaults[key] = value
-    end
 end
 
 --- MCM UI definition.
@@ -156,45 +145,70 @@ function on_mcm_load()
                 sh = true,
                 -- TODO : Need a better way to display this, cuz this looks like shit
                 -- TODO : Should all option have [0, 10] range, or [0, 2*"my default value"] range?
+                -- TODO : Need to credit catspaw for the widget
                 gr = {
                     { type = "slide", text = "ui_mcm_menu_nanosuit", link = "ui_nanosuit_mcm_banner", spacing = 20, size = { 512, 50 } },
                     { type = "title", text = "ui_mcm_menu_nanosuit_configuration" },
                     { type = "desc", text = "st_nanosuit_outfit_name" },
+                    { type = "line" },
+                    { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_hud" },
+                    { type = "input", val = mcm_types_enum.string, id = "outfit_nanosuit_hud_colors_text", def = defaults["outfit_nanosuit_hud_colors_text"], hint = "nanosuit_nanosuit_configuration_hud_colors_text", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+                    { type = "input", val = mcm_types_enum.string, id = "outfit_nanosuit_hud_colors_background", def = defaults["outfit_nanosuit_hud_colors_background"], hint = "nanosuit_nanosuit_configuration_hud_colors_background", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+                    { type = "input", val = mcm_types_enum.string, id = "outfit_nanosuit_hud_colors_energy", def = defaults["outfit_nanosuit_hud_colors_energy"], hint = "nanosuit_nanosuit_configuration_hud_colors_energy", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+                    { type = "input", val = mcm_types_enum.string, id = "outfit_nanosuit_hud_colors_health", def = defaults["outfit_nanosuit_hud_colors_health"], hint = "nanosuit_nanosuit_configuration_hud_colors_health", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+                    { type = "input", val = mcm_types_enum.string, id = "outfit_nanosuit_hud_colors_stamina", def = defaults["outfit_nanosuit_hud_colors_stamina"], hint = "nanosuit_nanosuit_configuration_hud_colors_stamina", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+                    { type = "line" },
                     { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_armor" },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_armor_burn", def = defaults["outfit_nanosuit_protection_armor_burn"], hint="nanosuit_nanosuit_configuration_burn", min = 0, max = 10, step = 0.25 },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_armor_shock", def = defaults["outfit_nanosuit_protection_armor_shock"], hint="nanosuit_nanosuit_configuration_shock", min = 0, max = 10, step = 0.25 },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_armor_chemical_burn", def = defaults["outfit_nanosuit_protection_armor_chemical_burn"], hint="nanosuit_nanosuit_configuration_chemical_burn", min = 0, max = 10, step = 0.25 },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_armor_radiation", def = defaults["outfit_nanosuit_protection_armor_radiation"], hint="nanosuit_nanosuit_configuration_radiation", min = 0, max = 10, step = 0.25 },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_armor_wound", def = defaults["outfit_nanosuit_protection_armor_wound"], hint="nanosuit_nanosuit_configuration_wound", min = 0, max = 10, step = 0.25 },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_armor_fire_wound", def = defaults["outfit_nanosuit_protection_armor_fire_wound"], hint="nanosuit_nanosuit_configuration_fire_wound", min = 0, max = 10, step = 0.25 },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_armor_explosion", def = defaults["outfit_nanosuit_protection_armor_explosion"], hint="nanosuit_nanosuit_configuration_explosion", min = 0, max = 10, step = 0.25 },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_armor_wound_2", def = defaults["outfit_nanosuit_protection_armor_wound_2"], hint="nanosuit_nanosuit_configuration_wound_2", min = 0, max = 10, step = 0.25 },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_armor_light_burn", def = defaults["outfit_nanosuit_protection_armor_light_burn"], hint="nanosuit_nanosuit_configuration_burn", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_armor_burn", def = defaults["outfit_nanosuit_protection_armor_burn"], hint = "nanosuit_nanosuit_configuration_burn", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_armor_shock", def = defaults["outfit_nanosuit_protection_armor_shock"], hint = "nanosuit_nanosuit_configuration_shock", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_armor_chemical_burn", def = defaults["outfit_nanosuit_protection_armor_chemical_burn"], hint = "nanosuit_nanosuit_configuration_chemical_burn", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_armor_radiation", def = defaults["outfit_nanosuit_protection_armor_radiation"], hint = "nanosuit_nanosuit_configuration_radiation", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_armor_wound", def = defaults["outfit_nanosuit_protection_armor_wound"], hint = "nanosuit_nanosuit_configuration_wound", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_armor_fire_wound", def = defaults["outfit_nanosuit_protection_armor_fire_wound"], hint = "nanosuit_nanosuit_configuration_fire_wound", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_armor_explosion", def = defaults["outfit_nanosuit_protection_armor_explosion"], hint = "nanosuit_nanosuit_configuration_explosion", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_armor_wound_2", def = defaults["outfit_nanosuit_protection_armor_wound_2"], hint = "nanosuit_nanosuit_configuration_wound_2", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_armor_light_burn", def = defaults["outfit_nanosuit_protection_armor_light_burn"], hint = "nanosuit_nanosuit_configuration_burn", min = 0, max = 10, step = 0.25 },
+                    { type = "line" },
                     { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_cloak" },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_cloak_radiation", def = defaults["outfit_nanosuit_protection_cloak_radiation"], hint="nanosuit_nanosuit_configuration_radiation", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_cloak_radiation", def = defaults["outfit_nanosuit_protection_cloak_radiation"], hint = "nanosuit_nanosuit_configuration_radiation", min = 0, max = 10, step = 0.25 },
+                    { type = "line" },
                     { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_power" },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_power_radiation", def = defaults["outfit_nanosuit_protection_power_radiation"], hint="nanosuit_nanosuit_configuration_radiation", min = 0, max = 10, step = 0.25 },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_power_strike", def = defaults["outfit_nanosuit_protection_power_strike"], hint="nanosuit_nanosuit_configuration_strike", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_power_radiation", def = defaults["outfit_nanosuit_protection_power_radiation"], hint = "nanosuit_nanosuit_configuration_radiation", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_power_strike", def = defaults["outfit_nanosuit_protection_power_strike"], hint = "nanosuit_nanosuit_configuration_strike", min = 0, max = 10, step = 0.25 },
+                    { type = "line" },
                     { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_speed" },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_speed_radiation", def = defaults["outfit_nanosuit_protection_speed_radiation"], hint="nanosuit_nanosuit_configuration_radiation", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_protection_speed_radiation", def = defaults["outfit_nanosuit_protection_speed_radiation"], hint = "nanosuit_nanosuit_configuration_radiation", min = 0, max = 10, step = 0.25 },
+                    { type = "line" },
+                    { type = "line" },
                     { type = "desc", text = "st_nanosuit_asian_outfit_name" },
+                    { type = "line" },
+                    { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_hud" },
+                    { type = "input", val = mcm_types_enum.string, id = "outfit_nanosuit_asian_hud_colors_text", def = defaults["outfit_nanosuit_asian_hud_colors_text"], hint = "nanosuit_nanosuit_configuration_hud_colors_text", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+                    { type = "input", val = mcm_types_enum.string, id = "outfit_nanosuit_asian_hud_colors_background", def = defaults["outfit_nanosuit_asian_hud_colors_background"], hint = "nanosuit_nanosuit_configuration_hud_colors_background", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+                    { type = "input", val = mcm_types_enum.string, id = "outfit_nanosuit_asian_hud_colors_energy", def = defaults["outfit_nanosuit_asian_hud_colors_energy"], hint = "nanosuit_nanosuit_configuration_hud_colors_energy", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+                    { type = "input", val = mcm_types_enum.string, id = "outfit_nanosuit_asian_hud_colors_health", def = defaults["outfit_nanosuit_asian_hud_colors_health"], hint = "nanosuit_nanosuit_configuration_hud_colors_health", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+                    { type = "input", val = mcm_types_enum.string, id = "outfit_nanosuit_asian_hud_colors_stamina", def = defaults["outfit_nanosuit_asian_hud_colors_stamina"], hint = "nanosuit_nanosuit_configuration_hud_colors_stamina", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+                    { type = "line" },
                     { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_armor" },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_armor_burn", def = defaults["outfit_nanosuit_asian_protection_armor_burn"], hint="nanosuit_nanosuit_configuration_burn", min = 0, max = 10, step = 0.25 },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_armor_shock", def = defaults["outfit_nanosuit_asian_protection_armor_shock"], hint="nanosuit_nanosuit_configuration_shock", min = 0, max = 10, step = 0.25 },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_armor_chemical_burn", def = defaults["outfit_nanosuit_asian_protection_armor_chemical_burn"], hint="nanosuit_nanosuit_configuration_chemical_burn", min = 0, max = 10, step = 0.25 },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_armor_radiation", def = defaults["outfit_nanosuit_asian_protection_armor_radiation"], hint="nanosuit_nanosuit_configuration_radiation", min = 0, max = 10, step = 0.25 },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_armor_wound", def = defaults["outfit_nanosuit_asian_protection_armor_wound"], hint="nanosuit_nanosuit_configuration_wound", min = 0, max = 10, step = 0.25 },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_armor_fire_wound", def = defaults["outfit_nanosuit_asian_protection_armor_fire_wound"], hint="nanosuit_nanosuit_configuration_fire_wound", min = 0, max = 10, step = 0.25 },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_armor_explosion", def = defaults["outfit_nanosuit_asian_protection_armor_explosion"], hint="nanosuit_nanosuit_configuration_explosion", min = 0, max = 10, step = 0.25 },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_armor_wound_2", def = defaults["outfit_nanosuit_asian_protection_armor_wound_2"], hint="nanosuit_nanosuit_configuration_wound_2", min = 0, max = 10, step = 0.25 },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_armor_light_burn", def = defaults["outfit_nanosuit_asian_protection_armor_light_burn"], hint="nanosuit_nanosuit_configuration_burn", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_armor_burn", def = defaults["outfit_nanosuit_asian_protection_armor_burn"], hint = "nanosuit_nanosuit_configuration_burn", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_armor_shock", def = defaults["outfit_nanosuit_asian_protection_armor_shock"], hint = "nanosuit_nanosuit_configuration_shock", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_armor_chemical_burn", def = defaults["outfit_nanosuit_asian_protection_armor_chemical_burn"], hint = "nanosuit_nanosuit_configuration_chemical_burn", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_armor_radiation", def = defaults["outfit_nanosuit_asian_protection_armor_radiation"], hint = "nanosuit_nanosuit_configuration_radiation", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_armor_wound", def = defaults["outfit_nanosuit_asian_protection_armor_wound"], hint = "nanosuit_nanosuit_configuration_wound", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_armor_fire_wound", def = defaults["outfit_nanosuit_asian_protection_armor_fire_wound"], hint = "nanosuit_nanosuit_configuration_fire_wound", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_armor_explosion", def = defaults["outfit_nanosuit_asian_protection_armor_explosion"], hint = "nanosuit_nanosuit_configuration_explosion", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_armor_wound_2", def = defaults["outfit_nanosuit_asian_protection_armor_wound_2"], hint = "nanosuit_nanosuit_configuration_wound_2", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_armor_light_burn", def = defaults["outfit_nanosuit_asian_protection_armor_light_burn"], hint = "nanosuit_nanosuit_configuration_burn", min = 0, max = 10, step = 0.25 },
+                    { type = "line" },
                     { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_cloak" },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_cloak_radiation", def = defaults["outfit_nanosuit_asian_protection_cloak_radiation"], hint="nanosuit_nanosuit_configuration_radiation", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_cloak_radiation", def = defaults["outfit_nanosuit_asian_protection_cloak_radiation"], hint = "nanosuit_nanosuit_configuration_radiation", min = 0, max = 10, step = 0.25 },
+                    { type = "line" },
                     { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_power" },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_power_radiation", def = defaults["outfit_nanosuit_asian_protection_power_radiation"], hint="nanosuit_nanosuit_configuration_radiation", min = 0, max = 10, step = 0.25 },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_power_strike", def = defaults["outfit_nanosuit_asian_protection_power_strike"], hint="nanosuit_nanosuit_configuration_strike", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_power_radiation", def = defaults["outfit_nanosuit_asian_protection_power_radiation"], hint = "nanosuit_nanosuit_configuration_radiation", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_power_strike", def = defaults["outfit_nanosuit_asian_protection_power_strike"], hint = "nanosuit_nanosuit_configuration_strike", min = 0, max = 10, step = 0.25 },
+                    { type = "line" },
                     { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_speed" },
-                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_speed_radiation", def = defaults["outfit_nanosuit_asian_protection_speed_radiation"], hint="nanosuit_nanosuit_configuration_radiation", min = 0, max = 10, step = 0.25 },
+                    { type = "track", val = mcm_types_enum.number, id = "outfit_nanosuit_asian_protection_speed_radiation", def = defaults["outfit_nanosuit_asian_protection_speed_radiation"], hint = "nanosuit_nanosuit_configuration_radiation", min = 0, max = 10, step = 0.25 },
                 }
             },
             {
