@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/11/2025                                                                                             ---
+---    Date : 09/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle all the necessary intercepts to make the Nanosuit addon compatible with other addons.   ---
@@ -18,6 +18,15 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 if se_legs then
+
+    function is_legs(obj)
+        -- FIXME: A better check is needed
+        if obj and obj:section() == "outfit_nanosuit_legs" then
+            return true
+        end
+        return false
+    end
+
     nanosuit_mode_cloak_cloak___init = nanosuit_mode_cloak.cloak.__init
     nanosuit_mode_cloak.cloak.__init = function(self, core, name)
         local res = nanosuit_mode_cloak_cloak___init(self, core, name)
@@ -74,7 +83,7 @@ if se_legs then
     end
 
     nanosuit_mode_cloak.cloak.game_object_on_net_spawn = function(self, obj)
-        if nanosuit_utils.is_legs(obj) then
+        if is_legs(obj) then
             CreateTimeEvent("nanosuit_legs_spawn", obj:name(), 0, function(id)
                 local obj_now = level.object_by_id(id)
                 if obj_now then
@@ -86,7 +95,7 @@ if se_legs then
     end
 
     nanosuit_mode_cloak.cloak.game_object_on_net_destroy = function(self, obj)
-        if nanosuit_utils.is_legs(obj) then
+        if is_legs(obj) then
         self:set_legs_visible(obj)
         end
     end
