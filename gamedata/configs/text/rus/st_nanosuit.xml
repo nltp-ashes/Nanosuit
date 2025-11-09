@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
-<!--    Date : 08/11/2025                                                                                            -->
+<!--    Date : 09/11/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -108,77 +108,138 @@
     <!--=============================================================================================================-->
 
     <!-- Titles -->
-    <string id="ui_mcm_nanosuit_title">
-        <text>Нанокостюм</text>
-    </string>
-
     <string id="ui_mcm_menu_nanosuit">
         <text>Нанокостюм</text>
     </string>
 
     <string id="ui_mcm_nanosuit_general_title">
-        <text>ОБЩИЕ НАСТРОЙКИ</text>
+        <text>Общие</text>
     </string>
 
     <string id="ui_mcm_nanosuit_keybindings_title">
-        <text>ПАРАМЕТРЫ НАСТРОЕК КЛАВИШ</text>
+        <text>Клавиатура</text>
+    </string>
+
+    <string id="ui_mcm_menu_nanosuit_configuration">
+        <text>Настройки</text>
     </string>
 
     <string id="ui_mcm_nanosuit_technical_settings_title">
-        <text>ТЕХНИЧЕСКИЕ НАСТРОЙКИ</text>
+        <text>Технические</text>
     </string>
 
     <!-- Enable vaporize on witness get-away -->
-    <string id="ui_mcm_nanosuit_use_witness">
+    <string id="ui_mcm_nanosuit_nanosuit_general_use_witness">
         <text>Выпаривать свидетелей при побеге</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_use_witness_desc">
+    <string id="ui_mcm_nanosuit_nanosuit_general_use_witness_desc">
         <text>Протокол заключается в том, чтобы не оставлять свидетелей вашего присутствия. Если включено, игрок будет выпарен, когда он позволит противнику сбежать после боя.</text>
     </string>
 
     <!-- Open suit menu -->
-    <string id="ui_mcm_nanosuit_suit_menu">
+    <string id="ui_mcm_nanosuit_nanosuit_keybindings_suit_menu">
         <text>Открыть меню костюма</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_suit_menu_desc">
+    <string id="ui_mcm_nanosuit_nanosuit_keybindings_suit_menu_desc">
         <text>Клавиша, используемая для открытия меню режимов костюма.</text>
     </string>
 
     <!-- Toggle nanovision -->
-    <string id="ui_mcm_nanosuit_nanovision">
-        <text>Нановидение</text>
+    <string id="ui_mcm_nanosuit_nanosuit_keybindings_nanovision">
+        <text>Нано зрение</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanovision_desc">
-        <text>Клавиша, используемая для активации нановидения (тепловизионного изображения).</text>
+    <string id="ui_mcm_nanosuit_nanosuit_keybindings_nanovision_desc">
+        <text>Клавиша, используемая для активации нано зрение (тепловизионного изображения).</text>
     </string>
 
     <!-- Toggle nightvision -->
-    <string id="ui_mcm_nanosuit_nightvision">
+    <string id="ui_mcm_nanosuit_nanosuit_keybindings_nightvision">
         <text>Ночное видение</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nightvision_desc">
+    <string id="ui_mcm_nanosuit_nanosuit_keybindings_nightvision_desc">
         <text>Клавиша, используемая для активации встроенного в костюм ночного видения.</text>
     </string>
 
     <!-- Use defibrillator -->
-    <string id="ui_mcm_nanosuit_defibrillate">
+    <string id="ui_mcm_nanosuit_nanosuit_keybindings_defibrillate">
         <text>Использовать дефибриллятор</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_defibrillate_desc">
+    <string id="ui_mcm_nanosuit_nanosuit_keybindings_defibrillate_desc">
         <text>Клавиша, используемая для активации дефибриллятора.</text>
     </string>
 
+    <!-- Configuration -->
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_armor">
+        <text>Броневой режим</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak">
+        <text>Режим маскировки</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_power">
+        <text>Режим силы</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_speed">
+        <text>Режим скорости</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_burn">
+        <text>Термическая защита</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_shock">
+        <text>Защита от электрического шока</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_chemical_burn">
+        <text>Защита от химических ожогов</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_radiation">
+        <text>Радиационная защита</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_telepathic">
+        <text>Пси-защита</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_wound">
+        <text>Защита от разрывов</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_fire_wound">
+        <text>Баллистическая защита</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_strike">
+        <text>Защита от ударов</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_explosion">
+        <text>Защита от взрывов</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_wound_2">
+        <text>Защита от разрывов</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_light_burn">
+        <text>Защита от лёгких ожогов</text>
+    </string>
+
     <!-- Debug mode -->
-    <string id="ui_mcm_nanosuit_debug_mode">
+    <string id="ui_mcm_nanosuit_nanosuit_technical_debug_mode">
         <text>Режим отладки</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_debug_mode_desc">
+    <string id="ui_mcm_nanosuit_nanosuit_technical_debug_mode_desc">
         <text>Позволяет дополнению выводить некоторую информацию в консоль/логи, для последующего использования при попытке выявить проблемы.</text>
     </string>
 </string_table>

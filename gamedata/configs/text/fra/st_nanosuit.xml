@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 08/11/2025                                                                                            -->
+<!--    Date : 09/11/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -108,77 +108,138 @@
     <!--=============================================================================================================-->
 
     <!-- Titles -->
-    <string id="ui_mcm_nanosuit_title">
-        <text>Nanocombinaison</text>
-    </string>
-
     <string id="ui_mcm_menu_nanosuit">
         <text>Nanocombinaison</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_general_title">
-        <text>PARAMÈTRES GÉNÉRAUX</text>
+    <string id="ui_mcm_menu_nanosuit_general">
+        <text>Général</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_keybindings_title">
-        <text>PARAMÈTRES DES TOUCHES</text>
+    <string id="ui_mcm_menu_nanosuit_keybindings">
+        <text>Touches</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_technical_settings_title">
-        <text>PARAMÈTRES TECHNIQUES</text>
+    <string id="ui_mcm_menu_nanosuit_configuration">
+        <text>Configuration</text>
+    </string>
+
+    <string id="ui_mcm_menu_nanosuit_technical">
+        <text>Autre</text>
     </string>
 
     <!-- Enable vaporize on witness get-away -->
-    <string id="ui_mcm_nanosuit_use_witness">
+    <string id="ui_mcm_nanosuit_nanosuit_general_use_witness">
         <text>Vaporisation quand un témoin s'échappe</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_use_witness_desc">
+    <string id="ui_mcm_nanosuit_nanosuit_general_use_witness_desc">
         <text>Le protocole est de ne laisser aucun témoin de votre présence. Si activé, le joueur sera vaporisé s'il laisse un ennemi s'échapper après avoir été en combat.</text>
     </string>
 
     <!-- Open suit menu -->
-    <string id="ui_mcm_nanosuit_suit_menu">
+    <string id="ui_mcm_nanosuit_nanosuit_keybindings_suit_menu">
         <text>Menu combinaison</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_suit_menu_desc">
+    <string id="ui_mcm_nanosuit_nanosuit_keybindings_suit_menu_desc">
         <text>Touche utilisée pour ouvrir le menu des modes de la nanocombinaison.</text>
     </string>
 
     <!-- Toggle nanovision -->
-    <string id="ui_mcm_nanosuit_nanovision">
+    <string id="ui_mcm_nanosuit_nanosuit_keybindings_nanovision">
         <text>Nanovision</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanovision_desc">
+    <string id="ui_mcm_nanosuit_nanosuit_keybindings_nanovision_desc">
         <text>Touche utilisée pour activer la nanovision (imagerie thermique).</text>
     </string>
 
     <!-- Toggle nightvision -->
-    <string id="ui_mcm_nanosuit_nightvision">
+    <string id="ui_mcm_nanosuit_nanosuit_keybindings_nightvision">
         <text>Vision nocturne</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nightvision_desc">
+    <string id="ui_mcm_nanosuit_nanosuit_keybindings_nightvision_desc">
         <text>Touche utilisée pour activer la vision nocturne intégrée à la combinaison.</text>
     </string>
 
     <!-- Use defibrillator -->
-    <string id="ui_mcm_nanosuit_defibrillate">
+    <string id="ui_mcm_nanosuit_nanosuit_keybindings_defibrillate">
         <text>Activer le défibrillateur</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_defibrillate_desc">
+    <string id="ui_mcm_nanosuit_nanosuit_keybindings_defibrillate_desc">
         <text>Touche utilisée pour activer le défibrillateur.</text>
     </string>
 
+    <!-- Configuration -->
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_armor">
+        <text>Mode armure</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak">
+        <text>Mode camouflage</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_power">
+        <text>Mode force</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_speed">
+        <text>Mode vitesse</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_burn">
+        <text>Protection aux brulures</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_shock">
+        <text>Protection aux chocs électriques</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_chemical_burn">
+        <text>Protection aux brulures chimiques</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_radiation">
+        <text>Protection aux radiations</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_telepathic">
+        <text>Protection aux attaques psi</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_wound">
+        <text>Protection aux coupures</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_fire_wound">
+        <text>Protection pare-balles</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_strike">
+        <text>Protection aux chocs</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_explosion">
+        <text>Protection aux explosions</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_wound_2">
+        <text>Protection aux coupures</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_light_burn">
+        <text>Protection aux brulures légères</text>
+    </string>
+
     <!-- Debug mode -->
-    <string id="ui_mcm_nanosuit_debug_mode">
+    <string id="ui_mcm_nanosuit_nanosuit_technical_debug_mode">
         <text>Mode débogage</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_debug_mode_desc">
+    <string id="ui_mcm_nanosuit_nanosuit_technical_debug_mode_desc">
         <text>Affiche plus d'informations dans la console/logs, utile pour aider à identifier des problèmes.</text>
     </string>
 </string_table>

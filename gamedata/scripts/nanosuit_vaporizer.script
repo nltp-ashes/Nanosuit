@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 22/08/2025                                                                                             ---
+---    Date : 09/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's vaporization process.                                                    ---
@@ -179,7 +179,7 @@ function vaporizer:actor_on_update()
             self:remove_witness(id)
         elseif self:has_witness_escaped(obj) then
             self:remove_witness(id)
-            if nanosuit_mcm.get_config("use_witness") then
+            if nanosuit_mcm.get_config("general", "use_witness") then
                 self:vaporize(db.actor, true)
             end
         end
