@@ -137,6 +137,15 @@
         <text>Le protocole est de ne laisser aucun témoin de votre présence. Si activé, le joueur sera vaporisé s'il laisse un ennemi s'échapper après avoir été en combat.</text>
     </string>
 
+    <!-- Enable nanovision -->
+    <string id="ui_mcm_nanosuit_nanosuit_general_use_nanovision">
+        <text>Autoriser la nanovision</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_general_use_nanovision_desc">
+        <text>Dans le lore de Crysis, la nano-combinaison 1.0 n'a pas de nanovision. Le système est néanmoins présent dans Stalker, vous pouvez donc l'activer si vous le souhaitez.</text>
+    </string>
+
     <!-- Open suit menu -->
     <string id="ui_mcm_nanosuit_nanosuit_keybindings_suit_menu">
         <text>Menu combinaison</text>

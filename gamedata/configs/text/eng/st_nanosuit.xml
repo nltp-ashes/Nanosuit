@@ -137,6 +137,15 @@
         <text>The protocol is to leave no witnesses of your presence. If enabled, the player gets vaporized when they let an enemy get away after they have been in combat.</text>
     </string>
 
+    <!-- Enable nanovision -->
+    <string id="ui_mcm_nanosuit_nanosuit_general_use_nanovision">
+        <text>Allow nanovision</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_general_use_nanovision_desc">
+        <text>In Crysis lore, the Nanosuit 1.0 does not have nano-vision. The back-end for it exists in stalker, so you can still turn it on if you want.</text>
+    </string>
+
     <!-- Open suit menu -->
     <string id="ui_mcm_nanosuit_nanosuit_keybindings_suit_menu">
         <text>Open suit menu</text>

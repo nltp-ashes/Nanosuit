@@ -137,6 +137,15 @@
         <text>Протокол заключается в том, чтобы не оставлять свидетелей вашего присутствия. Если включено, игрок будет выпарен, когда он позволит противнику сбежать после боя.</text>
     </string>
 
+    <!-- Enable nanovision -->
+    <string id="ui_mcm_nanosuit_nanosuit_general_use_nanovision">
+        <text>Разрешить нано зрение</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_general_use_nanovision_desc">
+        <text>В лоре Crysis нанокостюм 1.0 не имеет нано зрения. Бэкэнд для него существует в сталкере, так что вы всё равно можете его включить, если хотите.</text>
+    </string>
+
     <!-- Open suit menu -->
     <string id="ui_mcm_nanosuit_nanosuit_keybindings_suit_menu">
         <text>Открыть меню костюма</text>
