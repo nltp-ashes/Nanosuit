@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : RavenAscendant                                                                           ---
 ---    Edited : NLTP_ASHES                                                                                           ---
----    Date : 09/11/2025                                                                                             ---
+---    Date : 13/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define the options in MCM.                                                                     ---
@@ -145,7 +145,6 @@ function on_mcm_load()
                 -- TODO : Need a better way to display this, cuz this looks like shit
                 -- TODO : Should all option have [0, 10] range, or [0, 2*"my default value"] range?
                 -- TODO : Need to credit catspaw for the widget
-                -- TODO : Need to add translations for FR & RUS
                 gr = {
                     {
                         id = "outfit_nanosuit",

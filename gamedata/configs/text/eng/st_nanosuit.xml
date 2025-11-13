@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 09/11/2025                                                                                            -->
+<!--    Date : 13/11/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -203,15 +203,15 @@
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_hud_colors_energy">
-        <text>Energy color</text>
+        <text>Energy bar color</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_hud_colors_health">
-        <text>Health color</text>
+        <text>Health bar color</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_hud_colors_stamina">
-        <text>Stamina color</text>
+        <text>Stamina bar color</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_burn">
