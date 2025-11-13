@@ -193,7 +193,7 @@ Credit goes to these people for their work contained in this addon :
 
 |                                Name                                 |                                                    Motive                                                    |         License         |
 |:-------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------:|:-----------------------:|
-|                             **Catspaw**                             |                  Allowed the reusing of a custom color picker widget for MCM in this addon                   |       Proprietary       |
+|                             **Catspaw**                             |                  Allowed the reusing of a custom color picker widget for MCM in this addon                   | See [LICENSE](#license) |
 |                            **Medialuna**                            |                           Fixed the Korean nanosuit's world model collision volume                           |       Proprietary       |
 |         **[Crepis](https://www.moddb.com/members/cr3pis)**          |      Provided high quality inventory icon, upgrade icon and character portrait for the Korean nanosuit       |       Proprietary       |
 |     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |                   Improved the texture quality of the Korean nanosuit's third person model                   | See [LICENSE](#license) |
@@ -234,6 +234,11 @@ Content made by Blackgrowl can be reused, as long as you credit him for the work
 Content made by LVutner is provided under the following license :
 ```
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
+
+Content made by Catspaw is provided under the following terms :
+```
+Redistribution is allowed, as long as Catspaw is credited, and altered copies of the script are not redistributed using the same filename, to avoid conflicts.
 ```
 
 For the work that wasn't made by me, unless a licence is specified in the [Credits](#special-thanks--credits) or in the files themselves, consider these works proprietary. If you want to reuse those, please get in touch with their original authors.
