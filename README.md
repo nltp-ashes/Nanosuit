@@ -12,7 +12,7 @@ Fend off the Zone's dangers with the Nanosuit, a powerful and extremely versatil
 
 This addon adds a fully operational US and Korean nanosuits from Crysis.
 
-**Important :** This addon is still in development. It is stable enough that I feel confident people can start having fun with it. But it isn't complete. YOU HAVE TO SPAWN THE OUTFIT USING THE [DEBUG MENU ITEM SPAWNER](https://igigog.github.io/anomaly-modding-book/modding-tools/in-game-editors/item-spawner.html).
+**Important :** This addon is still in development. You have to spawn the outfit using the [debug menu item spawner](https://igigog.github.io/anomaly-modding-book/modding-tools/in-game-editors/item-spawner.html).
 
 **Important :** Expect a lot of soft-conflicts (aka it will work, but it won't look nice) with UI mods. Please report as many UI related issues as you can.
 
@@ -193,6 +193,7 @@ Credit goes to these people for their work contained in this addon :
 
 |                                Name                                 |                                                    Motive                                                    |         License         |
 |:-------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------:|:-----------------------:|
+|                             **Catspaw**                             |                  Allowed the reusing of a custom color picker widget for MCM in this addon                   |       Proprietary       |
 |                            **Medialuna**                            |                           Fixed the Korean nanosuit's world model collision volume                           |       Proprietary       |
 |         **[Crepis](https://www.moddb.com/members/cr3pis)**          |      Provided high quality inventory icon, upgrade icon and character portrait for the Korean nanosuit       |       Proprietary       |
 |     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |                   Improved the texture quality of the Korean nanosuit's third person model                   | See [LICENSE](#license) |

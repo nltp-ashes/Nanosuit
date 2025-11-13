@@ -174,9 +174,8 @@
     </string>
 
     <!-- Configuration -->
-    <!-- FIXME : This is probably not how you say HUD in Russian -->
     <string id="ui_mcm_nanosuit_nanosuit_configuration_hud">
-        <text>HUD</text>
+        <text>Èםעונפויס</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_armor">
