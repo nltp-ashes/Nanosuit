@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : RavenAscendant                                                                           ---
 ---    Edited : NLTP_ASHES                                                                                           ---
----    Date : 13/11/2025                                                                                             ---
+---    Date : 14/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define the options in MCM.                                                                     ---
@@ -137,7 +137,7 @@ function on_mcm_load()
                     { type = "slide", text = "ui_mcm_menu_nanosuit", link = "ui_nanosuit_mcm_banner", spacing = 20, size = { 512, 50 } },
                     { type = "title", text = "ui_mcm_menu_nanosuit_keybindings" },
                     { type = "key_bind", val = mcm_types_enum.number, id = "suit_menu", def = defaults["suit_menu"] },
-                    { type = "key_bind", val = mcm_types_enum.number, id = "nanovision", def = defaults["nanovision"] },
+                    { type = "key_bind", val = mcm_types_enum.number, id = "nanovision", def = defaults["nanovision"], precondition = { function() return z_heatvision ~= nil end } },
                     { type = "key_bind", val = mcm_types_enum.number, id = "nightvision", def = defaults["nightvision"] },
                     { type = "key_bind", val = mcm_types_enum.number, id = "defibrillate", def = defaults["defibrillate"] },
                 }
