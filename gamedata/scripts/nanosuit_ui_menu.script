@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/07/2025                                                                                             ---
+---    Date : 09/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit mode selection UI.                                                         ---
@@ -117,7 +117,7 @@ function ui_menu:UpdateIcon(i)
 end
 
 function ui_menu:on_key_press(dik)
-    if dik ~= nanosuit_mcm.get_config("suit_menu") then
+    if dik ~= nanosuit_mcm.get_config("keybindings", "suit_menu") then
         return
     end
 

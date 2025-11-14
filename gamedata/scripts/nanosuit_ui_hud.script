@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 03/09/2025                                                                                             ---
+---    Date : 09/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -52,16 +52,16 @@ function ui_hud:__init(core) super()
     self.m_update_rate = 1000
     self.m_set_msg_functor = nil
     self.m_colors = {
-        text = nanosuit_utils.get_constant(nil, "hud_colors_text", GetARGB(255, 129, 183, 135)),
-        background = nanosuit_utils.get_constant(nil, "hud_colors_background", GetARGB(200, 99, 125, 102)),
+        text = nanosuit_mcm.get_constant_color("hud_colors_text", "255,129,183,135"),
+        background = nanosuit_mcm.get_constant_color("hud_colors_background", "200,99,125,102"),
         active = GetARGB(200, 250, 173, 44),
-        energy = nanosuit_utils.get_constant(nil, "hud_colors_energy", GetARGB(255, 0, 107, 179)),
+        energy = nanosuit_mcm.get_constant_color("hud_colors_energy", "255,0,107,179"),
         energy_bg = GetARGB(200, 18, 40, 46),
         energy_off_bg = GetARGB(200, 24, 24, 24),
-        health = nanosuit_utils.get_constant(nil, "hud_colors_health", GetARGB(255, 85, 148, 17)),
+        health = nanosuit_mcm.get_constant_color("hud_colors_health", "255,85,148,17"),
         health_bg = GetARGB(200, 27, 33, 21),
         health_off_bg = GetARGB(200, 24, 24, 24),
-        stamina = nanosuit_utils.get_constant(nil, "hud_colors_stamina", GetARGB(255, 255, 255, 0)),
+        stamina = nanosuit_mcm.get_constant_color("hud_colors_stamina", "255,255,255,0"),
         stamina_bg = GetARGB(200, 46, 46, 24),
         stamina_off_bg = GetARGB(200, 24, 24, 24),
         nv_energy = GetARGB(255, 253, 254, 50),

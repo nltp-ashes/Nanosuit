@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 09/09/2025                                                                                             ---
+---    Date : 09/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -12,9 +12,6 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
-
--- Configs
-local ini_const       = ini_file_ex([[plugins\nanosuit\constants.ltx]])
 
 -- Enum
 actor_slots_enum        = { knife = 1, pistol = 2, rifle = 3, grenade = 4, binoculars = 5, bolt = 6, outfit = 7, pda = 8, detector = 9, torch = 10, artefact = 11, helmet = 12, backpack = 13, animation = 14 }
@@ -31,58 +28,6 @@ gender_enum             = { male = "male", female = "female" }
 actor_status_types_enum = { indicator = "state", booster = "booster" }
 energy_drain_enum       = { nightvision = "nightvision", nanovision = "nanovision", sprint = "sprint", cloak = "cloak" }
 
--- Constants
-constants_type_map         = {
-    ["armor_protection_burn"] = constants_types_enum.number,
-    ["armor_protection_shock"] = constants_types_enum.number,
-    ["armor_protection_chemical_burn"] = constants_types_enum.number,
-    ["armor_protection_radiation"] = constants_types_enum.number,
-    ["armor_protection_telepathic"] = constants_types_enum.number,
-    ["armor_protection_wound"] = constants_types_enum.number,
-    ["armor_protection_fire_wound"] = constants_types_enum.number,
-    ["armor_protection_strike"] = constants_types_enum.number,
-    ["armor_protection_explosion"] = constants_types_enum.number,
-    ["armor_protection_wound_2"] = constants_types_enum.number,
-    ["armor_protection_light_burn"] = constants_types_enum.number,
-    ["cloak_protection_burn"] = constants_types_enum.number,
-    ["cloak_protection_shock"] = constants_types_enum.number,
-    ["cloak_protection_chemical_burn"] = constants_types_enum.number,
-    ["cloak_protection_radiation"] = constants_types_enum.number,
-    ["cloak_protection_telepathic"] = constants_types_enum.number,
-    ["cloak_protection_wound"] = constants_types_enum.number,
-    ["cloak_protection_fire_wound"] = constants_types_enum.number,
-    ["cloak_protection_strike"] = constants_types_enum.number,
-    ["cloak_protection_explosion"] = constants_types_enum.number,
-    ["cloak_protection_wound_2"] = constants_types_enum.number,
-    ["cloak_protection_light_burn"] = constants_types_enum.number,
-    ["power_protection_burn"] = constants_types_enum.number,
-    ["power_protection_shock"] = constants_types_enum.number,
-    ["power_protection_chemical_burn"] = constants_types_enum.number,
-    ["power_protection_radiation"] = constants_types_enum.number,
-    ["power_protection_telepathic"] = constants_types_enum.number,
-    ["power_protection_wound"] = constants_types_enum.number,
-    ["power_protection_fire_wound"] = constants_types_enum.number,
-    ["power_protection_strike"] = constants_types_enum.number,
-    ["power_protection_explosion"] = constants_types_enum.number,
-    ["power_protection_wound_2"] = constants_types_enum.number,
-    ["power_protection_light_burn"] = constants_types_enum.number,
-    ["speed_protection_burn"] = constants_types_enum.number,
-    ["speed_protection_shock"] = constants_types_enum.number,
-    ["speed_protection_chemical_burn"] = constants_types_enum.number,
-    ["speed_protection_radiation"] = constants_types_enum.number,
-    ["speed_protection_telepathic"] = constants_types_enum.number,
-    ["speed_protection_wound"] = constants_types_enum.number,
-    ["speed_protection_fire_wound"] = constants_types_enum.number,
-    ["speed_protection_strike"] = constants_types_enum.number,
-    ["speed_protection_explosion"] = constants_types_enum.number,
-    ["speed_protection_wound_2"] = constants_types_enum.number,
-    ["speed_protection_light_burn"] = constants_types_enum.number,
-    ["hud_colors_text"] = constants_types_enum.color,
-    ["hud_colors_background"] = constants_types_enum.color,
-    ["hud_colors_energy"] = constants_types_enum.color,
-    ["hud_colors_health"] = constants_types_enum.color
-}
-
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Debug Functions
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -90,47 +35,9 @@ constants_type_map         = {
 --- Function used to print information into the console/log file only when Nanosuit' debug mode is enabled.
 --- @return nil
 function dbg_printf(...)
-    if nanosuit_mcm.get_config("debug_mode") then
+    if nanosuit_mcm.get_config("technical", "debug_mode") then
         printf(...)
     end
-end
-
---- Function used to get a given setting defined in the definitions config file.
---- @param section string
---- @param key string
---- @param type mcm_types_enum
---- @return any
-function get_constant(section, key, default)
-    if not section then
-        local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-        section = outfit and outfit:section()
-    end
-    if not section or not ini_const:section_exist(section) then
-        return default
-    end
-    if constants_type_map[key] == constants_types_enum.string then
-        return ini_const:r_string_ex(section, key, default)
-    elseif constants_type_map[key] == constants_types_enum.boolean then
-        return ini_const:r_bool_ex(section, key, default)
-    elseif constants_type_map[key] == constants_types_enum.number then
-        return ini_const:r_float_ex(section, key, default)
-    elseif constants_type_map[key] == constants_types_enum.color then
-        local clr = ini_const:r_string_ex(section, key, nil)
-        if clr then
-            return string_to_float(clr)
-        end
-    elseif constants_type_map[key] == constants_types_enum.vector2 or constants_type_map[key] == constants_types_enum.vector3 then
-        local vec = ini_const:r_string_ex(section, key, nil)
-        if vec then
-            local components = str_explode(vec, ",")
-            if constants_type_map[key] == constants_types_enum.vector2 then
-                return vector2():set(tonumber(components[1]), tonumber(components[2]))
-            else
-                return vector():set(tonumber(components[1]), tonumber(components[2]), tonumber(components[3]))
-            end
-        end
-    end
-    return default
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------

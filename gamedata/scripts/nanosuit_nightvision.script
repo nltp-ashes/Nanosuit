@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/11/2025                                                                                             ---
+---    Date : 13/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's built-in nightvision system.                                              ---
@@ -92,7 +92,9 @@ function nightvision:deactivate()
 end
 
 function nightvision:can_activate()
-    return db.actor:item_in_slot(actor_slots_enum.torch) == nil and self.m_energy.m_level > 0
+    local no_torch = db.actor:item_in_slot(actor_slots_enum.torch) == nil
+    local has_energy = self.m_energy.m_level > 0
+    return no_torch and has_energy
 end
 
 function nightvision:is_active()
@@ -100,7 +102,7 @@ function nightvision:is_active()
 end
 
 function nightvision:on_key_press(dik)
-    if dik == nanosuit_mcm.get_config("nightvision") then
+    if dik == nanosuit_mcm.get_config("keybindings", "nightvision") then
         if self:is_active() then
             self:deactivate()
         elseif self:can_activate() then
