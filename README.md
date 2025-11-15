@@ -84,9 +84,17 @@ Vaporization :
 
 Nanovision :
 - If [HeatVision v1.3](https://www.moddb.com/mods/stalker-anomaly/addons/heatvision-v02-extension-for-beefs-nvg-dx11engine-mod) is installed, the suit will have built-in nanovision
-- Nanovision consumes 2% of energy per second when enabled
-- When out of energy, nanovision will be disabled
+- Consumes 2% per second when active
+- When out of energy, nanovision will be disabled automatically
+- Uses the suit's main energy pool
 - Having any device equipped in the night-vision slot will make the nanovision unavailable
+
+Nightvision :
+- The suit comes with built-in nightvision
+- Consumes 2% per second when active
+- When out of energy, nightvision will be disabled automatically
+- Uses its own source of energy, separate from the suit's main energy pool
+- Having any device equipped in the night-vision slot will make the nightvision unavailable
 
 ---
 
@@ -147,7 +155,6 @@ Here is a list of planned features for the addon :
 - Add a female version of the nanosuit;
 - Add option to use female voice for the nanosuit modes;
 - Add built-in binoculars;
-- Add built-in night vision;
 - Custom footsteps when wearing the suit;
 - Add suit modes shortcuts;
 - Display range on the minimap (and finish the minimap...);
@@ -164,14 +171,14 @@ If you would like to help development for future updates, you can :
 ### KNOWN ISSUES
 
 The following issues will be fixed in the near future :
-- Cloak mode does not work if the NPC sees the actor before the cloak is applied, right now you need to break vision for it to work
-- Cloak mode does not work on mutants
 - Cloak mode sometimes messes with the equipped items' textures when switching slot while in the mode (workaround : perform a save/load)
 - Cloak mode does not cloak the knife during the mutant skinning animation with FDDA
-- The game crashes if actor interacts with an NPC while they're getting vaporized
 - The game crashes if player reloads a save while cloak mode is enabled
 
-The following issues are either technical limitations, or skill limitations, and will not be fixed in the foreseeable future :
+The following issues are technical limitations and will not be fixed in the foreseeable future :
+- The game crashes if actor interacts with an NPC while they're getting vaporized
+- Cloak mode does not work if the NPC sees the actor before the cloak is applied (workaround : need to break vision for it to work)
+- Cloak mode does not work on mutants
 - Speed mode should increase reload speed
 
 If you truly believe your problem is new, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).

@@ -12,6 +12,7 @@
 > - Improved BHS patch so it has a higher chance of hiding the entire BHS UI;
 > - Strength mode now boosts melee damage against all object types, and not just human NPCs;
 > - Changed how malfunction gets triggered to improve vaporization sequence when a witness gets away;
+> - Completely overhauled the code that manages energy consumption/regen;
 
 **• Bug fixes :**
 > - Fixed BHS patch removing BHS' UI even when the nanosuit isn't equipped;
