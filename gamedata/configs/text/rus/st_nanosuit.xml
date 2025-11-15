@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
-<!--    Date : 13/11/2025                                                                                            -->
+<!--    Date : 15/11/2025                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -180,6 +180,15 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_keybindings_defibrillate_desc">
         <text>Клавиша, используемая для активации дефибриллятора.</text>
+    </string>
+
+    <!-- Toggle binoculars -->
+    <string id="ui_mcm_nanosuit_nanosuit_keybindings_binoculars">
+        <text>Переключить бинокль</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_keybindings_binoculars_desc">
+        <text>Клавиша, используемая для переключения встроенного в костюм бинокля.</text>
     </string>
 
     <!-- Configuration -->

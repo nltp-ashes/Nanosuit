@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 09/11/2025                                                                                             ---
+---    Date : 07/02/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -93,6 +93,9 @@ function ui_hud:__init(core) super()
     self.m_ui_defibrillator = nanosuit_ui_defibrillator.ui_defibrillator(self)
     self:AttachChild(self.m_ui_defibrillator)
 
+    self.m_ui_binoculars = nanosuit_ui_binoculars.ui_binoculars(self)
+    self:AttachChild(self.m_ui_binoculars)
+
     self:Show(false)
 
     -- Register callbacks
@@ -119,6 +122,7 @@ function ui_hud:destroy()
     self.m_ui_auxiliaries:destroy()
     self.m_ui_indicators:destroy()
     self.m_ui_defibrillator:destroy()
+    self.m_ui_binoculars:destroy()
 
     self.m_core = nil
 
@@ -266,6 +270,7 @@ function ui_hud:Update(force)
     self.m_ui_auxiliaries:Update(force)
     self.m_ui_indicators:Update(force)
     self.m_ui_defibrillator:Update(force)
+    self.m_ui_binoculars:Update(force)
 end
 
 function ui_hud:remove_pda_icon()

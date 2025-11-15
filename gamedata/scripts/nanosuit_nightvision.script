@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 13/11/2025                                                                                             ---
+---    Date : 15/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's built-in nightvision system.                                              ---
@@ -116,7 +116,6 @@ function nightvision:actor_on_update()
         return
     end
 
-    -- Turn off when out of energy
     if not self:can_activate() then
         self:deactivate()
         return

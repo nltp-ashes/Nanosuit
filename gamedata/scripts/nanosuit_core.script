@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 03/09/2025                                                                                             ---
+---    Date : 16/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -200,6 +200,7 @@ function core:__init()
     self.m_malfunctor = nanosuit_malfunctor.malfunctor(self)
     self.m_defibrillator = nanosuit_defibrillator.defibrillator(self)
     self.m_nightvision = nanosuit_nightvision.nightvision(self)
+    self.m_binoculars = nanosuit_binoculars.binoculars(self)
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_death", self)
@@ -234,6 +235,7 @@ function core:destroy()
     self.m_malfunctor:destroy()
     self.m_defibrillator:destroy()
     self.m_nightvision:destroy()
+    self.m_binoculars:destroy()
 end
 
 function core:save()
@@ -253,6 +255,7 @@ function core:save()
     storage.malfunctor = self.m_malfunctor.save and self.m_malfunctor:save() or {}
     storage.defibrillator = self.m_defibrillator.save and self.m_defibrillator:save() or {}
     storage.nightvision = self.m_nightvision.save and self.m_nightvision:save() or {}
+    storage.binoculars = self.m_binoculars.save and self.m_binoculars:save() or {}
 
     return storage
 end
@@ -284,6 +287,10 @@ function core:load(storage)
 
     if storage.nightvision and self.m_nightvision.load then
         self.m_nightvision:load(storage.nightvision)
+    end
+
+    if storage.binoculars and self.m_binoculars.load then
+        self.m_binoculars:load(storage.binoculars)
     end
 end
 

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : RavenAscendant                                                                           ---
 ---    Edited : NLTP_ASHES                                                                                           ---
----    Date : 14/11/2025                                                                                             ---
+---    Date : 15/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define the options in MCM.                                                                     ---
@@ -30,6 +30,7 @@ defaults = {
     ["suit_menu"] = DIK_keys.DIK_V,
     ["nanovision"] = DIK_keys.DIK_N,
     ["nightvision"] = DIK_keys.DIK_M,
+    ["binoculars"] = DIK_keys.DIK_B,
     -- Configuration
     ["outfit_nanosuit/protection_armor_burn"] = 5.0,
     ["outfit_nanosuit/protection_armor_shock"] = 1.0,
@@ -140,6 +141,7 @@ function on_mcm_load()
                     { type = "key_bind", val = mcm_types_enum.number, id = "nanovision", def = defaults["nanovision"], precondition = { function() return z_heatvision ~= nil end } },
                     { type = "key_bind", val = mcm_types_enum.number, id = "nightvision", def = defaults["nightvision"] },
                     { type = "key_bind", val = mcm_types_enum.number, id = "defibrillate", def = defaults["defibrillate"] },
+                    { type = "key_bind", val = mcm_types_enum.number, id = "binoculars", def = defaults["binoculars"] },
                 }
             },
             {

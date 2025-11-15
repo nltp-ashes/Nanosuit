@@ -1,0 +1,180 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 16/11/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit's built-in binoculars system.                                              ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+actor_slots_enum          = nanosuit_utils.actor_slots_enum
+energy_drain_enum         = nanosuit_utils.energy_drain_enum
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Defibrillator class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "binoculars"
+
+function binoculars:__init(core)
+    self.m_core = core
+    self.m_fov_factor_idx = 1
+    self.m_fov_factor_steps = {2, 4}
+    self.m_saved_fov = nil
+    self.m_saved_slot = nil
+    self.m_saved_sensitivity = nil
+    self.m_is_active = false
+    self.m_sounds = {
+        on = sound_object([[nanosuit\binoculars\binocular_on]]),
+        off = sound_object([[nanosuit\binoculars\binocular_off]]),
+        loop = sound_object([[nanosuit\binoculars\binocular_loop]]),
+        zoom_in = sound_object([[nanosuit\binoculars\binocular_zoom_in]]),
+        zoom_out = sound_object([[nanosuit\binoculars\binocular_zoom_out]]),
+        tagged = sound_object([[nanosuit\binoculars\binocular_tagged]])
+    }
+
+    RegisterScriptCallback("on_mouse_wheel", self)
+    RegisterScriptCallback("actor_on_update", self)
+    RegisterScriptCallback("on_before_key_press", self)
+end
+
+function binoculars:destroy()
+    if self:is_active() then
+        self:deactivate()
+    end
+
+    self.m_core = nil
+
+    UnregisterScriptCallback("on_mouse_wheel", self)
+    UnregisterScriptCallback("actor_on_update", self)
+    UnregisterScriptCallback("on_before_key_press", self) -- Hack : used when input is disabled, on_key_press doesn't fire then
+end
+
+function binoculars:save()
+    return {
+    }
+end
+
+function binoculars:load(m_data)
+end
+
+function binoculars:activate()
+    self.m_is_active = true
+    self.m_fov_factor_idx = 1
+    self.m_saved_slot = db.actor:active_slot()
+
+    -- Play sounds
+    self.m_sounds.on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    self.m_sounds.loop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
+
+    -- Apply zoom
+    self.m_saved_fov = get_console_cmd(2, "fov")
+    local new_fov = self.m_saved_fov / self.m_fov_factor_steps[self.m_fov_factor_idx]
+    exec_console_cmd("fov ".. new_fov)
+
+    -- Apply mouse sensitivity
+    self.m_saved_sensitivity = get_console_cmd(2, "mouse_sens")
+    local new_sensitivity = self.m_saved_sensitivity / self.m_fov_factor_steps[self.m_fov_factor_idx]
+    exec_console_cmd("mouse_sens ".. new_sensitivity)
+
+    -- Switch to empty hands
+    db.actor:activate_slot(actor_slots_enum.none)
+
+    -- Restrict input to movement keys only
+    game.only_allow_movekeys(true)
+end
+
+function binoculars:deactivate()
+    -- Play sounds
+    self.m_sounds.off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    self.m_sounds.loop:stop()
+
+    -- Restore zoom
+    exec_console_cmd("fov " .. self.m_saved_fov)
+
+    -- Restore mouse sensitivity
+    exec_console_cmd("mouse_sens " .. self.m_saved_sensitivity)
+
+    -- Restore previous weapon slot
+    if db.actor:active_slot() ~= self.m_saved_slot then
+        db.actor:activate_slot(self.m_saved_slot)
+    end
+
+    -- Remove input restriction
+    game.only_allow_movekeys(false)
+
+    self.m_saved_fov = nil
+    self.m_is_active = false
+    self.m_saved_slot = nil
+end
+
+function binoculars:can_activate()
+    return true
+end
+
+function binoculars:is_active()
+    return self.m_is_active
+end
+
+function binoculars:on_before_key_press(dik)
+    if dik == nanosuit_mcm.get_config("keybindings", "binoculars") then
+        if self:is_active() then
+            self:deactivate()
+        elseif self:can_activate() then
+            self:activate()
+        end
+    end
+end
+
+function binoculars:on_mouse_wheel(dir, flags)
+    if not self:is_active() then
+        return
+    end
+
+    -- Take control to avoid switching weapons
+    flags.ret_value = false
+
+    -- Zoom in
+    if dir == 1 and self.m_fov_factor_idx < #self.m_fov_factor_steps then
+        self.m_fov_factor_idx = self.m_fov_factor_idx + 1
+        self.m_sounds.zoom_in:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+
+    -- Zoom out
+    elseif dir == 0 and self.m_fov_factor_idx > 1 then
+        self.m_fov_factor_idx = self.m_fov_factor_idx - 1
+        self.m_sounds.zoom_out:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    end
+
+    -- Apply new zoom
+    local new_fov = self.m_saved_fov / self.m_fov_factor_steps[self.m_fov_factor_idx]
+    exec_console_cmd("fov ".. new_fov)
+
+    -- Apply new mouse sensitivity
+    local new_sensitivity = self:get_mouse_sensitivity(self.m_saved_sensitivity, self.m_saved_fov, new_fov)
+    exec_console_cmd("mouse_sens ".. new_sensitivity)
+end
+
+function binoculars:actor_on_update()
+    if not self:is_active() then
+        return
+    end
+
+    if not self:can_activate() then
+        self:deactivate()
+        return
+    end
+end
+
+function binoculars:get_mouse_sensitivity(sens_base, fov_base, fov_zoom)
+    local rad_base = math.rad(fov_base / 2)
+    local rad_zoom = math.rad(fov_zoom / 2)
+    local factor = math.tan(rad_zoom) / math.tan(rad_base)
+    return sens_base * factor
+end
