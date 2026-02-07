@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/08/2025                                                                                             ---
+---    Date : 07/02/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -52,18 +52,21 @@ function ui_hud:__init(core) super()
     self.m_update_rate = 1000
     self.m_set_msg_functor = nil
     self.m_colors = {
-        text = nanosuit_utils.get_constant(nil, "hud_colors_text", GetARGB(255, 129, 183, 135)),
-        background = nanosuit_utils.get_constant(nil, "hud_colors_background", GetARGB(200, 99, 125, 102)),
+        text = nanosuit_mcm.get_constant_color("hud_colors_text", "255,129,183,135"),
+        background = nanosuit_mcm.get_constant_color("hud_colors_background", "200,99,125,102"),
         active = GetARGB(200, 250, 173, 44),
-        energy = nanosuit_utils.get_constant(nil, "hud_colors_energy", GetARGB(255, 0, 107, 179)),
+        energy = nanosuit_mcm.get_constant_color("hud_colors_energy", "255,0,107,179"),
         energy_bg = GetARGB(200, 18, 40, 46),
         energy_off_bg = GetARGB(200, 24, 24, 24),
-        health = nanosuit_utils.get_constant(nil, "hud_colors_health", GetARGB(255, 85, 148, 17)),
+        health = nanosuit_mcm.get_constant_color("hud_colors_health", "255,85,148,17"),
         health_bg = GetARGB(200, 27, 33, 21),
         health_off_bg = GetARGB(200, 24, 24, 24),
-        stamina = nanosuit_utils.get_constant(nil, "hud_colors_stamina", GetARGB(255, 255, 255, 0)),
+        stamina = nanosuit_mcm.get_constant_color("hud_colors_stamina", "255,255,255,0"),
         stamina_bg = GetARGB(200, 46, 46, 24),
         stamina_off_bg = GetARGB(200, 24, 24, 24),
+        nv_energy = GetARGB(255, 253, 254, 50),
+        nv_energy_bg = GetARGB(200, 142, 155, 23),
+        nv_energy_off_bg = GetARGB(200, 24, 24, 24),
         red = GetARGB(255, 255, 0, 0)
     }
 
@@ -79,12 +82,19 @@ function ui_hud:__init(core) super()
     self.m_ui_tacmap:Show(true)
     self:AttachChild(self.m_ui_tacmap)
 
+    self.m_ui_auxiliaries = nanosuit_ui_auxiliaries.ui_auxiliaries(self)
+    self.m_ui_auxiliaries:Show(true)
+    self:AttachChild(self.m_ui_auxiliaries)
+
     self.m_ui_indicators = nanosuit_ui_indicators.ui_indicators(self)
     self.m_ui_indicators:Show(true)
     self:AttachChild(self.m_ui_indicators)
 
     self.m_ui_defibrillator = nanosuit_ui_defibrillator.ui_defibrillator(self)
     self:AttachChild(self.m_ui_defibrillator)
+
+    self.m_ui_binoculars = nanosuit_ui_binoculars.ui_binoculars(self)
+    self:AttachChild(self.m_ui_binoculars)
 
     self:Show(false)
 
@@ -109,8 +119,10 @@ function ui_hud:destroy()
     self.m_ui_menu:destroy()
     self.m_ui_status:destroy()
     self.m_ui_tacmap:destroy()
+    self.m_ui_auxiliaries:destroy()
     self.m_ui_indicators:destroy()
     self.m_ui_defibrillator:destroy()
+    self.m_ui_binoculars:destroy()
 
     self.m_core = nil
 
@@ -198,8 +210,16 @@ function ui_hud:get_elements_to_move()
         { element = main_hud.m_ui_hud_states.m_ui_health_bar, hide = true },
         { element = main_hud.m_ui_hud_states.m_ui_stamina_bar, hide = true },
         { element = main_hud.m_ui_hud_states.m_ui_psy_bar, hide = true },
-        { element = main_hud.m_ui_hud_states.m_back, hide = true }
+        { element = main_hud.m_ui_hud_states.m_back, hide = true },
+        { element = main_hud.m_QuickSlotText1, hide = true },
+        { element = main_hud.m_QuickSlotText2, hide = true },
+        { element = main_hud.m_QuickSlotText3, hide = true },
+        { element = main_hud.m_QuickSlotText4, hide = true }
     }
+
+    for _, elem in pairs(main_hud:GetQuickSlotIcons()) do
+        table.insert(elements_to_move, { element = elem, hide = true })
+    end
 
     -- Patch for Faction ID mod
     if factionid_hud_mcm and factionid_hud_mcm.HUD then
@@ -247,8 +267,10 @@ function ui_hud:Update(force)
     self.m_ui_menu:Update(force)
     self.m_ui_status:Update(force)
     self.m_ui_tacmap:Update(force)
+    self.m_ui_auxiliaries:Update(force)
     self.m_ui_indicators:Update(force)
     self.m_ui_defibrillator:Update(force)
+    self.m_ui_binoculars:Update(force)
 end
 
 function ui_hud:remove_pda_icon()

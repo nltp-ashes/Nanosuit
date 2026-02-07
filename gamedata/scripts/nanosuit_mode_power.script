@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 01/08/2025                                                                                             ---
+---    Date : 03/09/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of strength mode of the Nanosuit addon.                                       ---
@@ -25,12 +25,7 @@ class "power" (nanosuit_mode.abstract_mode)
 function power:__init(core, name) super(core, name, [[nanosuit\voice\mode_power_voice]])
     -- Energy related variables
     self.m_energy_use_shoot = 4
-    self.m_energy_use_melee = 10
     self.m_energy_use_power_jump = 20
-
-    -- Strength related variables
-    self.m_wound_power_bonus = 1
-    self.m_wound_impulse_bonus = 2000
 
     -- Cache
     self.m_cache.jump_speed = db.actor:get_actor_jump_speed()
@@ -48,12 +43,12 @@ function power:apply(play_voice)
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_jump", self)
-    RegisterScriptCallback("npc_on_before_hit", self)
     RegisterScriptCallback("actor_on_weapon_fired", self)
 
     -- Boosters
     self:apply_booster(nanosuit_booster_recoil.recoil, "recoil")
     self:apply_booster(nanosuit_booster_weight.weight, "weight")
+    self:apply_booster(nanosuit_booster_melee.melee, "melee")
 
     -- Save jump speed
     self.m_cache.jump_speed = db.actor:get_actor_jump_speed()
@@ -64,53 +59,32 @@ function power:remove(is_destroying)
 
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_jump", self)
-    UnregisterScriptCallback("npc_on_before_hit", self)
     UnregisterScriptCallback("actor_on_weapon_fired", self)
 
     -- Boosters
     self:remove_booster("recoil")
     self:remove_booster("weight")
+    self:remove_booster("melee")
 
     -- Reset jump speed
     db.actor:set_actor_jump_speed(self.m_cache.jump_speed)
 end
 
-function power:npc_on_before_hit(npc, scripted_hit, bone_id, flags)
-    -- Only apply to actor hits
-    if not scripted_hit.draftsman or scripted_hit.draftsman:id() ~= AC_ID then
-        return
-    end
-
-    -- Only apply to melee hits
-    if scripted_hit.type ~= hit.wound then
-        return
-    end
-
-    -- Use energy
-    self.m_core:use_energy(self.m_energy_use_melee)
-
-    -- Calculate new damage
-    local power_multiplier = 1 + (self.m_wound_power_bonus * self.m_core.m_energy / 100)
-    scripted_hit.power = scripted_hit.power * power_multiplier
-    local impulse_multiplier = 1 + (self.m_wound_impulse_bonus * self.m_core.m_energy / 100)
-    scripted_hit.impulse = scripted_hit.impulse * impulse_multiplier
-end
-
 function power:actor_on_jump()
     -- Play sounds
-    if self.m_core.m_energy >= self.m_energy_use_power_jump then
+    if self.m_core.m_energy.m_level >= self.m_energy_use_power_jump then
         self.m_sounds.power_jump:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     end
 
     -- Use energy
-    self.m_core:use_energy(self.m_energy_use_power_jump)
+    self.m_core.m_energy:use_energy(self.m_energy_use_power_jump)
 
     -- Set jump speed (inversely proportional to energy)
-    local jump_multiplier = 1 + self.m_core.m_energy / 100
+    local jump_multiplier = 1 + self.m_core.m_energy.m_level / 100
     db.actor:set_actor_jump_speed(self.m_cache.jump_speed * jump_multiplier)
 end
 
 function power:actor_on_weapon_fired()
-    self.m_core:use_energy(self.m_energy_use_shoot)
+    self.m_core.m_energy:use_energy(self.m_energy_use_shoot)
 end
 

@@ -1,0 +1,21 @@
+<!--=================================================================================================================-->
+<!--                                                                                                                 -->
+<!--    Original Author(s) : NLTP_ASHES                                                                              -->
+<!--    Edited : N/A                                                                                                 -->
+<!--    Date : 07/02/2026                                                                                            -->
+<!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
+<!--                                                                                                                 -->
+<!--    UI template for the Nanosuit binoculars UI.                                                                  -->
+<!--                                                                                                                 -->
+<!--=================================================================================================================-->
+<w>
+    <!-- Background -->
+    <background x="168" y="0" width="688" height="768" stretch="1">
+        <texture>ui_nanosuit_binoculars_background</texture>
+    </background>
+
+    <!-- Text -->
+    <text x="168" y="0" width="688" height="768" stretch="1">
+        <texture>ui_nanosuit_binoculars_text</texture>
+    </text>
+</w>

@@ -2,10 +2,10 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/07/2025                                                                                             ---
+---    Date : 09/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
----    Script used to handle the Nanosuit tactical map UI.                                                           ---
+---    Script used to handle the Nanosuit defibrillator UI.                                                          ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -66,6 +66,6 @@ function ui_defibrillator:Update(force)
     -- Update key
     if self.m_parent.m_core.m_defibrillator:is_ready() then
         self.m_ui_message:SetText(nanosuit_utils.get_translation("st_nanosuit_defibrillator_ready"))
-        self.m_ui_key:SetText("[" .. nanosuit_utils.get_key_translation(nanosuit_mcm.get_config("defibrillate")) .. "]")
+        self.m_ui_key:SetText("[" .. nanosuit_utils.get_key_translation(nanosuit_mcm.get_config("keybindings", "defibrillate")) .. "]")
     end
 end

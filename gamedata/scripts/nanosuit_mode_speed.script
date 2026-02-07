@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 13/08/2025                                                                                             ---
+---    Date : 03/09/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of speed mode of the Nanosuit addon.                                          ---
@@ -13,6 +13,9 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
+-- Imports
+energy_drain_enum         = nanosuit_utils.energy_drain_enum
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Speed mode class
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -22,9 +25,8 @@ class "speed" (nanosuit_mode.abstract_mode)
 function speed:__init(core, name) super(core, name, [[nanosuit\voice\mode_speed_voice]])
     -- Energy related variables
     self.m_energy_use = 1
-    self.m_energy_last_use = 0
-    self.m_energy_rate = 50
-    self.m_energy_low_rate = 250
+    self.m_energy_use_low = 0.2
+    self.m_energy_use_rate = 50
 
     -- Speed related variables
     self.m_speed_run_coef = 1.25
@@ -66,6 +68,10 @@ function speed:remove(is_destroying)
         self.m_sounds.speed_stop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     end
 
+    if self.m_core.m_energy:has_drain(energy_drain_enum.sprint) then
+        self.m_core.m_energy:remove_drain(energy_drain_enum.sprint)
+    end
+
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_update", self)
 
@@ -78,14 +84,17 @@ function speed:remove(is_destroying)
 end
 
 function speed:actor_on_update()
-    local has_enough_energy_low = self.m_core.m_energy >= self.m_core.m_energy_low_threshold
-    local has_enough_energy_very_low = self.m_core.m_energy >= self.m_core.m_energy_very_low_threshold
+    local has_enough_energy_low = self.m_core.m_energy.m_level >= self.m_core.m_energy_low_threshold
 
     -- Use energy
-    local energy_rate = has_enough_energy_very_low and self.m_energy_rate or self.m_energy_low_rate
-    if IsMoveState("mcSprint") and time_global() - self.m_energy_last_use > energy_rate then
-        self.m_core:use_energy(self.m_energy_use)
-        self.m_energy_last_use = time_global()
+    local has_drain = self.m_core.m_energy:has_drain(energy_drain_enum.sprint)
+    if IsMoveState("mcSprint") and not has_drain then
+        self.m_core.m_energy:add_drain(energy_drain_enum.sprint, self.m_energy_use_rate, function()
+            local has_enough_energy_very_low = self.m_core.m_energy.m_level >= self.m_core.m_energy_very_low_threshold
+            return has_enough_energy_very_low and self.m_energy_use or self.m_energy_use_low
+        end)
+    elseif not IsMoveState("mcSprint") and has_drain then
+        self.m_core.m_energy:remove_drain(energy_drain_enum.sprint)
     end
 
     -- Play sounds

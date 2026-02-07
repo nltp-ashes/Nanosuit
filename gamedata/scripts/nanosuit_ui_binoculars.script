@@ -1,0 +1,68 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 07/02/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit binoculars UI.                                                             ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+VIGNETTE_EDG = 1 - (1 / math.sqrt(2))
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Tactical map UI class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "ui_binoculars" (CUIScriptWnd)
+
+function ui_binoculars:__init(parent) super()
+    -- Variables
+    self.m_parent = parent
+    self.m_is_active = false
+
+    -- Build UI
+    self.m_xml = CScriptXmlInit()
+    self.m_xml:ParseFile("ui_nanosuit_binoculars.xml")
+
+    self.m_ui_background = self.m_xml:InitStatic("background", self)
+    self.m_ui_background:SetTextureColor(self.m_parent.m_colors.background)
+
+    self.m_ui_text = self.m_xml:InitStatic("text", self)
+    self.m_ui_text:SetTextureColor(self.m_parent.m_colors.text)
+end
+
+function ui_binoculars:__finalize()
+end
+
+function ui_binoculars:destroy()
+end
+
+function ui_binoculars:Update(force)
+    CUIScriptWnd.Update(self)
+
+    if not self.m_is_active and self.m_parent.m_core.m_binoculars.m_is_active then
+        self:activate()
+    elseif self.m_is_active and not self.m_parent.m_core.m_binoculars.m_is_active then
+        self:deactivate()
+    end
+end
+
+function ui_binoculars:activate()
+    self.m_is_active = true
+    -- FIXME : This shader doesn't work, don't know why
+    -- exec_console_cmd(string.format("vignette_control %s,0.0,%s,0.0", 1, VIGNETTE_EDG))
+    self:Show(true)
+end
+
+function ui_binoculars:deactivate()
+    self:Show(false)
+    -- FIXME : This shader doesn't work, don't know why
+    -- exec_console_cmd(string.format("vignette_control %s,0.0,%s,0.0", 0, VIGNETTE_EDG))
+    self.m_is_active = false
+end
