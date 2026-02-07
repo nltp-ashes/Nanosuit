@@ -1,0 +1,33 @@
+<!--=================================================================================================================-->
+<!--                                                                                                                 -->
+<!--    Original Author(s) : NLTP_ASHES                                                                              -->
+<!--    Edited : N/A                                                                                                 -->
+<!--    Date : 03/09/2025                                                                                            -->
+<!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
+<!--                                                                                                                 -->
+<!--    UI template for the Nanosuit auxiliary systems.                                                              -->
+<!--                                                                                                                 -->
+<!--=================================================================================================================-->
+<w>
+    <!-- Corners -->
+    <top_left_corner x="10" y="10" width="29" height="8" stretch="1">
+        <texture a="200">ui_nanosuit_auxiliaries_tlc_outline</texture>
+    </top_left_corner>
+
+    <top_right_corner x="985" y="10" width="29" height="8" stretch="1">
+        <texture a="200">ui_nanosuit_auxiliaries_trc_outline</texture>
+    </top_right_corner>
+
+    <!-- NV battery -->
+    <nv_energy_outline x="808" y="10" width="172" height="15" stretch="1">
+        <texture a="200">ui_nanosuit_auxiliaries_nv_outline</texture>
+    </nv_energy_outline>
+    <nv_energy_bar_background x="817" y="20" width="163" height="16" stretch="1">
+        <texture a="200">ui_nanosuit_auxiliaries_nv_energy_bar</texture>
+    </nv_energy_bar_background>
+    <nv_energy_bar x="817" y="20" width="163" height="16" mode="back" min="0" max="100" pos="100">
+        <progress stretch="1">
+            <texture>ui_nanosuit_auxiliaries_nv_energy_bar</texture>
+        </progress>
+    </nv_energy_bar>
+</w>

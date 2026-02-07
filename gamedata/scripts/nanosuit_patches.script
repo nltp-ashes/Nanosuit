@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 16/08/2025                                                                                             ---
+---    Date : 09/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle all the necessary intercepts to make the Nanosuit addon compatible with other addons.   ---
@@ -18,6 +18,15 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 if se_legs then
+
+    function is_legs(obj)
+        -- FIXME: A better check is needed
+        if obj and obj:section() == "outfit_nanosuit_legs" then
+            return true
+        end
+        return false
+    end
+
     nanosuit_mode_cloak_cloak___init = nanosuit_mode_cloak.cloak.__init
     nanosuit_mode_cloak.cloak.__init = function(self, core, name)
         local res = nanosuit_mode_cloak_cloak___init(self, core, name)
@@ -74,7 +83,7 @@ if se_legs then
     end
 
     nanosuit_mode_cloak.cloak.game_object_on_net_spawn = function(self, obj)
-        if nanosuit_utils.is_legs(obj) then
+        if is_legs(obj) then
             CreateTimeEvent("nanosuit_legs_spawn", obj:name(), 0, function(id)
                 local obj_now = level.object_by_id(id)
                 if obj_now then
@@ -86,7 +95,7 @@ if se_legs then
     end
 
     nanosuit_mode_cloak.cloak.game_object_on_net_destroy = function(self, obj)
-        if nanosuit_utils.is_legs(obj) then
+        if is_legs(obj) then
         self:set_legs_visible(obj)
         end
     end
@@ -167,35 +176,40 @@ end
 -- ---------------------------------------------------------------------------------------------------------------------
 
 if zzz_player_injuries then
-    zzz_player_injuries_HUDUpdate = zzz_player_injuries.HUDUpdate
-    zzz_player_injuries.HUDUpdate = function()
-        local res = zzz_player_injuries_HUDUpdate()
+    nanosuit_ui_hud_ui_hud_Update_bhs = nanosuit_ui_hud.ui_hud.Update
+    nanosuit_ui_hud.ui_hud.Update = function(self, force)
+        nanosuit_ui_hud_ui_hud_Update_bhs(self, force)
+        zzz_player_injuries.show_hud_type = 0
+    end
+end
 
-        local bhs_cs = {
-            ["body_health_system_text"] = true,
-            ["cop_debug"] = true,
-            ["body_health_system"] = true,
-            ["bhs_health_head_bar_green"] = true,
-            ["bhs_health_torso_bar_green"] = true,
-            ["bhs_health_rightarm_bar_green"] = true,
-            ["bhs_health_leftarm_bar_green"] = true,
-            ["bhs_health_rightleg_bar_green"] = true,
-            ["bhs_health_leftleg_bar_green"] = true,
-            ["bhs_stamina_bar"] = true,
-            ["bhs_health_bar"] = true,
-            ["bhs_health_head_bar"] = true,
-            ["bhs_health_torso_bar"] = true,
-            ["bhs_health_rightarm_bar"] = true,
-            ["bhs_health_leftarm_bar"] = true,
-            ["bhs_health_rightleg_bar"] = true,
-            ["bhs_health_leftleg_bar"] = true,
-        }
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Heat Vision v1.3
+-- ---------------------------------------------------------------------------------------------------------------------
 
-        local hud = get_hud()
-        for cs_name in pairs(bhs_cs) do
-            hud:RemoveCustomStatic(cs_name)
-        end
+if z_heatvision then
+    nanosuit_core_core___init = nanosuit_core.core.__init
+    nanosuit_core.core.__init = function(self, name)
+        local res = nanosuit_core_core___init(self, name)
+
+        self.m_nanovision = nanosuit_nanovision.nanovision(self)
 
         return res
+    end
+
+    nanosuit_core_core_destroy = nanosuit_core.core.destroy
+    nanosuit_core.core.destroy = function(self)
+        local res = nanosuit_core_core_destroy(self)
+
+        self.m_nanovision:destroy()
+
+        return res
+    end
+
+    nanosuit_nightvision_nightvision_can_activate = nanosuit_nightvision.nightvision.can_activate
+    nanosuit_nightvision.nightvision.can_activate = function(self)
+        local res = nanosuit_nightvision_nightvision_can_activate(self)
+
+        return res and not self.m_core.m_nanovision:is_active()
     end
 end

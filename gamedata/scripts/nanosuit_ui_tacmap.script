@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/07/2025                                                                                             ---
+---    Date : 31/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -123,7 +123,7 @@ end
 
 function ui_tacmap:world_to_tacmap(pos)
     -- Translate distance from world space to tacmap space
-    local distance_world = db.actor:position():distance_to(pos)
+    local distance_world = distance_2d(db.actor:position(), pos)
     local distance_tacmap = distance_world * self.m_scale
 
     -- Get angle from player to target in tacmap space

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 02/08/2025                                                                                             ---
+---    Date : 22/08/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the animated sequence of the vaporization.                                              ---
@@ -23,7 +23,8 @@ actor_cameras_enum      = nanosuit_utils.actor_cameras_enum
 
 class "vaporization_sequence" (nanosuit_sequence.scripted_sequence)
 
-function vaporization_sequence:__init(id) super()
+function vaporization_sequence:__init(vaporizer, id) super()
+    self.m_vaporizer = vaporizer
     self.m_id = id
     self.m_vaporizing = true
     self.m_burning = false
@@ -35,9 +36,10 @@ function vaporization_sequence:__init(id) super()
 end
 
 function vaporization_sequence:destroy()
-    nanosuit_sequence.scripted_sequence.destroy(self)
-
+    self.m_vaporizer = nil
     self.m_particles = {}
+
+    nanosuit_sequence.scripted_sequence.destroy(self)
 end
 
 function vaporization_sequence:execute()
@@ -101,6 +103,11 @@ function vaporization_sequence:wait_for_state()
     end
 
     return false
+end
+
+function vaporization_sequence:action_malfunction()
+    self.m_vaporizer.m_core.m_malfunctor:enable_malfunction(true)
+    return true
 end
 
 function vaporization_sequence:action_notify_witness()

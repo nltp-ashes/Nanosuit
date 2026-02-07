@@ -1,0 +1,123 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 15/11/2025                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit's built-in nightvision system.                                              ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+actor_slots_enum          = nanosuit_utils.actor_slots_enum
+energy_drain_enum         = nanosuit_utils.energy_drain_enum
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Defibrillator class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "nightvision"
+
+function nightvision:__init(core)
+    self.m_core = core
+    self.m_energy = nanosuit_energy.energy()
+    self.m_energy_use = 1
+    self.m_energy_use_rate = 500
+    self.m_effector_id = 35552
+    self.m_effector_name = [[nanosuit\nightvision.ppe]]
+    self.m_effector_factor = 0.2
+    self.m_is_active = false
+    self.m_sounds = {
+        on = sound_object([[nanosuit\nanovision\nanovision_on]]),
+        off = sound_object([[nanosuit\nanovision\nanovision_off]]),
+        loop = sound_object([[nanosuit\nanovision\nanovision_loop]])
+    }
+
+    RegisterScriptCallback("on_key_press", self)
+    RegisterScriptCallback("actor_on_update", self)
+end
+
+function nightvision:destroy()
+    if self:is_active() then
+        self:deactivate()
+    end
+
+    self.m_core = nil
+
+    UnregisterScriptCallback("on_key_press", self)
+    UnregisterScriptCallback("actor_on_update", self)
+end
+
+function nightvision:save()
+    return {
+        energy = self.m_energy.m_level
+    }
+end
+
+function nightvision:load(m_data)
+    self.m_energy.m_level = m_data.energy or self.m_energy.m_level
+end
+
+function nightvision:activate()
+    self.m_is_active = true
+
+    self.m_energy:add_drain(energy_drain_enum.nightvision, self.m_energy_use_rate, self.m_energy_use)
+
+    -- Play sounds
+    self.m_sounds.on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    self.m_sounds.loop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
+
+    -- Turn post process effector on
+    level.add_pp_effector(self.m_effector_name, self.m_effector_id, true)
+    game.set_nv_lumfactor(self.m_effector_factor)
+end
+
+function nightvision:deactivate()
+    self.m_energy:remove_drain(energy_drain_enum.nightvision)
+
+    -- Play sounds
+    self.m_sounds.off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    self.m_sounds.loop:stop()
+
+    -- Turn post process effector off
+    level.remove_pp_effector(self.m_effector_id)
+    game.set_nv_lumfactor(0)
+
+    self.m_is_active = false
+end
+
+function nightvision:can_activate()
+    local no_torch = db.actor:item_in_slot(actor_slots_enum.torch) == nil
+    local has_energy = self.m_energy.m_level > 0
+    return no_torch and has_energy
+end
+
+function nightvision:is_active()
+    return self.m_is_active
+end
+
+function nightvision:on_key_press(dik)
+    if dik == nanosuit_mcm.get_config("keybindings", "nightvision") then
+        if self:is_active() then
+            self:deactivate()
+        elseif self:can_activate() then
+            self:activate()
+        end
+    end
+end
+
+function nightvision:actor_on_update()
+    if not self:is_active() then
+        return
+    end
+
+    if not self:can_activate() then
+        self:deactivate()
+        return
+    end
+end

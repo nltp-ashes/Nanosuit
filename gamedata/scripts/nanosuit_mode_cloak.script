@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 12/08/2025                                                                                             ---
+---    Date : 03/09/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
@@ -18,6 +18,7 @@ armor_modes_enum        = nanosuit_utils.armor_modes_enum
 actor_slots_enum        = nanosuit_utils.actor_slots_enum
 renderers_enum          = nanosuit_utils.renderers_enum
 actor_cameras_enum      = nanosuit_utils.actor_cameras_enum
+energy_drain_enum         = nanosuit_utils.energy_drain_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Cloak mode class
@@ -30,7 +31,7 @@ function cloak:__init(core, name) super(core, name, [[nanosuit\voice\mode_cloak_
     self.m_energy_use_min = 0.1
     self.m_energy_use_max = 1
     self.m_energy_last_use = 0
-    self.m_energy_rate = 100
+    self.m_energy_use_rate = 100
 
     -- Cloak variables
     self.m_cloak_npc_see_distance = 5
@@ -59,6 +60,12 @@ end
 function cloak:apply(play_voice)
     nanosuit_mode.abstract_mode.apply(self, play_voice)
 
+    self.m_core.m_energy:add_drain(energy_drain_enum.cloak, self.m_energy_use_rate, function()
+        local movement = db.actor:get_movement_speed()
+        local speed_mps = nanosuit_utils.vec_magnitude_xz(movement)
+        return self.m_energy_use_min + normalize(speed_mps, 0, 6) * self.m_energy_use_max
+    end)
+    
     -- Play sounds
     self.m_sounds.cloak_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_sounds.cloak_loop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
@@ -80,6 +87,8 @@ end
 
 function cloak:remove(is_destroying)
     nanosuit_mode.abstract_mode.remove(self, is_destroying)
+
+    self.m_core.m_energy:remove_drain(energy_drain_enum.cloak)
 
     -- Play sounds
     self.m_sounds.cloak_off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
@@ -141,24 +150,14 @@ end
 
 function cloak:actor_on_update()
     -- Switch to armor mode when out of energy
-    if self.m_core.m_energy <= 0 then
+    if self.m_core.m_energy.m_level <= 0 then
         self.m_core:change_mode(self.m_core.m_default_mode, true)
         return
-    end
-
-    -- Cloak energy use
-    if time_global() - self.m_energy_last_use > self.m_energy_rate then
-        local movement = db.actor:get_movement_speed()
-        local speed_mps = nanosuit_utils.vec_magnitude_xz(movement)
-        local energy_use = self.m_energy_use_min + normalize(speed_mps, 0, 6) * self.m_energy_use_max
-
-        self.m_core:use_energy(energy_use)
-        self.m_energy_last_use = time_global()
     end
 end
 
 function cloak:actor_on_weapon_fired()
     self.m_sounds.cloak_shoot:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
-    self.m_core:use_energy(100)
+    self.m_core.m_energy:use_energy(100)
     self.m_core:change_mode(self.m_core.m_default_mode, true)
 end

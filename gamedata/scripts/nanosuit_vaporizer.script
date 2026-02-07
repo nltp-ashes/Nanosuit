@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 10/08/2025                                                                                             ---
+---    Date : 09/11/2025                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's vaporization process.                                                    ---
@@ -134,13 +134,12 @@ function vaporizer:vaporize(obj, has_witness)
         return
     end
 
-    local sequence = nanosuit_sequence_vaporization.vaporization_sequence(obj:id())
+    local sequence = nanosuit_sequence_vaporization.vaporization_sequence(self, obj:id())
+    sequence:from(sequence.action_malfunction)
     if has_witness then
-        sequence:from(sequence.action_notify_witness)
-        sequence:after(sequence.action_sounds, 5)
-    else
-        sequence:from(sequence.action_sounds)
+        sequence:after(sequence.action_notify_witness, 1)
     end
+    sequence:after(sequence.action_sounds, has_witness and 5 or 0)
     sequence:after(sequence.action_burn, 1.2)
     sequence:after(sequence.action_kill, 1.3)
     sequence:after(sequence.action_force_kill, 0.1)
@@ -153,7 +152,7 @@ function vaporizer:vaporize(obj, has_witness)
 end
 
 function vaporizer:actor_on_death()
-    self:vaporize(db.actor)
+    self:vaporize(db.actor, false)
 end
 
 function vaporizer:actor_on_update()
@@ -180,7 +179,7 @@ function vaporizer:actor_on_update()
             self:remove_witness(id)
         elseif self:has_witness_escaped(obj) then
             self:remove_witness(id)
-            if nanosuit_mcm.get_config("use_witness") then
+            if nanosuit_mcm.get_config("general", "use_witness") then
                 self:vaporize(db.actor, true)
             end
         end

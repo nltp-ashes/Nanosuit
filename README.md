@@ -12,7 +12,7 @@ Fend off the Zone's dangers with the Nanosuit, a powerful and extremely versatil
 
 This addon adds a fully operational US and Korean nanosuits from Crysis.
 
-**Important :** This addon is still in development. It is stable enough that I feel confident people can start having fun with it. But it isn't complete. YOU HAVE TO SPAWN THE OUTFIT USING THE [DEBUG MENU ITEM SPAWNER](https://igigog.github.io/anomaly-modding-book/modding-tools/in-game-editors/item-spawner.html).
+**Important :** This addon is still in development. You have to spawn the outfit using the [debug menu item spawner](https://igigog.github.io/anomaly-modding-book/modding-tools/in-game-editors/item-spawner.html).
 
 **Important :** Expect a lot of soft-conflicts (aka it will work, but it won't look nice) with UI mods. Please report as many UI related issues as you can.
 
@@ -40,7 +40,7 @@ Speed mode :
 - When low on energy, the bonuses get temporarily disabled
 
 Strength mode :
-- Increases melee damage by up to 100%, proportionally to the suit's energy level
+- Increases melee damage by 100%
 - Increases jump height by 100%, proportionally to the suit's energy level
 - Increases carrying capacity by 25kg
 - Decreases weapon recoil by a factor of 10, for as long as the suit has energy
@@ -68,6 +68,7 @@ Defibrillator :
 - The defibrillator can only be used when dying from certain damage types (fall damage, radiation, lacerations)
 - A defibrillator powerbank is required for the defibrillator to activate
 - Powerbanks are single use, and need to be replaced after being revived
+- Powerbanks are the only item that can be attached the player's belt when wearing the suit
 - During the defibrillator sequence, the player has a 3 seconds window to press Space (configurable in MCM), after which the player dies
 
 Malfunctions :
@@ -81,21 +82,36 @@ Vaporization :
 - The player is allowed to walk away from a fight with zombies, or Monolith fighters
 - When NPCs get vaporized alive, they enter a special animation
 
+Nanovision :
+- If [HeatVision v1.3](https://www.moddb.com/mods/stalker-anomaly/addons/heatvision-v02-extension-for-beefs-nvg-dx11engine-mod) is installed, the suit will have built-in nanovision
+- Consumes 2% per second when active
+- When out of energy, nanovision will be disabled automatically
+- Uses the suit's main energy pool
+- Having any device equipped in the night-vision slot will make the nanovision unavailable
+
+Nightvision :
+- The suit comes with built-in nightvision
+- Consumes 2% per second when active
+- When out of energy, nightvision will be disabled automatically
+- Uses its own source of energy, separate from the suit's main energy pool
+- Having any device equipped in the night-vision slot will make the nightvision unavailable
+
 ---
 
 ### REQUIREMENTS
 
 These addons are **absolutely required** in order for the addon to work :
 1. [S.T.A.L.K.E.R. Anomaly 1.5.3](https://www.moddb.com/mods/stalker-anomaly/downloads/stalker-anomaly-153).
-2. [S.T.A.L.K.E.R. Anomaly Modded Exes 01.08.2025 (or newer)](https://github.com/themrdemonized/xray-monolith)
+2. [S.T.A.L.K.E.R. Anomaly Modded Exes 27.08.2025 (or newer)](https://github.com/themrdemonized/xray-monolith)
 
 The addon natively integrates[^native_integrations] with the following addons, but they **aren't required** :
-1. [Mod Configuration Menu v1.7](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu) (allows you to customize some options about the addon);
-2. [First Person Visible Body v6.0](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version) (allows you to see your character's body in first person);
-3. [Hunger, thirst, sleepiness bars v1.01](https://www.moddb.com/mods/stalker-anomaly/addons/hunger-thirst-sleepiness-bars) (adds HUD indicators for hunger, thirst and sleepiness);
-4. [Campfire Healing And Designated Savepoint indicator v2.1](https://www.moddb.com/mods/stalker-anomaly/addons/campfire-healing-and-designated-savepoint-indicator) (adds HUD indicators for campfire healing and savepoint);
-5. [Powered Exoskeletons v2.2](https://github.com/ahuyn/anomaly-exo) (adds exoskeleton power sources to the game);
-6. [Body Health System Redux v2.0.2](https://www.moddb.com/mods/stalker-anomaly/addons/100-groks-body-health-system-redux-for-151) (adds EFT-like health system);
+1. [Mod Configuration Menu v1.7](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu) (customizable options for the addon);
+2. [First Person Visible Body v6.0](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version) (custom leg models, if installed);
+3. [Hunger, thirst, sleepiness bars v1.01](https://www.moddb.com/mods/stalker-anomaly/addons/hunger-thirst-sleepiness-bars) (custom nanosuit styling for hunger, thirst and sleepiness indicator);
+4. [Campfire Healing And Designated Savepoint indicator v2.1](https://www.moddb.com/mods/stalker-anomaly/addons/campfire-healing-and-designated-savepoint-indicator) (custom nanosuit styling for campfire indicators);
+5. [Powered Exoskeletons v2.2](https://github.com/ahuyn/anomaly-exo) (built-in compatibility, to prevent the nanosuit from being considered an exoskeleton);
+6. [Body Health System Redux v2.0.2](https://www.moddb.com/mods/stalker-anomaly/addons/100-groks-body-health-system-redux-for-151) (built-in compatibility, to prevent UI overlaps);
+7. [HeatVision v1.3](https://www.moddb.com/mods/stalker-anomaly/addons/heatvision-v02-extension-for-beefs-nvg-dx11engine-mod) (adds nanovision to the suit, if installed);
 
 [^native_integrations]: Native integration are similar to compatibility patches, except they are built-into the addon. If the other addon is installed, the features will be available, if not, they will be disabled, all without requiring any extra steps from the user.
 
@@ -139,9 +155,10 @@ Here is a list of planned features for the addon :
 - Add a female version of the nanosuit;
 - Add option to use female voice for the nanosuit modes;
 - Add built-in binoculars;
-- Add built-in night vision;
-- Add nanovision (using HeatVision as back-end) (as an upgrade?);
 - Custom footsteps when wearing the suit;
+- Add suit modes shortcuts;
+- Display range on the minimap (and finish the minimap...);
+- Add custom indicators to replace BHS UI;
 
 **A note on BHS :** Given the tentacular nature of BHS and its suite of addons, and how terrible its code is, I will not further improve the compatibility patch for it. I am open to take contributions if someone comes up with a better patch than mine, given mine is essentially just removing BHS's UI if it exists.
 
@@ -154,14 +171,14 @@ If you would like to help development for future updates, you can :
 ### KNOWN ISSUES
 
 The following issues will be fixed in the near future :
-- Cloak mode does not work if the NPC sees the actor before the cloak is applied, right now you need to break vision for it to work
-- Cloak mode does not work on mutants
 - Cloak mode sometimes messes with the equipped items' textures when switching slot while in the mode (workaround : perform a save/load)
 - Cloak mode does not cloak the knife during the mutant skinning animation with FDDA
-- The game crashes if actor interacts with an NPC while they're getting vaporized
 - The game crashes if player reloads a save while cloak mode is enabled
 
-The following issues are either technical limitations, or skill limitations, and will not be fixed in the foreseeable future :
+The following issues are technical limitations and will not be fixed in the foreseeable future :
+- The game crashes if actor interacts with an NPC while they're getting vaporized
+- Cloak mode does not work if the NPC sees the actor before the cloak is applied (workaround : need to break vision for it to work)
+- Cloak mode does not work on mutants
 - Speed mode should increase reload speed
 
 If you truly believe your problem is new, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).
@@ -183,6 +200,7 @@ Credit goes to these people for their work contained in this addon :
 
 |                                Name                                 |                                                    Motive                                                    |         License         |
 |:-------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------:|:-----------------------:|
+|                             **Catspaw**                             |                  Allowed the reusing of a custom color picker widget for MCM in this addon                   | See [LICENSE](#license) |
 |                            **Medialuna**                            |                           Fixed the Korean nanosuit's world model collision volume                           |       Proprietary       |
 |         **[Crepis](https://www.moddb.com/members/cr3pis)**          |      Provided high quality inventory icon, upgrade icon and character portrait for the Korean nanosuit       |       Proprietary       |
 |     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |                   Improved the texture quality of the Korean nanosuit's third person model                   | See [LICENSE](#license) |
@@ -223,6 +241,11 @@ Content made by Blackgrowl can be reused, as long as you credit him for the work
 Content made by LVutner is provided under the following license :
 ```
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
+
+Content made by Catspaw is provided under the following terms :
+```
+Redistribution is allowed, as long as Catspaw is credited, and altered copies of the script are not redistributed using the same filename, to avoid conflicts.
 ```
 
 For the work that wasn't made by me, unless a licence is specified in the [Credits](#special-thanks--credits) or in the files themselves, consider these works proprietary. If you want to reuse those, please get in touch with their original authors.
