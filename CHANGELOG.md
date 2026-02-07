@@ -1,4 +1,4 @@
-## **v0.10.0 - 13/11/2025 - Beta Build**
+## **v0.10.0 - 07/02/2025 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.10.0/total?label=Downloads)]()
 
@@ -6,6 +6,7 @@
 > - Added a new indicator (only in the Crysis HUD) to show the player's psy-health;
 > - Added nanovision built-into the suit if [HeatVision v1.3](https://www.moddb.com/mods/stalker-anomaly/addons/heatvision-v02-extension-for-beefs-nvg-dx11engine-mod) addon is installed (disabled by default - see MCM);
 > - Added nightvision built-into the suit;
+> - Added binoculars built-into the suit;
 > - Added complete customization of the nanosuit's stats in MCM;
 
 **• Changes :**
