@@ -19,13 +19,14 @@ This addon adds a fully operational US and Korean nanosuits from Crysis.
 Bellow is a list of features that are currently available in the addon :
 
 Miscellaneous :
-- The nanosuit comes with third person, first person and world models; inventory icons and character portraits (and even legs model if you use [First Person Visible Body](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version))
-- The Nanosuit voice-lines are available in English, French and Russian, depending on the game language
-- The addon features an MCM menu, allowing you to change some settings on the fly
-- When the suit is out of energy, all incoming damage is transferred to the player
+- The suit comes with third person, first person and world models; inventory icons and character portraits (and even legs model if you use [First Person Visible Body](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version))
+- The suit voice-lines are available in English, French and Russian, depending on the game language
 - The suit has basic ballistic, rupture and explosive protection when out of energy
 - The suit will absorb low amounts of radiation, without consuming energy
 - The suit will also absorb higher amounts of radiation, but at the cost of energy
+- The suit has built-in binoculars, with x2 and x4 zoom levels
+- When the suit is out of energy, all incoming damage is transferred to the player
+- The addon features an MCM menu, allowing you to change some settings on the fly
 
 Armor mode :
 - Absorbs all incoming damage as long as the suit has energy
@@ -153,8 +154,6 @@ For past updates, please refer to the description of each release, in the [relea
 Here is a list of planned features for the addon :
 - Add a storyline that will allow the player to acquire the suit;
 - Add a female version of the nanosuit;
-- Add option to use female voice for the nanosuit modes;
-- Add built-in binoculars;
 - Custom footsteps when wearing the suit;
 - Add suit modes shortcuts;
 - Display range on the minimap (and finish the minimap...);

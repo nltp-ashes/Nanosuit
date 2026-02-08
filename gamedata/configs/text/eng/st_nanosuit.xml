@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 15/11/2025                                                                                            -->
+<!--    Date : 08/02/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -80,30 +80,6 @@
     </string>
 
     <!--=============================================================================================================-->
-    <!--    Nanosuit voice lines                                                                                     -->
-    <!--=============================================================================================================-->
-
-    <string id="nanosuit\voice\mode_armor_voice">
-        <text>nanosuit\voice\mode_armor_voice</text>
-    </string>
-
-    <string id="nanosuit\voice\mode_cloak_voice">
-        <text>nanosuit\voice\mode_cloak_voice</text>
-    </string>
-
-    <string id="nanosuit\voice\mode_power_voice">
-        <text>nanosuit\voice\mode_power_voice</text>
-    </string>
-
-    <string id="nanosuit\voice\mode_speed_voice">
-        <text>nanosuit\voice\mode_speed_voice</text>
-    </string>
-
-    <string id="nanosuit\voice\energy_low_voice">
-        <text>nanosuit\voice\energy_low_voice</text>
-    </string>
-
-    <!--=============================================================================================================-->
     <!--    MCM                                                                                                      -->
     <!--=============================================================================================================-->
 
@@ -144,6 +120,23 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_general_use_nanovision_desc">
         <text>In Crysis lore, the Nanosuit 1.0 does not have nano-vision. The back-end for it exists in stalker, so you can still turn it on if you want.</text>
+    </string>
+
+    <!-- Suit voice -->
+    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender">
+        <text>Suit voice</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender_desc">
+        <text>Select the voice type you want to use for the suit.</text>
+    </string>
+
+    <string id="nanosuit_nanosuit_general_suit_gender_lst_male">
+        <text>Male</text>
+    </string>
+
+    <string id="nanosuit_nanosuit_general_suit_gender_lst_female">
+        <text>Female</text>
     </string>
 
     <!-- Open suit menu -->

@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
-<!--    Date : 15/11/2025                                                                                            -->
+<!--    Date : 08/02/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -80,30 +80,6 @@
     </string>
 
     <!--=============================================================================================================-->
-    <!--    Nanosuit voice lines                                                                                     -->
-    <!--=============================================================================================================-->
-
-    <string id="nanosuit\voice\mode_armor_voice">
-        <text>nanosuit\voice\mode_armor_voice_rus</text>
-    </string>
-
-    <string id="nanosuit\voice\mode_cloak_voice">
-        <text>nanosuit\voice\mode_cloak_voice_rus</text>
-    </string>
-
-    <string id="nanosuit\voice\mode_power_voice">
-        <text>nanosuit\voice\mode_power_voice_rus</text>
-    </string>
-
-    <string id="nanosuit\voice\mode_speed_voice">
-        <text>nanosuit\voice\mode_speed_voice_rus</text>
-    </string>
-
-    <string id="nanosuit\voice\energy_low_voice">
-        <text>nanosuit\voice\energy_low_voice_rus</text>
-    </string>
-
-    <!--=============================================================================================================-->
     <!--    MCM                                                                                                      -->
     <!--=============================================================================================================-->
 
@@ -162,6 +138,23 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_keybindings_nanovision_desc">
         <text>Клавиша, используемая для активации нано зрение (тепловизионного изображения).</text>
+    </string>
+
+    <!-- Suit voice -->
+    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender">
+        <text>Голос костюма</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender_desc">
+        <text>Выберите тип голоса, который вы хотите использовать для костюма.</text>
+    </string>
+
+    <string id="nanosuit_nanosuit_general_suit_gender_lst_male">
+        <text>Мужской</text>
+    </string>
+
+    <string id="nanosuit_nanosuit_general_suit_gender_lst_female">
+        <text>Женский</text>
     </string>
 
     <!-- Toggle nightvision -->

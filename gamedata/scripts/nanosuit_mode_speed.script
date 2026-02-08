@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 03/09/2025                                                                                             ---
+---    Date : 08/02/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of speed mode of the Nanosuit addon.                                          ---
@@ -22,7 +22,7 @@ energy_drain_enum         = nanosuit_utils.energy_drain_enum
 
 class "speed" (nanosuit_mode.abstract_mode)
 
-function speed:__init(core, name) super(core, name, [[nanosuit\voice\mode_speed_voice]])
+function speed:__init(core, name) super(core, name)
     -- Energy related variables
     self.m_energy_use = 1
     self.m_energy_use_low = 0.2

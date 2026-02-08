@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 16/11/2025                                                                                             ---
+---    Date : 08/02/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -95,15 +95,21 @@ end
 -- Sound functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
---- Function used to get a sound object localized to the game's language (if available).
---- Simply define multiple sounds with the same name, and use the language code as a suffix.
---- For example: my_sound / my_sound_rus / my_sound_fra.
---- Then call the function localized_sound_object("my_sound").
+--- Function used to get a sound object localized to the game's language (if available) and in the correct gender.
+--- The gender is decided by the parent directory, the language is decided by a suffix.
+--- For example: 
+--- - path\to\male\my_sound | path\to\female\my_sound
+--- - path\to\male\my_sound_rus | path\to\female\my_sound_rus
+--- - path\to\male\my_sound_fra | path\to\female\my_sound_fra
+--- Then call the function localized_and_genderized_sound_object([[path\to]], "my_sound").
 --- The sound file without suffix should be the english (or default) version.
 --- @param path string
+--- @param filename string
 --- @return sound_object
-function localized_sound_object(path)
-    return sound_object(game.translate_string(path))
+function localized_and_genderized_sound_object(path, filename)
+    local gender = nanosuit_mcm.get_config("general", "suit_gender")
+    local locale = ini_sys:r_string_ex("string_table","language")
+    return sound_object(path .. [[\]] .. gender .. [[\]] .. filename .. "_" .. locale)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
