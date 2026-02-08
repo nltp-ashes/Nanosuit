@@ -35,7 +35,7 @@ function armor:__init(core, name) super(core, name)
 end
 
 function armor:apply(play_voice)
-    nanosuit_mode.abstract_mode.apply(self, play_voice)
+    nanosuit_mode.abstract_mode.apply(self, play_voice, "blue")
 
     -- Play sounds
     self.m_sounds.armor_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)

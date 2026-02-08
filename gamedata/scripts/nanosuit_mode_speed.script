@@ -43,7 +43,7 @@ function speed:__init(core, name) super(core, name)
 end
 
 function speed:apply(play_voice)
-    nanosuit_mode.abstract_mode.apply(self, play_voice)
+    nanosuit_mode.abstract_mode.apply(self, play_voice, "yellow")
 
     -- Play sounds
     self.m_sounds.speed_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
