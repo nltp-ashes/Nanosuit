@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 07/02/2026                                                                                            -->
+<!--    Date : 10/02/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Texture description file for the Nanosuit addon's UI textures.                                               -->
@@ -84,8 +84,8 @@
     <file name="nanosuit\ui\hud\tacmap\map_malfunction.dds">
         <texture id="ui_nanosuit_tacmap_map_malfunction"       x="0"       y="0"      width="998"     height="782" />
     </file>
-    <file name="ui\ui_actor_hint_wnd.dds">
-        <texture id="ui_nanosuit_tacmap_object"                x="4"       y="563"    width="23"      height="23" />
+    <file name="nanosuit\ui\hud\tacmap\icons.dds">
+        <texture id="ui_nanosuit_tacmap_object"                x="0"       y="0"      width="64"      height="64" />
     </file>
 
     <!-- Auxiliaries UI -->

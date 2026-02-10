@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 31/08/2025                                                                                             ---
+---    Date : 10/02/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -89,23 +89,26 @@ function ui_tacmap:update_icons()
             if not self.m_tracked_objects[obj:id()] then
                 self:attach_icon(obj:id())
             end
-            self:update_icon(obj:id(), obj:position())
+            self:update_icon(obj:id(), obj:position(), obj:direction())
         end
     end)
 
     -- Update tracked objects or destroy untracked ones
     for obj_id,data in pairs(self.m_tracked_objects) do
-        local pos_tacmap = self:world_to_tacmap(data.pos)
+        local pos_tacmap = self:pos_world_to_tacmap(data.pos)
+        local dir_tacmap = self:dir_world_to_tacmap(data.dir)
         if self:is_enabled() and data.refreshed and self:is_within_bounds(pos_tacmap) then
             arm.move_and_center_element(data.static, pos_tacmap.x, pos_tacmap.y)
+            data.static:SetHeading(dir_tacmap)
         else
             self:detach_icon(obj_id)
         end
     end
 end
 
-function ui_tacmap:update_icon(obj_id, pos)
+function ui_tacmap:update_icon(obj_id, pos, dir)
     self.m_tracked_objects[obj_id].pos = pos
+    self.m_tracked_objects[obj_id].dir = dir
     self.m_tracked_objects[obj_id].refreshed = true
 end
 
@@ -121,7 +124,7 @@ function ui_tacmap:detach_icon(obj_id)
     self.m_tracked_objects[obj_id] = nil
 end
 
-function ui_tacmap:world_to_tacmap(pos)
+function ui_tacmap:pos_world_to_tacmap(pos)
     -- Translate distance from world space to tacmap space
     local distance_world = distance_2d(db.actor:position(), pos)
     local distance_tacmap = distance_world * self.m_scale
@@ -136,6 +139,28 @@ function ui_tacmap:world_to_tacmap(pos)
     local wnd_pos = self.m_ui_map:GetWndPos()
 
     return vector2():set(x - wnd_pos.x, y - wnd_pos.y)
+end
+
+function ui_tacmap:dir_world_to_tacmap(dir)
+    -- Get device for camera info
+    local dev = device()
+    local player_dir = dev.cam_dir
+
+    -- Project both directions onto XZ plane
+    local player_dir_xz = vector():set(player_dir.x, 0, player_dir.z):normalize()
+    local obj_dir_xz = vector():set(dir.x, 0, dir.z):normalize()
+
+    -- Compute angle between object direction and player camera direction
+    local dot_product = player_dir_xz:dotproduct(obj_dir_xz)
+    local angle = math.acos(clamp(dot_product, -1, 1))
+
+    -- Determine sign using cross product (invert sign logic for HUD convention)
+    local cross_product = player_dir_xz.x * obj_dir_xz.z - player_dir_xz.z * obj_dir_xz.x
+    if cross_product < 0 then
+        angle = -angle
+    end
+
+    return angle
 end
 
 function ui_tacmap:get_heading(pos)
