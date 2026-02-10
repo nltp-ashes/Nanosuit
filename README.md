@@ -159,6 +159,8 @@ Here is a list of planned features for the addon :
 - Finish the tactical map UI (and add range);
 - Finish the binoculars UI
 - Add custom indicators to replace BHS UI;
+- Vaporize (or at least penalize) the player if they decide to become free stalker at the end of UNISG storyline;
+- Muffle sounds during cloak mode;
 
 **A note on BHS :** Given the tentacular nature of BHS and its suite of addons, and how terrible its code is, I will not further improve the compatibility patch for it. I am open to take contributions if someone comes up with a better patch than mine, given mine is essentially just removing BHS's UI if it exists.
 
@@ -248,4 +250,4 @@ Content made by Catspaw is provided under the following terms :
 Redistribution is allowed, as long as Catspaw is credited, and altered copies of the script are not redistributed using the same filename, to avoid conflicts.
 ```
 
-For the work that wasn't made by me, unless a licence is specified in the [Credits](#special-thanks--credits) or in the files themselves, consider these works proprietary. If you want to reuse those, please get in touch with their original authors.
+For the work that wasn't made by me, unless a license is specified in the [Credits](#special-thanks--credits) or in the files themselves, consider these works proprietary. If you want to reuse those, please get in touch with their original authors.
