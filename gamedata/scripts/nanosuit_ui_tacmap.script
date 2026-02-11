@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 10/02/2026                                                                                             ---
+---    Date : 12/02/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -32,6 +32,12 @@ function ui_tacmap:__init(parent) super()
         [5] = vector2():set(65, 725),
         [6] = vector2():set(65, 697),
         [7] = vector2():set(50, 685),
+    }
+    self.m_default_color = GetARGB(255, 255, 255, 255)
+    self.m_color_per_relation = {
+        [game_object.enemy] = GetARGB(255, 255, 0, 0),
+        [game_object.neutral] = GetARGB(255, 255, 255, 0),
+        [game_object.friend] = GetARGB(255, 0, 255, 0)
     }
     self.m_range = 50
     self.m_scale = self:get_scale(self.m_range, self.m_player, self.m_tacmap_bounds)
@@ -89,7 +95,7 @@ function ui_tacmap:update_icons()
             if not self.m_tracked_objects[obj:id()] then
                 self:attach_icon(obj:id())
             end
-            self:update_icon(obj:id(), obj:position(), obj:direction())
+            self:update_icon_data(obj:id(), obj)
         end
     end)
 
@@ -98,30 +104,35 @@ function ui_tacmap:update_icons()
         local pos_tacmap = self:pos_world_to_tacmap(data.pos)
         local dir_tacmap = self:dir_world_to_tacmap(data.dir)
         if self:is_enabled() and data.refreshed and self:is_within_bounds(pos_tacmap) then
-            arm.move_and_center_element(data.static, pos_tacmap.x, pos_tacmap.y)
-            data.static:SetHeading(dir_tacmap)
+            self:update_icon(obj_id, data, pos_tacmap, dir_tacmap)
         else
             self:detach_icon(obj_id)
         end
     end
 end
 
-function ui_tacmap:update_icon(obj_id, pos, dir)
-    self.m_tracked_objects[obj_id].pos = pos
-    self.m_tracked_objects[obj_id].dir = dir
-    self.m_tracked_objects[obj_id].refreshed = true
+function ui_tacmap:attach_icon(id)
+    self.m_tracked_objects[id] = {}
+    self.m_tracked_objects[id].static = self.m_xml:InitStatic("object_icon", self.m_ui_map)
+    self.m_tracked_objects[id].static:SetAutoDelete(true)
+    arm.scale_ui(self.m_tracked_objects[id].static, true, true, "center")
 end
 
-function ui_tacmap:attach_icon(obj_id)
-    self.m_tracked_objects[obj_id] = {}
-    self.m_tracked_objects[obj_id].static = self.m_xml:InitStatic("object_icon", self.m_ui_map)
-    self.m_tracked_objects[obj_id].static:SetAutoDelete(true)
-    arm.scale_ui(self.m_tracked_objects[obj_id].static, true, true, "center")
+function ui_tacmap:detach_icon(id)
+    self.m_ui_map:DetachChild(self.m_tracked_objects[id].static)
+    self.m_tracked_objects[id] = nil
 end
 
-function ui_tacmap:detach_icon(obj_id)
-    self.m_ui_map:DetachChild(self.m_tracked_objects[obj_id].static)
-    self.m_tracked_objects[obj_id] = nil
+function ui_tacmap:update_icon_data(id, obj)
+    self.m_tracked_objects[id].pos = obj:position()
+    self.m_tracked_objects[id].dir = obj:direction()
+    self.m_tracked_objects[id].static:SetTextureColor(self:get_icon_color(obj))
+    self.m_tracked_objects[id].refreshed = true
+end
+
+function ui_tacmap:update_icon(id, data, pos, dir)
+    arm.move_and_center_element(data.static, pos.x, pos.y)
+    data.static:SetHeading(dir)
 end
 
 function ui_tacmap:pos_world_to_tacmap(pos)
@@ -203,6 +214,15 @@ function ui_tacmap:get_scale(range, center, bounds)
     end
 
     return furthest_distance / range
+end
+
+function ui_tacmap:get_icon_color(obj)
+    local relation = IsStalker(obj) and obj:relation(db.actor)
+    if relation then
+        return self.m_color_per_relation[relation]
+    else
+        return self.m_default_color
+    end
 end
 
 function ui_tacmap:is_within_bounds(pos)
