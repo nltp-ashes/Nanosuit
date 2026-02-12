@@ -86,7 +86,7 @@ end
 function ui_tacmap:update_icons()
     -- Iterate over all objects in proximity and refresh/track them
     level.iterate_nearest(db.actor:position(), self.m_range, function(obj)
-        if (obj and (IsStalker(obj) or IsMonster(obj)) and obj:id() ~= AC_ID and obj:alive()) then
+        if (obj and (IsStalker(obj) or IsMonster(obj)) and obj:id() ~= AC_ID) then
             if not self.m_tracked_objects[obj:id()] then
                 self:attach_icon(obj:id())
             end
@@ -110,7 +110,6 @@ function ui_tacmap:attach_icon(id)
     self.m_tracked_objects[id] = {}
     self.m_tracked_objects[id].static = self.m_xml:InitStatic("object_icon", self.m_ui_map)
     self.m_tracked_objects[id].static:SetAutoDelete(true)
-    arm.scale_ui(self.m_tracked_objects[id].static, true, true, "center")
 end
 
 function ui_tacmap:detach_icon(id)
@@ -121,13 +120,15 @@ end
 function ui_tacmap:update_icon_data(id, obj)
     self.m_tracked_objects[id].pos = obj:position()
     self.m_tracked_objects[id].dir = obj:direction()
+    self.m_tracked_objects[id].rotate = obj:alive()
+    self.m_tracked_objects[id].static:InitTexture(self:get_icon_texture(obj))
     self.m_tracked_objects[id].static:SetTextureColor(self:get_icon_color(obj))
     self.m_tracked_objects[id].refreshed = true
 end
 
 function ui_tacmap:update_icon(id, pos, dir)
     arm.move_and_center_element(self.m_tracked_objects[id].static, pos.x, pos.y)
-    self.m_tracked_objects[id].static:SetHeading(dir)
+    self.m_tracked_objects[id].static:SetHeading(self.m_tracked_objects[id].rotate and dir or 0)
     self.m_tracked_objects[id].refreshed = false
 end
 
@@ -212,8 +213,15 @@ function ui_tacmap:get_scale(range, center, bounds)
     return furthest_distance / range
 end
 
+function ui_tacmap:get_icon_texture(obj)
+    if not obj:alive() then
+        return "ui_nanosuit_tacmap_body"
+    end
+    return "ui_nanosuit_tacmap_object"
+end
+
 function ui_tacmap:get_icon_color(obj)
-    local relation = IsStalker(obj) and obj:relation(db.actor)
+    local relation = IsStalker(obj) and obj:alive() and obj:relation(db.actor)
     if relation then
         return self.m_color_per_relation[relation]
     else
