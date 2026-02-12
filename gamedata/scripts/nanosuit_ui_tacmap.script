@@ -86,7 +86,7 @@ end
 function ui_tacmap:update_icons()
     -- Iterate over all objects in proximity and refresh/track them
     level.iterate_nearest(db.actor:position(), self.m_range, function(obj)
-        if (obj and (IsStalker(obj) or IsMonster(obj)) and obj:id() ~= AC_ID) then
+        if (obj and (IsStalker(obj) or IsMonster(obj) or IsCar(obj)) and obj:id() ~= AC_ID) then
             if not self.m_tracked_objects[obj:id()] then
                 self:attach_icon(obj:id())
             end
@@ -120,9 +120,10 @@ end
 function ui_tacmap:update_icon_data(id, obj)
     self.m_tracked_objects[id].pos = obj:position()
     self.m_tracked_objects[id].dir = obj:direction()
-    self.m_tracked_objects[id].rotate = obj:alive()
+    self.m_tracked_objects[id].rotate = self:should_rotate_icon(obj)
     self.m_tracked_objects[id].static:InitTexture(self:get_icon_texture(obj))
     self.m_tracked_objects[id].static:SetTextureColor(self:get_icon_color(obj))
+    self.m_tracked_objects[id].static:SetWndSize(self:get_icon_size(obj))
     self.m_tracked_objects[id].refreshed = true
 end
 
@@ -214,7 +215,10 @@ function ui_tacmap:get_scale(range, center, bounds)
 end
 
 function ui_tacmap:get_icon_texture(obj)
-    if not obj:alive() then
+    if IsCar(obj) then
+        return "ui_nanosuit_tacmap_vehicle"
+    end
+    if (IsStalker(obj) or IsMonster(obj)) and not obj:alive() then
         return "ui_nanosuit_tacmap_body"
     end
     return "ui_nanosuit_tacmap_object"
@@ -227,6 +231,23 @@ function ui_tacmap:get_icon_color(obj)
     else
         return self.m_default_color
     end
+end
+
+function ui_tacmap:get_icon_size(obj)
+    if IsCar(obj) then
+        return vector2():set(15 , 15)
+    end
+    return vector2():set(10 , 10)
+end
+
+function ui_tacmap:should_rotate_icon(obj)
+    if IsCar(obj) then
+        return true
+    end
+    if (IsStalker(obj) or IsMonster(obj)) and obj:alive() then
+        return true
+    end
+    return false
 end
 
 function ui_tacmap:is_within_bounds(pos)
