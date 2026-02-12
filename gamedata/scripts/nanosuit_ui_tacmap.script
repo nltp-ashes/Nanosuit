@@ -35,9 +35,9 @@ function ui_tacmap:__init(parent) super()
     }
     self.m_default_color = GetARGB(255, 255, 255, 255)
     self.m_color_per_relation = {
-        [game_object.enemy] = GetARGB(255, 255, 0, 0),
+        [game_object.friend] = GetARGB(255, 0, 255, 0),
         [game_object.neutral] = GetARGB(255, 255, 255, 0),
-        [game_object.friend] = GetARGB(255, 0, 255, 0)
+        [game_object.enemy] = GetARGB(255, 255, 0, 0)
     }
     self.m_range = 50
     self.m_scale = self:get_scale(self.m_range, self.m_player, self.m_tacmap_bounds)
@@ -84,11 +84,6 @@ function ui_tacmap:Update(force)
 end
 
 function ui_tacmap:update_icons()
-    -- Mark all as not refreshed
-    for _,data in pairs(self.m_tracked_objects) do
-        data.refreshed = false
-    end
-
     -- Iterate over all objects in proximity and refresh/track them
     level.iterate_nearest(db.actor:position(), self.m_range, function(obj)
         if (obj and (IsStalker(obj) or IsMonster(obj)) and obj:id() ~= AC_ID and obj:alive()) then
@@ -104,7 +99,7 @@ function ui_tacmap:update_icons()
         local pos_tacmap = self:pos_world_to_tacmap(data.pos)
         local dir_tacmap = self:dir_world_to_tacmap(data.dir)
         if self:is_enabled() and data.refreshed and self:is_within_bounds(pos_tacmap) then
-            self:update_icon(obj_id, data, pos_tacmap, dir_tacmap)
+            self:update_icon(obj_id, pos_tacmap, dir_tacmap)
         else
             self:detach_icon(obj_id)
         end
@@ -130,9 +125,10 @@ function ui_tacmap:update_icon_data(id, obj)
     self.m_tracked_objects[id].refreshed = true
 end
 
-function ui_tacmap:update_icon(id, data, pos, dir)
-    arm.move_and_center_element(data.static, pos.x, pos.y)
-    data.static:SetHeading(dir)
+function ui_tacmap:update_icon(id, pos, dir)
+    arm.move_and_center_element(self.m_tracked_objects[id].static, pos.x, pos.y)
+    self.m_tracked_objects[id].static:SetHeading(dir)
+    self.m_tracked_objects[id].refreshed = false
 end
 
 function ui_tacmap:pos_world_to_tacmap(pos)
