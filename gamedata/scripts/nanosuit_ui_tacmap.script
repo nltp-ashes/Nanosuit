@@ -34,6 +34,8 @@ function ui_tacmap:__init(parent) super()
         [7] = vector2():set(50, 685),
     }
     self.m_default_color = GetARGB(255, 255, 255, 255)
+    self.m_primary_task_color = GetARGB(255, 0, 255, 0)
+    self.m_secondary_task_color = GetARGB(255, 255, 255, 0)
     self.m_color_per_relation = {
         [game_object.friend] = GetARGB(255, 0, 255, 0),
         [game_object.neutral] = GetARGB(255, 255, 255, 0),
@@ -42,6 +44,7 @@ function ui_tacmap:__init(parent) super()
     self.m_range = 50
     self.m_scale = self:get_scale(self.m_range, self.m_player, self.m_tacmap_bounds)
     self.m_tracked_objects = {}
+    self.m_task_arrows = {}
 
     -- Build UI
     self.m_xml = CScriptXmlInit()
@@ -81,12 +84,21 @@ function ui_tacmap:Update(force)
     end
 
     self:update_icons()
+    self:update_task_arrows()
 end
 
 function ui_tacmap:update_icons()
+    if not self:is_enabled() then
+        for obj_id, data in pairs(self.m_tracked_objects) do
+            self:detach_icon(obj_id)
+        end
+        return
+    end
+
     -- Iterate over all objects in proximity and refresh/track them
     level.iterate_nearest(db.actor:position(), self.m_range, function(obj)
-        if (obj and (IsStalker(obj) or IsMonster(obj) or IsCar(obj)) and obj:id() ~= AC_ID) then
+        local hud_pos = self:pos_world_to_tacmap(obj:position())
+        if (IsStalker(obj) or IsMonster(obj) or IsCar(obj)) and obj:id() ~= AC_ID and self:is_within_bounds(hud_pos) then
             if not self.m_tracked_objects[obj:id()] then
                 self:attach_icon(obj:id())
             end
@@ -95,13 +107,68 @@ function ui_tacmap:update_icons()
     end)
 
     -- Update tracked objects or destroy untracked ones
-    for obj_id,data in pairs(self.m_tracked_objects) do
-        if self:is_enabled() and data.refreshed and self:is_within_bounds(data.hud_pos) then
+    for obj_id, data in pairs(self.m_tracked_objects) do
+        if data.refreshed then
             data.refreshed = false
         else
             self:detach_icon(obj_id)
         end
     end
+end
+
+function ui_tacmap:update_task_arrows()
+    if not self:is_enabled() then
+        for obj_id, data in pairs(self.m_task_arrows) do
+            self:detach_task_arrow(obj_id)
+        end
+        return
+    end
+
+    -- Iterate over all task targets and refresh/track them
+    local task_targets = nanosuit_utils.get_all_task_targets()
+    for obj_id, obj in pairs(task_targets) do
+        local hud_pos = self:pos_world_to_tacmap(obj:position())
+        if (IsStalker(obj) or IsMonster(obj) or IsCar(obj)) and obj:id() ~= AC_ID and not self:is_within_bounds(hud_pos) then
+            if not self.m_task_arrows[obj_id] then
+                self:attach_task_arrow(obj_id)
+            end
+            self:update_task_arrow(obj_id, obj, hud_pos)
+        end
+    end
+
+    -- Remove arrows for objects no longer task targets
+    for obj_id, data in pairs(self.m_task_arrows) do
+        if data.refreshed then
+            data.refreshed = false
+        else
+            self:detach_task_arrow(obj_id)
+        end
+    end
+end
+
+function ui_tacmap:attach_task_arrow(id)
+    self.m_task_arrows[id] = {}
+    self.m_task_arrows[id].arrow_static = self.m_xml:InitStatic("icon", self.m_ui_map)
+    self.m_task_arrows[id].arrow_static:InitTexture("ui_nanosuit_tacmap_task_arrow")
+    self.m_task_arrows[id].arrow_static:SetTextureColor(nanosuit_utils.is_task_target(id, "primary") and self.m_primary_task_color or self.m_secondary_task_color)
+    self.m_task_arrows[id].arrow_static:SetAutoDelete(true)
+end
+
+function ui_tacmap:detach_task_arrow(id)
+    self.m_ui_map:DetachChild(self.m_task_arrows[id].arrow_static)
+    self.m_task_arrows[id] = nil
+end
+
+function ui_tacmap:update_task_arrow(id, obj, hud_pos)
+    -- Update arrow position and rotation
+    local edge_pos, angle = self:get_bounds_intersection(hud_pos)
+    if edge_pos and angle then
+        arm.move_and_center_element(self.m_task_arrows[id].arrow_static, edge_pos.x, edge_pos.y)
+        self.m_task_arrows[id].arrow_static:SetHeading(angle)
+    end
+
+    -- Mark as refreshed
+    self.m_task_arrows[id].refreshed = true
 end
 
 function ui_tacmap:attach_icon(id)
@@ -113,15 +180,15 @@ function ui_tacmap:attach_icon(id)
 
     -- Primary task icon
     self.m_tracked_objects[id].primary_task_static = self.m_xml:InitStatic("icon", self.m_ui_map)
-    self.m_tracked_objects[id].primary_task_static:InitTexture("ui_nanosuit_tacmap_task")
-    self.m_tracked_objects[id].primary_task_static:SetTextureColor(GetARGB(255, 0, 255, 0))
+    self.m_tracked_objects[id].primary_task_static:InitTexture("ui_nanosuit_tacmap_task_point")
+    self.m_tracked_objects[id].primary_task_static:SetTextureColor(self.m_primary_task_color)
     self.m_tracked_objects[id].primary_task_static:Show(false)
     self.m_tracked_objects[id].primary_task_static:SetAutoDelete(true)
 
     -- Secondary task icon
     self.m_tracked_objects[id].secondary_task_static = self.m_xml:InitStatic("icon", self.m_ui_map)
-    self.m_tracked_objects[id].secondary_task_static:InitTexture("ui_nanosuit_tacmap_task")
-    self.m_tracked_objects[id].secondary_task_static:SetTextureColor(GetARGB(255, 255, 255, 0))
+    self.m_tracked_objects[id].secondary_task_static:InitTexture("ui_nanosuit_tacmap_task_point")
+    self.m_tracked_objects[id].secondary_task_static:SetTextureColor(self.m_secondary_task_color)
     self.m_tracked_objects[id].secondary_task_static:Show(false)
     self.m_tracked_objects[id].secondary_task_static:SetAutoDelete(true)
 end
@@ -262,9 +329,9 @@ end
 
 function ui_tacmap:get_icon_size(obj)
     if IsCar(obj) then
-        return vector2():set(15 , 15)
+        return vector2():set(15, 15)
     end
-    return vector2():set(10 , 10)
+    return vector2():set(10, 10)
 end
 
 function ui_tacmap:should_rotate_icon(obj)
@@ -275,6 +342,40 @@ function ui_tacmap:should_rotate_icon(obj)
         return true
     end
     return false
+end
+
+function ui_tacmap:get_bounds_intersection(hud_pos)
+    local center = self.m_player
+    local bounds = self.m_tacmap_bounds
+    local wnd_pos = self.m_ui_map:GetWndPos()
+    local cx, cy = center.x - wnd_pos.x, center.y - wnd_pos.y
+    local tx, ty = hud_pos.x, hud_pos.y
+    local dx, dy = cx - tx, cy - ty
+    local min_dist, ix, iy, angle = nil, nil, nil, nil
+    for i = 1, #bounds do
+        local j = (i % #bounds) + 1
+        local x1, y1 = bounds[i].x - wnd_pos.x, bounds[i].y - wnd_pos.y
+        local x2, y2 = bounds[j].x - wnd_pos.x, bounds[j].y - wnd_pos.y
+        local denom = (x2 - x1) * dy - (y2 - y1) * dx
+        if math.abs(denom) > 1e-6 then
+            local t = ((cx - x1) * dy - (cy - y1) * dx) / denom
+            local u = ((x1 - cx) * (y2 - y1) - (y1 - cy) * (x2 - x1)) / denom
+            if t >= 0 and t <= 1 and u > 0 then
+                local px = x1 + t * (x2 - x1)
+                local py = y1 + t * (y2 - y1)
+                local dist = (px - cx) ^ 2 + (py - cy) ^ 2
+                if not min_dist or dist < min_dist then
+                    min_dist = dist
+                    ix, iy = px, py
+                    angle = math.atan2(ty - cy, tx - cx) - math.pi / 2
+                end
+            end
+        end
+    end
+    if ix and iy and angle then
+        return vector2():set(ix, iy), -angle
+    end
+    return nil, nil
 end
 
 function ui_tacmap:is_within_bounds(pos)

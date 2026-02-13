@@ -255,6 +255,18 @@ function is_task_target(id, type)
     return false
 end
 
+function get_all_task_targets()
+    local targets = {}
+    local tm = task_manager.get_task_manager()
+    for tsk_id,tsk in pairs(tm.task_info) do
+        local target_obj = tsk.current_target and level.object_by_id(tsk.current_target)
+        if target_obj then
+            targets[target_obj:id()] = target_obj
+        end
+    end
+    return targets
+end
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Other functions
 -- ---------------------------------------------------------------------------------------------------------------------
