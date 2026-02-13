@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/02/2026                                                                                             ---
+---    Date : 13/02/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -29,7 +29,7 @@ actor_status_types_enum = { indicator = "state", booster = "booster" }
 energy_drain_enum       = { nightvision = "nightvision", nanovision = "nanovision", sprint = "sprint", cloak = "cloak" }
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Debug Functions
+-- Debug functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
 --- Function used to print information into the console/log file only when Nanosuit' debug mode is enabled.
@@ -234,6 +234,25 @@ function get_renderer()
     }
 
     return renderers[get_console_cmd(0, "renderer")]
+end
+
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Task functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to determine if a given object ID is the current target of a primary and active task.
+--- @param id number
+--- @return boolean
+function is_task_target(id, type)
+    local tm = task_manager.get_task_manager()
+    for tsk_id,tsk in pairs(tm.task_info) do
+        local correct_type = type == "any" or (type == "primary" and tsk.storyline) or (type == "secondary" and not tsk.storyline)
+        if correct_type and tsk.current_target == id and db.actor:get_task(tsk_id, true) ~= nil then
+            return true
+        end
+    end
+    return false
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------

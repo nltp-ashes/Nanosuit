@@ -90,57 +90,74 @@ function ui_tacmap:update_icons()
             if not self.m_tracked_objects[obj:id()] then
                 self:attach_icon(obj:id())
             end
-            self:update_icon_data(obj:id(), obj)
+            self:update_icon(obj:id(), obj)
         end
     end)
 
     -- Update tracked objects or destroy untracked ones
     for obj_id,data in pairs(self.m_tracked_objects) do
-        local pos_tacmap = self:pos_world_to_tacmap(data.pos)
-        local dir_tacmap = self:dir_world_to_tacmap(data.dir)
-        if self:is_enabled() and data.refreshed and self:is_within_bounds(pos_tacmap) then
-            self:update_icon(obj_id, pos_tacmap, dir_tacmap)
+        if self:is_enabled() and data.refreshed and self:is_within_bounds(data.hud_pos) then
+            data.refreshed = false
         else
             self:detach_icon(obj_id)
         end
     end
 end
 
-function is_task_target(id)
-    local tm = task_manager.get_task_manager()
-    for tsk_id,tsk in pairs(tm.task_info) do
-        if tsk.current_target == id then
-            return true
-        end
-    end
-    return false
-end
-
 function ui_tacmap:attach_icon(id)
     self.m_tracked_objects[id] = {}
-    self.m_tracked_objects[id].static = self.m_xml:InitStatic("icon", self.m_ui_map)
-    self.m_tracked_objects[id].static:SetAutoDelete(true)
+
+    -- Main object icon
+    self.m_tracked_objects[id].icon_static = self.m_xml:InitStatic("icon", self.m_ui_map)
+    self.m_tracked_objects[id].icon_static:SetAutoDelete(true)
+
+    -- Primary task icon
+    self.m_tracked_objects[id].primary_task_static = self.m_xml:InitStatic("icon", self.m_ui_map)
+    self.m_tracked_objects[id].primary_task_static:InitTexture("ui_nanosuit_tacmap_task")
+    self.m_tracked_objects[id].primary_task_static:SetTextureColor(GetARGB(255, 0, 255, 0))
+    self.m_tracked_objects[id].primary_task_static:Show(false)
+    self.m_tracked_objects[id].primary_task_static:SetAutoDelete(true)
+
+    -- Secondary task icon
+    self.m_tracked_objects[id].secondary_task_static = self.m_xml:InitStatic("icon", self.m_ui_map)
+    self.m_tracked_objects[id].secondary_task_static:InitTexture("ui_nanosuit_tacmap_task")
+    self.m_tracked_objects[id].secondary_task_static:SetTextureColor(GetARGB(255, 255, 255, 0))
+    self.m_tracked_objects[id].secondary_task_static:Show(false)
+    self.m_tracked_objects[id].secondary_task_static:SetAutoDelete(true)
 end
 
 function ui_tacmap:detach_icon(id)
-    self.m_ui_map:DetachChild(self.m_tracked_objects[id].static)
+    -- Detach child statics
+    self.m_ui_map:DetachChild(self.m_tracked_objects[id].icon_static)
+    self.m_ui_map:DetachChild(self.m_tracked_objects[id].primary_task_static)
+    self.m_ui_map:DetachChild(self.m_tracked_objects[id].secondary_task_static)
+
+    -- Clear object from registry
     self.m_tracked_objects[id] = nil
 end
 
-function ui_tacmap:update_icon_data(id, obj)
-    self.m_tracked_objects[id].pos = obj:position()
-    self.m_tracked_objects[id].dir = obj:direction()
-    self.m_tracked_objects[id].rotate = self:should_rotate_icon(obj)
-    self.m_tracked_objects[id].static:InitTexture(self:get_icon_texture(obj))
-    self.m_tracked_objects[id].static:SetTextureColor(self:get_icon_color(obj))
-    self.m_tracked_objects[id].static:SetWndSize(self:get_icon_size(obj))
-    self.m_tracked_objects[id].refreshed = true
-end
+function ui_tacmap:update_icon(id, obj)
+    -- Update coordinates
+    self.m_tracked_objects[id].world_pos = obj:position()
+    self.m_tracked_objects[id].world_dir = obj:direction()
+    self.m_tracked_objects[id].hud_pos = self:pos_world_to_tacmap(obj:position())
+    self.m_tracked_objects[id].hud_dir = self:dir_world_to_tacmap(obj:direction())
 
-function ui_tacmap:update_icon(id, pos, dir)
-    arm.move_and_center_element(self.m_tracked_objects[id].static, pos.x, pos.y)
-    self.m_tracked_objects[id].static:SetHeading(self.m_tracked_objects[id].rotate and dir or 0)
-    self.m_tracked_objects[id].refreshed = false
+    -- Update statics
+    self.m_tracked_objects[id].icon_static:SetHeading(self:should_rotate_icon(obj) and self.m_tracked_objects[id].hud_dir or 0)
+    self.m_tracked_objects[id].icon_static:InitTexture(self:get_icon_texture(obj))
+    self.m_tracked_objects[id].icon_static:SetTextureColor(self:get_icon_color(obj))
+    self.m_tracked_objects[id].icon_static:SetWndSize(self:get_icon_size(obj))
+    self.m_tracked_objects[id].primary_task_static:Show(nanosuit_utils.is_task_target(obj:id(), "primary"))
+    self.m_tracked_objects[id].secondary_task_static:Show(nanosuit_utils.is_task_target(obj:id(), "secondary"))
+
+    -- Center statics on coordinates
+    arm.move_and_center_element(self.m_tracked_objects[id].icon_static, self.m_tracked_objects[id].hud_pos.x, self.m_tracked_objects[id].hud_pos.y)
+    arm.move_and_center_element(self.m_tracked_objects[id].primary_task_static, self.m_tracked_objects[id].hud_pos.x, self.m_tracked_objects[id].hud_pos.y)
+    arm.move_and_center_element(self.m_tracked_objects[id].secondary_task_static, self.m_tracked_objects[id].hud_pos.x, self.m_tracked_objects[id].hud_pos.y)
+
+    -- Mark as refreshed
+    self.m_tracked_objects[id].refreshed = true
 end
 
 function ui_tacmap:pos_world_to_tacmap(pos)
@@ -225,9 +242,6 @@ function ui_tacmap:get_scale(range, center, bounds)
 end
 
 function ui_tacmap:get_icon_texture(obj)
-    if is_task_target(obj:id()) then
-        return "ui_nanosuit_tacmap_task_in"
-    end
     if IsCar(obj) then
         return "ui_nanosuit_tacmap_vehicle"
     end
@@ -254,9 +268,6 @@ function ui_tacmap:get_icon_size(obj)
 end
 
 function ui_tacmap:should_rotate_icon(obj)
-    if is_task_target(obj:id()) then
-        return false
-    end
     if IsCar(obj) then
         return true
     end

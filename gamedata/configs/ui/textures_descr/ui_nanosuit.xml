@@ -88,8 +88,7 @@
         <texture id="ui_nanosuit_tacmap_object"                x="0"       y="0"      width="64"      height="64" />
         <texture id="ui_nanosuit_tacmap_body"                  x="64"      y="0"      width="64"      height="64" />
         <texture id="ui_nanosuit_tacmap_vehicle"               x="128"     y="0"      width="64"      height="64" />
-        <texture id="ui_nanosuit_tacmap_task_in"               x="0"       y="64"     width="64"      height="64" />
-        <texture id="ui_nanosuit_tacmap_task_out"              x="64"      y="64"     width="64"      height="64" />
+        <texture id="ui_nanosuit_tacmap_task"                  x="192"     y="0"     width="64"      height="64" />
     </file>
 
     <!-- Auxiliaries UI -->
