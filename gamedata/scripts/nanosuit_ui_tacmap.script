@@ -91,7 +91,7 @@ end
 function ui_tacmap:update_map()
     -- Initialize polygon
     local shape = {
-        texture = "ui\\ui_global_map",
+        texture = "map\\map_" .. level.name(),
         shader = "hud\\default",
         color = GetARGB(127, 255, 255, 255),
         poly = {}
@@ -110,25 +110,41 @@ function ui_tacmap:update_map()
         shape.poly[i].pt.y = self.m_tacmap_bounds[i].y * scale.y
     end
 
-    -- Find bounding box
-    local min_x, max_x = shape.poly[1].pt.x, shape.poly[1].pt.x
-    local min_y, max_y = shape.poly[1].pt.y, shape.poly[1].pt.y
-    for i = 1, #self.m_tacmap_bounds do
-        if shape.poly[i].pt.x < min_x then min_x = shape.poly[i].pt.x end
-        if shape.poly[i].pt.x > max_x then max_x = shape.poly[i].pt.x end
-        if shape.poly[i].pt.y < min_y then min_y = shape.poly[i].pt.y end
-        if shape.poly[i].pt.y > max_y then max_y = shape.poly[i].pt.y end
-    end
-    local width = max_x - min_x
-    local height = max_y - min_y
+    -- Get world bounds (renamed for clarity)
+    local world_min, world_max = get_level_bounds(level.name())
+    local world_width = world_max.x - world_min.x
+    local world_height = world_max.y - world_min.y
 
-    -- Compute UVs
+    -- Get player world position
+    local player_world = device().cam_pos
+    -- Get player rotation (north is up)
+    local player_dir = device().cam_dir
+    -- Use negative angle to fix minimap rotation direction
+    local north_angle = math.atan2(player_dir.x, player_dir.z)
+
+    -- Compute UVs: zoom and center on player, rotate according to player direction
     for i = 1, #self.m_tacmap_bounds do
-        shape.poly[i].uv.x = (shape.poly[i].pt.x - min_x) / width
-        shape.poly[i].uv.y = (shape.poly[i].pt.y - min_y) / height
+        -- Flip hud_x to fix mirroring before rotation, then rotate 180°
+        local hud_x = -(shape.poly[i].pt.x - self.m_player.x * scale.x)
+        local hud_y = shape.poly[i].pt.y - self.m_player.y * scale.y
+        -- Invert rotation direction and add 180°
+        local rot_angle = -north_angle + math.pi
+        local rot_x = hud_x * math.cos(rot_angle) - hud_y * math.sin(rot_angle)
+        local rot_y = hud_x * math.sin(rot_angle) + hud_y * math.cos(rot_angle)
+        local world_offset_x = rot_x / self.m_scale
+        local world_offset_y = rot_y / self.m_scale
+        local world_x = player_world.x + world_offset_x
+        local world_y = player_world.z + world_offset_y
+        -- Use original UV calculation
+        shape.poly[i].uv.x = (world_x - world_min.x) / world_width
+        shape.poly[i].uv.y = (world_max.y - world_y) / world_height
     end
 
     get_hud():AddCustomShapeToRender(shape)
+end
+
+function get_level_bounds(level_name)
+    return vector2():set(-600, -600), vector2():set(600, 600)
 end
 
 function ui_tacmap:update_icons()
