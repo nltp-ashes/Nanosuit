@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 13/02/2026                                                                                             ---
+---    Date : 15/02/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -25,13 +25,13 @@ function ui_tacmap:__init(parent) super()
 
     self.m_player = vector2():set(118, 651)
     self.m_tacmap_bounds = {
-        [1] = vector2():set(50, 595),
-        [2] = vector2():set(192, 584),
-        [3] = vector2():set(192, 700),
-        [4] = vector2():set(176, 719),
+        [1] = vector2():set(192, 584),
+        [2] = vector2():set(50, 595),
+        [3] = vector2():set(50, 685),
+        [4] = vector2():set(65, 697),
         [5] = vector2():set(65, 725),
-        [6] = vector2():set(65, 697),
-        [7] = vector2():set(50, 685),
+        [6] = vector2():set(176, 719),
+        [7] = vector2():set(192, 700),
     }
     self.m_default_color = GetARGB(255, 255, 255, 255)
     self.m_primary_task_color = GetARGB(255, 0, 255, 0)
@@ -83,8 +83,52 @@ function ui_tacmap:Update(force)
         self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map_malfunction")
     end
 
+    self:update_map()
     self:update_icons()
     self:update_task_arrows()
+end
+
+function ui_tacmap:update_map()
+    -- Initialize polygon
+    local shape = {
+        texture = "ui\\ui_global_map",
+        shader = "hud\\default",
+        color = GetARGB(127, 255, 255, 255),
+        poly = {}
+    }
+    for i = 1, #self.m_tacmap_bounds do
+        shape.poly[i] = {}
+        shape.poly[i].pt = vector2():set(0, 0)
+        shape.poly[i].uv = vector2():set(0, 0)
+    end
+
+    -- Correct for aspect ratio
+    local scale = vector2():set(device().width / 1024, device().height / 768)
+
+    for i = 1, #self.m_tacmap_bounds do
+        shape.poly[i].pt.x = self.m_tacmap_bounds[i].x * scale.x
+        shape.poly[i].pt.y = self.m_tacmap_bounds[i].y * scale.y
+    end
+
+    -- Find bounding box
+    local min_x, max_x = shape.poly[1].pt.x, shape.poly[1].pt.x
+    local min_y, max_y = shape.poly[1].pt.y, shape.poly[1].pt.y
+    for i = 1, #self.m_tacmap_bounds do
+        if shape.poly[i].pt.x < min_x then min_x = shape.poly[i].pt.x end
+        if shape.poly[i].pt.x > max_x then max_x = shape.poly[i].pt.x end
+        if shape.poly[i].pt.y < min_y then min_y = shape.poly[i].pt.y end
+        if shape.poly[i].pt.y > max_y then max_y = shape.poly[i].pt.y end
+    end
+    local width = max_x - min_x
+    local height = max_y - min_y
+
+    -- Compute UVs
+    for i = 1, #self.m_tacmap_bounds do
+        shape.poly[i].uv.x = (shape.poly[i].pt.x - min_x) / width
+        shape.poly[i].uv.y = (shape.poly[i].pt.y - min_y) / height
+    end
+
+    get_hud():AddCustomShapeToRender(shape)
 end
 
 function ui_tacmap:update_icons()
