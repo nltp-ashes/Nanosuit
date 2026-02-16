@@ -131,8 +131,8 @@ function ui_tacmap:update_map()
         local rot_angle = -north_angle + math.pi
         local rot_x = hud_x * math.cos(rot_angle) - hud_y * math.sin(rot_angle)
         local rot_y = hud_x * math.sin(rot_angle) + hud_y * math.cos(rot_angle)
-        local world_offset_x = rot_x / self.m_scale
-        local world_offset_y = rot_y / self.m_scale
+        local world_offset_x = rot_x / (self.m_scale * scale.x)
+        local world_offset_y = rot_y / (self.m_scale * scale.y)
         local world_x = player_world.x + world_offset_x
         local world_y = player_world.z + world_offset_y
         -- Use original UV calculation
