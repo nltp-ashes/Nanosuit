@@ -89,57 +89,7 @@ function ui_tacmap:Update(force)
 end
 
 function ui_tacmap:update_map()
-    -- Initialize polygon
-    local shape = {
-        texture = "map\\map_" .. level.name(),
-        shader = "hud\\default",
-        color = GetARGB(127, 255, 255, 255),
-        poly = {}
-    }
-    for i = 1, #self.m_tacmap_bounds do
-        shape.poly[i] = {}
-        shape.poly[i].pt = vector2():set(0, 0)
-        shape.poly[i].uv = vector2():set(0, 0)
-    end
-
-    -- Correct for aspect ratio
-    local scale = vector2():set(device().width / 1024, device().height / 768)
-
-    for i = 1, #self.m_tacmap_bounds do
-        shape.poly[i].pt.x = self.m_tacmap_bounds[i].x * scale.x
-        shape.poly[i].pt.y = self.m_tacmap_bounds[i].y * scale.y
-    end
-
-    -- Get world bounds (renamed for clarity)
-    local world_min, world_max = get_level_bounds(level.name())
-    local world_width = world_max.x - world_min.x
-    local world_height = world_max.y - world_min.y
-
-    -- Get player world position
-    local player_world = device().cam_pos
-    -- Get player rotation (north is up)
-    local player_dir = device().cam_dir
-    -- Use negative angle to fix minimap rotation direction
-    local north_angle = math.atan2(player_dir.x, player_dir.z)
-
-    -- Compute UVs: zoom and center on player, rotate according to player direction
-    for i = 1, #self.m_tacmap_bounds do
-        -- Flip hud_x to fix mirroring before rotation, then rotate 180°
-        local hud_x = -(shape.poly[i].pt.x - self.m_player.x * scale.x)
-        local hud_y = shape.poly[i].pt.y - self.m_player.y * scale.y
-        -- Invert rotation direction and add 180°
-        local rot_angle = -north_angle + math.pi
-        local rot_x = hud_x * math.cos(rot_angle) - hud_y * math.sin(rot_angle)
-        local rot_y = hud_x * math.sin(rot_angle) + hud_y * math.cos(rot_angle)
-        local world_offset_x = rot_x / self.m_scale
-        local world_offset_y = rot_y / self.m_scale
-        local world_x = player_world.x + world_offset_x
-        local world_y = player_world.z + world_offset_y
-        -- Use original UV calculation
-        shape.poly[i].uv.x = (world_x - world_min.x) / world_width
-        shape.poly[i].uv.y = (world_max.y - world_y) / world_height
-    end
-
+    local shape = self:get_map_shape()
     get_hud():AddCustomShapeToRender(shape)
 end
 
@@ -287,19 +237,126 @@ function ui_tacmap:update_icon(id, obj)
     self.m_tracked_objects[id].refreshed = true
 end
 
+function ui_tacmap:get_scale(range, center, bounds)
+    local furthest_distance = 0
+    local furthest_point_idx = nil
+
+    for i = 1, #bounds do
+        local distance = nanosuit_utils.vec2_distance_to(center, bounds[i])
+        if distance > furthest_distance then
+            furthest_distance = distance
+            furthest_point_idx = i
+        end
+    end
+
+    return furthest_distance / range
+end
+
+function ui_tacmap:get_icon_texture(obj)
+    if IsCar(obj) then
+        return "ui_nanosuit_tacmap_vehicle"
+    end
+    if (IsStalker(obj) or IsMonster(obj)) and not obj:alive() then
+        return "ui_nanosuit_tacmap_body"
+    end
+    return "ui_nanosuit_tacmap_object"
+end
+
+function ui_tacmap:get_icon_color(obj)
+    local relation = IsStalker(obj) and obj:alive() and obj:relation(db.actor)
+    if relation then
+        return self.m_color_per_relation[relation]
+    else
+        return self.m_default_color
+    end
+end
+
+function ui_tacmap:get_icon_size(obj)
+    if IsCar(obj) then
+        return vector2():set(15, 15)
+    end
+    return vector2():set(10, 10)
+end
+
+function ui_tacmap:should_rotate_icon(obj)
+    if IsCar(obj) then
+        return true
+    end
+    if (IsStalker(obj) or IsMonster(obj)) and obj:alive() then
+        return true
+    end
+    return false
+end
+
+function ui_tacmap:is_enabled()
+    return not self.m_parent.m_core.m_malfunctor.m_enabled and ui_options.get([[video/hud/show_minimap]])
+end
+
+function ui_tacmap:get_map_shape()
+    -- Initialize polygon
+    local shape = {
+        texture = "map\\map_" .. level.name(),
+        shader = "hud\\default",
+        color = GetARGB(127, 255, 255, 255),
+        poly = {}
+    }
+    for i = 1, #self.m_tacmap_bounds do
+        shape.poly[i] = {}
+        shape.poly[i].pt = vector2():set(0, 0)
+        shape.poly[i].uv = vector2():set(0, 0)
+    end
+
+    -- Correct for aspect ratio
+    local scale = vector2():set(device().width / 1024, device().height / 768)
+
+    for i = 1, #self.m_tacmap_bounds do
+        shape.poly[i].pt.x = self.m_tacmap_bounds[i].x * scale.x
+        shape.poly[i].pt.y = self.m_tacmap_bounds[i].y * scale.y
+    end
+
+    -- Get world bounds (renamed for clarity)
+    local world_min, world_max = get_level_bounds(level.name())
+    local world_width = world_max.x - world_min.x
+    local world_height = world_max.y - world_min.y
+
+    -- Get player world position
+    local player_world = device().cam_pos
+    -- Get player rotation (north is up)
+    local player_dir = device().cam_dir
+    -- Use negative angle to fix minimap rotation direction
+    local north_angle = math.atan2(player_dir.x, player_dir.z)
+
+    -- Compute UVs: zoom and center on player, rotate according to player direction
+    for i = 1, #self.m_tacmap_bounds do
+        -- Flip hud_x to fix mirroring before rotation, then rotate 180°
+        local hud_x = -(shape.poly[i].pt.x - self.m_player.x * scale.x)
+        local hud_y = shape.poly[i].pt.y - self.m_player.y * scale.y
+        -- Invert rotation direction and add 180°
+        local rot_angle = -north_angle + math.pi
+        local rot_x = hud_x * math.cos(rot_angle) - hud_y * math.sin(rot_angle)
+        local rot_y = hud_x * math.sin(rot_angle) + hud_y * math.cos(rot_angle)
+        local world_offset_x = rot_x / self.m_scale
+        local world_offset_y = rot_y / self.m_scale
+        local world_x = player_world.x + world_offset_x
+        local world_y = player_world.z + world_offset_y
+        -- Use original UV calculation
+        shape.poly[i].uv.x = (world_x - world_min.x) / world_width
+        shape.poly[i].uv.y = (world_max.y - world_y) / world_height
+    end
+    return shape
+end
+
 function ui_tacmap:pos_world_to_tacmap(pos)
     -- Translate distance from world space to tacmap space
     local distance_world = distance_2d(device().cam_pos, pos)
     local distance_tacmap = distance_world * self.m_scale
 
-    local scale = vector2():set(device().width / 1024, device().height / 768)
-
     -- Get angle from player to target in tacmap space
     local angle = self:get_heading(pos) -- angle in radians
 
     -- Calculate the x and y coordinates on the tacmap relative to self.m_player
-    local x = self.m_player.x + (distance_tacmap / scale.x) * math.sin(angle)
-    local y = self.m_player.y - (distance_tacmap / scale.y) * math.cos(angle)
+    local x = self.m_player.x + distance_tacmap * math.sin(angle)
+    local y = self.m_player.y - distance_tacmap * math.cos(angle)
 
     local wnd_pos = self.m_ui_map:GetWndPos()
 
@@ -352,57 +409,6 @@ function ui_tacmap:get_heading(pos)
     end
 
     return angle
-end
-
-function ui_tacmap:get_scale(range, center, bounds)
-    local furthest_distance = 0
-    local furthest_point_idx = nil
-
-    for i = 1, #bounds do
-        local distance = nanosuit_utils.vec2_distance_to(center, bounds[i])
-        if distance > furthest_distance then
-            furthest_distance = distance
-            furthest_point_idx = i
-        end
-    end
-
-    return furthest_distance / range
-end
-
-function ui_tacmap:get_icon_texture(obj)
-    if IsCar(obj) then
-        return "ui_nanosuit_tacmap_vehicle"
-    end
-    if (IsStalker(obj) or IsMonster(obj)) and not obj:alive() then
-        return "ui_nanosuit_tacmap_body"
-    end
-    return "ui_nanosuit_tacmap_object"
-end
-
-function ui_tacmap:get_icon_color(obj)
-    local relation = IsStalker(obj) and obj:alive() and obj:relation(db.actor)
-    if relation then
-        return self.m_color_per_relation[relation]
-    else
-        return self.m_default_color
-    end
-end
-
-function ui_tacmap:get_icon_size(obj)
-    if IsCar(obj) then
-        return vector2():set(15, 15)
-    end
-    return vector2():set(10, 10)
-end
-
-function ui_tacmap:should_rotate_icon(obj)
-    if IsCar(obj) then
-        return true
-    end
-    if (IsStalker(obj) or IsMonster(obj)) and obj:alive() then
-        return true
-    end
-    return false
 end
 
 function ui_tacmap:get_bounds_intersection(hud_pos)
@@ -463,8 +469,4 @@ function ui_tacmap:is_within_bounds(pos)
     end
 
     return inside
-end
-
-function ui_tacmap:is_enabled()
-    return not self.m_parent.m_core.m_malfunctor.m_enabled and ui_options.get([[video/hud/show_minimap]])
 end
