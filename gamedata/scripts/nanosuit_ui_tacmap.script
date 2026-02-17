@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 15/02/2026                                                                                             ---
+---    Date : 17/02/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -83,9 +83,9 @@ function ui_tacmap:Update(force)
         self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map_malfunction")
     end
 
-    self:update_map()
     self:update_icons()
     self:update_task_arrows()
+    self:update_map()
 end
 
 function ui_tacmap:update_map()
@@ -94,7 +94,7 @@ function ui_tacmap:update_map()
 end
 
 function get_level_bounds(level_name)
-    return vector2():set(-600, -600), vector2():set(600, 600)
+    return vector2():set(-481.497344,-412.284256), vector2():set(379.976288,474.479296)
 end
 
 function ui_tacmap:update_icons()
@@ -105,8 +105,9 @@ function ui_tacmap:update_icons()
         return
     end
 
+    -- FIXME : Try to find something better than self.m_range * 2 to ensure icons are visible after scaling
     -- Iterate over all objects in proximity and refresh/track them
-    level.iterate_nearest(device().cam_pos, self.m_range, function(obj)
+    level.iterate_nearest(device().cam_pos, self.m_range * 2, function(obj)
         local hud_pos = self:pos_world_to_tacmap(obj:position())
         if (IsStalker(obj) or IsMonster(obj) or IsCar(obj)) and obj:id() ~= AC_ID and self:is_within_bounds(hud_pos) then
             if not self.m_tracked_objects[obj:id()] then
@@ -142,7 +143,7 @@ function ui_tacmap:update_task_arrows()
             if not self.m_task_arrows[obj_id] then
                 self:attach_task_arrow(obj_id)
             end
-            self:update_task_arrow(obj_id, obj, hud_pos)
+            self:update_task_arrow(obj_id, obj)
         end
     end
 
@@ -169,8 +170,8 @@ function ui_tacmap:detach_task_arrow(id)
     self.m_task_arrows[id] = nil
 end
 
-function ui_tacmap:update_task_arrow(id, obj, hud_pos)
-    -- Update arrow position and rotation
+function ui_tacmap:update_task_arrow(id, obj)
+    local hud_pos = self:pos_world_to_tacmap(obj:position())
     local edge_pos, angle = self:get_bounds_intersection(hud_pos)
     if edge_pos and angle then
         arm.move_and_center_element(self.m_task_arrows[id].arrow_static, edge_pos.x, edge_pos.y)
@@ -354,9 +355,11 @@ function ui_tacmap:pos_world_to_tacmap(pos)
     -- Get angle from player to target in tacmap space
     local angle = self:get_heading(pos) -- angle in radians
 
+    local scale = vector2():set(device().width / 1024, device().height / 768)
+
     -- Calculate the x and y coordinates on the tacmap relative to self.m_player
-    local x = self.m_player.x + distance_tacmap * math.sin(angle)
-    local y = self.m_player.y - distance_tacmap * math.cos(angle)
+    local x = self.m_player.x + (distance_tacmap / scale.x) * math.sin(angle)
+    local y = self.m_player.y - (distance_tacmap / scale.y) * math.cos(angle)
 
     local wnd_pos = self.m_ui_map:GetWndPos()
 
