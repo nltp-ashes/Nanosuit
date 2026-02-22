@@ -56,7 +56,8 @@ function ui_tacmap:__init(parent) super()
         [game_object.enemy] = GetARGB(255, 255, 0, 0)
     }
     self.m_range = 85
-    self.m_scale = self:get_scale(self.m_range, self.m_player, self.m_tacmap_bounds)
+    self.m_scale = vector2():set(device().width / 1024, device().height / 768)
+    self.m_resolution = self:get_scale(self.m_range, self.m_player, self.m_tacmap_bounds)
     self.m_tracked_objects = {}
     self.m_task_arrows = {}
 
@@ -253,13 +254,12 @@ end
 function ui_tacmap:get_scale(range, center, bounds)
     local furthest_distance = 0
 
-    local scale = vector2():set(device().width / 1024, device().height / 768)
-    local cx = center.x * scale.x
-    local cy = center.y * scale.y
+    local cx = center.x * self.m_scale.x
+    local cy = center.y * self.m_scale.y
 
     for i = 1, #bounds do
-        local px = bounds[i].x * scale.x
-        local py = bounds[i].y * scale.y
+        local px = bounds[i].x * self.m_scale.x
+        local py = bounds[i].y * self.m_scale.y
         local distance = nanosuit_utils.vec2_distance_to(vector2():set(cx, cy), vector2():set(px, py))
 
         if distance > furthest_distance then
@@ -326,12 +326,9 @@ function ui_tacmap:get_map_shape()
         shape.poly[i].uv = vector2():set(0, 0)
     end
 
-    -- Correct for aspect ratio
-    local scale = vector2():set(device().width / 1024, device().height / 768)
-
     for i = 1, #self.m_tacmap_bounds do
-        shape.poly[i].pt.x = self.m_tacmap_bounds[i].x * scale.x
-        shape.poly[i].pt.y = self.m_tacmap_bounds[i].y * scale.y
+        shape.poly[i].pt.x = self.m_tacmap_bounds[i].x * self.m_scale.x
+        shape.poly[i].pt.y = self.m_tacmap_bounds[i].y * self.m_scale.y
     end
 
     -- Get world bounds (renamed for clarity)
@@ -349,14 +346,14 @@ function ui_tacmap:get_map_shape()
     -- Compute UVs: zoom and center on player, rotate according to player direction
     for i = 1, #self.m_tacmap_bounds do
         -- Flip hud_x to fix mirroring before rotation, then rotate 180°
-        local hud_x = -(shape.poly[i].pt.x - self.m_player.x * scale.x)
-        local hud_y = shape.poly[i].pt.y - self.m_player.y * scale.y
+        local hud_x = -(shape.poly[i].pt.x - self.m_player.x * self.m_scale.x)
+        local hud_y = shape.poly[i].pt.y - self.m_player.y * self.m_scale.y
         -- Invert rotation direction and add 180°
         local rot_angle = -north_angle + math.pi
         local rot_x = hud_x * math.cos(rot_angle) - hud_y * math.sin(rot_angle)
         local rot_y = hud_x * math.sin(rot_angle) + hud_y * math.cos(rot_angle)
-        local world_offset_x = rot_x / self.m_scale
-        local world_offset_y = rot_y / self.m_scale
+        local world_offset_x = rot_x / self.m_resolution
+        local world_offset_y = rot_y / self.m_resolution
         local world_x = player_world.x + world_offset_x
         local world_y = player_world.z + world_offset_y
         -- Use original UV calculation
@@ -369,16 +366,14 @@ end
 function ui_tacmap:pos_world_to_tacmap(pos)
     -- Translate distance from world space to tacmap space
     local distance_world = distance_2d(device().cam_pos, pos)
-    local distance_tacmap = distance_world * self.m_scale
+    local distance_tacmap = distance_world * self.m_resolution
 
     -- Get angle from player to target in tacmap space
     local angle = self:get_heading(pos) -- angle in radians
 
-    local scale = vector2():set(device().width / 1024, device().height / 768)
-
     -- Calculate the x and y coordinates on the tacmap relative to self.m_player
-    local x = self.m_player.x + (distance_tacmap / scale.x) * math.sin(angle)
-    local y = self.m_player.y - (distance_tacmap / scale.y) * math.cos(angle)
+    local x = self.m_player.x + (distance_tacmap / self.m_scale.x) * math.sin(angle)
+    local y = self.m_player.y - (distance_tacmap / self.m_scale.y) * math.cos(angle)
 
     local wnd_pos = self.m_ui_map:GetWndPos()
 
