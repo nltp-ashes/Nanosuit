@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/02/2026                                                                                             ---
+---    Date : 22/02/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -41,7 +41,7 @@ function ui_tacmap:__init(parent) super()
         [game_object.neutral] = GetARGB(255, 255, 255, 0),
         [game_object.enemy] = GetARGB(255, 255, 0, 0)
     }
-    self.m_range = 50
+    self.m_range = 85
     self.m_scale = self:get_scale(self.m_range, self.m_player, self.m_tacmap_bounds)
     self.m_tracked_objects = {}
     self.m_task_arrows = {}
@@ -105,9 +105,8 @@ function ui_tacmap:update_icons()
         return
     end
 
-    -- FIXME : Try to find something better than self.m_range * 2 to ensure icons are visible after scaling
     -- Iterate over all objects in proximity and refresh/track them
-    level.iterate_nearest(device().cam_pos, self.m_range * 2, function(obj)
+    level.iterate_nearest(device().cam_pos, self.m_range, function(obj)
         local hud_pos = self:pos_world_to_tacmap(obj:position())
         if (IsStalker(obj) or IsMonster(obj) or IsCar(obj)) and obj:id() ~= AC_ID and self:is_within_bounds(hud_pos) then
             if not self.m_tracked_objects[obj:id()] then
@@ -240,13 +239,18 @@ end
 
 function ui_tacmap:get_scale(range, center, bounds)
     local furthest_distance = 0
-    local furthest_point_idx = nil
+
+    local scale = vector2():set(device().width / 1024, device().height / 768)
+    local cx = center.x * scale.x
+    local cy = center.y * scale.y
 
     for i = 1, #bounds do
-        local distance = nanosuit_utils.vec2_distance_to(center, bounds[i])
+        local px = bounds[i].x * scale.x
+        local py = bounds[i].y * scale.y
+        local distance = nanosuit_utils.vec2_distance_to(vector2():set(cx, cy), vector2():set(px, py))
+
         if distance > furthest_distance then
             furthest_distance = distance
-            furthest_point_idx = i
         end
     end
 
