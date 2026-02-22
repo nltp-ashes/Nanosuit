@@ -14,6 +14,20 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- TODO : this needs to be pulled from the gamedata/levels/<current_level_name>/level.ltx > [level_map] > bound_rect
+function get_level_bounds(level_name)
+    return vector2():set(-481.497344,-412.284256), vector2():set(379.976288,474.479296)
+end
+
+-- TODO : this needs to be pulled from the gamedata/levels/<current_level_name>/level.ltx > [level_map] > texture
+function get_map_texture(level_name)
+    return "map\\map_" .. level_name
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
 -- Tactical map UI class
 -- ---------------------------------------------------------------------------------------------------------------------
 
@@ -93,10 +107,7 @@ function ui_tacmap:update_map()
     get_hud():AddCustomShapeToRender(shape)
 end
 
-function get_level_bounds(level_name)
-    return vector2():set(-481.497344,-412.284256), vector2():set(379.976288,474.479296)
-end
-
+-- TODO : need to refactor the two update loops into one
 function ui_tacmap:update_icons()
     if not self:is_enabled() then
         for obj_id, data in pairs(self.m_tracked_objects) do
@@ -156,6 +167,7 @@ function ui_tacmap:update_task_arrows()
     end
 end
 
+-- TODO : need to move "task_arrow" functions into its own luabind class
 function ui_tacmap:attach_task_arrow(id)
     self.m_task_arrows[id] = {}
     self.m_task_arrows[id].arrow_static = self.m_xml:InitStatic("icon", self.m_ui_map)
@@ -181,6 +193,7 @@ function ui_tacmap:update_task_arrow(id, obj)
     self.m_task_arrows[id].refreshed = true
 end
 
+-- TODO : need to move "icon" functions into its own luabind class
 function ui_tacmap:attach_icon(id)
     self.m_tracked_objects[id] = {}
 
@@ -297,10 +310,12 @@ function ui_tacmap:is_enabled()
     return not self.m_parent.m_core.m_malfunctor.m_enabled and ui_options.get([[video/hud/show_minimap]])
 end
 
+-- Anything past this point has been vibe coded and I would gladly take contributions from someone who actually knows vectorial math to replace it
+
 function ui_tacmap:get_map_shape()
     -- Initialize polygon
     local shape = {
-        texture = "map\\map_" .. level.name(),
+        texture = get_map_texture(level.name()),
         shader = "hud\\default",
         color = GetARGB(127, 255, 255, 255),
         poly = {}
