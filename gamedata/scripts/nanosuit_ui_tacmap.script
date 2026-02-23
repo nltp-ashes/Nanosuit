@@ -47,6 +47,7 @@ function ui_tacmap:__init(parent) super()
         [6] = vector2():set(176, 719),
         [7] = vector2():set(192, 700),
     }
+
     self.m_default_color = GetARGB(255, 255, 255, 255)
     self.m_primary_task_color = GetARGB(255, 0, 255, 0)
     self.m_secondary_task_color = GetARGB(255, 255, 255, 0)
@@ -55,12 +56,18 @@ function ui_tacmap:__init(parent) super()
         [game_object.neutral] = GetARGB(255, 255, 255, 0),
         [game_object.enemy] = GetARGB(255, 255, 0, 0)
     }
+
     self.m_range = 85
+
     self.m_scale = vector2():set(device().width / 1024, device().height / 768)
     self.m_resolution = self:get_scale(self.m_range, self.m_player, self.m_tacmap_bounds)
+
     self.m_object_pool = nanosuit_ui_tacmap_object_pool.ui_tacmap_object_pool()
     self.m_tracked_objects = {}
     self.m_task_arrows = {}
+
+    self.m_last_update = 0
+    self.m_update_rate = 1 / 60 * 1000 -- 60 Hz
 
     -- Build UI
     self.m_xml = CScriptXmlInit()
@@ -83,10 +90,21 @@ end
 
 function ui_tacmap:destroy()
     self.m_object_pool:destroy()
+
+    local hud = get_hud()
+    if hud:HasCustomShape("nanosuit_tacmap") then
+        hud:RemoveCustomShapeToRender("nanosuit_tacmap")
+    end
 end
 
 function ui_tacmap:Update(force)
     CUIScriptWnd.Update(self)
+
+    local tg = time_global()
+    if tg - self.m_last_update < self.m_update_rate then
+        return
+    end
+    self.m_last_update = tg
 
     if self.m_parent.m_core.m_malfunctor.m_enabled then
         self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.red)
@@ -100,14 +118,14 @@ function ui_tacmap:Update(force)
         self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map_malfunction")
     end
 
+    self:update_map()
     self:update_icons()
     self:update_task_arrows()
-    self:update_map()
 end
 
 function ui_tacmap:update_map()
     local hud = get_hud()
-    if not self:is_enabled() then
+    if not self.m_parent:IsShown() or not self:is_enabled() then
         if hud:HasCustomShape("nanosuit_tacmap") then
             hud:RemoveCustomShapeToRender("nanosuit_tacmap")
         end
