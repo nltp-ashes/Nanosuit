@@ -1,0 +1,77 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 23/02/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to manage a pool of object to display in the Nanosuit tactical map UI.                            ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Object pool class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "ui_tacmap_object_pool"
+
+function ui_tacmap_object_pool:__init()
+    -- Variables
+    self.m_pool = {}
+
+    -- Initialize pool
+    for id,obj in pairs(gameobjects_registry) do
+        self:game_object_on_net_spawn(obj)
+    end
+
+    -- Callbacks
+    RegisterScriptCallback("game_object_on_net_spawn", self)
+    RegisterScriptCallback("game_object_on_net_destroy", self)
+end
+
+function ui_tacmap_object_pool:__finalize()
+end
+
+function ui_tacmap_object_pool:destroy()
+    UnregisterScriptCallback("game_object_on_net_spawn", self)
+    UnregisterScriptCallback("game_object_on_net_destroy", self)
+end
+
+function ui_tacmap_object_pool:iterate_nearest(range)
+    local range_sqr = range * range
+    local result = {}
+    for id,obj in pairs(self.m_pool) do
+        local dist_sqr = obj:position():distance_to_sqr(device().cam_pos)
+        if dist_sqr <= range_sqr then
+            result[id] = obj
+        end
+    end
+    return pairs(result)
+end
+
+function ui_tacmap_object_pool:iterate_task_targets()
+    local all_task_targets = nanosuit_utils.get_all_task_targets()
+    local result = {}
+    for id,obj in pairs(all_task_targets) do
+        if self.m_pool[id] then
+            result[id] = obj
+        end
+    end
+    return pairs(result)
+end
+
+function ui_tacmap_object_pool:game_object_on_net_spawn(obj)
+    if (IsStalker(obj) or IsMonster(obj) or IsCar(obj)) and obj:id() ~= AC_ID then
+        self.m_pool[obj:id()] = obj
+    end
+end
+
+function ui_tacmap_object_pool:game_object_on_net_destroy(obj)
+    if self.m_pool[obj:id()] then
+        self.m_pool[obj:id()] = nil
+    end
+end

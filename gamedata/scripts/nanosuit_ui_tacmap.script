@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 22/02/2026                                                                                             ---
+---    Date : 23/02/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -58,6 +58,7 @@ function ui_tacmap:__init(parent) super()
     self.m_range = 85
     self.m_scale = vector2():set(device().width / 1024, device().height / 768)
     self.m_resolution = self:get_scale(self.m_range, self.m_player, self.m_tacmap_bounds)
+    self.m_object_pool = nanosuit_ui_tacmap_object_pool.ui_tacmap_object_pool()
     self.m_tracked_objects = {}
     self.m_task_arrows = {}
 
@@ -81,6 +82,7 @@ function ui_tacmap:__finalize()
 end
 
 function ui_tacmap:destroy()
+    self.m_object_pool:destroy()
 end
 
 function ui_tacmap:Update(force)
@@ -104,66 +106,88 @@ function ui_tacmap:Update(force)
 end
 
 function ui_tacmap:update_map()
-    local shape = self:get_map_shape()
-    get_hud():AddCustomShapeToRender(shape)
+    local hud = get_hud()
+    if not self:is_enabled() then
+        if hud:HasCustomShape("nanosuit_tacmap") then
+            hud:RemoveCustomShapeToRender("nanosuit_tacmap")
+        end
+        return
+    end
+
+    if not hud:HasCustomShape("nanosuit_tacmap") then
+        local shape = {
+            texture = get_map_texture(level.name()),
+            shader = "hud\\default",
+            color = GetARGB(127, 255, 255, 255)
+        }
+        hud:AddCustomShapeToRender("nanosuit_tacmap", shape)
+    end
+
+    local poly = self:get_map_poly()
+    hud:UpdateCustomShape("nanosuit_tacmap", poly)
 end
 
 -- TODO : need to refactor the two update loops into one
 function ui_tacmap:update_icons()
     if not self:is_enabled() then
-        for obj_id, data in pairs(self.m_tracked_objects) do
-            self:detach_icon(obj_id)
+        for id, data in pairs(self.m_tracked_objects) do
+            self:detach_icon(id)
         end
         return
     end
 
-    -- Iterate over all objects in proximity and refresh/track them
-    level.iterate_nearest(device().cam_pos, self.m_range, function(obj)
+    for id,obj in self.m_object_pool:iterate_nearest(self.m_range) do
         local hud_pos = self:pos_world_to_tacmap(obj:position())
-        if (IsStalker(obj) or IsMonster(obj) or IsCar(obj)) and obj:id() ~= AC_ID and self:is_within_bounds(hud_pos) then
-            if not self.m_tracked_objects[obj:id()] then
-                self:attach_icon(obj:id())
+        local is_in_bounds = self:is_within_bounds(hud_pos)
+        if is_in_bounds then
+            if not self.m_tracked_objects[id] then
+                self:attach_icon(id)
             end
-            self:update_icon(obj:id(), obj)
+            self:update_icon(id, obj)
+        else
+            if self.m_tracked_objects[id] then
+                self:detach_icon(id)
+            end
         end
-    end)
+    end
 
-    -- Update tracked objects or destroy untracked ones
-    for obj_id, data in pairs(self.m_tracked_objects) do
+    for id,data in pairs(self.m_tracked_objects) do
         if data.refreshed then
             data.refreshed = false
         else
-            self:detach_icon(obj_id)
+            self:detach_icon(id)
         end
     end
 end
 
 function ui_tacmap:update_task_arrows()
     if not self:is_enabled() then
-        for obj_id, data in pairs(self.m_task_arrows) do
-            self:detach_task_arrow(obj_id)
+        for id,data in pairs(self.m_task_arrows) do
+            self:detach_task_arrow(id)
         end
         return
     end
 
-    -- Iterate over all task targets and refresh/track them
-    local task_targets = nanosuit_utils.get_all_task_targets()
-    for obj_id, obj in pairs(task_targets) do
+    for id,obj in self.m_object_pool:iterate_task_targets() do
         local hud_pos = self:pos_world_to_tacmap(obj:position())
-        if (IsStalker(obj) or IsMonster(obj) or IsCar(obj)) and obj:id() ~= AC_ID and not self:is_within_bounds(hud_pos) then
-            if not self.m_task_arrows[obj_id] then
-                self:attach_task_arrow(obj_id)
+        local is_not_in_bounds = not self:is_within_bounds(hud_pos)
+        if is_not_in_bounds then
+            if not self.m_task_arrows[id] then
+                self:attach_task_arrow(id)
             end
-            self:update_task_arrow(obj_id, obj)
+            self:update_task_arrow(id, obj)
+        else
+            if self.m_task_arrows[id] then
+                self:detach_task_arrow(id)
+            end
         end
     end
 
-    -- Remove arrows for objects no longer task targets
-    for obj_id, data in pairs(self.m_task_arrows) do
+    for id,data in pairs(self.m_task_arrows) do
         if data.refreshed then
             data.refreshed = false
         else
-            self:detach_task_arrow(obj_id)
+            self:detach_task_arrow(id)
         end
     end
 end
@@ -312,23 +336,19 @@ end
 
 -- Anything past this point has been vibe coded and I would gladly take contributions from someone who actually knows vectorial math to replace it
 
-function ui_tacmap:get_map_shape()
+function ui_tacmap:get_map_poly()
     -- Initialize polygon
-    local shape = {
-        texture = get_map_texture(level.name()),
-        shader = "hud\\default",
-        color = GetARGB(127, 255, 255, 255),
-        poly = {}
-    }
+    local poly = {}
+    
     for i = 1, #self.m_tacmap_bounds do
-        shape.poly[i] = {}
-        shape.poly[i].pt = vector2():set(0, 0)
-        shape.poly[i].uv = vector2():set(0, 0)
+        poly[i] = {}
+        poly[i].pt = vector2():set(0, 0)
+        poly[i].uv = vector2():set(0, 0)
     end
 
     for i = 1, #self.m_tacmap_bounds do
-        shape.poly[i].pt.x = self.m_tacmap_bounds[i].x * self.m_scale.x
-        shape.poly[i].pt.y = self.m_tacmap_bounds[i].y * self.m_scale.y
+        poly[i].pt.x = self.m_tacmap_bounds[i].x * self.m_scale.x
+        poly[i].pt.y = self.m_tacmap_bounds[i].y * self.m_scale.y
     end
 
     -- Get world bounds (renamed for clarity)
@@ -336,31 +356,23 @@ function ui_tacmap:get_map_shape()
     local world_width = world_max.x - world_min.x
     local world_height = world_max.y - world_min.y
 
-    -- Get player world position
-    local player_world = device().cam_pos
-    -- Get player rotation (north is up)
-    local player_dir = device().cam_dir
-    -- Use negative angle to fix minimap rotation direction
-    local north_angle = math.atan2(player_dir.x, player_dir.z)
+    local north_angle = math.atan2(device().cam_dir.x, device().cam_dir.z)
+    local rot_angle = -north_angle + math.pi
 
     -- Compute UVs: zoom and center on player, rotate according to player direction
     for i = 1, #self.m_tacmap_bounds do
-        -- Flip hud_x to fix mirroring before rotation, then rotate 180°
-        local hud_x = -(shape.poly[i].pt.x - self.m_player.x * self.m_scale.x)
-        local hud_y = shape.poly[i].pt.y - self.m_player.y * self.m_scale.y
-        -- Invert rotation direction and add 180°
-        local rot_angle = -north_angle + math.pi
+        local hud_x = -(poly[i].pt.x - self.m_player.x * self.m_scale.x)
+        local hud_y = poly[i].pt.y - self.m_player.y * self.m_scale.y
         local rot_x = hud_x * math.cos(rot_angle) - hud_y * math.sin(rot_angle)
         local rot_y = hud_x * math.sin(rot_angle) + hud_y * math.cos(rot_angle)
         local world_offset_x = rot_x / self.m_resolution
         local world_offset_y = rot_y / self.m_resolution
-        local world_x = player_world.x + world_offset_x
-        local world_y = player_world.z + world_offset_y
-        -- Use original UV calculation
-        shape.poly[i].uv.x = (world_x - world_min.x) / world_width
-        shape.poly[i].uv.y = (world_max.y - world_y) / world_height
+        local world_x = device().cam_pos.x + world_offset_x
+        local world_y = device().cam_pos.z + world_offset_y
+        poly[i].uv.x = (world_x - world_min.x) / world_width
+        poly[i].uv.y = (world_max.y - world_y) / world_height
     end
-    return shape
+    return poly
 end
 
 function ui_tacmap:pos_world_to_tacmap(pos)
@@ -381,11 +393,8 @@ function ui_tacmap:pos_world_to_tacmap(pos)
 end
 
 function ui_tacmap:dir_world_to_tacmap(dir)
-    -- Get device for camera info
-    local player_dir = device().cam_dir
-
     -- Project both directions onto XZ plane
-    local player_dir_xz = vector():set(player_dir.x, 0, player_dir.z):normalize()
+    local player_dir_xz = vector():set(device().cam_dir.x, 0, device().cam_dir.z):normalize()
     local obj_dir_xz = vector():set(dir.x, 0, dir.z):normalize()
 
     -- Compute angle between object direction and player camera direction
@@ -402,17 +411,11 @@ function ui_tacmap:dir_world_to_tacmap(dir)
 end
 
 function ui_tacmap:get_heading(pos)
-    local dev = device()
-
-    -- Get the player's position and direction
-    local player_pos = dev.cam_pos
-    local player_dir = dev.cam_dir
-
     -- Calculate the vector from the player to the target
-    local to_target = vector():sub(pos, player_pos)
+    local to_target = vector():sub(pos, device().cam_pos)
 
     -- Normalize the player's direction and the target vector on the xz plane
-    local player_dir_xz = vector():set(player_dir.x, 0, player_dir.z):normalize()
+    local player_dir_xz = vector():set(device().cam_dir.x, 0, device().cam_dir.z):normalize()
     local to_target_xz = vector():set(to_target.x, 0, to_target.z):normalize()
 
     -- Calculate the angle using the dot product
@@ -429,17 +432,15 @@ function ui_tacmap:get_heading(pos)
 end
 
 function ui_tacmap:get_bounds_intersection(hud_pos)
-    local center = self.m_player
-    local bounds = self.m_tacmap_bounds
     local wnd_pos = self.m_ui_map:GetWndPos()
-    local cx, cy = center.x - wnd_pos.x, center.y - wnd_pos.y
+    local cx, cy = self.m_player.x - wnd_pos.x, self.m_player.y - wnd_pos.y
     local tx, ty = hud_pos.x, hud_pos.y
     local dx, dy = cx - tx, cy - ty
     local min_dist, ix, iy, angle = nil, nil, nil, nil
-    for i = 1, #bounds do
-        local j = (i % #bounds) + 1
-        local x1, y1 = bounds[i].x - wnd_pos.x, bounds[i].y - wnd_pos.y
-        local x2, y2 = bounds[j].x - wnd_pos.x, bounds[j].y - wnd_pos.y
+    for i = 1, #self.m_tacmap_bounds do
+        local j = (i % #self.m_tacmap_bounds) + 1
+        local x1, y1 = self.m_tacmap_bounds[i].x - wnd_pos.x, self.m_tacmap_bounds[i].y - wnd_pos.y
+        local x2, y2 = self.m_tacmap_bounds[j].x - wnd_pos.x, self.m_tacmap_bounds[j].y - wnd_pos.y
         local denom = (x2 - x1) * dy - (y2 - y1) * dx
         if math.abs(denom) > 1e-6 then
             local t = ((cx - x1) * dy - (cy - y1) * dx) / denom
@@ -463,20 +464,16 @@ function ui_tacmap:get_bounds_intersection(hud_pos)
 end
 
 function ui_tacmap:is_within_bounds(pos)
-    local bounds = self.m_tacmap_bounds
     local inside = false
-    local j = #bounds
+    local wnd_pos = self.m_ui_map:GetWndPos()
 
-    for i = 1, #bounds do
-        local vi = bounds[i]
-        local vj = bounds[j]
+    local j = #self.m_tacmap_bounds
+    for i = 1, #self.m_tacmap_bounds do
 
-        local wnd_pos = self.m_ui_map:GetWndPos()
-
-        local vi_x = vi.x - wnd_pos.x
-        local vi_y = vi.y - wnd_pos.y
-        local vj_x = vj.x - wnd_pos.x
-        local vj_y = vj.y - wnd_pos.y
+        local vi_x = self.m_tacmap_bounds[i].x - wnd_pos.x
+        local vi_y = self.m_tacmap_bounds[i].y - wnd_pos.y
+        local vj_x = self.m_tacmap_bounds[j].x - wnd_pos.x
+        local vj_y = self.m_tacmap_bounds[j].y - wnd_pos.y
 
         if ((vi_y > pos.y) ~= (vj_y > pos.y)) and (pos.x < (vj_x - vi_x) * (pos.y - vi_y) / (vj_y - vi_y) + vi_x) then
             inside = not inside
