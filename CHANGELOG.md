@@ -1,4 +1,4 @@
-## **v0.11.0 - 14/02/2025 - Beta Build**
+## **v0.11.0 - 26/02/2025 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.11.0/total?label=Downloads)]()
 
@@ -10,3 +10,4 @@
 > - Greatly improved the quality of the indicator icons (Thanks Captain Vityaz);
 
 **• Bug fixes :**
+> - Fixed incorrect texture format causing the suit mode menu's cursor to not display properly when using DirectX 8;
