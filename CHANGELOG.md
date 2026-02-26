@@ -11,3 +11,4 @@
 
 **• Bug fixes :**
 > - Fixed incorrect texture format causing the suit mode menu's cursor to not display properly when using DirectX 8;
+> - Fixed incorrect texture format causing the binoculars UI to not display properly when using DirectX 8;
