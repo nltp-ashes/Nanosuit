@@ -176,6 +176,7 @@ The following issues will be fixed in the near future :
 - Cloak mode sometimes messes with the equipped items' textures when switching slot while in the mode (workaround : perform a save/load)
 - Cloak mode does not cloak the knife during the mutant skinning animation with FDDA
 - The game crashes if player reloads a save while cloak mode is enabled
+- Indicators are not colored properly when using the Korean nanosuit
 
 The following issues are technical limitations and will not be fixed in the foreseeable future :
 - The game crashes if actor interacts with an NPC while they're getting vaporized
