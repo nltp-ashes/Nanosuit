@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/02/2026                                                                                             ---
+---    Date : 03/04/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -244,7 +244,7 @@ end
 --- @param obj game_object
 --- @return boolean
 function is_nanosuit(obj)
-    if obj and ini_const:section_exist(obj:section()) then
+    if obj and ini_sys:r_string_ex(obj:section(), "script_binding") == "nanosuit_core.bind" then
         return true
     end
     return false
