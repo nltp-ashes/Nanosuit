@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 03/09/2025                                                                                             ---
+---    Date : 08/02/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
@@ -26,7 +26,7 @@ energy_drain_enum         = nanosuit_utils.energy_drain_enum
 
 class "cloak" (nanosuit_mode.abstract_mode)
 
-function cloak:__init(core, name) super(core, name, [[nanosuit\voice\mode_cloak_voice]])
+function cloak:__init(core, name) super(core, name)
     -- Energy variables
     self.m_energy_use_min = 0.1
     self.m_energy_use_max = 1
@@ -58,7 +58,7 @@ function cloak:__init(core, name) super(core, name, [[nanosuit\voice\mode_cloak_
 end
 
 function cloak:apply(play_voice)
-    nanosuit_mode.abstract_mode.apply(self, play_voice)
+    nanosuit_mode.abstract_mode.apply(self, play_voice, nil)
 
     self.m_core.m_energy:add_drain(energy_drain_enum.cloak, self.m_energy_use_rate, function()
         local movement = db.actor:get_movement_speed()

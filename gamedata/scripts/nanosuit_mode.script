@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 09/11/2025                                                                                             ---
+---    Date : 08/02/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract suit mode of the Nanosuit addon.                               ---
@@ -13,9 +13,9 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
-actor_slots_enum        = nanosuit_utils.actor_slots_enum
-localized_sound_object  = nanosuit_utils.localized_sound_object
-hit_types_enum          = nanosuit_utils.hit_types_enum
+localized_and_genderized_sound_object  = nanosuit_utils.localized_and_genderized_sound_object
+actor_slots_enum                       = nanosuit_utils.actor_slots_enum
+hit_types_enum                         = nanosuit_utils.hit_types_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Mode class
@@ -23,11 +23,11 @@ hit_types_enum          = nanosuit_utils.hit_types_enum
 
 class "abstract_mode"
 
-function abstract_mode:__init(core, name, voice_path)
+function abstract_mode:__init(core, name)
     self.m_core = core
     self.m_name = name
     self.m_sounds = {
-        voice = localized_sound_object(voice_path),
+        voice = localized_and_genderized_sound_object([[nanosuit\voice]], "mode_" .. name .. "_voice"),
     }
     self.m_cache = {}
     self.m_boosters = {}
@@ -36,6 +36,9 @@ function abstract_mode:__init(core, name, voice_path)
     for hit_name, hit_id in pairs(hit_types_enum) do
         self.m_protection_map[hit_id] = nanosuit_mcm.get_constant("protection_" .. name .. "_" .. hit_name, nil)
     end
+
+    -- Register callbacks
+    RegisterScriptCallback("on_option_change", self)
 end
 
 function abstract_mode:__eq(other)
@@ -44,11 +47,19 @@ end
 
 function abstract_mode:destroy()
     self.m_core = nil
+
+    -- Unregister callbacks
+    UnregisterScriptCallback("on_option_change", self)
 end
 
-function abstract_mode:apply(play_voice)
+function abstract_mode:apply(play_voice, effector_color)
     -- Register callbacks
     RegisterScriptCallback("on_before_hit_after_calcs", self)
+
+    -- Play switch effector
+    if effector_color then
+        level.add_pp_effector([[nanosuit\change_mode_]] .. effector_color .. [[.ppe]], 153951, false)
+    end
 
     -- Play sounds
     if play_voice then
@@ -59,6 +70,8 @@ end
 function abstract_mode:remove(is_destroying)
     -- Unregister callbacks
     UnregisterScriptCallback("on_before_hit_after_calcs", self)
+
+    level.remove_pp_effector(153951)
 end
 
 function abstract_mode:apply_booster(booster, name)
@@ -74,6 +87,10 @@ function abstract_mode:remove_booster(name)
         self.m_boosters[name]:destroy()
         self.m_boosters[name] = nil
     end
+end
+
+function abstract_mode:on_option_change()
+    self.m_sounds.voice = localized_and_genderized_sound_object([[nanosuit\voice]], "mode_" .. self.m_name .. "_voice")
 end
 
 function abstract_mode:on_before_hit_after_calcs(scripted_hit, target, bone_id)

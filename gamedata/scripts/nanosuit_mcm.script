@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : RavenAscendant                                                                           ---
 ---    Edited : NLTP_ASHES                                                                                           ---
----    Date : 15/11/2025                                                                                             ---
+---    Date : 08/02/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define the options in MCM.                                                                     ---
@@ -19,12 +19,14 @@
 -- Imports
 mcm_types_enum = nanosuit_utils.mcm_types_enum
 actor_slots_enum = nanosuit_utils.actor_slots_enum
+gender_enum = nanosuit_utils.gender_enum
 
 -- If you don't use MCM, change your defaults from here.
 defaults = {
     -- General
     ["use_witness"] = false,
     ["use_nanovision"] = false,
+    ["suit_gender"] = gender_enum.male,
     -- Keybindings
     ["defibrillate"] = DIK_keys.DIK_SPACE,
     ["suit_menu"] = DIK_keys.DIK_V,
@@ -129,6 +131,7 @@ function on_mcm_load()
                     { type = "title", text = "ui_mcm_menu_nanosuit_general" },
                     { type = "check", val = mcm_types_enum.boolean, id = "use_witness", def = defaults["use_witness"] },
                     { type = "check", val = mcm_types_enum.boolean, id = "use_nanovision", def = defaults["use_nanovision"], precondition = { function() return z_heatvision ~= nil end } },
+                    { type = "list", val = mcm_types_enum.string, id = "suit_gender", def = defaults["suit_gender"], content = { {gender_enum.male,gender_enum.male}, {gender_enum.female,gender_enum.female} } },
                 }
             },
             {

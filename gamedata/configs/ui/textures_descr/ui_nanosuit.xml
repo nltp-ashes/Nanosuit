@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 07/02/2026                                                                                            -->
+<!--    Date : 14/02/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Texture description file for the Nanosuit addon's UI textures.                                               -->
@@ -106,26 +106,23 @@
 
     <!-- Indicators UI -->
     <file name="nanosuit\ui\hud\indicators\backgrounds.dds">
-        <texture id="ui_nanosuit_ind_booster_slot"             x="0"       y="0"      width="43"      height="43" />
-        <texture id="ui_nanosuit_ind_indicator_slot"           x="0"       y="43"     width="43"      height="43" />
-
-        <texture id="ui_nanosuit_ind_indicator_overweight"     x="43"      y="0"      width="43"      height="43" />
-        <texture id="ui_nanosuit_ind_indicator_sleep"          x="86"      y="0"      width="43"      height="43" />
-        <texture id="ui_nanosuit_ind_indicator_hunger"         x="129"     y="0"      width="43"      height="43" />
-        <texture id="ui_nanosuit_ind_indicator_thirst"         x="172"     y="0"      width="43"      height="43" />
-
-        <texture id="ui_nanosuit_ind_booster_ext_rad"          x="215"     y="0"      width="43"      height="43" />
-        <texture id="ui_nanosuit_ind_booster_power"            x="258"     y="0"      width="43"      height="43" />
-        <texture id="ui_nanosuit_ind_booster_carry_weight"     x="43"      y="43"     width="43"      height="43" />
-        <texture id="ui_nanosuit_ind_booster_bleed"            x="86"      y="43"     width="43"      height="43" />
-        <texture id="ui_nanosuit_ind_booster_rad"              x="129"     y="43"     width="43"      height="43" />
-        <texture id="ui_nanosuit_ind_booster_health"           x="172"     y="43"     width="43"      height="43" />
-        <texture id="ui_nanosuit_ind_booster_psi"              x="215"     y="43"     width="43"      height="43" />
-        <texture id="ui_nanosuit_ind_booster_chem"             x="258"     y="43"     width="43"      height="43" />
-
-        <texture id="ui_nanosuit_ind_booster_cf"               x="301"     y="0"      width="43"      height="43" />
-        <texture id="ui_nanosuit_ind_booster_cf_heal"          x="344"     y="0"      width="43"      height="43" />
-        <texture id="ui_nanosuit_ind_booster_cf_save"          x="301"     y="43"     width="43"      height="43" />
-        <texture id="ui_nanosuit_ind_booster_cf_healsave"      x="344"     y="43"     width="43"      height="43" />
+        <texture id="ui_nanosuit_ind_booster_slot"             x="0"       y="0"      width="100"     height="100" />
+        <texture id="ui_nanosuit_ind_indicator_slot"           x="0"       y="100"    width="100"     height="100" />
+        <texture id="ui_nanosuit_ind_indicator_overweight"     x="100"     y="0"      width="100"     height="100" />
+        <texture id="ui_nanosuit_ind_indicator_sleep"          x="200"     y="0"      width="100"     height="100" />
+        <texture id="ui_nanosuit_ind_indicator_hunger"         x="300"     y="0"      width="100"     height="100" />
+        <texture id="ui_nanosuit_ind_indicator_thirst"         x="400"     y="0"      width="100"     height="100" />
+        <texture id="ui_nanosuit_ind_booster_ext_rad"          x="500"     y="0"      width="100"     height="100" />
+        <texture id="ui_nanosuit_ind_booster_power"            x="600"     y="0"      width="100"     height="100" />
+        <texture id="ui_nanosuit_ind_booster_carry_weight"     x="100"     y="100"    width="100"     height="100" />
+        <texture id="ui_nanosuit_ind_booster_bleed"            x="200"     y="100"    width="100"     height="100" />
+        <texture id="ui_nanosuit_ind_booster_rad"              x="300"     y="100"    width="100"     height="100" />
+        <texture id="ui_nanosuit_ind_booster_health"           x="400"     y="100"    width="100"     height="100" />
+        <texture id="ui_nanosuit_ind_booster_psi"              x="500"     y="100"    width="100"     height="100" />
+        <texture id="ui_nanosuit_ind_booster_chem"             x="600"     y="100"    width="100"     height="100" />
+        <texture id="ui_nanosuit_ind_booster_cf"               x="700"     y="0"      width="100"     height="100" />
+        <texture id="ui_nanosuit_ind_booster_cf_heal"          x="800"     y="0"      width="100"     height="100" />
+        <texture id="ui_nanosuit_ind_booster_cf_save"          x="700"     y="100"    width="100"     height="100" />
+        <texture id="ui_nanosuit_ind_booster_cf_healsave"      x="800"     y="100"    width="100"     height="100" />
     </file>
 </w>
