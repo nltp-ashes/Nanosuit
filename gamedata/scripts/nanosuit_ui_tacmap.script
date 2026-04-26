@@ -49,6 +49,7 @@ function ui_tacmap:__init(parent) super()
     }
 
     self.m_default_color = GetARGB(255, 255, 255, 255)
+    self.m_corpse_looted_color = GetARGB(255, 150, 150, 150)
     self.m_primary_task_color = GetARGB(255, 0, 255, 0)
     self.m_secondary_task_color = GetARGB(255, 255, 255, 0)
     self.m_color_per_relation = {
@@ -91,10 +92,11 @@ end
 function ui_tacmap:destroy()
     self.m_object_pool:destroy()
 
-    local hud = get_hud()
-    if hud:HasCustomShape("nanosuit_tacmap") then
-        hud:RemoveCustomShapeToRender("nanosuit_tacmap")
-    end
+    -- FIXME : finish implementing this when I find a way to improve the code's performance
+    -- local hud = get_hud()
+    -- if hud:HasCustomShape("nanosuit_tacmap") then
+    --     hud:RemoveCustomShapeToRender("nanosuit_tacmap")
+    -- end
 end
 
 function ui_tacmap:Update(force)
@@ -324,12 +326,18 @@ function ui_tacmap:get_icon_texture(obj)
 end
 
 function ui_tacmap:get_icon_color(obj)
-    local relation = IsStalker(obj) and obj:alive() and obj:relation(db.actor)
-    if relation then
+    if IsStalker(obj) and obj:alive() then
+        local relation = obj:relation(db.actor)
         return self.m_color_per_relation[relation]
-    else
-        return self.m_default_color
     end
+    if (IsStalker(obj) or IsMonster(obj)) and not obj:alive() then
+        local is_stalker_looted = se_load_var(obj:id(), obj:name(), "death_dropped")
+        local is_mutant_looted = se_load_var(obj:id(), obj:name(), "looted")
+        if is_stalker_looted or is_mutant_looted then
+            return self.m_corpse_looted_color
+        end
+    end
+    return self.m_default_color
 end
 
 function ui_tacmap:get_icon_size(obj)
