@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 07/02/2026                                                                                             ---
+---    Date : 27/02/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit binoculars UI.                                                             ---
@@ -35,6 +35,29 @@ function ui_binoculars:__init(parent) super()
 
     self.m_ui_text = self.m_xml:InitStatic("text", self)
     self.m_ui_text:SetTextureColor(self.m_parent.m_colors.text)
+
+    self.m_ui_mode_label = self.m_xml:InitTextWnd("mode_label", self)
+    self.m_ui_mode_label:SetTextColor(self.m_parent.m_colors.text)
+    self.m_ui_mode_label:SetText(game.translate_string("st_nanosuit_binoculars_mode"))
+
+    self.m_ui_mode = self.m_xml:InitTextWnd("mode", self)
+    self.m_ui_mode:SetTextColor(self.m_parent.m_colors.text)
+
+    self.m_ui_zoom_label = self.m_xml:InitTextWnd("zoom_label", self)
+    self.m_ui_zoom_label:SetTextColor(self.m_parent.m_colors.text)
+    self.m_ui_zoom_label:SetText(game.translate_string("st_nanosuit_binoculars_zoom"))
+
+    self.m_ui_zoom = self.m_xml:InitTextWnd("zoom", self)
+    self.m_ui_zoom:SetTextColor(self.m_parent.m_colors.text)
+
+    self.m_ui_range = self.m_xml:InitTextWnd("range", self)
+    self.m_ui_range:SetTextColor(self.m_parent.m_colors.text)
+
+    self.m_ui_coordinates_n = self.m_xml:InitTextWnd("coordinates_n", self)
+    self.m_ui_coordinates_n:SetTextColor(self.m_parent.m_colors.text)
+
+    self.m_ui_coordinates_w = self.m_xml:InitTextWnd("coordinates_w", self)
+    self.m_ui_coordinates_w:SetTextColor(self.m_parent.m_colors.text)
 end
 
 function ui_binoculars:__finalize()
@@ -51,6 +74,19 @@ function ui_binoculars:Update(force)
     elseif self.m_is_active and not self.m_parent.m_core.m_binoculars.m_is_active then
         self:deactivate()
     end
+
+    local mode = self:get_mode()
+    self.m_ui_mode:SetText(mode)
+
+    local zoom = self:get_zoom() -- zoom = 2 -> display X02, zoom = 16 -> display X16
+    self.m_ui_zoom:SetText("X" .. string.format("%02d", zoom))
+
+    local range = self:get_range()
+    self.m_ui_range:SetText(tostring(range) .. "M")
+
+    local coordinates = self:get_coordinates()
+    self.m_ui_coordinates_n:SetText(tostring(coordinates.y) .. "N")
+    self.m_ui_coordinates_w:SetText(tostring(coordinates.x) .. "W")
 end
 
 function ui_binoculars:activate()
@@ -65,4 +101,25 @@ function ui_binoculars:deactivate()
     -- FIXME : This shader doesn't work, don't know why
     -- exec_console_cmd(string.format("vignette_control %s,0.0,%s,0.0", 0, VIGNETTE_EDG))
     self.m_is_active = false
+end
+
+function ui_binoculars:get_mode()
+    if self.m_parent.m_core.m_nightvision:is_active() then
+        return "NV"
+    end
+    return "VIS"
+end
+
+function ui_binoculars:get_zoom()
+    local binocs = self.m_parent.m_core.m_binoculars
+    return binocs.m_fov_factor_steps[binocs.m_fov_factor_idx]
+end
+
+function ui_binoculars:get_range()
+    return math.floor(level.get_target_dist())
+end
+
+function ui_binoculars:get_coordinates()
+    local pos = db.actor:position()
+    return vector2():set(math.floor(pos.x), math.floor(pos.z))
 end

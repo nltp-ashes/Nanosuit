@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 08/02/2026                                                                                            -->
+<!--    Date : 27/02/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -77,6 +77,18 @@
 
     <string id="st_nanosuit_vaporizer_message">
         <text>Breach of protocol. You have let someone who saw you escape, you will be terminated.</text>
+    </string>
+
+    <!--=============================================================================================================-->
+    <!--    Nanosuit built-in binoculars                                                                             -->
+    <!--=============================================================================================================-->
+
+    <string id="st_nanosuit_binoculars_mode">
+        <text>MODE</text>
+    </string>
+
+    <string id="st_nanosuit_binoculars_zoom">
+        <text>ZOOM</text>
     </string>
 
     <!--=============================================================================================================-->

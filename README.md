@@ -176,6 +176,7 @@ The following issues will be fixed in the near future :
 - Cloak mode sometimes messes with the equipped items' textures when switching slot while in the mode (workaround : perform a save/load)
 - Cloak mode does not cloak the knife during the mutant skinning animation with FDDA
 - The game crashes if player reloads a save while cloak mode is enabled
+- Indicators are not colored properly when using the Korean nanosuit
 
 The following issues are technical limitations and will not be fixed in the foreseeable future :
 - The game crashes if actor interacts with an NPC while they're getting vaporized
@@ -200,23 +201,24 @@ If you need help with anything, or if you have any suggestions, you can :
 
 Credit goes to these people for their work contained in this addon :
 
-|                                Name                                 |                                                    Motive                                                    |         License         |
-|:-------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------:|:-----------------------:|
-|                             **Catspaw**                             |                  Allowed the reusing of a custom color picker widget for MCM in this addon                   | See [LICENSE](#license) |
-|                            **Medialuna**                            |                           Fixed the Korean nanosuit's world model collision volume                           |       Proprietary       |
-|         **[Crepis](https://www.moddb.com/members/cr3pis)**          |      Provided high quality inventory icon, upgrade icon and character portrait for the Korean nanosuit       |       Proprietary       |
-|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |                   Improved the texture quality of the Korean nanosuit's third person model                   | See [LICENSE](#license) |
-|                         **wookie, 3vtiger**                         |                                Port of the Korean nanosuit third person model                                |       Proprietary       |
-|                          **punished__joe**                          |                Ported the nanosuit hands and edited them to fit S.T.A.L.K.E.R.'s proportions                 |       Proprietary       |
-|       **[xfightervn](https://www.deviantart.com/xfightervn)**       |                                     Reused their art for the MCM banner                                      |       Proprietary       |
-|              **[LVutner](https://github.com/LVutner)**              |                                Provided an improved shader for the cloak mode                                | See [LICENSE](#license) |
-|         **[Crepis](https://www.moddb.com/members/cr3pis)**          |                       Provided an inventory icon for the defibrillator powerbank item                        |       Proprietary       |
-|                             **Tronex**                              |                            Reused their "Indicators" HUD from actor_status.script                            |       Proprietary       |
-|                          **Stalker_Boss**                           |                                      Translated the addon into Russian                                       |       Proprietary       |
-|         **[Crepis](https://www.moddb.com/members/cr3pis)**          | Greatly improved the quality of the inventory icon, upgrade icon and character portraits for the US nanosuit |       Proprietary       |
-|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |          Greatly improved the texture quality of the first and third person models of the nanosuit           | See [LICENSE](#license) |
-| **[\_Paramonov Alexander\_](https://users.playground.ru/1997780/)** |                       Port of the nanosuit first person, third person and world models                       |       Proprietary       |
-|             **[Crytek GmbH](https://www.crytek.com/)**              |                               Various assets (textures, sound effects, models)                               |       Proprietary       |
+|                                Name                                 |                                                    Motive                                                    |                           License                            |
+|:-------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------:|
+|      **[Captain Vityaz](https://www.youtube.com/@CptVityaz)**       |                               Created high quality icons for the indicators UI                               | [PD 1.0](https://creativecommons.org/publicdomain/mark/1.0/) |
+|                             **Catspaw**                             |                  Allowed the reusing of a custom color picker widget for MCM in this addon                   |                   See [LICENSE](#license)                    |
+|                            **Medialuna**                            |                           Fixed the Korean nanosuit's world model collision volume                           |                         Proprietary                          |
+|         **[Crepis](https://www.moddb.com/members/cr3pis)**          |      Provided high quality inventory icon, upgrade icon and character portrait for the Korean nanosuit       |                         Proprietary                          |
+|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |                   Improved the texture quality of the Korean nanosuit's third person model                   |                   See [LICENSE](#license)                    |
+|                         **wookie, 3vtiger**                         |                                Port of the Korean nanosuit third person model                                |                         Proprietary                          |
+|                          **punished__joe**                          |                Ported the nanosuit hands and edited them to fit S.T.A.L.K.E.R.'s proportions                 |                         Proprietary                          |
+|       **[xfightervn](https://www.deviantart.com/xfightervn)**       |                                     Reused their art for the MCM banner                                      |                         Proprietary                          |
+|              **[LVutner](https://github.com/LVutner)**              |                                Provided an improved shader for the cloak mode                                |                   See [LICENSE](#license)                    |
+|         **[Crepis](https://www.moddb.com/members/cr3pis)**          |                       Provided an inventory icon for the defibrillator powerbank item                        |                         Proprietary                          |
+|                             **Tronex**                              |                            Reused their "Indicators" HUD from actor_status.script                            |                         Proprietary                          |
+|                          **Stalker_Boss**                           |                                      Translated the addon into Russian                                       |                         Proprietary                          |
+|         **[Crepis](https://www.moddb.com/members/cr3pis)**          | Greatly improved the quality of the inventory icon, upgrade icon and character portraits for the US nanosuit |                         Proprietary                          |
+|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |          Greatly improved the texture quality of the first and third person models of the nanosuit           |                   See [LICENSE](#license)                    |
+| **[\_Paramonov Alexander\_](https://users.playground.ru/1997780/)** |                       Port of the nanosuit first person, third person and world models                       |                         Proprietary                          |
+|             **[Crytek GmbH](https://www.crytek.com/)**              |                               Various assets (textures, sound effects, models)                               |                         Proprietary                          |
 
 Special thanks to these people for their help in the making of this addon :
 
@@ -238,7 +240,10 @@ This means you're allowed to redistribute and/or adapt the work, as long as you 
 - **NonCommercial** — You may not use the material for commercial purposes (this includes donations).
 - **ShareAlike** — If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.
 
-Content made by Blackgrowl can be reused, as long as you credit him for the work he did in this addon (texture work, model fixes).
+Content made by Blackgrowl is provided under the following license :
+```
+The work can be reused, as long as you credit Blackgrowl for the work he did in this addon (texture work, model fixes).
+```
 
 Content made by LVutner is provided under the following license :
 ```
