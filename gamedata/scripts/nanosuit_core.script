@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/02/2026                                                                                             ---
+---    Date : 26/04/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -193,7 +193,7 @@ function core:__init()
     self.m_hud = nanosuit_ui_hud.ui_hud(self)
 
     -- Energy
-    self.m_energy = nanosuit_energy.energy()
+    self.m_energy = nanosuit_energy.energy(self)
 
     -- Others
     self.m_vaporizer = nanosuit_vaporizer.vaporizer(self)
