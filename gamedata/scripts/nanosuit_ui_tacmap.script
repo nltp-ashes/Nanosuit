@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 23/02/2026                                                                                             ---
+---    Date : 26/04/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -118,7 +118,8 @@ function ui_tacmap:Update(force)
         self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map_malfunction")
     end
 
-    self:update_map()
+    -- FIXME : finish implementing this when I find a way to improve the code's performance
+    -- self:update_map()
     self:update_icons()
     self:update_task_arrows()
 end
