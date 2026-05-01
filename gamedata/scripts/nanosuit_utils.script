@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 03/04/2026                                                                                             ---
+---    Date : 01/05/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -248,23 +248,35 @@ function is_task_target(id, type)
     local tm = task_manager.get_task_manager()
     for tsk_id,tsk in pairs(tm.task_info) do
         local correct_type = type == "any" or (type == "primary" and tsk.storyline) or (type == "secondary" and not tsk.storyline)
-        if correct_type and tsk.current_target == id and db.actor:get_task(tsk_id, true) ~= nil then
-            return true
+        if correct_type then
+            local target_obj = this.get_true_task_target(tsk_id)
+            if target_obj and target_obj:id() == id then
+                return true
+            end
         end
     end
     return false
 end
 
 function get_all_task_targets()
-    local targets = {}
     local tm = task_manager.get_task_manager()
+    local targets = {}
     for tsk_id,tsk in pairs(tm.task_info) do
-        local target_obj = tsk.current_target and level.object_by_id(tsk.current_target)
+        local target_obj = this.get_true_task_target(tsk_id)
         if target_obj then
             targets[target_obj:id()] = target_obj
         end
     end
     return targets
+end
+
+function get_true_task_target(tsk_id)
+    local tm = task_manager.get_task_manager()
+    local tsk = tm.task_info[tsk_id]
+    if db.actor:get_task(tsk_id, true) ~= nil and tsk and tsk.current_target then
+        return level.object_by_id(tsk.current_target)
+    end
+    return nil
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------

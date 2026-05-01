@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 26/04/2026                                                                                             ---
+---    Date : 01/05/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -316,6 +316,9 @@ function ui_tacmap:get_resolution(range, center, bounds)
 end
 
 function ui_tacmap:get_icon_texture(obj)
+    if IsInvbox(obj) then
+        return "ui_nanosuit_no_draw"
+    end
     if IsCar(obj) then
         return "ui_nanosuit_tacmap_vehicle"
     end
