@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 01/05/2026                                                                                             ---
+---    Date : 03/05/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -19,7 +19,7 @@
 
 -- TODO : this needs to be pulled from the gamedata/levels/<current_level_name>/level.ltx > [level_map] > bound_rect
 function get_level_bounds(level_name)
-    return vector2():set(-481.497344,-412.284256), vector2():set(379.976288,474.479296)
+    return vector2():set(-481.497344, -412.284256), vector2():set(379.976288, 474.479296)
 end
 
 -- TODO : this needs to be pulled from the gamedata/levels/<current_level_name>/level.ltx > [level_map] > texture
@@ -48,15 +48,8 @@ function ui_tacmap:__init(parent) super()
         [7] = vector2():set(192, 700),
     }
 
-    self.m_default_color = GetARGB(255, 255, 255, 255)
-    self.m_corpse_looted_color = GetARGB(255, 150, 150, 150)
     self.m_primary_task_color = GetARGB(255, 0, 255, 0)
     self.m_secondary_task_color = GetARGB(255, 255, 255, 0)
-    self.m_color_per_relation = {
-        [game_object.friend] = GetARGB(255, 0, 255, 0),
-        [game_object.neutral] = GetARGB(255, 255, 255, 0),
-        [game_object.enemy] = GetARGB(255, 255, 0, 0)
-    }
 
     self.m_range = 85
 
@@ -91,6 +84,7 @@ end
 
 function ui_tacmap:destroy()
     self.m_object_pool:destroy()
+    self.m_parent = nil
 
     -- FIXME : finish implementing this when I find a way to improve the code's performance
     -- local hud = get_hud()
@@ -152,47 +146,49 @@ end
 function ui_tacmap:update_icons()
     if not self:is_enabled() then
         for id, data in pairs(self.m_tracked_objects) do
-            self:detach_icon(id)
+            self.m_tracked_objects[id]:destroy(self.m_ui_map)
+            self.m_tracked_objects[id] = nil
         end
         return
     end
 
-    for id,obj in self.m_object_pool:iterate_nearest(self.m_range) do
-        local hud_pos = self:pos_world_to_tacmap(obj:position())
-        local is_in_bounds = self:is_within_bounds(hud_pos)
-        if is_in_bounds then
+    for id, obj in self.m_object_pool:iterate_nearest(self.m_range) do
+        local world_pos = obj:position()
+        local world_dir = obj:direction()
+        local hud_pos = self:pos_world_to_tacmap(world_pos)
+        local hud_dir = self:dir_world_to_tacmap(world_dir)
+        if self:is_within_bounds(hud_pos) then
             if not self.m_tracked_objects[id] then
-                self:attach_icon(id)
+                self.m_tracked_objects[id] = nanosuit_ui_tacmap_icon.ui_tacmap_icon(self.m_ui_map)
             end
-            self:update_icon(id, obj)
-        else
-            if self.m_tracked_objects[id] then
-                self:detach_icon(id)
-            end
+            self.m_tracked_objects[id]:update(obj, hud_pos, hud_dir)
+        elseif self.m_tracked_objects[id] then
+            self.m_tracked_objects[id]:destroy(self.m_ui_map)
+            self.m_tracked_objects[id] = nil
         end
     end
 
-    for id,data in pairs(self.m_tracked_objects) do
+    for id, data in pairs(self.m_tracked_objects) do
         if data.refreshed then
             data.refreshed = false
         else
-            self:detach_icon(id)
+            self.m_tracked_objects[id]:destroy(self.m_ui_map)
+            self.m_tracked_objects[id] = nil
         end
     end
 end
 
 function ui_tacmap:update_task_arrows()
     if not self:is_enabled() then
-        for id,data in pairs(self.m_task_arrows) do
+        for id, data in pairs(self.m_task_arrows) do
             self:detach_task_arrow(id)
         end
         return
     end
 
-    for id,obj in self.m_object_pool:iterate_task_targets() do
+    for id, obj in self.m_object_pool:iterate_task_targets() do
         local hud_pos = self:pos_world_to_tacmap(obj:position())
-        local is_not_in_bounds = not self:is_within_bounds(hud_pos)
-        if is_not_in_bounds then
+        if not self:is_within_bounds(hud_pos) then
             if not self.m_task_arrows[id] then
                 self:attach_task_arrow(id)
             end
@@ -204,7 +200,7 @@ function ui_tacmap:update_task_arrows()
         end
     end
 
-    for id,data in pairs(self.m_task_arrows) do
+    for id, data in pairs(self.m_task_arrows) do
         if data.refreshed then
             data.refreshed = false
         else
@@ -239,63 +235,6 @@ function ui_tacmap:update_task_arrow(id, obj)
     self.m_task_arrows[id].refreshed = true
 end
 
--- TODO : need to move "icon" functions into its own luabind class
-function ui_tacmap:attach_icon(id)
-    self.m_tracked_objects[id] = {}
-
-    -- Main object icon
-    self.m_tracked_objects[id].icon_static = self.m_xml:InitStatic("icon", self.m_ui_map)
-    self.m_tracked_objects[id].icon_static:SetAutoDelete(true)
-
-    -- Primary task icon
-    self.m_tracked_objects[id].primary_task_static = self.m_xml:InitStatic("icon", self.m_ui_map)
-    self.m_tracked_objects[id].primary_task_static:InitTexture("ui_nanosuit_tacmap_task_point")
-    self.m_tracked_objects[id].primary_task_static:SetTextureColor(self.m_primary_task_color)
-    self.m_tracked_objects[id].primary_task_static:Show(false)
-    self.m_tracked_objects[id].primary_task_static:SetAutoDelete(true)
-
-    -- Secondary task icon
-    self.m_tracked_objects[id].secondary_task_static = self.m_xml:InitStatic("icon", self.m_ui_map)
-    self.m_tracked_objects[id].secondary_task_static:InitTexture("ui_nanosuit_tacmap_task_point")
-    self.m_tracked_objects[id].secondary_task_static:SetTextureColor(self.m_secondary_task_color)
-    self.m_tracked_objects[id].secondary_task_static:Show(false)
-    self.m_tracked_objects[id].secondary_task_static:SetAutoDelete(true)
-end
-
-function ui_tacmap:detach_icon(id)
-    -- Detach child statics
-    self.m_ui_map:DetachChild(self.m_tracked_objects[id].icon_static)
-    self.m_ui_map:DetachChild(self.m_tracked_objects[id].primary_task_static)
-    self.m_ui_map:DetachChild(self.m_tracked_objects[id].secondary_task_static)
-
-    -- Clear object from registry
-    self.m_tracked_objects[id] = nil
-end
-
-function ui_tacmap:update_icon(id, obj)
-    -- Update coordinates
-    self.m_tracked_objects[id].world_pos = obj:position()
-    self.m_tracked_objects[id].world_dir = obj:direction()
-    self.m_tracked_objects[id].hud_pos = self:pos_world_to_tacmap(obj:position())
-    self.m_tracked_objects[id].hud_dir = self:dir_world_to_tacmap(obj:direction())
-
-    -- Update statics
-    self.m_tracked_objects[id].icon_static:SetHeading(self:should_rotate_icon(obj) and self.m_tracked_objects[id].hud_dir or 0)
-    self.m_tracked_objects[id].icon_static:InitTexture(self:get_icon_texture(obj))
-    self.m_tracked_objects[id].icon_static:SetTextureColor(self:get_icon_color(obj))
-    self.m_tracked_objects[id].icon_static:SetWndSize(self:get_icon_size(obj))
-    self.m_tracked_objects[id].primary_task_static:Show(nanosuit_utils.is_task_target(obj:id(), "primary"))
-    self.m_tracked_objects[id].secondary_task_static:Show(nanosuit_utils.is_task_target(obj:id(), "secondary"))
-
-    -- Center statics on coordinates
-    arm.move_and_center_element(self.m_tracked_objects[id].icon_static, self.m_tracked_objects[id].hud_pos.x, self.m_tracked_objects[id].hud_pos.y)
-    arm.move_and_center_element(self.m_tracked_objects[id].primary_task_static, self.m_tracked_objects[id].hud_pos.x, self.m_tracked_objects[id].hud_pos.y)
-    arm.move_and_center_element(self.m_tracked_objects[id].secondary_task_static, self.m_tracked_objects[id].hud_pos.x, self.m_tracked_objects[id].hud_pos.y)
-
-    -- Mark as refreshed
-    self.m_tracked_objects[id].refreshed = true
-end
-
 function ui_tacmap:get_resolution(range, center, bounds)
     local furthest_distance = 0
 
@@ -315,51 +254,6 @@ function ui_tacmap:get_resolution(range, center, bounds)
     return furthest_distance / range
 end
 
-function ui_tacmap:get_icon_texture(obj)
-    if IsInvbox(obj) then
-        return "ui_nanosuit_no_draw"
-    end
-    if IsCar(obj) then
-        return "ui_nanosuit_tacmap_vehicle"
-    end
-    if (IsStalker(obj) or IsMonster(obj)) and not obj:alive() then
-        return "ui_nanosuit_tacmap_body"
-    end
-    return "ui_nanosuit_tacmap_object"
-end
-
-function ui_tacmap:get_icon_color(obj)
-    if IsStalker(obj) and obj:alive() then
-        local relation = obj:relation(db.actor)
-        return self.m_color_per_relation[relation]
-    end
-    if (IsStalker(obj) or IsMonster(obj)) and not obj:alive() then
-        local is_stalker_looted = se_load_var(obj:id(), obj:name(), "death_dropped")
-        local is_mutant_looted = se_load_var(obj:id(), obj:name(), "looted")
-        if is_stalker_looted or is_mutant_looted then
-            return self.m_corpse_looted_color
-        end
-    end
-    return self.m_default_color
-end
-
-function ui_tacmap:get_icon_size(obj)
-    if IsCar(obj) then
-        return vector2():set(15, 15)
-    end
-    return vector2():set(10, 10)
-end
-
-function ui_tacmap:should_rotate_icon(obj)
-    if IsCar(obj) then
-        return true
-    end
-    if (IsStalker(obj) or IsMonster(obj)) and obj:alive() then
-        return true
-    end
-    return false
-end
-
 function ui_tacmap:is_enabled()
     return not self.m_parent.m_core.m_malfunctor.m_enabled and ui_options.get([[video/hud/show_minimap]])
 end
@@ -369,7 +263,7 @@ end
 function ui_tacmap:get_map_poly()
     -- Initialize polygon
     local poly = {}
-    
+
     for i = 1, #self.m_tacmap_bounds do
         poly[i] = {}
         poly[i].pt = vector2():set(0, 0)
