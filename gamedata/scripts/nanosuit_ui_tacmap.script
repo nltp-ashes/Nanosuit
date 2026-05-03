@@ -14,20 +14,6 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- General functions
--- ---------------------------------------------------------------------------------------------------------------------
-
--- TODO : this needs to be pulled from the gamedata/levels/<current_level_name>/level.ltx > [level_map] > bound_rect
-function get_level_bounds(level_name)
-    return vector2():set(-481.497344, -412.284256), vector2():set(379.976288, 474.479296)
-end
-
--- TODO : this needs to be pulled from the gamedata/levels/<current_level_name>/level.ltx > [level_map] > texture
-function get_map_texture(level_name)
-    return "map\\map_" .. level_name
-end
-
--- ---------------------------------------------------------------------------------------------------------------------
 -- Tactical map UI class
 -- ---------------------------------------------------------------------------------------------------------------------
 
@@ -60,6 +46,9 @@ function ui_tacmap:__init(parent) super()
     self.m_last_update = 0
     self.m_update_rate = 1 / 60 * 1000 -- 60 Hz
 
+    -- FIXME : finish implementing this when I find a way to improve the code's performance
+    -- self.m_map_texture = nanosuit_ui_tacmap_map.ui_tacmap_map(self)
+
     -- Build UI
     self.m_xml = CScriptXmlInit()
     self.m_xml:ParseFile("ui_nanosuit_tacmap.xml")
@@ -80,14 +69,15 @@ function ui_tacmap:__finalize()
 end
 
 function ui_tacmap:destroy()
+    -- FIXME : finish implementing this when I find a way to improve the code's performance
+    -- self.m_map_texture:destroy()
     self.m_object_pool:destroy()
     self.m_parent = nil
 
-    -- FIXME : finish implementing this when I find a way to improve the code's performance
-    -- local hud = get_hud()
-    -- if hud:HasCustomShape("nanosuit_tacmap") then
-    --     hud:RemoveCustomShapeToRender("nanosuit_tacmap")
-    -- end
+    for id, data in pairs(self.m_tracked_objects) do
+        self.m_tracked_objects[id]:destroy(self.m_ui_map)
+        self.m_tracked_objects[id] = nil
+    end
 end
 
 function ui_tacmap:Update(force)
@@ -112,31 +102,9 @@ function ui_tacmap:Update(force)
     end
 
     -- FIXME : finish implementing this when I find a way to improve the code's performance
-    -- self:update_map()
+    -- self.m_map_texture:update()
     self:update_icons()
     self:update_task_arrows()
-end
-
-function ui_tacmap:update_map()
-    local hud = get_hud()
-    if not self.m_parent:IsShown() or not self:is_enabled() then
-        if hud:HasCustomShape("nanosuit_tacmap") then
-            hud:RemoveCustomShapeToRender("nanosuit_tacmap")
-        end
-        return
-    end
-
-    if not hud:HasCustomShape("nanosuit_tacmap") then
-        local shape = {
-            texture = get_map_texture(level.name()),
-            shader = "hud\\default",
-            color = GetARGB(127, 255, 255, 255)
-        }
-        hud:AddCustomShapeToRender("nanosuit_tacmap", shape)
-    end
-
-    local poly = self:get_map_poly()
-    hud:UpdateCustomShape("nanosuit_tacmap", poly)
 end
 
 -- TODO : need to refactor the two update loops into one
@@ -232,45 +200,6 @@ function ui_tacmap:is_enabled()
 end
 
 -- Anything past this point has been vibe coded and I would gladly take contributions from someone who actually knows vectorial math to replace it
-
-function ui_tacmap:get_map_poly()
-    -- Initialize polygon
-    local poly = {}
-
-    for i = 1, #self.m_tacmap_bounds do
-        poly[i] = {}
-        poly[i].pt = vector2():set(0, 0)
-        poly[i].uv = vector2():set(0, 0)
-    end
-
-    for i = 1, #self.m_tacmap_bounds do
-        poly[i].pt.x = self.m_tacmap_bounds[i].x * self.m_scale.x
-        poly[i].pt.y = self.m_tacmap_bounds[i].y * self.m_scale.y
-    end
-
-    -- Get world bounds (renamed for clarity)
-    local world_min, world_max = get_level_bounds(level.name())
-    local world_width = world_max.x - world_min.x
-    local world_height = world_max.y - world_min.y
-
-    local north_angle = math.atan2(device().cam_dir.x, device().cam_dir.z)
-    local rot_angle = -north_angle + math.pi
-
-    -- Compute UVs: zoom and center on player, rotate according to player direction
-    for i = 1, #self.m_tacmap_bounds do
-        local hud_x = -(poly[i].pt.x - self.m_player.x * self.m_scale.x)
-        local hud_y = poly[i].pt.y - self.m_player.y * self.m_scale.y
-        local rot_x = hud_x * math.cos(rot_angle) - hud_y * math.sin(rot_angle)
-        local rot_y = hud_x * math.sin(rot_angle) + hud_y * math.cos(rot_angle)
-        local world_offset_x = rot_x / self.m_resolution
-        local world_offset_y = rot_y / self.m_resolution
-        local world_x = device().cam_pos.x + world_offset_x
-        local world_y = device().cam_pos.z + world_offset_y
-        poly[i].uv.x = (world_x - world_min.x) / world_width
-        poly[i].uv.y = (world_max.y - world_y) / world_height
-    end
-    return poly
-end
 
 function ui_tacmap:pos_world_to_tacmap(pos)
     -- Translate distance from world space to tacmap space
