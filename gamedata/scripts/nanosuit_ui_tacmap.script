@@ -48,9 +48,6 @@ function ui_tacmap:__init(parent) super()
         [7] = vector2():set(192, 700),
     }
 
-    self.m_primary_task_color = GetARGB(255, 0, 255, 0)
-    self.m_secondary_task_color = GetARGB(255, 255, 255, 0)
-
     self.m_range = 85
 
     self.m_scale = vector2():set(device().width / 1024, device().height / 768)
@@ -181,7 +178,8 @@ end
 function ui_tacmap:update_task_arrows()
     if not self:is_enabled() then
         for id, data in pairs(self.m_task_arrows) do
-            self:detach_task_arrow(id)
+            self.m_task_arrows[id]:destroy(self.m_ui_map)
+            self.m_task_arrows[id] = nil
         end
         return
     end
@@ -190,13 +188,13 @@ function ui_tacmap:update_task_arrows()
         local hud_pos = self:pos_world_to_tacmap(obj:position())
         if not self:is_within_bounds(hud_pos) then
             if not self.m_task_arrows[id] then
-                self:attach_task_arrow(id)
+                self.m_task_arrows[id] = nanosuit_ui_tacmap_task_arrow.ui_tacmap_task_arrow(self.m_ui_map)
             end
-            self:update_task_arrow(id, obj)
-        else
-            if self.m_task_arrows[id] then
-                self:detach_task_arrow(id)
-            end
+            local edge_pos, edge_dir = self:get_bounds_intersection(hud_pos)
+            self.m_task_arrows[id]:update(obj, edge_pos, edge_dir)
+        elseif self.m_task_arrows[id] then
+            self.m_task_arrows[id]:destroy(self.m_ui_map)
+            self.m_task_arrows[id] = nil
         end
     end
 
@@ -204,35 +202,10 @@ function ui_tacmap:update_task_arrows()
         if data.refreshed then
             data.refreshed = false
         else
-            self:detach_task_arrow(id)
+            self.m_task_arrows[id]:destroy(self.m_ui_map)
+            self.m_task_arrows[id] = nil
         end
     end
-end
-
--- TODO : need to move "task_arrow" functions into its own luabind class
-function ui_tacmap:attach_task_arrow(id)
-    self.m_task_arrows[id] = {}
-    self.m_task_arrows[id].arrow_static = self.m_xml:InitStatic("icon", self.m_ui_map)
-    self.m_task_arrows[id].arrow_static:InitTexture("ui_nanosuit_tacmap_task_arrow")
-    self.m_task_arrows[id].arrow_static:SetTextureColor(nanosuit_utils.is_task_target(id, "primary") and self.m_primary_task_color or self.m_secondary_task_color)
-    self.m_task_arrows[id].arrow_static:SetAutoDelete(true)
-end
-
-function ui_tacmap:detach_task_arrow(id)
-    self.m_ui_map:DetachChild(self.m_task_arrows[id].arrow_static)
-    self.m_task_arrows[id] = nil
-end
-
-function ui_tacmap:update_task_arrow(id, obj)
-    local hud_pos = self:pos_world_to_tacmap(obj:position())
-    local edge_pos, angle = self:get_bounds_intersection(hud_pos)
-    if edge_pos and angle then
-        arm.move_and_center_element(self.m_task_arrows[id].arrow_static, edge_pos.x, edge_pos.y)
-        self.m_task_arrows[id].arrow_static:SetHeading(angle)
-    end
-
-    -- Mark as refreshed
-    self.m_task_arrows[id].refreshed = true
 end
 
 function ui_tacmap:get_resolution(range, center, bounds)

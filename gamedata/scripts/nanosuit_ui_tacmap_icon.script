@@ -5,7 +5,7 @@
 ---    Date : 03/05/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
----    Script used to handle the Nanosuit tactical map icon UI.                                                           ---
+---    Script used to handle the Nanosuit tactical map icon UI.                                                      ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -64,9 +64,9 @@ function ui_tacmap_icon:destroy(container)
     container:DetachChild(self.m_secondary_task_static)
 end
 
-function ui_tacmap_icon:update(obj, pos, dir)
+function ui_tacmap_icon:update(obj, hud_pos, hud_dir)
     -- Update statics
-    self.m_icon_static:SetHeading(self:get_heading(obj, dir))
+    self.m_icon_static:SetHeading(self:get_heading(obj, hud_dir))
     self.m_icon_static:InitTexture(self:get_texture(obj))
     self.m_icon_static:SetTextureColor(self:get_color(obj))
     self.m_icon_static:SetWndSize(self:get_size(obj))
@@ -74,9 +74,9 @@ function ui_tacmap_icon:update(obj, pos, dir)
     self.m_secondary_task_static:Show(nanosuit_utils.is_task_target(obj:id(), "secondary"))
 
     -- Center statics on coordinates
-    arm.move_and_center_element(self.m_icon_static, pos.x, pos.y)
-    arm.move_and_center_element(self.m_primary_task_static, pos.x, pos.y)
-    arm.move_and_center_element(self.m_secondary_task_static, pos.x, pos.y)
+    arm.move_and_center_element(self.m_icon_static, hud_pos.x, hud_pos.y)
+    arm.move_and_center_element(self.m_primary_task_static, hud_pos.x, hud_pos.y)
+    arm.move_and_center_element(self.m_secondary_task_static, hud_pos.x, hud_pos.y)
 
     -- Mark as refreshed
     self.refreshed = true
