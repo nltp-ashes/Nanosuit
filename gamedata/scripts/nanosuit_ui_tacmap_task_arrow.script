@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 03/05/2026                                                                                             ---
+---    Date : 05/05/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map task arrows UI.                                               ---
@@ -31,7 +31,6 @@ function ui_tacmap_task_arrow:__init(container)
     -- Main object icon
     self.arrow_static = self.m_xml:InitStatic("icon", container)
     self.arrow_static:InitTexture("ui_nanosuit_tacmap_task_arrow")
-    self.arrow_static:SetTextureColor(nanosuit_utils.is_task_target(id, "primary") and self.m_primary_task_color or self.m_secondary_task_color)
     self.arrow_static:SetAutoDelete(true)
 end
 
@@ -47,6 +46,8 @@ function ui_tacmap_task_arrow:update(obj, hud_pos, hud_dir)
         arm.move_and_center_element(self.arrow_static, hud_pos.x, hud_pos.y)
         self.arrow_static:SetHeading(hud_dir)
     end
+
+    self.arrow_static:SetTextureColor(nanosuit_utils.is_task_target(obj:id(), "primary") and self.m_primary_task_color or self.m_secondary_task_color)
 
     -- Mark as refreshed
     self.refreshed = true

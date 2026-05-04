@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 01/05/2026                                                                                             ---
+---    Date : 05/05/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -245,37 +245,75 @@ end
 --- @param id number
 --- @return boolean
 function is_task_target(id, type)
+    -- Specific case for guide task
+    if type == "secondary" and tasks_guide.curr_guid and tasks_guide.curr_guid.id_smart == id then
+        return true
+    end
+
+    -- Go through real game tasks
     local tm = task_manager.get_task_manager()
     for tsk_id,tsk in pairs(tm.task_info) do
-        local correct_type = type == "any" or (type == "primary" and tsk.storyline) or (type == "secondary" and not tsk.storyline)
-        if correct_type then
-            local target_obj = this.get_true_task_target(tsk_id)
-            if target_obj and target_obj:id() == id then
+        if type == "any" or (type == "primary" and tsk.storyline) or (type == "secondary" and not tsk.storyline) then
+            local obj = this.get_true_task_target(tsk_id)
+            if obj and obj:id() == id then
                 return true
             end
         end
     end
+
     return false
 end
 
+--- Function used to get all the current targets of active tasks.
+--- The function returns a table of game objects, indexed by their ID.
+--- @return table
 function get_all_task_targets()
-    local tm = task_manager.get_task_manager()
     local targets = {}
+
+    -- Go through real game tasks
+    local tm = task_manager.get_task_manager()
     for tsk_id,tsk in pairs(tm.task_info) do
-        local target_obj = this.get_true_task_target(tsk_id)
-        if target_obj then
-            targets[target_obj:id()] = target_obj
+        local obj = this.get_true_task_target(tsk_id)
+        if obj then
+            targets[obj:id()] = obj
         end
     end
+
+    -- Specific case for guide task
+    if tasks_guide.curr_guid and tasks_guide.curr_guid.id_smart then
+        local obj = level.object_by_id(tasks_guide.curr_guid.id_smart)
+        if obj then
+            targets[obj:id()] = obj
+        end
+    end
+
     return targets
 end
 
+--- Function used to get the current target of a task by its ID.
+--- The function returns a game object or nil if there is no target.
+--- @param tsk_id number
+--- @return game_object
 function get_true_task_target(tsk_id)
     local tm = task_manager.get_task_manager()
     local tsk = tm.task_info[tsk_id]
-    if db.actor:get_task(tsk_id, true) ~= nil and tsk and tsk.current_target then
-        return level.object_by_id(tsk.current_target)
+
+    -- Start with target pointed by task
+    local target_id = tsk.current_target
+
+    -- Special case for squads : they don't have game objects, so we target a member instead
+    local se_obj = target_id and alife_object(target_id)
+    if nanosuit_utils.is_squad(se_obj) then
+        for member in se_obj:squad_members() do
+            target_id = member.id
+        end
     end
+
+    -- Check we have a target and task is still active (tasks in task_manager.task_info can be completed but not yet removed)
+    if target_id and db.actor:get_task(tsk_id, true) ~= nil then
+        return level.object_by_id(target_id)
+    end
+
     return nil
 end
 
@@ -291,6 +329,20 @@ function is_nanosuit(obj)
         return true
     end
     return false
+end
+
+function is_smart_terrain(o, c)
+    if not (c) then
+        c = o and o:clsid()
+    end
+    return c and (c == clsid.smart_terrain)
+end
+
+function is_squad(o, c)
+    if not (c) then
+        c = o and o:clsid()
+    end
+    return c and (c == clsid.online_offline_group or c == clsid.online_offline_group_s)
 end
 
 --- Function used to add a unique call (function called every frame) to the level.

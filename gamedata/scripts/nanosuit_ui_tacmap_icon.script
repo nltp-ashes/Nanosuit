@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 03/05/2026                                                                                             ---
+---    Date : 05/05/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map icon UI.                                                      ---
@@ -83,7 +83,7 @@ function ui_tacmap_icon:update(obj, hud_pos, hud_dir)
 end
 
 function ui_tacmap_icon:get_texture(obj)
-    if IsInvbox(obj) then
+    if IsInvbox(obj) or nanosuit_utils.is_smart_terrain(obj) then
         return "ui_nanosuit_no_draw"
     end
     if IsCar(obj) then

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 01/05/2026                                                                                             ---
+---    Date : 05/05/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to manage a pool of object to display in the Nanosuit tactical map UI.                            ---
@@ -65,7 +65,7 @@ function ui_tacmap_object_pool:iterate_task_targets()
 end
 
 function ui_tacmap_object_pool:game_object_on_net_spawn(obj)
-    if (IsStalker(obj) or IsMonster(obj) or IsCar(obj) or IsInvbox(obj)) and obj:id() ~= AC_ID then
+    if (IsStalker(obj) or IsMonster(obj) or IsCar(obj) or IsInvbox(obj) or nanosuit_utils.is_smart_terrain(obj) or nanosuit_utils.is_squad(obj)) and obj:id() ~= AC_ID then
         self.m_pool[obj:id()] = obj
     end
 end
