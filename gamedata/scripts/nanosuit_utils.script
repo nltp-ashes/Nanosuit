@@ -311,7 +311,12 @@ function get_true_task_target(tsk_id)
 
     -- Check we have a target and task is still active (tasks in task_manager.task_info can be completed but not yet removed)
     if target_id and db.actor:get_task(tsk_id, true) ~= nil then
-        return level.object_by_id(target_id)
+        local obj = level.object_by_id(target_id)
+        -- Always return the top most item in the inventory owner chain
+        while obj and obj:parent() ~= nil do
+            obj = obj:parent()
+        end
+        return obj
     end
 
     return nil
