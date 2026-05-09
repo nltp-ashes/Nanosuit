@@ -113,6 +113,7 @@ The addon natively integrates[^native_integrations] with the following addons, b
 5. [Powered Exoskeletons v2.2](https://github.com/ahuyn/anomaly-exo) (built-in compatibility, to prevent the nanosuit from being considered an exoskeleton);
 6. [Body Health System Redux v2.0.2](https://www.moddb.com/mods/stalker-anomaly/addons/100-groks-body-health-system-redux-for-151) (built-in compatibility, to prevent UI overlaps);
 7. [HeatVision v1.3](https://www.moddb.com/mods/stalker-anomaly/addons/heatvision-v02-extension-for-beefs-nvg-dx11engine-mod) (adds nanovision to the suit, if installed);
+8. [Faction Identification UI v1.2.2](https://www.moddb.com/mods/stalker-anomaly/addons/crooks-faction-identification-ui) (built-in compatibility, to prevent UI overlaps);
 
 [^native_integrations]: Native integration are similar to compatibility patches, except they are built-into the addon. If the other addon is installed, the features will be available, if not, they will be disabled, all without requiring any extra steps from the user.
 
