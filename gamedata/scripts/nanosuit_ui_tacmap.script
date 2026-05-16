@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 03/05/2026                                                                                             ---
+---    Date : 17/05/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -74,7 +74,7 @@ function ui_tacmap:destroy()
     self.m_object_pool:destroy()
     self.m_parent = nil
 
-    for id, data in pairs(self.m_tracked_objects) do
+    for id in pairs(self.m_tracked_objects) do
         self.m_tracked_objects[id]:destroy(self.m_ui_map)
         self.m_tracked_objects[id] = nil
     end
@@ -104,33 +104,28 @@ function ui_tacmap:Update(force)
     -- FIXME : finish implementing this when I find a way to improve the code's performance
     -- self.m_map_texture:update()
     self:update_icons()
-    self:update_task_arrows()
 end
 
--- TODO : need to refactor the two update loops into one
 function ui_tacmap:update_icons()
     if not self:is_enabled() then
-        for id, data in pairs(self.m_tracked_objects) do
+        for id in pairs(self.m_tracked_objects) do
             self.m_tracked_objects[id]:destroy(self.m_ui_map)
             self.m_tracked_objects[id] = nil
         end
         return
     end
 
-    for id, obj in self.m_object_pool:iterate_nearest(self.m_range) do
+    for id, obj in self.m_object_pool:iterate_relevant(self.m_range) do
+        if not self.m_tracked_objects[id] then
+            self.m_tracked_objects[id] = nanosuit_ui_tacmap_icon.ui_tacmap_icon(self, self.m_ui_map)
+        end
         local world_pos = obj:position()
         local world_dir = obj:direction()
         local hud_pos = self:pos_world_to_tacmap(world_pos)
         local hud_dir = self:dir_world_to_tacmap(world_dir)
-        if self:is_within_bounds(hud_pos) then
-            if not self.m_tracked_objects[id] then
-                self.m_tracked_objects[id] = nanosuit_ui_tacmap_icon.ui_tacmap_icon(self.m_ui_map)
-            end
-            self.m_tracked_objects[id]:update(obj, hud_pos, hud_dir)
-        elseif self.m_tracked_objects[id] then
-            self.m_tracked_objects[id]:destroy(self.m_ui_map)
-            self.m_tracked_objects[id] = nil
-        end
+        local edge_pos, edge_dir = self:get_bounds_intersection(hud_pos)
+        local is_in_bounds = self:is_within_bounds(hud_pos)
+        self.m_tracked_objects[id]:update(obj, is_in_bounds, hud_pos, hud_dir, edge_pos, edge_dir)
     end
 
     for id, data in pairs(self.m_tracked_objects) do
@@ -139,39 +134,6 @@ function ui_tacmap:update_icons()
         else
             self.m_tracked_objects[id]:destroy(self.m_ui_map)
             self.m_tracked_objects[id] = nil
-        end
-    end
-end
-
-function ui_tacmap:update_task_arrows()
-    if not self:is_enabled() then
-        for id, data in pairs(self.m_task_arrows) do
-            self.m_task_arrows[id]:destroy(self.m_ui_map)
-            self.m_task_arrows[id] = nil
-        end
-        return
-    end
-
-    for id, obj in self.m_object_pool:iterate_task_targets() do
-        local hud_pos = self:pos_world_to_tacmap(obj:position())
-        if not self:is_within_bounds(hud_pos) then
-            if not self.m_task_arrows[id] then
-                self.m_task_arrows[id] = nanosuit_ui_tacmap_task_arrow.ui_tacmap_task_arrow(self.m_ui_map)
-            end
-            local edge_pos, edge_dir = self:get_bounds_intersection(hud_pos)
-            self.m_task_arrows[id]:update(obj, edge_pos, edge_dir)
-        elseif self.m_task_arrows[id] then
-            self.m_task_arrows[id]:destroy(self.m_ui_map)
-            self.m_task_arrows[id] = nil
-        end
-    end
-
-    for id, data in pairs(self.m_task_arrows) do
-        if data.refreshed then
-            data.refreshed = false
-        else
-            self.m_task_arrows[id]:destroy(self.m_ui_map)
-            self.m_task_arrows[id] = nil
         end
     end
 end

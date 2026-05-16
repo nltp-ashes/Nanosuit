@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 05/05/2026                                                                                             ---
+---    Date : 17/05/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -241,31 +241,8 @@ end
 -- Task functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
---- Function used to determine if a given object ID is the current target of a primary and active task.
---- @param id number
---- @return boolean
-function is_task_target(id, type)
-    -- Specific case for guide task
-    if type == "secondary" and tasks_guide.curr_guid and tasks_guide.curr_guid.id_smart == id then
-        return true
-    end
-
-    -- Go through real game tasks
-    local tm = task_manager.get_task_manager()
-    for tsk_id,tsk in pairs(tm.task_info) do
-        if type == "any" or (type == "primary" and tsk.storyline) or (type == "secondary" and not tsk.storyline) then
-            local obj = this.get_true_task_target(tsk_id)
-            if obj and obj:id() == id then
-                return true
-            end
-        end
-    end
-
-    return false
-end
-
 --- Function used to get all the current targets of active tasks.
---- The function returns a table of game objects, indexed by their ID.
+--- The function returns for each target ID, the task ID, the target object, and the task type.
 --- @return table
 function get_all_task_targets()
     local targets = {}
@@ -275,7 +252,7 @@ function get_all_task_targets()
     for tsk_id,tsk in pairs(tm.task_info) do
         local obj = this.get_true_task_target(tsk_id)
         if obj then
-            targets[obj:id()] = obj
+            targets[obj:id()] = { tsk_id = tsk_id, obj = obj, primary = tsk.storyline, secondary = not tsk.storyline }
         end
     end
 
@@ -283,7 +260,7 @@ function get_all_task_targets()
     if tasks_guide.curr_guid and tasks_guide.curr_guid.id_smart then
         local obj = level.object_by_id(tasks_guide.curr_guid.id_smart)
         if obj then
-            targets[obj:id()] = obj
+            targets[obj:id()] = { tsk_id = nil, obj = obj, primary = false, secondary = true }
         end
     end
 
@@ -295,31 +272,35 @@ end
 --- @param tsk_id number
 --- @return game_object
 function get_true_task_target(tsk_id)
+    -- Check if task is still active (tasks in task_manager.task_info can be completed but not yet removed)
+    if db.actor:get_task(tsk_id, true) == nil then
+        return nil
+    end
+
+    -- Get task
     local tm = task_manager.get_task_manager()
     local tsk = tm.task_info[tsk_id]
 
     -- Start with target pointed by task
     local target_id = tsk.current_target
+    if not target_id then
+        return nil
+    end
 
     -- Special case for squads : they don't have game objects, so we target a member instead
-    local se_obj = target_id and alife_object(target_id)
+    local se_obj = alife_object(target_id)
     if nanosuit_utils.is_squad(se_obj) then
         for member in se_obj:squad_members() do
             target_id = member.id
         end
     end
 
-    -- Check we have a target and task is still active (tasks in task_manager.task_info can be completed but not yet removed)
-    if target_id and db.actor:get_task(tsk_id, true) ~= nil then
-        local obj = level.object_by_id(target_id)
-        -- Always return the top most item in the inventory owner chain
-        while obj and obj:parent() ~= nil do
-            obj = obj:parent()
-        end
-        return obj
+    -- Always return the top most item in the inventory owner chain
+    local obj = level.object_by_id(target_id)
+    while obj and obj:parent() ~= nil do
+        obj = obj:parent()
     end
-
-    return nil
+    return obj
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------

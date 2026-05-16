@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 05/05/2026                                                                                             ---
+---    Date : 17/05/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to manage a pool of object to display in the Nanosuit tactical map UI.                            ---
@@ -21,7 +21,18 @@ class "ui_tacmap_object_pool"
 
 function ui_tacmap_object_pool:__init()
     -- Variables
+    self.m_validators = {
+        IsStalker,
+        IsMonster,
+        IsCar,
+        IsInvbox,
+        nanosuit_utils.is_smart_terrain,
+        nanosuit_utils.is_squad
+    }
     self.m_pool = {}
+    self.m_task_targets_cache = {}
+    self.m_task_targets_cache_last_update = 0
+    self.m_task_targets_cache_update_rate = 2000 -- 0.5 Hz
 
     -- Initialize pool
     for id,obj in pairs(gameobjects_registry) do
@@ -29,6 +40,7 @@ function ui_tacmap_object_pool:__init()
     end
 
     -- Callbacks
+    RegisterScriptCallback("actor_on_update", self)
     RegisterScriptCallback("game_object_on_net_spawn", self)
     RegisterScriptCallback("game_object_on_net_destroy", self)
 end
@@ -37,35 +49,37 @@ function ui_tacmap_object_pool:__finalize()
 end
 
 function ui_tacmap_object_pool:destroy()
+    UnregisterScriptCallback("actor_on_update", self)
     UnregisterScriptCallback("game_object_on_net_spawn", self)
     UnregisterScriptCallback("game_object_on_net_destroy", self)
 end
 
-function ui_tacmap_object_pool:iterate_nearest(range)
-    local range_sqr = range * range
-    local result = {}
-    for id,obj in pairs(self.m_pool) do
-        local dist_sqr = obj:position():distance_to_sqr(device().cam_pos)
-        if dist_sqr <= range_sqr then
-            result[id] = obj
-        end
+function ui_tacmap_object_pool:actor_on_update()
+    -- Throttle update
+    local tg = time_global()
+    if tg - self.m_task_targets_cache_last_update < self.m_task_targets_cache_update_rate then
+        return
     end
-    return pairs(result)
-end
+    self.m_task_targets_cache_last_update = tg
 
-function ui_tacmap_object_pool:iterate_task_targets()
-    local all_task_targets = nanosuit_utils.get_all_task_targets()
-    local result = {}
-    for id,obj in pairs(all_task_targets) do
-        if self.m_pool[id] then
-            result[id] = obj
-        end
+    -- Reset cache
+    self.m_task_targets_cache = {}
+
+    -- Update cache with current task targets
+    local all_targets = nanosuit_utils.get_all_task_targets()
+    for tgt_id, info in pairs(all_targets) do
+        self.m_task_targets_cache[tgt_id] = { tsk_id = info.tsk_id, primary = info.primary, secondary = info.secondary }
     end
-    return pairs(result)
 end
 
 function ui_tacmap_object_pool:game_object_on_net_spawn(obj)
-    if (IsStalker(obj) or IsMonster(obj) or IsCar(obj) or IsInvbox(obj) or nanosuit_utils.is_smart_terrain(obj) or nanosuit_utils.is_squad(obj)) and obj:id() ~= AC_ID then
+    local valid = false
+    for _, validator in pairs(self.m_validators) do
+        if validator(obj) then
+            valid = true
+        end
+    end
+    if valid and obj:id() ~= AC_ID then
         self.m_pool[obj:id()] = obj
     end
 end
@@ -74,4 +88,21 @@ function ui_tacmap_object_pool:game_object_on_net_destroy(obj)
     if self.m_pool[obj:id()] then
         self.m_pool[obj:id()] = nil
     end
+end
+
+function ui_tacmap_object_pool:iterate_relevant(range)
+    local range_sqr = range * range
+    local result = {}
+    for id,obj in pairs(self.m_pool) do
+        local dist_sqr = obj:position():distance_to_sqr(device().cam_pos)
+        if dist_sqr <= range_sqr then
+            result[id] = obj
+        end
+    end
+    for id in pairs(self.m_task_targets_cache) do
+        if self.m_pool[id] and not result[id] then
+            result[id] = self.m_pool[id]
+        end
+    end
+    return pairs(result)
 end

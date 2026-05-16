@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 05/05/2026                                                                                             ---
+---    Date : 17/05/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map icon UI.                                                      ---
@@ -19,8 +19,10 @@
 
 class "ui_tacmap_icon"
 
-function ui_tacmap_icon:__init(container)
+function ui_tacmap_icon:__init(parent, container)
     -- Variables
+    self.m_parent = parent
+
     self.m_default_color = GetARGB(255, 255, 255, 255)
     self.m_corpse_looted_color = GetARGB(255, 150, 150, 150)
     self.m_primary_task_color = GetARGB(255, 0, 255, 0)
@@ -39,19 +41,17 @@ function ui_tacmap_icon:__init(container)
     self.m_icon_static = self.m_xml:InitStatic("icon", container)
     self.m_icon_static:SetAutoDelete(true)
 
-    -- Primary task icon
-    self.m_primary_task_static = self.m_xml:InitStatic("icon", container)
-    self.m_primary_task_static:InitTexture("ui_nanosuit_tacmap_task_point")
-    self.m_primary_task_static:SetTextureColor(self.m_primary_task_color)
-    self.m_primary_task_static:Show(false)
-    self.m_primary_task_static:SetAutoDelete(true)
+    -- Task icon
+    self.m_task_icon_static = self.m_xml:InitStatic("icon", container)
+    self.m_task_icon_static:InitTexture("ui_nanosuit_tacmap_task_point")
+    self.m_task_icon_static:Show(false)
+    self.m_task_icon_static:SetAutoDelete(true)
 
-    -- Secondary task icon
-    self.m_secondary_task_static = self.m_xml:InitStatic("icon", container)
-    self.m_secondary_task_static:InitTexture("ui_nanosuit_tacmap_task_point")
-    self.m_secondary_task_static:SetTextureColor(self.m_secondary_task_color)
-    self.m_secondary_task_static:Show(false)
-    self.m_secondary_task_static:SetAutoDelete(true)
+    -- Task arrow icon
+    self.m_task_arrow_static = self.m_xml:InitStatic("icon", container)
+    self.m_task_arrow_static:InitTexture("ui_nanosuit_tacmap_task_arrow")
+    self.m_task_arrow_static:Show(false)
+    self.m_task_arrow_static:SetAutoDelete(true)
 end
 
 function ui_tacmap_icon:__finalize()
@@ -60,23 +60,51 @@ end
 function ui_tacmap_icon:destroy(container)
     -- Detach child statics
     container:DetachChild(self.m_icon_static)
-    container:DetachChild(self.m_primary_task_static)
-    container:DetachChild(self.m_secondary_task_static)
+    container:DetachChild(self.m_task_icon_static)
+    container:DetachChild(self.m_task_arrow_static)
+
+    self.m_parent = nil
 end
 
-function ui_tacmap_icon:update(obj, hud_pos, hud_dir)
+function ui_tacmap_icon:update(obj, is_in_bounds, hud_pos, hud_dir, edge_hud_pos, edge_hud_dir)
+    local task_target_info = self.m_parent.m_object_pool.m_task_targets_cache[obj:id()]
+    if is_in_bounds then
+        self:update_in_bounds(obj, hud_pos, hud_dir, task_target_info)
+    elseif self.m_parent.m_object_pool.m_task_targets_cache[obj:id()] then
+        self:update_out_of_bounds(obj, edge_hud_pos, edge_hud_dir, task_target_info)
+    end
+end
+
+function ui_tacmap_icon:update_in_bounds(obj, hud_pos, hud_dir, task_target_info)
     -- Update statics
     self.m_icon_static:SetHeading(self:get_heading(obj, hud_dir))
     self.m_icon_static:InitTexture(self:get_texture(obj))
     self.m_icon_static:SetTextureColor(self:get_color(obj))
     self.m_icon_static:SetWndSize(self:get_size(obj))
-    self.m_primary_task_static:Show(nanosuit_utils.is_task_target(obj:id(), "primary"))
-    self.m_secondary_task_static:Show(nanosuit_utils.is_task_target(obj:id(), "secondary"))
+    self.m_icon_static:Show(true)
+    self.m_task_icon_static:Show(task_target_info ~= nil)
+    self.m_task_icon_static:SetTextureColor(task_target_info and task_target_info.primary and self.m_primary_task_color or self.m_secondary_task_color)
+    self.m_task_arrow_static:Show(false)
 
     -- Center statics on coordinates
     arm.move_and_center_element(self.m_icon_static, hud_pos.x, hud_pos.y)
-    arm.move_and_center_element(self.m_primary_task_static, hud_pos.x, hud_pos.y)
-    arm.move_and_center_element(self.m_secondary_task_static, hud_pos.x, hud_pos.y)
+    arm.move_and_center_element(self.m_task_icon_static, hud_pos.x, hud_pos.y)
+
+    -- Mark as refreshed
+    self.refreshed = true
+end
+
+function ui_tacmap_icon:update_out_of_bounds(obj, hud_pos, hud_dir, task_target_info)
+    self.m_icon_static:Show(false)
+    self.m_task_icon_static:Show(false)
+
+    if hud_pos and hud_dir then
+        arm.move_and_center_element(self.m_task_arrow_static, hud_pos.x, hud_pos.y)
+        self.m_task_arrow_static:SetHeading(hud_dir)
+    end
+
+    self.m_task_arrow_static:Show(task_target_info ~= nil)
+    self.m_task_arrow_static:SetTextureColor(task_target_info and task_target_info.primary and self.m_primary_task_color or self.m_secondary_task_color)
 
     -- Mark as refreshed
     self.refreshed = true
