@@ -26,6 +26,7 @@ function ui_tacmap_object_pool:__init()
         IsMonster,
         IsCar,
         IsInvbox,
+        nanosuit_utils.is_space_restrictor,
         nanosuit_utils.is_smart_terrain,
         nanosuit_utils.is_squad
     }

@@ -111,7 +111,7 @@ function ui_tacmap_icon:update_out_of_bounds(obj, hud_pos, hud_dir, task_target_
 end
 
 function ui_tacmap_icon:get_texture(obj)
-    if IsInvbox(obj) or nanosuit_utils.is_smart_terrain(obj) then
+    if nanosuit_utils.is_space_restrictor(obj) or IsInvbox(obj) or nanosuit_utils.is_smart_terrain(obj) then
         return "ui_nanosuit_no_draw"
     end
     if IsCar(obj) then

@@ -236,7 +236,6 @@ function get_renderer()
     return renderers[get_console_cmd(0, "renderer")]
 end
 
-
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Task functions
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -300,7 +299,186 @@ function get_true_task_target(tsk_id)
     while obj and obj:parent() ~= nil do
         obj = obj:parent()
     end
+
+    -- Refresh server object if needed
+    if obj and se_obj.id ~= obj:id() then
+        se_obj = alife_object(obj:id())
+    end
+
+    -- If target is on another level, point to the optimal level changer towards the target
+    if not simulation_objects.is_on_the_same_level(alife():actor(), se_obj) then
+        -- Source level (player location)
+        local src_level = level.name()
+
+        -- Target level (object location)
+        local obj_lid = game_graph():vertex(se_obj.m_game_vertex_id):level_id()
+        local tgt_level = obj_lid and obj_lid < 50 and alife():level_name(obj_lid)
+
+        -- Calculate travel plan
+        local plan = this.get_route_plan_to_target(txr_routes.sec_to_map[src_level], txr_routes.sec_to_map[tgt_level], {})
+
+        -- Get level changers between source level and next level in plan
+        local lcs = plan and txr_routes.get_route(plan[1], plan[2])
+
+        -- Fetch game object of level changer
+        local lc_se = lcs and get_story_se_object(lcs[1])
+        return lc_se and level.object_by_id(lc_se.id)
+    end
+
     return obj
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Unique calls functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to add a unique call (function called every frame) to the level.
+--- @param callback function
+--- @return function
+function add_unique_call(callback, ...)
+    local args = { ... }
+    local wrapper = function()
+        if callback(unpack(args)) then
+            return true
+        end
+        return false
+    end
+    AddUniqueCall(wrapper)
+    return wrapper
+end
+
+--- Function used to remove a unique call (function called every frame) from the level.
+--- @param callback function
+--- @return nil
+function remove_unique_call(callback)
+    RemoveUniqueCall(callback)
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Route functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Helper: build banned lookup table from list
+function build_banned_table(banned_levels)
+    local banned = {}
+    if banned_levels then
+        for _, lvl in ipairs(banned_levels) do
+            banned[lvl] = true
+        end
+    end
+    return banned
+end
+
+-- Helper: get neighbors for a level, excluding banned
+function get_neighbors(level, banned)
+    local neighbors = {}
+    local transitions = txr_routes.routes[level]
+    if transitions then
+        for neighbor, story_ids in pairs(transitions) do
+            if not banned[neighbor] then
+                local story_id = story_ids[1]
+                table.insert(neighbors, {level = neighbor, story_id = story_id})
+            end
+        end
+    end
+    return neighbors
+end
+
+-- Helper: get position of transition object for a given story id
+function get_transition_pos(story_id)
+    local obj = get_story_se_object(story_id)
+    if obj and obj.position then
+        return obj.position
+    end
+    return nil
+end
+
+-- Helper: collect all unique levels (sources and destinations), excluding banned
+function collect_all_levels(banned)
+    local all_levels = {}
+    for src, transitions in pairs(txr_routes.routes) do
+        if not banned[src] then
+            all_levels[src] = true
+        end
+        for dst in pairs(transitions) do
+            if not banned[dst] then
+                all_levels[dst] = true
+            end
+        end
+    end
+    return all_levels
+end
+
+function get_route_plan_to_target(start, target, banned_levels)
+    local banned = build_banned_table(banned_levels)
+    if banned[start] or banned[target] then
+        return nil
+    end
+    if start == target then
+        return {start}
+    end
+
+    local visited = {}
+    local dist = {}
+    local prev = {}
+    local queue = {}
+
+    local all_levels = collect_all_levels(banned)
+    for k in pairs(all_levels) do
+        dist[k] = math.huge
+        prev[k] = nil
+    end
+    dist[start] = 0
+    table.insert(queue, {level = start, cost = 0})
+
+    while #queue > 0 do
+        table.sort(queue, function(a, b) return a.cost < b.cost end)
+        local current = table.remove(queue, 1)
+        local curr_level = current.level
+        if not visited[curr_level] then
+            visited[curr_level] = true
+            if curr_level == target then
+                break
+            end
+
+            local curr_neighbors = get_neighbors(curr_level, banned)
+            local curr_pos = nil
+            if curr_level ~= start then
+                local incoming = txr_routes.routes[prev[curr_level]] and txr_routes.routes[prev[curr_level]][curr_level]
+                if incoming then
+                    curr_pos = get_transition_pos(incoming[1])
+                end
+            end
+
+            for _, neighbor in ipairs(curr_neighbors) do
+                local n_level = neighbor.level
+                if not visited[n_level] and not banned[n_level] then
+                    local n_pos = get_transition_pos(neighbor.story_id)
+                    local step_dist = 1
+                    if curr_pos and n_pos then
+                        step_dist = curr_pos:distance_to(n_pos)
+                    end
+                    local alt = dist[curr_level] + step_dist
+                    if alt < dist[n_level] then
+                        dist[n_level] = alt
+                        prev[n_level] = curr_level
+                        table.insert(queue, {level = n_level, cost = alt})
+                    end
+                end
+            end
+        end
+    end
+
+    local path = {}
+    local u = target
+    if not prev[u] and start ~= target then
+        return nil
+    end
+    while u do
+        table.insert(path, 1, u)
+        u = prev[u]
+    end
+    return path
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -324,31 +502,16 @@ function is_smart_terrain(o, c)
     return c and (c == clsid.smart_terrain)
 end
 
+function is_space_restrictor(o, c)
+    if not (c) then
+        c = o and o:clsid()
+    end
+    return c and (c == clsid.space_restrictor or c == clsid.script_restr)
+end
+
 function is_squad(o, c)
     if not (c) then
         c = o and o:clsid()
     end
     return c and (c == clsid.online_offline_group or c == clsid.online_offline_group_s)
-end
-
---- Function used to add a unique call (function called every frame) to the level.
---- @param callback function
---- @return function
-function add_unique_call(callback, ...)
-    local args = { ... }
-    local wrapper = function()
-        if callback(unpack(args)) then
-            return true
-        end
-        return false
-    end
-    AddUniqueCall(wrapper)
-    return wrapper
-end
-
---- Function used to remove a unique call (function called every frame) from the level.
---- @param callback function
---- @return nil
-function remove_unique_call(callback)
-    RemoveUniqueCall(callback)
 end
