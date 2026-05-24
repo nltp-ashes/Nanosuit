@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/05/2026                                                                                             ---
+---    Date : 24/05/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -44,7 +44,7 @@ function ui_tacmap:__init(parent) super()
     self.m_task_arrows = {}
 
     self.m_last_update = 0
-    self.m_update_rate = 1 / 60 * 1000 -- 60 Hz
+    self.m_update_rate = 1 / 30 * 1000 -- 30 Hz
 
     -- FIXME : finish implementing this when I find a way to improve the code's performance
     -- self.m_map_texture = nanosuit_ui_tacmap_map.ui_tacmap_map(self)
@@ -122,10 +122,14 @@ function ui_tacmap:update_icons()
         local world_pos = obj:position()
         local world_dir = obj:direction()
         local hud_pos = self:pos_world_to_tacmap(world_pos)
-        local hud_dir = self:dir_world_to_tacmap(world_dir)
-        local edge_pos, edge_dir = self:get_bounds_intersection(hud_pos)
-        local is_in_bounds = self:is_within_bounds(hud_pos)
-        self.m_tracked_objects[id]:update(obj, is_in_bounds, hud_pos, hud_dir, edge_pos, edge_dir)
+        local task_target_info = self.m_object_pool.m_task_targets_cache[obj:id()]
+        if self:is_within_bounds(hud_pos) then
+            local hud_dir = self:dir_world_to_tacmap(world_dir)
+            self.m_tracked_objects[id]:update_in_bounds(obj, hud_pos, hud_dir, task_target_info)
+        elseif self.m_object_pool.m_task_targets_cache[obj:id()] then
+            local edge_hud_pos, edge_hud_dir = self:get_bounds_intersection(hud_pos)
+            self.m_tracked_objects[id]:update_out_of_bounds(obj, edge_hud_pos, edge_hud_dir, task_target_info)
+        end
     end
 
     for id, data in pairs(self.m_tracked_objects) do

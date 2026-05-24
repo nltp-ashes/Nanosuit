@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/05/2026                                                                                             ---
+---    Date : 24/05/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map icon UI.                                                      ---
@@ -64,15 +64,6 @@ function ui_tacmap_icon:destroy(container)
     container:DetachChild(self.m_task_arrow_static)
 
     self.m_parent = nil
-end
-
-function ui_tacmap_icon:update(obj, is_in_bounds, hud_pos, hud_dir, edge_hud_pos, edge_hud_dir)
-    local task_target_info = self.m_parent.m_object_pool.m_task_targets_cache[obj:id()]
-    if is_in_bounds then
-        self:update_in_bounds(obj, hud_pos, hud_dir, task_target_info)
-    elseif self.m_parent.m_object_pool.m_task_targets_cache[obj:id()] then
-        self:update_out_of_bounds(obj, edge_hud_pos, edge_hud_dir, task_target_info)
-    end
 end
 
 function ui_tacmap_icon:update_in_bounds(obj, hud_pos, hud_dir, task_target_info)
