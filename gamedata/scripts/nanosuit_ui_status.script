@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 02/09/2025                                                                                             ---
+---    Date : 02/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit status hub (energy, health, ammo, etc) UI.                                 ---
@@ -25,6 +25,8 @@ class "ui_status" (CUIScriptWnd)
 function ui_status:__init(parent) super()
     -- Variables
     self.m_parent = parent
+    self.m_ammo_count_low_threshold = 0.2
+    self.m_ammo_reserve_low_threshold = 0
 
     -- Build UI
     self.m_xml = CScriptXmlInit()
@@ -112,54 +114,75 @@ function ui_status:Update(force)
     CUIScriptWnd.Update(self)
 
     if self.m_parent.m_core.m_malfunctor.m_enabled then
-        -- Outline
-        self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.red)
-
-        -- Current suit mode
-        self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_colors.red)
-        self.m_ui_suit_mode:InitTexture("ui_nanosuit_no_draw")
-
-        -- Energy
-        self.m_ui_energy:SetText("!")
-        self.m_ui_energy:SetTextColor(self.m_parent.m_colors.red)
-        self.m_ui_energy_bar:SetProgressPos(0)
-        self.m_ui_energy_bar_background:SetTextureColor(self.m_parent.m_colors.energy_off_bg)
-        self.m_ui_energy_icon:SetTextureColor(self.m_parent.m_colors.red)
-
-        -- Health
-        self.m_ui_health:SetText("!")
-        self.m_ui_health:SetTextColor(self.m_parent.m_colors.red)
-        self.m_ui_health_bar:SetProgressPos(0)
-        self.m_ui_health_bar_background:SetTextureColor(self.m_parent.m_colors.health_off_bg)
-        self.m_ui_health_icon:SetTextureColor(self.m_parent.m_colors.red)
-
-        -- Stamina
-        self.m_ui_stamina:SetText("!")
-        self.m_ui_stamina:SetTextColor(self.m_parent.m_colors.red)
-        self.m_ui_stamina_bar:SetProgressPos(0)
-        self.m_ui_stamina_bar_background:SetTextureColor(self.m_parent.m_colors.stamina_off_bg)
-        self.m_ui_stamina_icon:SetTextureColor(self.m_parent.m_colors.red)
-
-        -- Ammo count
-        self.m_ui_ammo_count:SetText("")
-
-        -- Ammo reserve
-        self.m_ui_ammo_reserve:SetText("")
-
-        -- Fire mode
-        self.m_ui_fire_mode:InitTexture("ui_nanosuit_no_draw")
+        self:update_in_malfunction()
         return
     end
 
+    self:update_outline()
+    self:update_suit_mode()
+    self:update_energy()
+    self:update_health()
+    self:update_stamina()
+
+    local active_item = db.actor:active_item()
+    local weapon_obj = active_item and IsWeapon(active_item) and not IsMelee(active_item) and active_item
+    local weapon_class = weapon_obj and weapon_obj:cast_Weapon()
+
+    self:update_ammo_count(weapon_obj, weapon_class)
+    self:update_ammo_reserve(weapon_obj, weapon_class)
+    self:update_fire_mode(weapon_obj, weapon_class)
+end
+
+function ui_status:update_in_malfunction()
     -- Outline
-    self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
+    self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.red)
 
     -- Current suit mode
+    self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_colors.red)
+    self.m_ui_suit_mode:InitTexture("ui_nanosuit_no_draw")
+
+    -- Energy
+    self.m_ui_energy:SetText("!")
+    self.m_ui_energy:SetTextColor(self.m_parent.m_colors.red)
+    self.m_ui_energy_bar:SetProgressPos(0)
+    self.m_ui_energy_bar_background:SetTextureColor(self.m_parent.m_colors.energy_off_bg)
+    self.m_ui_energy_icon:SetTextureColor(self.m_parent.m_colors.red)
+
+    -- Health
+    self.m_ui_health:SetText("!")
+    self.m_ui_health:SetTextColor(self.m_parent.m_colors.red)
+    self.m_ui_health_bar:SetProgressPos(0)
+    self.m_ui_health_bar_background:SetTextureColor(self.m_parent.m_colors.health_off_bg)
+    self.m_ui_health_icon:SetTextureColor(self.m_parent.m_colors.red)
+
+    -- Stamina
+    self.m_ui_stamina:SetText("!")
+    self.m_ui_stamina:SetTextColor(self.m_parent.m_colors.red)
+    self.m_ui_stamina_bar:SetProgressPos(0)
+    self.m_ui_stamina_bar_background:SetTextureColor(self.m_parent.m_colors.stamina_off_bg)
+    self.m_ui_stamina_icon:SetTextureColor(self.m_parent.m_colors.red)
+
+    -- Ammo count
+    self.m_ui_ammo_count:SetText("")
+
+    -- Ammo reserve
+    self.m_ui_ammo_reserve:SetText("")
+
+    -- Fire mode
+    self.m_ui_fire_mode:InitTexture("ui_nanosuit_no_draw")
+end
+
+function ui_status:update_outline()
+    self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
+end
+
+function ui_status:update_suit_mode()
     local suit_mode = "ui_nanosuit_status_" .. self.m_parent.m_core.m_current_mode.m_name
     self.m_ui_suit_mode:InitTexture(suit_mode)
     self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_colors.background)
+end
 
-    -- Energy
+function ui_status:update_energy()
     local energy = self.m_parent.m_core.m_energy.m_level
     energy = round(energy)
     energy = clamp(energy, 0, 100)
@@ -170,8 +193,9 @@ function ui_status:Update(force)
     self.m_ui_energy:SetText(energy)
     self.m_ui_energy:SetTextColor(self.m_parent.m_colors.text)
     self.m_ui_energy_icon:SetTextureColor(self.m_parent.m_colors.text)
+end
 
-    -- Health
+function ui_status:update_health()
     local health = db.actor.health
     health = health * 100
     health = round(health)
@@ -183,8 +207,9 @@ function ui_status:Update(force)
     self.m_ui_health:SetText(health)
     self.m_ui_health:SetTextColor(self.m_parent.m_colors.text)
     self.m_ui_health_icon:SetTextureColor(self.m_parent.m_colors.text)
+end
 
-    -- Stamina
+function ui_status:update_stamina()
     local stamina = db.actor.power
     stamina = stamina * 100
     stamina = round(stamina)
@@ -196,31 +221,60 @@ function ui_status:Update(force)
     self.m_ui_stamina:SetText(stamina)
     self.m_ui_stamina:SetTextColor(self.m_parent.m_colors.text)
     self.m_ui_stamina_icon:SetTextureColor(self.m_parent.m_colors.text)
+end
 
-    local active_item = db.actor:active_item()
-    local weapon_obj = active_item and IsWeapon(active_item) and not IsMelee(active_item) and active_item
-    local weapon_class = weapon_obj and weapon_obj:cast_Weapon()
+function ui_status:update_ammo_count(weapon_obj, weapon_class)
+    if not weapon_obj or not weapon_class then
+        self.m_ui_ammo_count:SetText("---")
+        self.m_ui_ammo_count:SetTextColor(self.m_parent.m_colors.text)
+        return
+    end
 
-    -- Ammo count
-    local ammo = weapon_obj and weapon_obj:get_ammo_in_magazine()
-    ammo = ammo and clamp(ammo, 0, 999)
-    ammo = ammo and tostring(ammo)
-    ammo = ammo and nanosuit_utils.string_pad_l(ammo, "0", 3)
-    ammo = ammo or "---"
+    local ammo = weapon_obj:get_ammo_in_magazine()
+    local mag_size = weapon_class:GetAmmoMagSize()
+
+    if ammo <= mag_size * self.m_ammo_count_low_threshold then
+        self.m_ui_ammo_count:SetTextColor(self.m_parent.m_colors.red)
+    else
+        self.m_ui_ammo_count:SetTextColor(self.m_parent.m_colors.text)
+    end
+
+    ammo = clamp(ammo, 0, 999)
+    ammo = tostring(ammo)
+    ammo = nanosuit_utils.string_pad_l(ammo, "0", 3)
     self.m_ui_ammo_count:SetText(ammo)
+end
 
-    -- Ammo reserve
-    local ammo_reserve = weapon_obj and weapon_obj:get_ammo_count_for_type(weapon_obj:get_ammo_type())
-    ammo_reserve = ammo_reserve and clamp(ammo_reserve, 0, 999)
-    ammo_reserve = ammo_reserve and tostring(ammo_reserve)
-    ammo_reserve = ammo_reserve and nanosuit_utils.string_pad_l(ammo_reserve, "0", 3)
-    ammo_reserve = ammo_reserve or "---"
+function ui_status:update_ammo_reserve(weapon_obj, weapon_class)
+    if not weapon_obj or not weapon_class then
+        self.m_ui_ammo_reserve:SetText("---")
+        self.m_ui_ammo_reserve:SetTextColor(self.m_parent.m_colors.text)
+        return
+    end
+
+    local ammo_reserve = weapon_obj:get_ammo_count_for_type(weapon_obj:get_ammo_type())
+    local mag_size = weapon_class:GetAmmoMagSize()
+
+    if ammo_reserve <= mag_size * self.m_ammo_reserve_low_threshold then
+        self.m_ui_ammo_reserve:SetTextColor(self.m_parent.m_colors.red)
+    else
+        self.m_ui_ammo_reserve:SetTextColor(self.m_parent.m_colors.text)
+    end
+
+    ammo_reserve = clamp(ammo_reserve, 0, 999)
+    ammo_reserve = tostring(ammo_reserve)
+    ammo_reserve = nanosuit_utils.string_pad_l(ammo_reserve, "0", 3)
     self.m_ui_ammo_reserve:SetText(ammo_reserve)
+end
 
-    -- Fire mode
-    local fire_mode = weapon_class and weapon_class:GetFireMode()
-    fire_mode = fire_mode and fire_modes_names_enum[fire_mode]
-    fire_mode = fire_mode and "ui_nanosuit_status_" .. fire_mode
-    fire_mode = fire_mode or "ui_nanosuit_no_draw"
+function ui_status:update_fire_mode(weapon_obj, weapon_class)
+    if not weapon_obj or not weapon_class then
+        self.m_ui_fire_mode:InitTexture("ui_nanosuit_no_draw")
+        return
+    end
+
+    local fire_mode = weapon_class:GetFireMode()
+    fire_mode = fire_modes_names_enum[fire_mode]
+    fire_mode = "ui_nanosuit_status_" .. fire_mode
     self.m_ui_fire_mode:InitTexture(fire_mode)
 end
