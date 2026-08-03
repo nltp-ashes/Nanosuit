@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 27/02/2026                                                                                             ---
+---    Date : 03/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit binoculars UI.                                                             ---
@@ -104,7 +104,7 @@ function ui_binoculars:deactivate()
 end
 
 function ui_binoculars:get_mode()
-    if self.m_parent.m_core.m_nightvision:is_active() then
+    if self.m_parent.m_core.m_nightvision:is_active() or item_device.is_nv_active() then
         return "NV"
     end
     return "VIS"
