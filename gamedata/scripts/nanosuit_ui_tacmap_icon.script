@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 24/05/2026                                                                                             ---
+---    Date : 04/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map icon UI.                                                      ---
@@ -33,22 +33,18 @@ function ui_tacmap_icon:__init(parent, container)
         [game_object.enemy] = GetARGB(255, 255, 0, 0)
     }
 
-    -- Build UI
-    self.m_xml = CScriptXmlInit()
-    self.m_xml:ParseFile("ui_nanosuit_tacmap.xml")
-
     -- Main object icon
-    self.m_icon_static = self.m_xml:InitStatic("icon", container)
+    self.m_icon_static = self.m_parent.m_xml:InitStatic("icon", container)
     self.m_icon_static:SetAutoDelete(true)
 
     -- Task icon
-    self.m_task_icon_static = self.m_xml:InitStatic("icon", container)
+    self.m_task_icon_static = self.m_parent.m_xml:InitStatic("icon", container)
     self.m_task_icon_static:InitTexture("ui_nanosuit_tacmap_task_point")
     self.m_task_icon_static:Show(false)
     self.m_task_icon_static:SetAutoDelete(true)
 
     -- Task arrow icon
-    self.m_task_arrow_static = self.m_xml:InitStatic("icon", container)
+    self.m_task_arrow_static = self.m_parent.m_xml:InitStatic("icon", container)
     self.m_task_arrow_static:InitTexture("ui_nanosuit_tacmap_task_arrow")
     self.m_task_arrow_static:Show(false)
     self.m_task_arrow_static:SetAutoDelete(true)
