@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 04/08/2026                                                                                             ---
+---    Date : 06/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map icon UI.                                                      ---
@@ -98,14 +98,19 @@ function ui_tacmap_icon:update_out_of_bounds(obj, hud_pos, hud_dir, task_target_
 end
 
 function ui_tacmap_icon:get_texture(obj)
-    if nanosuit_utils.is_space_restrictor(obj) or IsInvbox(obj) or nanosuit_utils.is_smart_terrain(obj) then
+    if nanosuit_utils.is_space_restrictor(obj) or nanosuit_utils.is_smart_terrain(obj) or IsInvbox(obj) then
         return "ui_nanosuit_no_draw"
     end
     if IsCar(obj) then
         return "ui_nanosuit_tacmap_vehicle"
     end
-    if (IsStalker(obj) or IsMonster(obj)) and not obj:alive() then
-        return "ui_nanosuit_tacmap_body"
+    if IsStalker(obj) or IsMonster(obj) then
+        if not obj:alive() then
+            return "ui_nanosuit_tacmap_body"
+        end
+        if obj:relation(db.actor) == game_object.enemy and not xr_combat_ignore.fighting_with_actor_npcs[obj:id()] then
+            return "ui_nanosuit_no_draw"
+        end
     end
     return "ui_nanosuit_tacmap_object"
 end

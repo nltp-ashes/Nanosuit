@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/05/2026                                                                                             ---
+---    Date : 06/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to manage a pool of object to display in the Nanosuit tactical map UI.                            ---
@@ -36,7 +36,7 @@ function ui_tacmap_object_pool:__init()
     self.m_task_targets_cache_update_rate = 2000 -- 0.5 Hz
 
     -- Initialize pool
-    for id,obj in pairs(gameobjects_registry) do
+    for id, obj in pairs(gameobjects_registry) do
         self:game_object_on_net_spawn(obj)
     end
 
@@ -95,8 +95,7 @@ function ui_tacmap_object_pool:iterate_relevant(range)
     local range_sqr = range * range
     local result = {}
     for id,obj in pairs(self.m_pool) do
-        local dist_sqr = obj:position():distance_to_sqr(device().cam_pos)
-        if dist_sqr <= range_sqr then
+        if obj:position():distance_to_sqr(device().cam_pos) <= range_sqr then
             result[id] = obj
         end
     end
