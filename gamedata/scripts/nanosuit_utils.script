@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/05/2026                                                                                             ---
+---    Date : 06/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -514,4 +514,11 @@ function is_squad(o, c)
         c = o and o:clsid()
     end
     return c and (c == clsid.online_offline_group or c == clsid.online_offline_group_s)
+end
+
+function is_electro_anomaly(o, c)
+    if not (c) then
+        c = o and o:clsid()
+    end
+    return c and (c == clsid.zone_mosquito_bald or c == clsid.zone_mbald_s)
 end

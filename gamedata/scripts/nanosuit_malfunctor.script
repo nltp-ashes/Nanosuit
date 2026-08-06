@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/11/2025                                                                                             ---
+---    Date : 06/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the malfunction logic of the Nanosuit addon.                                            ---
@@ -19,6 +19,9 @@ armor_modes_enum                    = nanosuit_utils.armor_modes_enum
 -- Constants
 pulse_anomaly_malfunction_dist_sqr  = 50 ^ 2
 psi_storm_malfunction_dist_sqr      = 150 ^ 2
+pulse_anomaly_off_time              = 20
+psi_storm_off_time                  = 20
+electric_shock_off_time             = 5
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- General functions
@@ -28,11 +31,14 @@ bind_anomaly_field_pulse_anomaly_hit = bind_anomaly_field.pulse_anomaly_hit
 bind_anomaly_field.pulse_anomaly_hit = function(particle_pos)
     local ret = bind_anomaly_field_pulse_anomaly_hit(particle_pos)
 
-    local instance = nanosuit_core.get_instance() and nanosuit_core.get_instance().m_malfunctor
-    local is_in_range = distance_2d_sqr(db.actor:position(), particle_pos) <= pulse_anomaly_malfunction_dist_sqr
-    if instance and is_in_range then
-        instance:enable_malfunction(false)
-    end
+    nextTick(function()
+        local instance = nanosuit_core.get_instance()
+        local is_in_range = distance_2d_sqr(db.actor:position(), particle_pos) <= pulse_anomaly_malfunction_dist_sqr
+        if instance and is_in_range then
+            instance.m_malfunctor:enable_malfunction(pulse_anomaly_off_time)
+        end
+        return true
+    end)
 
     return ret
 end
@@ -41,13 +47,37 @@ psi_storm_manager_CPsiStormManager_vortex_actor_hit = psi_storm_manager.CPsiStor
 psi_storm_manager.CPsiStormManager.vortex_actor_hit = function(self, vortex)
     local ret = psi_storm_manager_CPsiStormManager_vortex_actor_hit(self, vortex)
 
-    local instance = nanosuit_core.get_instance() and nanosuit_core.get_instance().m_malfunctor
-    local is_in_range = distance_2d_sqr(db.actor:position(), vortex.particle_pos) <= psi_storm_malfunction_dist_sqr
-    if instance and is_in_range then
-        instance:enable_malfunction(false)
-    end
+    nextTick(function()
+        local instance = nanosuit_core.get_instance()
+        local is_in_range = distance_2d_sqr(db.actor:position(), vortex.particle_pos) <= psi_storm_malfunction_dist_sqr
+        if instance and is_in_range then
+            instance.m_malfunctor:enable_malfunction(psi_storm_off_time)
+        end
+        return true
+    end)
 
     return ret
+end
+
+function actor_on_hit_callback(obj, amount, local_direction, who, bone_index)
+    if not obj or obj:id() ~= AC_ID or not who or not nanosuit_utils.is_electro_anomaly(who) then
+        return
+    end
+    nextTick(function()
+        local instance = nanosuit_core.get_instance()
+        if instance then
+            instance.m_malfunctor:enable_malfunction(electric_shock_off_time)
+        end
+        return true
+    end)
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Callbacks registration
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function on_game_start()
+    RegisterScriptCallback("actor_on_hit_callback", actor_on_hit_callback)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -59,12 +89,9 @@ class "malfunctor"
 function malfunctor:__init(core)
     self.m_core = core
 
-    -- Constants
-    self.m_anomaly_hit_duration = 20
-
     -- Variables
     self.m_enabled = false
-    self.m_stay_off = false
+    self.m_duration = nil
 end
 
 function malfunctor:destroy()
@@ -74,22 +101,21 @@ end
 function malfunctor:save()
     return {
         enabled = self.m_enabled,
-        stay_off = self.m_stay_off
+        duration = self.m_duration
     }
 end
 
 function malfunctor:load(m_data)
-    self.m_stay_off = m_data.stay_off or false
-
     if m_data.enabled then
-        self:enable_malfunction(m_data.stay_off)
+        self:enable_malfunction(m_data.duration)
     end
 end
 
-function malfunctor:enable_malfunction(stay_off)
+function malfunctor:enable_malfunction(duration)
+    self.m_duration = duration
+
     if not self.m_enabled then
         self.m_enabled = true
-        self.m_stay_off = stay_off or false
 
         self.m_core:change_mode(armor_modes_enum.armor, false)
         self.m_core.m_energy:use_energy(100)
@@ -98,14 +124,14 @@ function malfunctor:enable_malfunction(stay_off)
             self.m_core.m_sounds.energy_off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
         end
 
-        if not self.m_stay_off then
-            CreateTimeEvent("nanosuit_malfunction", "disable", self.m_anomaly_hit_duration, function()
+        if self.m_duration ~= nil then
+            CreateTimeEvent("nanosuit_malfunction", "disable", self.m_duration, function()
                 self:disable_malfunction()
                 return true
             end)
         end
-    elseif not self.m_stay_off then
-        ResetTimeEvent("nanosuit_malfunction", "disable", self.m_anomaly_hit_duration)
+    elseif self.m_duration ~= nil then
+        ResetTimeEvent("nanosuit_malfunction", "disable", duration)
     end
 end
 

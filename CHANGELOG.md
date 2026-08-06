@@ -7,6 +7,7 @@
 > - Added a built-in patch for "Ledge Grabbing / Mantling v4.4".
 
 **• Changes :**
+> - The suit now malfunctions when the player is hit by an electro anomaly;
 > - The minimap now uses icons similar to the ones seen in Crysis;
 > - The minimap's icons now rotate in accordance with the orientation of the object they represent;
 > - The minimap's icons are now colored to represent the NPCs' stance towards the player;
@@ -22,6 +23,8 @@
 > - The ammo count turns red when under 20% of the magazine's capacity.
 
 **• Bug fixes :**
+> - Fixed malfunction triggering too early sometimes causing the suit to not absorb damage properly;
+> - Fixed 
 > - Fixed binoculars not showing "NV" mode when using vanilla night vision goggles;
 > - Fixed binoculars and indicators UIs overlapping;
 > - Fixed energy recovering while the suit was in malfunction state.
