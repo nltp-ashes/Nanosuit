@@ -22,6 +22,7 @@
 > - The ammo count turns red when under 20% of the magazine's capacity.
 
 **• Bug fixes :**
+> - Fixed energy not regenerating when taking very low amounts of damage that are absorbed by the outfit;
 > - Fixed binoculars not showing "NV" mode when using vanilla night vision goggles;
 > - Fixed binoculars and indicators UIs overlapping;
 > - Fixed energy recovering while the suit was in malfunction state.
