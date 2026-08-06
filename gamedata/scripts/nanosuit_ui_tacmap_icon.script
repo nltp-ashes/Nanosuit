@@ -112,6 +112,9 @@ function ui_tacmap_icon:get_texture(obj)
             return "ui_nanosuit_no_draw"
         end
     end
+    if nanosuit_utils.is_quest_item(obj) then
+        return "ui_nanosuit_no_draw"
+    end
     return "ui_nanosuit_tacmap_object"
 end
 
