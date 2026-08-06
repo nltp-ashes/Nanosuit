@@ -3,6 +3,8 @@
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.11.0/total?label=Downloads)]()
 
 **• Additions :**
+> - Added a built-in patch for "Exo servomotor sounds v29.01.2022";
+> - Added a built-in patch for "Ledge Grabbing / Mantling v4.4".
 
 **• Changes :**
 > - The minimap now uses icons similar to the ones seen in Crysis;
@@ -15,7 +17,7 @@
 > - The minimap now displays arrows towards task targets that are on the player's current map;
 > - The minimap also displays arrows towards level changers to get to a task target on a different map;
 > - Changed breathing sounds to ones where the player is breathing through the suit's respirator;
-> - Removed built-in patch for First Person Visible Body v6.0 in favor of modded exes visible legs feature;
+> - Removed built-in patch for "First Person Visible Body v6.0" in favor of modded exes visible legs feature;
 > - The ammo reserve now turns red when completely out of ammo;
 > - The ammo count turns red when under 20% of the magazine's capacity.
 
