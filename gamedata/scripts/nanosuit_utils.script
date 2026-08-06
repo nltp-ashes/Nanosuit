@@ -519,3 +519,10 @@ function is_squad(obj, c)
     end
     return c and (c == clsid.online_offline_group or c == clsid.online_offline_group_s)
 end
+
+function is_electro_anomaly(o, c)
+    if not (c) then
+        c = o and o:clsid()
+    end
+    return c and (c == clsid.zone_mosquito_bald or c == clsid.zone_mbald_s)
+end
