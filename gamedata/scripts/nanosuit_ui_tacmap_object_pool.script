@@ -28,7 +28,8 @@ function ui_tacmap_object_pool:__init()
         IsInvbox,
         nanosuit_utils.is_space_restrictor,
         nanosuit_utils.is_smart_terrain,
-        nanosuit_utils.is_squad
+        nanosuit_utils.is_squad,
+        nanosuit_utils.is_quest_item
     }
     self.m_pool = {}
     self.m_task_targets_cache = {}

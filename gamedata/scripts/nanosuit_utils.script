@@ -495,23 +495,27 @@ function is_nanosuit(obj)
     return false
 end
 
-function is_smart_terrain(o, c)
+function is_quest_item(obj)
+    return IsItem("quest", obj:section(), obj)
+end
+
+function is_smart_terrain(obj, c)
     if not (c) then
-        c = o and o:clsid()
+        c = obj and obj:clsid()
     end
     return c and (c == clsid.smart_terrain)
 end
 
-function is_space_restrictor(o, c)
+function is_space_restrictor(obj, c)
     if not (c) then
-        c = o and o:clsid()
+        c = obj and obj:clsid()
     end
     return c and (c == clsid.space_restrictor or c == clsid.script_restr)
 end
 
-function is_squad(o, c)
+function is_squad(obj, c)
     if not (c) then
-        c = o and o:clsid()
+        c = obj and obj:clsid()
     end
     return c and (c == clsid.online_offline_group or c == clsid.online_offline_group_s)
 end
