@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 03/04/2026                                                                                             ---
+---    Date : 17/05/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -29,7 +29,7 @@ actor_status_types_enum = { indicator = "state", booster = "booster" }
 energy_drain_enum       = { nightvision = "nightvision", nanovision = "nanovision", sprint = "sprint", cloak = "cloak" }
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Debug Functions
+-- Debug functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
 --- Function used to print information into the console/log file only when Nanosuit' debug mode is enabled.
@@ -237,18 +237,100 @@ function get_renderer()
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Other functions
+-- Task functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
---- Function used to determine if the object is a nanosuit object.
---- @param obj game_object
---- @return boolean
-function is_nanosuit(obj)
-    if obj and ini_sys:r_string_ex(obj:section(), "script_binding") == "nanosuit_core.bind" then
-        return true
+--- Function used to get all the current targets of active tasks.
+--- The function returns for each target ID, the task ID, the target object, and the task type.
+--- @return table
+function get_all_task_targets()
+    local targets = {}
+
+    -- Go through real game tasks
+    local tm = task_manager.get_task_manager()
+    for tsk_id,tsk in pairs(tm.task_info) do
+        local obj = this.get_true_task_target(tsk_id)
+        if obj then
+            targets[obj:id()] = { tsk_id = tsk_id, obj = obj, primary = tsk.storyline, secondary = not tsk.storyline }
+        end
     end
-    return false
+
+    -- Specific case for guide task
+    if tasks_guide.curr_guid and tasks_guide.curr_guid.id_smart then
+        local obj = level.object_by_id(tasks_guide.curr_guid.id_smart)
+        if obj then
+            targets[obj:id()] = { tsk_id = nil, obj = obj, primary = false, secondary = true }
+        end
+    end
+
+    return targets
 end
+
+--- Function used to get the current target of a task by its ID.
+--- The function returns a game object or nil if there is no target.
+--- @param tsk_id number
+--- @return game_object
+function get_true_task_target(tsk_id)
+    -- Check if task is still active (tasks in task_manager.task_info can be completed but not yet removed)
+    if db.actor:get_task(tsk_id, true) == nil then
+        return nil
+    end
+
+    -- Get task
+    local tm = task_manager.get_task_manager()
+    local tsk = tm.task_info[tsk_id]
+
+    -- Start with target pointed by task
+    local target_id = tsk.current_target
+    if not target_id then
+        return nil
+    end
+
+    -- Special case for squads : they don't have game objects, so we target a member instead
+    local se_obj = alife_object(target_id)
+    if nanosuit_utils.is_squad(se_obj) then
+        for member in se_obj:squad_members() do
+            target_id = member.id
+        end
+    end
+
+    -- Always return the top most item in the inventory owner chain
+    local obj = level.object_by_id(target_id)
+    while obj and obj:parent() ~= nil do
+        obj = obj:parent()
+    end
+
+    -- Refresh server object if needed
+    if obj and se_obj.id ~= obj:id() then
+        se_obj = alife_object(obj:id())
+    end
+
+    -- If target is on another level, point to the optimal level changer towards the target
+    if not simulation_objects.is_on_the_same_level(alife():actor(), se_obj) then
+        -- Source level (player location)
+        local src_level = level.name()
+
+        -- Target level (object location)
+        local obj_lid = game_graph():vertex(se_obj.m_game_vertex_id):level_id()
+        local tgt_level = obj_lid and obj_lid < 50 and alife():level_name(obj_lid)
+
+        -- Calculate travel plan
+        local plan = this.get_route_plan_to_target(txr_routes.sec_to_map[src_level], txr_routes.sec_to_map[tgt_level], {})
+
+        -- Get level changers between source level and next level in plan
+        local lcs = plan and txr_routes.get_route(plan[1], plan[2])
+
+        -- Fetch game object of level changer
+        local lc_se = lcs and get_story_se_object(lcs[1])
+        return lc_se and level.object_by_id(lc_se.id)
+    end
+
+    return obj
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Unique calls functions
+-- ---------------------------------------------------------------------------------------------------------------------
 
 --- Function used to add a unique call (function called every frame) to the level.
 --- @param callback function
@@ -270,4 +352,166 @@ end
 --- @return nil
 function remove_unique_call(callback)
     RemoveUniqueCall(callback)
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Route functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Helper: build banned lookup table from list
+function build_banned_table(banned_levels)
+    local banned = {}
+    if banned_levels then
+        for _, lvl in ipairs(banned_levels) do
+            banned[lvl] = true
+        end
+    end
+    return banned
+end
+
+-- Helper: get neighbors for a level, excluding banned
+function get_neighbors(level, banned)
+    local neighbors = {}
+    local transitions = txr_routes.routes[level]
+    if transitions then
+        for neighbor, story_ids in pairs(transitions) do
+            if not banned[neighbor] then
+                local story_id = story_ids[1]
+                table.insert(neighbors, {level = neighbor, story_id = story_id})
+            end
+        end
+    end
+    return neighbors
+end
+
+-- Helper: get position of transition object for a given story id
+function get_transition_pos(story_id)
+    local obj = get_story_se_object(story_id)
+    if obj and obj.position then
+        return obj.position
+    end
+    return nil
+end
+
+-- Helper: collect all unique levels (sources and destinations), excluding banned
+function collect_all_levels(banned)
+    local all_levels = {}
+    for src, transitions in pairs(txr_routes.routes) do
+        if not banned[src] then
+            all_levels[src] = true
+        end
+        for dst in pairs(transitions) do
+            if not banned[dst] then
+                all_levels[dst] = true
+            end
+        end
+    end
+    return all_levels
+end
+
+function get_route_plan_to_target(start, target, banned_levels)
+    local banned = build_banned_table(banned_levels)
+    if banned[start] or banned[target] then
+        return nil
+    end
+    if start == target then
+        return {start}
+    end
+
+    local visited = {}
+    local dist = {}
+    local prev = {}
+    local queue = {}
+
+    local all_levels = collect_all_levels(banned)
+    for k in pairs(all_levels) do
+        dist[k] = math.huge
+        prev[k] = nil
+    end
+    dist[start] = 0
+    table.insert(queue, {level = start, cost = 0})
+
+    while #queue > 0 do
+        table.sort(queue, function(a, b) return a.cost < b.cost end)
+        local current = table.remove(queue, 1)
+        local curr_level = current.level
+        if not visited[curr_level] then
+            visited[curr_level] = true
+            if curr_level == target then
+                break
+            end
+
+            local curr_neighbors = get_neighbors(curr_level, banned)
+            local curr_pos = nil
+            if curr_level ~= start then
+                local incoming = txr_routes.routes[prev[curr_level]] and txr_routes.routes[prev[curr_level]][curr_level]
+                if incoming then
+                    curr_pos = get_transition_pos(incoming[1])
+                end
+            end
+
+            for _, neighbor in ipairs(curr_neighbors) do
+                local n_level = neighbor.level
+                if not visited[n_level] and not banned[n_level] then
+                    local n_pos = get_transition_pos(neighbor.story_id)
+                    local step_dist = 1
+                    if curr_pos and n_pos then
+                        step_dist = curr_pos:distance_to(n_pos)
+                    end
+                    local alt = dist[curr_level] + step_dist
+                    if alt < dist[n_level] then
+                        dist[n_level] = alt
+                        prev[n_level] = curr_level
+                        table.insert(queue, {level = n_level, cost = alt})
+                    end
+                end
+            end
+        end
+    end
+
+    local path = {}
+    local u = target
+    if not prev[u] and start ~= target then
+        return nil
+    end
+    while u do
+        table.insert(path, 1, u)
+        u = prev[u]
+    end
+    return path
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Other functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to determine if the object is a nanosuit object.
+--- @param obj game_object
+--- @return boolean
+function is_nanosuit(obj)
+    if obj and ini_sys:r_string_ex(obj:section(), "script_binding") == "nanosuit_core.bind" then
+        return true
+    end
+    return false
+end
+
+function is_smart_terrain(o, c)
+    if not (c) then
+        c = o and o:clsid()
+    end
+    return c and (c == clsid.smart_terrain)
+end
+
+function is_space_restrictor(o, c)
+    if not (c) then
+        c = o and o:clsid()
+    end
+    return c and (c == clsid.space_restrictor or c == clsid.script_restr)
+end
+
+function is_squad(o, c)
+    if not (c) then
+        c = o and o:clsid()
+    end
+    return c and (c == clsid.online_offline_group or c == clsid.online_offline_group_s)
 end

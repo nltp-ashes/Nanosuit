@@ -1,0 +1,104 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 17/05/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit tactical map background map UI.                                            ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Tactical map background map UI class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "ui_tacmap_map"
+
+function ui_tacmap_map:__init(parent)
+    self.m_parent = parent
+end
+
+function ui_tacmap_map:__finalize()
+end
+
+function ui_tacmap_map:destroy()
+    -- FIXME : finish implementing this when I find a way to improve the code's performance
+    local hud = get_hud()
+    if hud:HasCustomShape("nanosuit_tacmap") then
+        hud:RemoveCustomShapeToRender("nanosuit_tacmap")
+    end
+end
+
+function ui_tacmap_map:update()
+    local hud = get_hud()
+    if not self.m_parent:IsShown() or not self.m_parent:is_enabled() then
+        if hud:HasCustomShape("nanosuit_tacmap") then
+            hud:RemoveCustomShapeToRender("nanosuit_tacmap")
+        end
+        return
+    end
+
+    if not hud:HasCustomShape("nanosuit_tacmap") then
+        local shape = {
+            texture = self:get_texture(level.name()),
+            shader = "hud\\default",
+            color = GetARGB(127, 255, 255, 255)
+        }
+        hud:AddCustomShapeToRender("nanosuit_tacmap", shape)
+    end
+
+    local poly = self:get_poly()
+    hud:UpdateCustomShape("nanosuit_tacmap", poly)
+end
+
+-- TODO : this needs to be pulled from the gamedata/levels/<current_level_name>/level.ltx > [level_map] > bound_rect
+function ui_tacmap_map:get_level_bounds(level_name)
+    return vector2():set(-481.497344, -412.284256), vector2():set(379.976288, 474.479296)
+end
+
+-- TODO : this needs to be pulled from the gamedata/levels/<current_level_name>/level.ltx > [level_map] > texture
+function ui_tacmap_map:get_texture(level_name)
+    return "map\\map_" .. level_name
+end
+
+function ui_tacmap_map:get_poly()
+    local poly = {}
+
+    for i = 1, #self.m_parent.m_tacmap_bounds do
+        poly[i] = {}
+        poly[i].pt = vector2():set(0, 0)
+        poly[i].uv = vector2():set(0, 0)
+    end
+
+    for i = 1, #self.m_parent.m_tacmap_bounds do
+        poly[i].pt.x = self.m_parent.m_tacmap_bounds[i].x * self.m_parent.m_scale.x
+        poly[i].pt.y = self.m_parent.m_tacmap_bounds[i].y * self.m_parent.m_scale.y
+    end
+
+    local world_min, world_max = self:get_level_bounds(level.name())
+    local world_width = world_max.x - world_min.x
+    local world_height = world_max.y - world_min.y
+
+    local north_angle = math.atan2(device().cam_dir.x, device().cam_dir.z)
+    local rot_angle = -north_angle + math.pi
+
+    -- Compute UVs: zoom and center on player, rotate according to player direction
+    for i = 1, #self.m_parent.m_tacmap_bounds do
+        local hud_x = -(poly[i].pt.x - self.m_parent.m_player.x * self.m_parent.m_scale.x)
+        local hud_y = poly[i].pt.y - self.m_parent.m_player.y * self.m_parent.m_scale.y
+        local rot_x = hud_x * math.cos(rot_angle) - hud_y * math.sin(rot_angle)
+        local rot_y = hud_x * math.sin(rot_angle) + hud_y * math.cos(rot_angle)
+        local world_offset_x = rot_x / self.m_parent.m_resolution
+        local world_offset_y = rot_y / self.m_parent.m_resolution
+        local world_x = device().cam_pos.x + world_offset_x
+        local world_y = device().cam_pos.z + world_offset_y
+        poly[i].uv.x = (world_x - world_min.x) / world_width
+        poly[i].uv.y = (world_max.y - world_y) / world_height
+    end
+    return poly
+end

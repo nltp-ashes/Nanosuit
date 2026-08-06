@@ -84,8 +84,12 @@
     <file name="nanosuit\ui\hud\tacmap\map_malfunction.dds">
         <texture id="ui_nanosuit_tacmap_map_malfunction"       x="0"       y="0"      width="998"     height="782" />
     </file>
-    <file name="ui\ui_actor_hint_wnd.dds">
-        <texture id="ui_nanosuit_tacmap_object"                x="4"       y="563"    width="23"      height="23" />
+    <file name="nanosuit\ui\hud\tacmap\icons.dds">
+        <texture id="ui_nanosuit_tacmap_object"                x="0"       y="0"      width="64"      height="64" />
+        <texture id="ui_nanosuit_tacmap_body"                  x="64"      y="0"      width="64"      height="64" />
+        <texture id="ui_nanosuit_tacmap_vehicle"               x="128"     y="0"      width="64"      height="64" />
+        <texture id="ui_nanosuit_tacmap_task_point"            x="192"     y="0"      width="64"      height="64" />
+        <texture id="ui_nanosuit_tacmap_task_arrow"            x="0"       y="64"     width="64"      height="64" />
     </file>
 
     <!-- Auxiliaries UI -->
