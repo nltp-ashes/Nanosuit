@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 06/08/2026                                                                                             ---
+---    Date : 07/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -27,6 +27,17 @@ constants_types_enum    = { string = "string", boolean = "boolean", number = "nu
 gender_enum             = { male = "male", female = "female" }
 actor_status_types_enum = { indicator = "state", booster = "booster" }
 energy_drain_enum       = { nightvision = "nightvision", nanovision = "nanovision", sprint = "sprint", cloak = "cloak" }
+
+-- Whitelists
+machine_guns_whitelist = {
+    ["bar_zastava_minigun"] = true,
+    ["bar_zastava_2_minigun"] = true,
+    ["esc_smart_terrain_3_16_minigun"] = true,
+    ["agr_smart_terrain_1_6_minigun"] = true,
+    ["mar_smart_terrain_10_5_minigun"] = true,
+    ["z1_pkm_cover"] = true,
+    ["z3_pkm_cover"] = true,
+}
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Debug functions
@@ -108,7 +119,7 @@ end
 --- @return sound_object
 function localized_and_genderized_sound_object(path, filename)
     local gender = nanosuit_mcm.get_config("general", "suit_gender")
-    local locale = ini_sys:r_string_ex("string_table","language")
+    local locale = ini_sys:r_string_ex("string_table", "language")
     return sound_object(path .. [[\]] .. gender .. [[\]] .. filename .. "_" .. locale)
 end
 
@@ -248,7 +259,7 @@ function get_all_task_targets()
 
     -- Go through real game tasks
     local tm = task_manager.get_task_manager()
-    for tsk_id,tsk in pairs(tm.task_info) do
+    for tsk_id, tsk in pairs(tm.task_info) do
         local obj = this.get_true_task_target(tsk_id)
         if obj then
             targets[obj:id()] = { tsk_id = tsk_id, obj = obj, primary = tsk.storyline, secondary = not tsk.storyline }
@@ -377,7 +388,7 @@ function get_neighbors(level, banned)
         for neighbor, story_ids in pairs(transitions) do
             if not banned[neighbor] then
                 local story_id = story_ids[1]
-                table.insert(neighbors, {level = neighbor, story_id = story_id})
+                table.insert(neighbors, { level = neighbor, story_id = story_id })
             end
         end
     end
@@ -415,7 +426,7 @@ function get_route_plan_to_target(start, target, banned_levels)
         return nil
     end
     if start == target then
-        return {start}
+        return { start }
     end
 
     local visited = {}
@@ -429,10 +440,12 @@ function get_route_plan_to_target(start, target, banned_levels)
         prev[k] = nil
     end
     dist[start] = 0
-    table.insert(queue, {level = start, cost = 0})
+    table.insert(queue, { level = start, cost = 0 })
 
     while #queue > 0 do
-        table.sort(queue, function(a, b) return a.cost < b.cost end)
+        table.sort(queue, function(a, b)
+            return a.cost < b.cost
+        end)
         local current = table.remove(queue, 1)
         local curr_level = current.level
         if not visited[curr_level] then
@@ -462,7 +475,7 @@ function get_route_plan_to_target(start, target, banned_levels)
                     if alt < dist[n_level] then
                         dist[n_level] = alt
                         prev[n_level] = curr_level
-                        table.insert(queue, {level = n_level, cost = alt})
+                        table.insert(queue, { level = n_level, cost = alt })
                     end
                 end
             end
@@ -482,47 +495,44 @@ function get_route_plan_to_target(start, target, banned_levels)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Other functions
+-- Testing functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
---- Function used to determine if the object is a nanosuit object.
---- @param obj game_object
---- @return boolean
 function is_nanosuit(obj)
-    if obj and ini_sys:r_string_ex(obj:section(), "script_binding") == "nanosuit_core.bind" then
-        return true
-    end
-    return false
+    local sec = obj and obj:section()
+    return sec and ini_sys:r_string_ex(sec, "script_binding") == "nanosuit_core.bind" or false
 end
 
 function is_quest_item(obj)
-    return IsItem("quest", obj:section(), obj)
+    local sec = obj and obj:section()
+    return sec and IsItem("quest", sec) or false
 end
 
-function is_smart_terrain(obj, c)
-    if not (c) then
-        c = obj and obj:clsid()
-    end
+function is_smart_terrain(obj)
+    local c = obj and obj:clsid()
     return c and (c == clsid.smart_terrain)
 end
 
-function is_space_restrictor(obj, c)
-    if not (c) then
-        c = obj and obj:clsid()
-    end
+function is_space_restrictor(obj)
+    local c = obj and obj:clsid()
     return c and (c == clsid.space_restrictor or c == clsid.script_restr)
 end
 
-function is_squad(obj, c)
-    if not (c) then
-        c = obj and obj:clsid()
-    end
+function is_squad(obj)
+    local c = obj and obj:clsid()
     return c and (c == clsid.online_offline_group or c == clsid.online_offline_group_s)
 end
 
-function is_electro_anomaly(o, c)
-    if not (c) then
-        c = o and o:clsid()
-    end
+function is_electro_anomaly(obj)
+    local c = obj and obj:clsid()
     return c and (c == clsid.zone_mosquito_bald or c == clsid.zone_mbald_s)
+end
+
+function is_machine_gun(obj)
+    local name = obj and obj:name()
+    return name and machine_guns_whitelist[name] or false
+end
+
+function is_true_car(obj)
+    return IsCar(obj) and not is_machine_gun(obj)
 end
