@@ -14,12 +14,12 @@ This addon adds a fully operational US and Korean nanosuits from Crysis.
 
 **Important :** This addon is still in development. You have to spawn the outfit using the [debug menu item spawner](https://igigog.github.io/anomaly-modding-book/modding-tools/in-game-editors/item-spawner.html).
 
-**Important :** Expect a lot of soft-conflicts (aka it will work, but it won't look nice) with UI mods. Please report as many UI related issues as you can.
+**Important :** Expect soft-conflicts (aka it will work, but it won't look nice) with UI mods. Please report as many UI related issues as you can.
 
 Bellow is a list of features that are currently available in the addon :
 
 Miscellaneous :
-- The suit comes with third person, first person and world models; inventory icons and character portraits (and even legs model if you use [First Person Visible Body](https://www.moddb.com/mods/stalker-anomaly/addons/swm-ported-visible-body-starter-version))
+- The suit comes with third person, first person and world models; inventory icons and character portraits
 - The suit voice-lines are available in English, French and Russian, depending on the game language
 - The suit has basic ballistic, rupture and explosive protection when out of energy
 - The suit will absorb low amounts of radiation, without consuming energy
@@ -109,12 +109,9 @@ The addon natively integrates[^native_integrations] with the following addons, b
 1. [Mod Configuration Menu v1.7](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu) (customizable options for the addon);
 2. [Hunger, thirst, sleepiness bars v1.01](https://www.moddb.com/mods/stalker-anomaly/addons/hunger-thirst-sleepiness-bars) (custom nanosuit styling for hunger, thirst and sleepiness indicator);
 3. [Campfire Healing And Designated Savepoint indicator v2.1](https://www.moddb.com/mods/stalker-anomaly/addons/campfire-healing-and-designated-savepoint-indicator) (custom nanosuit styling for campfire indicators);
-4. [Powered Exoskeletons v2.2](https://github.com/ahuyn/anomaly-exo) (built-in compatibility, to prevent the nanosuit from being considered an exoskeleton);
-5. [Exo servomotor sounds v29.01.2022](https://www.moddb.com/mods/stalker-anomaly/addons/exo-servomotor-sounds) (built-in compatibility, to prevent the nanosuit from being considered an exoskeleton);
-6. [Ledge Grabbing / Mantling v4.4](https://www.moddb.com/mods/stalker-anomaly/addons/modded-exes-ledge-grabbing-mantling) (built-in compatibility, to prevent the nanosuit from being considered an exoskeleton);
-7. [Body Health System Redux v2.0.2](https://www.moddb.com/mods/stalker-anomaly/addons/100-groks-body-health-system-redux-for-151) (built-in compatibility, to prevent UI overlaps);
-8. [HeatVision v1.3](https://www.moddb.com/mods/stalker-anomaly/addons/heatvision-v02-extension-for-beefs-nvg-dx11engine-mod) (adds nanovision to the suit, if installed);
-9. [Faction Identification UI v1.2.2](https://www.moddb.com/mods/stalker-anomaly/addons/crooks-faction-identification-ui) (built-in compatibility, to prevent UI overlaps);
+4. [Body Health System Redux v2.0.2](https://www.moddb.com/mods/stalker-anomaly/addons/100-groks-body-health-system-redux-for-151) (built-in compatibility, to prevent UI overlaps);
+5. [HeatVision v1.3](https://www.moddb.com/mods/stalker-anomaly/addons/heatvision-v02-extension-for-beefs-nvg-dx11engine-mod) (adds nanovision to the suit, if installed);
+6. [Faction Identification UI v1.2.2](https://www.moddb.com/mods/stalker-anomaly/addons/crooks-faction-identification-ui) (built-in compatibility, to prevent UI overlaps);
 
 [^native_integrations]: Native integration are similar to compatibility patches, except they are built-into the addon. If the other addon is installed, the features will be available, if not, they will be disabled, all without requiring any extra steps from the user.
 
@@ -175,7 +172,6 @@ If you would like to help development for future updates, you can :
 ### KNOWN ISSUES
 
 The following issues will be fixed in the near future :
-- Cloak mode sometimes messes with the equipped items' textures when switching slot while in the mode (workaround : perform a save/load)
 - Cloak mode does not cloak the knife during the mutant skinning animation with FDDA
 - The game crashes if player reloads a save while cloak mode is enabled
 - Indicators are not colored properly when using the Korean nanosuit

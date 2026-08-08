@@ -1,12 +1,11 @@
-## **v0.12.0 - 06/08/2026 - Beta Build**
+## **v0.12.0 - 08/08/2026 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.11.0/total?label=Downloads)]()
 
 **• Additions :**
-> - Added a built-in patch for "Exo servomotor sounds v29.01.2022";
-> - Added a built-in patch for "Ledge Grabbing / Mantling v4.4".
 
 **• Changes :**
+> - Removed patches for exoskeleton-related addons, as now the suit should not be considered an exoskeleton anymore;
 > - The suit now malfunctions when the player is hit by an electro anomaly;
 > - The minimap now uses icons similar to the ones seen in Crysis;
 > - The minimap's icons now rotate in accordance with the orientation of the object they represent;

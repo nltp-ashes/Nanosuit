@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 06/08/2026                                                                                             ---
+---    Date : 08/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle all the necessary intercepts to make the Nanosuit addon compatible with other addons.   ---
@@ -157,48 +157,6 @@ if actor_status_campfire then
             return override or "ui_nanosuit_ind_booster_cf"
         end
 
-        return res
-    end
-end
-
--- ---------------------------------------------------------------------------------------------------------------------
--- Powered Exoskeletons v2.2
--- ---------------------------------------------------------------------------------------------------------------------
-
-if item_exo_device then
-    item_exo_device_is_exo = item_exo_device.is_exo
-    item_exo_device.is_exo = function(obj)
-        local res = item_exo_device_is_exo(obj)
-        return not nanosuit_utils.is_nanosuit(obj) and res
-    end
-end
-
--- ---------------------------------------------------------------------------------------------------------------------
--- Exo servomotor sounds v29.01.2022
--- ---------------------------------------------------------------------------------------------------------------------
-
-if exo_servo_sounds then
-    exo_servo_sounds_check_exo_suit = exo_servo_sounds.check_exo_suit
-    exo_servo_sounds.check_exo_suit = function(obj)
-        exo_servo_sounds_check_exo_suit(obj)
-        if nanosuit_utils.is_nanosuit(obj) then
-            exo_servo_sounds.exo_flag = false
-        end
-    end
-end
-
--- ---------------------------------------------------------------------------------------------------------------------
--- Ledge Grabbing / Mantling v4.4
--- ---------------------------------------------------------------------------------------------------------------------
-
-if demonized_ledge_grabbing then
-    demonized_ledge_grabbing_getOutfitSound = demonized_ledge_grabbing.getOutfitSound
-    demonized_ledge_grabbing.getOutfitSound = function()
-        local res = demonized_ledge_grabbing_getOutfitSound()
-        local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-        if outfit and nanosuit_utils.is_nanosuit(outfit) then
-            return demonized_ledge_grabbing.getSoundFromFolder(demonized_ledge_grabbing.outfitSoundFolder["o_heavy"])
-        end
         return res
     end
 end
