@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 09/05/2026                                                                                             ---
+---    Date : 14/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -67,6 +67,11 @@ function ui_hud:__init(core) super()
         nv_energy = GetARGB(255, 253, 254, 50),
         nv_energy_bg = GetARGB(200, 142, 155, 23),
         nv_energy_off_bg = GetARGB(200, 24, 24, 24),
+        visibility_very_high = GetARGB(255, 255, 0, 0),
+        visibility_high = GetARGB(255, 255, 128, 0),
+        visibility_low = GetARGB(255, 255, 192, 0),
+        visibility_very_low = GetARGB(255, 0, 255, 0),
+        visibility_bg = GetARGB(200, 100, 100, 100),
         red = GetARGB(255, 255, 0, 0)
     }
 

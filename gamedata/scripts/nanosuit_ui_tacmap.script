@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 24/05/2026                                                                                             ---
+---    Date : 14/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -63,6 +63,14 @@ function ui_tacmap:__init(parent) super()
     self.m_ui_map = self.m_xml:InitStatic("map", self)
     self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map")
     arm.scale_ui(self.m_ui_map, true, true, "left")
+
+    self.m_ui_visibility_bar_background = self.m_xml:InitStatic("visibility_bar_background", self)
+    self.m_ui_visibility_bar_background:SetTextureColor(self.m_parent.m_colors.visibility_bg)
+    arm.scale_ui(self.m_ui_visibility_bar_background, true, true, "left")
+
+    self.m_ui_visibility_bar = self.m_xml:InitProgressBar("visibility_bar", self)
+    arm.scale_ui(self.m_ui_visibility_bar, true, true, "left")
+    arm.scale_ui(self.m_ui_visibility_bar:GetProgressStatic(), false, true, "left", self.m_ui_visibility_bar:GetWidth())
 end
 
 function ui_tacmap:__finalize()
@@ -95,15 +103,20 @@ function ui_tacmap:Update(force)
         self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
     end
 
-    if self:is_enabled() then
-        self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map")
-    else
-        self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map_malfunction")
-    end
-
     -- FIXME : finish implementing this when I find a way to improve the code's performance
     -- self.m_map_texture:update()
+    self:update_map()
     self:update_icons()
+    self:update_visibility()
+end
+
+function ui_tacmap:update_map()
+    if not self:is_enabled() then
+        self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map_malfunction")
+        return
+    end
+
+    self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map")
 end
 
 function ui_tacmap:update_icons()
@@ -140,6 +153,27 @@ function ui_tacmap:update_icons()
             self.m_tracked_objects[id] = nil
         end
     end
+end
+
+function ui_tacmap:update_visibility()
+    if not self:is_enabled() then
+        self.m_ui_visibility_bar:SetProgressPos(0)
+        return
+    end
+
+    local vis = db.actor:get_actor_ui_luminosity()
+
+    if vis < 0.25 then
+        self.m_ui_visibility_bar:SetColor(self.m_parent.m_colors.visibility_very_low)
+    elseif vis < 0.5 then
+        self.m_ui_visibility_bar:SetColor(self.m_parent.m_colors.visibility_low)
+    elseif vis < 0.75 then
+        self.m_ui_visibility_bar:SetColor(self.m_parent.m_colors.visibility_high)
+    else
+        self.m_ui_visibility_bar:SetColor(self.m_parent.m_colors.visibility_very_high)
+    end
+
+    self.m_ui_visibility_bar:SetProgressPos(vis * 100)
 end
 
 function ui_tacmap:get_resolution(range, center, bounds)
