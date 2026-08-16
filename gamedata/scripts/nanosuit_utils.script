@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 07/08/2026                                                                                             ---
+---    Date : 16/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -12,6 +12,9 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
+
+-- Constants
+screen_scale            = vector2():set(device().width / 1024, device().height / 768)
 
 -- Enum
 actor_slots_enum        = { none = 0, knife = 1, pistol = 2, rifle = 3, grenade = 4, binoculars = 5, bolt = 6, outfit = 7, pda = 8, detector = 9, torch = 10, artefact = 11, helmet = 12, backpack = 13, animation = 14 }
@@ -492,6 +495,20 @@ function get_route_plan_to_target(start, target, banned_levels)
         u = prev[u]
     end
     return path
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Aspect correction functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function scale_ui_element(ele, adjust_x, anchor, anchor_point, parent_width)
+    return arm.scale_ui(ele, adjust_x, anchor, anchor_point, parent_width)
+end
+
+function scale_ui_position(pos)
+    local aspect_ratio = screen_scale.y / screen_scale.x
+    local pos_x = pos.x * aspect_ratio
+    return vector2():set(pos_x, pos.y)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------

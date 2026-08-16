@@ -30,19 +30,19 @@ function ui_tacmap:__init(parent) super()
     self.m_xml:ParseFile("ui_nanosuit_tacmap.xml")
 
     self.m_ui_background = self.m_xml:InitStatic("background", self)
-    arm.scale_ui(self.m_ui_background, true, true, "left")
+    nanosuit_utils.scale_ui_element(self.m_ui_background, true, true, "left")
 
     self.m_ui_outline = self.m_xml:InitStatic("outline", self)
     self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
-    arm.scale_ui(self.m_ui_outline, true, true, "left")
+    nanosuit_utils.scale_ui_element(self.m_ui_outline, true, true, "left")
 
     self.m_ui_visibility_bar_background = self.m_xml:InitStatic("visibility_bar_background", self)
     self.m_ui_visibility_bar_background:SetTextureColor(self.m_parent.m_colors.visibility_bg)
-    arm.scale_ui(self.m_ui_visibility_bar_background, true, true, "left")
+    nanosuit_utils.scale_ui_element(self.m_ui_visibility_bar_background, true, true, "left")
 
     self.m_ui_visibility_bar = self.m_xml:InitProgressBar("visibility_bar", self)
-    arm.scale_ui(self.m_ui_visibility_bar, true, true, "left")
-    arm.scale_ui(self.m_ui_visibility_bar:GetProgressStatic(), false, true, "left", self.m_ui_visibility_bar:GetWidth())
+    nanosuit_utils.scale_ui_element(self.m_ui_visibility_bar, true, true, "left")
+    nanosuit_utils.scale_ui_element(self.m_ui_visibility_bar:GetProgressStatic(), false, true, "left", self.m_ui_visibility_bar:GetWidth())
 
     self.m_ui_map = nanosuit_ui_tacmap_map.ui_tacmap_map(self)
     self.m_ui_map:Show(true)
