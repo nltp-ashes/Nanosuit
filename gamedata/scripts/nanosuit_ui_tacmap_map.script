@@ -69,9 +69,6 @@ end
 function ui_tacmap_map:Update(force)
     CUIScriptWnd.Update(self)
 
-    -- FIXME : finish implementing this when I find a way to improve the code's performance
-    -- self.m_ui_map_texture:Update(force)
-
     self:update_map()
     self:update_icons()
 end

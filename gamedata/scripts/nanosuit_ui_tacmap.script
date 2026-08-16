@@ -72,8 +72,6 @@ function ui_tacmap:Update(force)
         self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
     end
 
-    self.m_ui_map:Update(force)
-
     self:update_visibility()
 end
 

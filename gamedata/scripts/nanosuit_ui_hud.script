@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 14/08/2026                                                                                             ---
+---    Date : 16/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -262,15 +262,6 @@ function ui_hud:Update(force)
     elseif should_show and not self:IsShown() then
         self:Show(true)
     end
-
-    -- Update children
-    self.m_ui_menu:Update(force)
-    self.m_ui_status:Update(force)
-    self.m_ui_tacmap:Update(force)
-    self.m_ui_auxiliaries:Update(force)
-    self.m_ui_indicators:Update(force)
-    self.m_ui_defibrillator:Update(force)
-    self.m_ui_binoculars:Update(force)
 end
 
 function ui_hud:remove_pda_icon()
