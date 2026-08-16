@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 27/02/2026                                                                                            -->
+<!--    Date : 17/08/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -16,7 +16,7 @@
     <!--=============================================================================================================-->
 
     <string id="st_nanosuit_outfit_name">
-        <text>CryNet nanosuit 1.0</text>
+        <text>CryNet Nanosuit 1.0</text>
     </string>
 
     <string id="st_nanosuit_outfit_name_s">
@@ -24,7 +24,7 @@
     </string>
 
     <string id="st_nanosuit_outfit_descr">
-        <text>The nanosuit (also known as Nano-muscle suit) is a powerful and extremely versatile set of tactical-combat armor originally designed to counter the [CLASSIFIED] threat and circumvent the technological margin between Mankind and [CLASSIFIED]. Reverse-engineered from captured [CLASSIFIED] technology, the suits' CryFibril muscle fibers can be programmed for a variety of purposes (such as hardening, muscle augmentation or camouflage), leading to drastically enhanced combat and physical performance, allowing the operator to execute superhuman feats.\n \n</text>
+        <text>The Nanosuit (also known as Nano-muscle suit) is a powerful and extremely versatile set of tactical-combat armor originally designed to counter the [CLASSIFIED] threat and circumvent the technological margin between Mankind and [CLASSIFIED]. Reverse-engineered from captured [CLASSIFIED] technology, the suits' CryFibril muscle fibers can be programmed for a variety of purposes (such as hardening, muscle augmentation or camouflage), leading to drastically enhanced combat and physical performance, allowing the operator to execute superhuman feats.\n \n</text>
     </string>
 
     <string id="st_nanosuit_asian_outfit_name">
@@ -36,7 +36,19 @@
     </string>
 
     <string id="st_nanosuit_asian_outfit_descr">
-        <text>The Korean nanosuit is an advanced tactical-combat armor developed by North Korean scientists, designed to enhance the physical and combat capabilities of its operator. Utilizing proprietary nanofiber technology, the suit offers four operational modes — Armor, Strength, Speed, and Cloak — alongside robust environmental controls. It employs traditional ceramic plates to compensate for the fact that its nanofibers have difficulties contracting, a key feature required for ballistic protection. It also features cloaking capabilities, although instabilities in the system may expose the wearer due to occasional sparking. The suit features a distinctive Japanese woodland camouflage pattern. Even with its few issues, the Korean nanosuit remains a formidable asset on the battlefield, granting its wearer superhuman abilities and increased survivability.\n \n</text>
+        <text>The Korean Nanosuit is an advanced tactical-combat armor developed by North Korean scientists, designed to enhance the physical and combat capabilities of its operator. Utilizing proprietary nanofiber technology, the suit offers four operational modes — Armor, Strength, Speed, and Cloak — alongside robust environmental controls. It employs traditional ceramic plates to compensate for the fact that its nanofibers have difficulties contracting, a key feature required for ballistic protection. It also features cloaking capabilities, although instabilities in the system may expose the wearer due to occasional sparking. The suit features a distinctive Japanese woodland camouflage pattern. Even with its few issues, the Korean Nanosuit remains a formidable asset on the battlefield, granting its wearer superhuman abilities and increased survivability.\n \n</text>
+    </string>
+
+    <string id="st_nanosuit_2_outfit_name">
+        <text>CryNet Nanosuit 2.0</text>
+    </string>
+
+    <string id="st_nanosuit_2_outfit_name_s">
+        <text>US Nanosuit 2.0</text>
+    </string>
+
+    <string id="st_nanosuit_2_outfit_descr">
+        <text>The Nanosuit (also known as Nano-muscle suit) is a powerful and extremely versatile set of tactical-combat armor. The Nanosuit 2.0 is the second iteration of CryNet Systems' Nanosuit, replacing the older Nanosuit 1.0 four years after the latter was created. Technological advances make this suit vastly more advanced than the 1.0.\n \n</text>
     </string>
 
     <!--=============================================================================================================-->
