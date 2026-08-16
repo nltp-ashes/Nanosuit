@@ -29,4 +29,4 @@
 > - Fixed binoculars and indicators UIs overlapping;
 > - Fixed energy recovering while the suit was in malfunction state.
 
-**Note :** This build requires [Modded Exes version 17.08.2026 (or newer)](https://github.com/themrdemonized/xray-monolith/releases/tag/2026.8.16) for the minimap's visibility meter to work.
+**Note :** This build requires [Modded Exes version 16.08.2026 (or newer)](https://github.com/themrdemonized/xray-monolith/releases/tag/2026.8.16) for the minimap's visibility meter to work.
