@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 14/08/2026                                                                                             ---
+---    Date : 16/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -161,7 +161,7 @@ function ui_tacmap:update_visibility()
         return
     end
 
-    local vis = db.actor:get_actor_ui_luminosity()
+    local vis = db.actor:get_actor_visibility()
 
     if vis < 0.25 then
         self.m_ui_visibility_bar:SetColor(self.m_parent.m_colors.visibility_very_low)
