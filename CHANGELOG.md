@@ -1,4 +1,4 @@
-## **v0.12.0 - 08/08/2026 - Beta Build**
+## **v0.12.0 - 16/08/2026 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.11.0/total?label=Downloads)]()
 
@@ -16,6 +16,7 @@
 > - The minimap now displays a special icon for objects that are the target of a task;
 > - The minimap now displays arrows towards task targets that are on the player's current map;
 > - The minimap also displays arrows towards level changers to get to a task target on a different map;
+> - The minimap now displays a gauge for player visibility by enemy NPCs;
 > - Changed breathing sounds to ones where the player is breathing through the suit's respirator;
 > - Removed built-in patch for "First Person Visible Body v6.0" in favor of modded exes visible legs feature;
 > - The ammo reserve now turns red when completely out of ammo;
@@ -27,3 +28,5 @@
 > - Fixed binoculars not showing "NV" mode when using vanilla night vision goggles;
 > - Fixed binoculars and indicators UIs overlapping;
 > - Fixed energy recovering while the suit was in malfunction state.
+
+**Note :** This build requires [Modded Exes version 17.08.2026 (or newer)](https://github.com/themrdemonized/xray-monolith/releases/tag/2026.8.16) for the minimap's visibility meter to work.

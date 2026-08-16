@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 06/08/2026                                                                                             ---
+---    Date : 16/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to execute debug functions to help in development.                                                ---
@@ -193,6 +193,77 @@ function on_key_release(dik)
     end
 end
 
+function actor_on_update_tacmap_border()
+    local instance = nanosuit_core.get_instance()
+    if not instance then
+        return
+    end
+
+    local pos1 = game.ui2world(instance.m_hud.m_ui_tacmap.m_ui_map.m_tacmap_bounds[1])
+    local pos2 = game.ui2world(instance.m_hud.m_ui_tacmap.m_ui_map.m_tacmap_bounds[2])
+    local pos3 = game.ui2world(instance.m_hud.m_ui_tacmap.m_ui_map.m_tacmap_bounds[3])
+    local pos4 = game.ui2world(instance.m_hud.m_ui_tacmap.m_ui_map.m_tacmap_bounds[4])
+    local pos5 = game.ui2world(instance.m_hud.m_ui_tacmap.m_ui_map.m_tacmap_bounds[5])
+    local pos6 = game.ui2world(instance.m_hud.m_ui_tacmap.m_ui_map.m_tacmap_bounds[6])
+    local pos7 = game.ui2world(instance.m_hud.m_ui_tacmap.m_ui_map.m_tacmap_bounds[7])
+
+    if not line1 then
+        line1 = debug_render.add_object(99001, DBG_ScriptObject.line):cast_dbg_line()
+        line1.color = fcolor():set(1,0,0,1)
+        line1.visible = true
+    end
+    line1.point_a = pos1
+    line1.point_b = pos2
+
+    if not line2 then
+        line2 = debug_render.add_object(99002, DBG_ScriptObject.line):cast_dbg_line()
+        line2.color = fcolor():set(1,0,0,1)
+        line2.visible = true
+    end
+    line2.point_a = pos2
+    line2.point_b = pos3
+
+    if not line3 then
+        line3 = debug_render.add_object(99003, DBG_ScriptObject.line):cast_dbg_line()
+        line3.color = fcolor():set(1,0,0,1)
+        line3.visible = true
+    end
+    line3.point_a = pos3
+    line3.point_b = pos4
+
+    if not line4 then
+        line4 = debug_render.add_object(99004, DBG_ScriptObject.line):cast_dbg_line()
+        line4.color = fcolor():set(1,0,0,1)
+        line4.visible = true
+    end
+    line4.point_a = pos4
+    line4.point_b = pos5
+
+    if not line5 then
+        line5 = debug_render.add_object(99005, DBG_ScriptObject.line):cast_dbg_line()
+        line5.color = fcolor():set(1,0,0,1)
+        line5.visible = true
+    end
+    line5.point_a = pos5
+    line5.point_b = pos6
+
+    if not line6 then
+        line6 = debug_render.add_object(99006, DBG_ScriptObject.line):cast_dbg_line()
+        line6.color = fcolor():set(1,0,0,1)
+        line6.visible = true
+    end
+    line6.point_a = pos6
+    line6.point_b = pos7
+
+    if not line7 then
+        line7 = debug_render.add_object(99007, DBG_ScriptObject.line):cast_dbg_line()
+        line7.color = fcolor():set(1,0,0,1)
+        line7.visible = true
+    end
+    line7.point_a = pos7
+    line7.point_b = pos1
+end
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Callbacks registration
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -209,6 +280,7 @@ function on_game_start()
     --RegisterScriptCallback("on_key_press", on_key_press_chainable)
     --RegisterScriptCallback("on_key_press", on_key_press_color)
     --RegisterScriptCallback("on_key_release", on_key_release)
+    --RegisterScriptCallback("actor_on_update", actor_on_update_tacmap_border)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------

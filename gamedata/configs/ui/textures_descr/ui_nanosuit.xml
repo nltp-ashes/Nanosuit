@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 14/02/2026                                                                                            -->
+<!--    Date : 14/08/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Texture description file for the Nanosuit addon's UI textures.                                               -->
@@ -80,6 +80,9 @@
     </file>
     <file name="nanosuit\ui\hud\tacmap\map.dds">
         <texture id="ui_nanosuit_tacmap_map"                   x="0"       y="0"      width="998"     height="782" />
+    </file>
+    <file name="nanosuit\ui\hud\tacmap\visibility.dds">
+        <texture id="ui_nanosuit_tacmap_visibility_bar"        x="0"       y="0"      width="45"      height="341" />
     </file>
     <file name="nanosuit\ui\hud\tacmap\map_malfunction.dds">
         <texture id="ui_nanosuit_tacmap_map_malfunction"       x="0"       y="0"      width="998"     height="782" />
