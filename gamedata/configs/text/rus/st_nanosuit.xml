@@ -3,8 +3,8 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
-<!--    Edited : Russian translation (VodoXleb - 17/08/2026)                                                         -->
-<!--    Date : 17/08/2026                                                                                            -->
+<!--    Edited : Russian translation (VodoXleb - 18/08/2026)                                                         -->
+<!--    Date : 18/08/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -211,6 +211,10 @@
     </string>
 
     <!-- Configuration -->
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_general">
+        <text>Общие настройки</text>
+    </string>
+
     <string id="ui_mcm_nanosuit_nanosuit_configuration_hud">
         <text>Интерфейс</text>
     </string>
@@ -229,6 +233,14 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_speed">
         <text>Режим скорости</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_energy_use_factor">
+        <text>Множитель расхода энергии</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_energy_regen_factor">
+        <text>Множитель восполнения энергии</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_hud_colors_text">

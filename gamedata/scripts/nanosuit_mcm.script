@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : RavenAscendant                                                                           ---
 ---    Edited : NLTP_ASHES                                                                                           ---
----    Date : 08/02/2026                                                                                             ---
+---    Date : 18/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define the options in MCM.                                                                     ---
@@ -34,6 +34,8 @@ defaults = {
     ["nightvision"] = DIK_keys.DIK_M,
     ["binoculars"] = DIK_keys.DIK_B,
     -- Configuration
+    ["outfit_nanosuit/energy_use_factor"] = 1.0,
+    ["outfit_nanosuit/energy_regen_factor"] = 1.0,
     ["outfit_nanosuit/protection_armor_burn"] = 5.0,
     ["outfit_nanosuit/protection_armor_shock"] = 1.0,
     ["outfit_nanosuit/protection_armor_chemical_burn"] = 2.0,
@@ -52,6 +54,8 @@ defaults = {
     ["outfit_nanosuit/hud_colors_energy"] = "255,0,107,179",
     ["outfit_nanosuit/hud_colors_health"] = "255,85,148,17",
     ["outfit_nanosuit/hud_colors_stamina"] = "255,255,255,0",
+    ["outfit_nanosuit_asian/energy_use_factor"] = 1.0,
+    ["outfit_nanosuit_asian/energy_regen_factor"] = 0.9,
     ["outfit_nanosuit_asian/protection_armor_burn"] = 5.0,
     ["outfit_nanosuit_asian/protection_armor_shock"] = 1.0,
     ["outfit_nanosuit_asian/protection_armor_chemical_burn"] = 2.0,
@@ -71,6 +75,27 @@ defaults = {
     ["outfit_nanosuit_asian/hud_colors_energy"] = "255,0,59,99",
     ["outfit_nanosuit_asian/hud_colors_health"] = "255,79,96,60",
     ["outfit_nanosuit_asian/hud_colors_stamina"] = "255,255,255,0",
+    ["outfit_nanosuit_2/energy_use_factor"] = 0.8,
+    ["outfit_nanosuit_2/energy_regen_factor"] = 1.2,
+    ["outfit_nanosuit_2/protection_armor_burn"] = 5.0,
+    ["outfit_nanosuit_2/protection_armor_shock"] = 1.0,
+    ["outfit_nanosuit_2/protection_armor_chemical_burn"] = 2.0,
+    ["outfit_nanosuit_2/protection_armor_radiation"] = 0.5,
+    ["outfit_nanosuit_2/protection_armor_wound"] = 0.7,
+    ["outfit_nanosuit_2/protection_armor_fire_wound"] = 0.5,
+    ["outfit_nanosuit_2/protection_armor_strike"] = 2.0,
+    ["outfit_nanosuit_2/protection_armor_explosion"] = 0.4,
+    ["outfit_nanosuit_2/protection_armor_wound_2"] = 0.4,
+    ["outfit_nanosuit_2/protection_armor_light_burn"] = 5.0,
+    ["outfit_nanosuit_2/protection_cloak_radiation"] = 0.5,
+    ["outfit_nanosuit_2/protection_power_radiation"] = 0.5,
+    ["outfit_nanosuit_2/protection_power_strike"] = 0.5,
+    ["outfit_nanosuit_2/protection_speed_radiation"] = 0.5,
+    ["outfit_nanosuit_2/hud_colors_text"] = "255,142,142,117",
+    ["outfit_nanosuit_2/hud_colors_background"] = "200,125,125,102",
+    ["outfit_nanosuit_2/hud_colors_energy"] = "255,0,59,99",
+    ["outfit_nanosuit_2/hud_colors_health"] = "255,79,96,60",
+    ["outfit_nanosuit_2/hud_colors_stamina"] = "255,255,255,0",
     -- Technical
     ["debug_mode"] = false
 }
@@ -79,40 +104,35 @@ defaults = {
 -- General functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
---- Function used to get a given setting defined in MCM.
---- If MCM isn't installed, it will default back to a value in defaults table.
---- @param key string
---- @return any
-function get_config(category, key)
-    if ui_mcm then
-        return ui_mcm.get("nanosuit/nanosuit_" .. category .. "/" .. key)
-    end
-    return defaults[key]
-end
-
 --- Function used to get a color constant based on the currently equipped outfit.
---- @param short_key string
+--- @param key string
 --- @param default any
 --- @return any
-function get_constant_color(short_key, default)
-    local res = get_constant(short_key, default)
+function get_outfit_color_config(key, default)
+    local res = get_outfit_config(key, default)
     res = str_explode(res, ",")
     return GetARGB(res[1], res[2], res[3], res[4])
 end
 
 --- Function used to get a configuration constant based on the currently equipped outfit.
---- @param short_key string
+--- @param key string
 --- @param default any
 --- @return any
-function get_constant(short_key, default)
+function get_outfit_config(key, default)
     local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-    local section = outfit and outfit:section()
-    if not section then
+    if not outfit then
         return default
     end
-    local key = section .. "/" .. short_key
+    return get_config("configuration", outfit:section() .. "/" .. key, default)
+end
+
+--- Function used to get a given setting defined in MCM.
+--- If MCM isn't installed, it will default back to a value in defaults table.
+--- @param key string
+--- @return any
+function get_config(category, key, default)
     if ui_mcm then
-        return ui_mcm.get("nanosuit/nanosuit_configuration/" .. key) or default
+        return ui_mcm.get("nanosuit/nanosuit_" .. category .. "/" .. key) or default
     end
     return defaults[key] or default
 end
@@ -159,6 +179,10 @@ function on_mcm_load()
                             { type = "title", text = "ui_mcm_menu_nanosuit_configuration" },
                             { type = "desc", text = "st_nanosuit_outfit_name" },
                             { type = "line" },
+                            { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_general" },
+                            { type = "track", val = mcm_types_enum.number, id = "energy_use_factor", def = defaults["outfit_nanosuit/energy_use_factor"], hint = "nanosuit_nanosuit_configuration_energy_use_factor", min = 0, max = defaults["outfit_nanosuit/energy_use_factor"] * 2, step = 0.1 },
+                            { type = "track", val = mcm_types_enum.number, id = "energy_regen_factor", def = defaults["outfit_nanosuit/energy_regen_factor"], hint = "nanosuit_nanosuit_configuration_energy_regen_factor", min = 0, max = defaults["outfit_nanosuit/energy_regen_factor"] * 2, step = 0.1 },
+                            { type = "line" },
                             { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_hud" },
                             { type = "input", val = mcm_types_enum.string, id = "hud_colors_text", def = defaults["outfit_nanosuit/hud_colors_text"], hint = "nanosuit_nanosuit_configuration_hud_colors_text", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
                             { type = "input", val = mcm_types_enum.string, id = "hud_colors_background", def = defaults["outfit_nanosuit/hud_colors_background"], hint = "nanosuit_nanosuit_configuration_hud_colors_background", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
@@ -196,6 +220,10 @@ function on_mcm_load()
                             { type = "slide", text = "ui_mcm_menu_nanosuit", link = "ui_nanosuit_mcm_banner", spacing = 20, size = { 512, 50 } },
                             { type = "title", text = "ui_mcm_menu_nanosuit_configuration" },
                             { type = "desc", text = "st_nanosuit_asian_outfit_name" },
+                            { type = "line" },
+                            { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_general" },
+                            { type = "track", val = mcm_types_enum.number, id = "energy_use_factor", def = defaults["outfit_nanosuit_asian/energy_use_factor"], hint = "nanosuit_nanosuit_configuration_energy_use_factor", min = 0, max = defaults["outfit_nanosuit_asian/energy_use_factor"] * 2, step = 0.1 },
+                            { type = "track", val = mcm_types_enum.number, id = "energy_regen_factor", def = defaults["outfit_nanosuit_asian/energy_regen_factor"], hint = "nanosuit_nanosuit_configuration_energy_regen_factor", min = 0, max = defaults["outfit_nanosuit_asian/energy_regen_factor"] * 2, step = 0.1 },
                             { type = "line" },
                             { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_hud" },
                             { type = "input", val = mcm_types_enum.string, id = "hud_colors_text", def = defaults["outfit_nanosuit_asian/hud_colors_text"], hint = "nanosuit_nanosuit_configuration_hud_colors_text", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
