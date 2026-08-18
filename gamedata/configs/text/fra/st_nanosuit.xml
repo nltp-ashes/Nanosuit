@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 17/08/2026                                                                                            -->
+<!--    Date : 18/08/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -210,6 +210,10 @@
     </string>
 
     <!-- Configuration -->
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_general">
+        <text>Paramètres généraux</text>
+    </string>
+
     <string id="ui_mcm_nanosuit_nanosuit_configuration_hud">
         <text>ATH</text>
     </string>
@@ -228,6 +232,14 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_speed">
         <text>Mode vitesse</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_energy_use_factor">
+        <text>Facteur de consommation d'énergie</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_energy_regen_factor">
+        <text>Facteur de récupération d'énergie</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_hud_colors_text">
