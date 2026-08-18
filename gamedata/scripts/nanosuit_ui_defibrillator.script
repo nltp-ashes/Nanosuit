@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 09/11/2025                                                                                             ---
+---    Date : 18/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit defibrillator UI.                                                          ---
@@ -28,10 +28,12 @@ function ui_defibrillator:__init(parent) super()
     self.m_xml:ParseFile("ui_nanosuit_defibrillator.xml")
 
     self.m_ui_message = self.m_xml:InitTextWnd("message", self)
+    self.m_ui_message:Show(false)
     arm.scale_ui(self.m_ui_message, true, true, "center")
 
     self.m_ui_key = self.m_xml:InitTextWnd("key", self)
     self.m_ui_key:SetTextColor(self.m_parent.m_colors.active)
+    self.m_ui_key:Show(false)
     arm.scale_ui(self.m_ui_key, true, true, "center")
 end
 
@@ -45,10 +47,12 @@ function ui_defibrillator:Update(force)
     CUIScriptWnd.Update(self)
 
     if not db.actor:alive() or not self.m_parent.m_core.m_defibrillator.m_enabled then
-        self:Show(false)
+        self.m_ui_message:Show(false)
+        self.m_ui_key:Show(false)
         return
     else
-        self:Show(true)
+        self.m_ui_message:Show(true)
+        self.m_ui_key:Show(true)
     end
 
     -- Reset UI
@@ -60,7 +64,7 @@ function ui_defibrillator:Update(force)
         local time_remaining = self.m_parent.m_core.m_defibrillator.m_charging_time_remaining
         time_remaining = time_remaining / 1000
         time_remaining = round(time_remaining)
-        self.m_ui_message:SetText(nanosuit_utils.get_translation("st_nanosuit_defibrillator_charging", tostring(time_remaining)))
+        self.m_ui_message:SetText(nanosuit_utils.get_translation("st_nanosuit_defibrillator_charging", time_remaining))
     end
 
     -- Update key

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 16/08/2026                                                                                             ---
+---    Date : 18/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -96,9 +96,11 @@ function ui_hud:__init(core) super()
     self:AttachChild(self.m_ui_indicators)
 
     self.m_ui_defibrillator = nanosuit_ui_defibrillator.ui_defibrillator(self)
+    self.m_ui_defibrillator:Show(true)
     self:AttachChild(self.m_ui_defibrillator)
 
     self.m_ui_binoculars = nanosuit_ui_binoculars.ui_binoculars(self)
+    self.m_ui_binoculars:Show(true)
     self:AttachChild(self.m_ui_binoculars)
 
     self:Show(false)
