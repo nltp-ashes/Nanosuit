@@ -30,6 +30,7 @@ constants_types_enum    = { string = "string", boolean = "boolean", number = "nu
 gender_enum             = { male = "male", female = "female" }
 actor_status_types_enum = { indicator = "state", booster = "booster" }
 energy_drain_enum       = { nightvision = "nightvision", nanovision = "nanovision", sprint = "sprint", cloak = "cloak" }
+vision_perk_enum        = { nightvision = "nightvision", nanovision = "nanovision"}
 
 -- Whitelists
 machine_guns_whitelist = {

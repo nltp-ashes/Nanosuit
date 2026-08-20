@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : RavenAscendant                                                                           ---
 ---    Edited : NLTP_ASHES                                                                                           ---
----    Date : 19/08/2026                                                                                             ---
+---    Date : 20/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define the options in MCM.                                                                     ---
@@ -17,25 +17,26 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- Imports
-mcm_types_enum = nanosuit_utils.mcm_types_enum
-actor_slots_enum = nanosuit_utils.actor_slots_enum
-gender_enum = nanosuit_utils.gender_enum
+mcm_types_enum                      = nanosuit_utils.mcm_types_enum
+actor_slots_enum                    = nanosuit_utils.actor_slots_enum
+gender_enum                         = nanosuit_utils.gender_enum
+vision_perk_enum                    = nanosuit_utils.vision_perk_enum
 
 -- If you don't use MCM, change your defaults from here.
 defaults = {
     -- General
     ["use_witness"] = false,
-    ["use_nanovision"] = false,
     ["suit_gender"] = gender_enum.male,
     -- Keybindings
     ["defibrillate"] = DIK_keys.DIK_SPACE,
     ["suit_menu"] = DIK_keys.DIK_V,
     ["nanovision"] = DIK_keys.DIK_N,
-    ["nightvision"] = DIK_keys.DIK_M,
+    ["nightvision"] = DIK_keys.DIK_N,
     ["binoculars"] = DIK_keys.DIK_B,
     -- Configuration
     ["outfit_nanosuit/energy_use_factor"] = 1.0,
     ["outfit_nanosuit/energy_regen_factor"] = 1.0,
+    ["outfit_nanosuit/vision_perk"] = vision_perk_enum.nightvision,
     ["outfit_nanosuit/protection_armor_burn"] = 5.0,
     ["outfit_nanosuit/protection_armor_shock"] = 1.0,
     ["outfit_nanosuit/protection_armor_chemical_burn"] = 2.0,
@@ -56,6 +57,7 @@ defaults = {
     ["outfit_nanosuit/hud_colors_stamina"] = "255,255,255,0",
     ["outfit_nanosuit_asian/energy_use_factor"] = 1.0,
     ["outfit_nanosuit_asian/energy_regen_factor"] = 0.9,
+    ["outfit_nanosuit_asian/vision_perk"] = vision_perk_enum.nightvision,
     ["outfit_nanosuit_asian/protection_armor_burn"] = 5.0,
     ["outfit_nanosuit_asian/protection_armor_shock"] = 1.0,
     ["outfit_nanosuit_asian/protection_armor_chemical_burn"] = 2.0,
@@ -77,6 +79,7 @@ defaults = {
     ["outfit_nanosuit_asian/hud_colors_stamina"] = "255,255,255,0",
     ["outfit_nanosuit_2/energy_use_factor"] = 0.8,
     ["outfit_nanosuit_2/energy_regen_factor"] = 1.2,
+    ["outfit_nanosuit_2/vision_perk"] = vision_perk_enum.nanovision,
     ["outfit_nanosuit_2/protection_armor_burn"] = 5.0,
     ["outfit_nanosuit_2/protection_armor_shock"] = 1.0,
     ["outfit_nanosuit_2/protection_armor_chemical_burn"] = 2.0,
@@ -150,8 +153,7 @@ function on_mcm_load()
                     { type = "slide", text = "ui_mcm_menu_nanosuit", link = "ui_nanosuit_mcm_banner", spacing = 20, size = { 512, 50 } },
                     { type = "title", text = "ui_mcm_menu_nanosuit_general" },
                     { type = "check", val = mcm_types_enum.boolean, id = "use_witness", def = defaults["use_witness"] },
-                    { type = "check", val = mcm_types_enum.boolean, id = "use_nanovision", def = defaults["use_nanovision"], precondition = { function() return z_heatvision ~= nil end } },
-                    { type = "list", val = mcm_types_enum.string, id = "suit_gender", def = defaults["suit_gender"], content = { {gender_enum.male,gender_enum.male}, {gender_enum.female,gender_enum.female} } },
+                    { type = "list", val = mcm_types_enum.string, id = "suit_gender", def = defaults["suit_gender"], no_str = true, content = { {gender_enum.male,"ui_mcm_nanosuit_nanosuit_general_suit_gender_lst_male"}, {gender_enum.female,"ui_mcm_nanosuit_nanosuit_general_suit_gender_lst_female"} } },
                 }
             },
             {
@@ -182,6 +184,7 @@ function on_mcm_load()
                             { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_general" },
                             { type = "track", val = mcm_types_enum.number, id = "energy_use_factor", def = defaults["outfit_nanosuit/energy_use_factor"], hint = "nanosuit_nanosuit_configuration_energy_use_factor", min = 0, max = defaults["outfit_nanosuit/energy_use_factor"] * 2, step = 0.1 },
                             { type = "track", val = mcm_types_enum.number, id = "energy_regen_factor", def = defaults["outfit_nanosuit/energy_regen_factor"], hint = "nanosuit_nanosuit_configuration_energy_regen_factor", min = 0, max = defaults["outfit_nanosuit/energy_regen_factor"] * 2, step = 0.1 },
+                            { type = "list", val = mcm_types_enum.string, id = "vision_perk", def = defaults["outfit_nanosuit/vision_perk"], hint = "nanosuit_nanosuit_configuration_vision_perk", no_str = true, content = { {vision_perk_enum.nightvision,"ui_mcm_nanosuit_nanosuit_configuration_vision_perk_lst_nightvision"}, {vision_perk_enum.nanovision,"ui_mcm_nanosuit_nanosuit_configuration_vision_perk_lst_nanovision"} } },
                             { type = "line" },
                             { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_hud" },
                             { type = "input", val = mcm_types_enum.string, id = "hud_colors_text", def = defaults["outfit_nanosuit/hud_colors_text"], hint = "nanosuit_nanosuit_configuration_hud_colors_text", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
@@ -224,6 +227,7 @@ function on_mcm_load()
                             { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_general" },
                             { type = "track", val = mcm_types_enum.number, id = "energy_use_factor", def = defaults["outfit_nanosuit_asian/energy_use_factor"], hint = "nanosuit_nanosuit_configuration_energy_use_factor", min = 0, max = defaults["outfit_nanosuit_asian/energy_use_factor"] * 2, step = 0.1 },
                             { type = "track", val = mcm_types_enum.number, id = "energy_regen_factor", def = defaults["outfit_nanosuit_asian/energy_regen_factor"], hint = "nanosuit_nanosuit_configuration_energy_regen_factor", min = 0, max = defaults["outfit_nanosuit_asian/energy_regen_factor"] * 2, step = 0.1 },
+                            { type = "list", val = mcm_types_enum.string, id = "vision_perk", def = defaults["outfit_nanosuit_asian/vision_perk"], hint = "nanosuit_nanosuit_configuration_vision_perk", no_str = true, content = { {vision_perk_enum.nightvision,"ui_mcm_nanosuit_nanosuit_configuration_vision_perk_lst_nightvision"}, {vision_perk_enum.nanovision,"ui_mcm_nanosuit_nanosuit_configuration_vision_perk_lst_nanovision"} } },
                             { type = "line" },
                             { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_hud" },
                             { type = "input", val = mcm_types_enum.string, id = "hud_colors_text", def = defaults["outfit_nanosuit_asian/hud_colors_text"], hint = "nanosuit_nanosuit_configuration_hud_colors_text", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
@@ -252,6 +256,49 @@ function on_mcm_load()
                             { type = "line" },
                             { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_speed" },
                             { type = "track", val = mcm_types_enum.number, id = "protection_speed_radiation", def = defaults["outfit_nanosuit_asian/protection_speed_radiation"], hint = "nanosuit_nanosuit_configuration_radiation", min = 0, max = defaults["outfit_nanosuit_asian/protection_speed_radiation"] * 2, step = 0.1 },
+                        }
+                    },
+                    {
+                        id = "outfit_nanosuit_2",
+                        text = "st_nanosuit_2_outfit_name_s",
+                        sh = true,
+                        gr = {
+                            { type = "slide", text = "ui_mcm_menu_nanosuit", link = "ui_nanosuit_mcm_banner", spacing = 20, size = { 512, 50 } },
+                            { type = "title", text = "ui_mcm_menu_nanosuit_configuration" },
+                            { type = "desc", text = "st_nanosuit_2_outfit_name" },
+                            { type = "line" },
+                            { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_general" },
+                            { type = "track", val = mcm_types_enum.number, id = "energy_use_factor", def = defaults["outfit_nanosuit_2/energy_use_factor"], hint = "nanosuit_nanosuit_configuration_energy_use_factor", min = 0, max = defaults["outfit_nanosuit_2/energy_use_factor"] * 2, step = 0.1 },
+                            { type = "track", val = mcm_types_enum.number, id = "energy_regen_factor", def = defaults["outfit_nanosuit_2/energy_regen_factor"], hint = "nanosuit_nanosuit_configuration_energy_regen_factor", min = 0, max = defaults["outfit_nanosuit_2/energy_regen_factor"] * 2, step = 0.1 },
+                            { type = "list", val = mcm_types_enum.string, id = "vision_perk", def = defaults["outfit_nanosuit_2/vision_perk"], hint = "nanosuit_nanosuit_configuration_vision_perk", no_str = true, content = { {vision_perk_enum.nightvision,"ui_mcm_nanosuit_nanosuit_configuration_vision_perk_lst_nightvision"}, {vision_perk_enum.nanovision,"ui_mcm_nanosuit_nanosuit_configuration_vision_perk_lst_nanovision"} } },
+                            { type = "line" },
+                            { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_hud" },
+                            { type = "input", val = mcm_types_enum.string, id = "hud_colors_text", def = defaults["outfit_nanosuit_2/hud_colors_text"], hint = "nanosuit_nanosuit_configuration_hud_colors_text", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+                            { type = "input", val = mcm_types_enum.string, id = "hud_colors_background", def = defaults["outfit_nanosuit_2/hud_colors_background"], hint = "nanosuit_nanosuit_configuration_hud_colors_background", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+                            { type = "input", val = mcm_types_enum.string, id = "hud_colors_energy", def = defaults["outfit_nanosuit_2/hud_colors_energy"], hint = "nanosuit_nanosuit_configuration_hud_colors_energy", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+                            { type = "input", val = mcm_types_enum.string, id = "hud_colors_health", def = defaults["outfit_nanosuit_2/hud_colors_health"], hint = "nanosuit_nanosuit_configuration_hud_colors_health", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+                            { type = "input", val = mcm_types_enum.string, id = "hud_colors_stamina", def = defaults["outfit_nanosuit_2/hud_colors_stamina"], hint = "nanosuit_nanosuit_configuration_hud_colors_stamina", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+                            { type = "line" },
+                            { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_armor" },
+                            { type = "track", val = mcm_types_enum.number, id = "protection_armor_burn", def = defaults["outfit_nanosuit_2/protection_armor_burn"], hint = "nanosuit_nanosuit_configuration_burn", min = 0, max = defaults["outfit_nanosuit_2/protection_armor_burn"] * 2, step = 0.1 },
+                            { type = "track", val = mcm_types_enum.number, id = "protection_armor_shock", def = defaults["outfit_nanosuit_2/protection_armor_shock"], hint = "nanosuit_nanosuit_configuration_shock", min = 0, max = defaults["outfit_nanosuit_2/protection_armor_shock"] * 2, step = 0.1 },
+                            { type = "track", val = mcm_types_enum.number, id = "protection_armor_chemical_burn", def = defaults["outfit_nanosuit_2/protection_armor_chemical_burn"], hint = "nanosuit_nanosuit_configuration_chemical_burn", min = 0, max = defaults["outfit_nanosuit_2/protection_armor_chemical_burn"] * 2, step = 0.1 },
+                            { type = "track", val = mcm_types_enum.number, id = "protection_armor_radiation", def = defaults["outfit_nanosuit_2/protection_armor_radiation"], hint = "nanosuit_nanosuit_configuration_radiation", min = 0, max = defaults["outfit_nanosuit_2/protection_armor_radiation"] * 2, step = 0.1 },
+                            { type = "track", val = mcm_types_enum.number, id = "protection_armor_wound", def = defaults["outfit_nanosuit_2/protection_armor_wound"], hint = "nanosuit_nanosuit_configuration_wound", min = 0, max = defaults["outfit_nanosuit_2/protection_armor_wound"] * 2, step = 0.1 },
+                            { type = "track", val = mcm_types_enum.number, id = "protection_armor_fire_wound", def = defaults["outfit_nanosuit_2/protection_armor_fire_wound"], hint = "nanosuit_nanosuit_configuration_fire_wound", min = 0, max = defaults["outfit_nanosuit_2/protection_armor_fire_wound"] * 2, step = 0.1 },
+                            { type = "track", val = mcm_types_enum.number, id = "protection_armor_explosion", def = defaults["outfit_nanosuit_2/protection_armor_explosion"], hint = "nanosuit_nanosuit_configuration_explosion", min = 0, max = defaults["outfit_nanosuit_2/protection_armor_explosion"] * 2, step = 0.1 },
+                            { type = "track", val = mcm_types_enum.number, id = "protection_armor_wound_2", def = defaults["outfit_nanosuit_2/protection_armor_wound_2"], hint = "nanosuit_nanosuit_configuration_wound_2", min = 0, max = defaults["outfit_nanosuit_2/protection_armor_wound_2"] * 2, step = 0.1 },
+                            { type = "track", val = mcm_types_enum.number, id = "protection_armor_light_burn", def = defaults["outfit_nanosuit_2/protection_armor_light_burn"], hint = "nanosuit_nanosuit_configuration_burn", min = 0, max = defaults["outfit_nanosuit_2/protection_armor_light_burn"] * 2, step = 0.1 },
+                            { type = "line" },
+                            { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_cloak" },
+                            { type = "track", val = mcm_types_enum.number, id = "protection_cloak_radiation", def = defaults["outfit_nanosuit_2/protection_cloak_radiation"], hint = "nanosuit_nanosuit_configuration_radiation", min = 0, max = defaults["outfit_nanosuit_2/protection_cloak_radiation"] * 2, step = 0.1 },
+                            { type = "line" },
+                            { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_power" },
+                            { type = "track", val = mcm_types_enum.number, id = "protection_power_radiation", def = defaults["outfit_nanosuit_2/protection_power_radiation"], hint = "nanosuit_nanosuit_configuration_radiation", min = 0, max = defaults["outfit_nanosuit_2/protection_power_radiation"] * 2, step = 0.1 },
+                            { type = "track", val = mcm_types_enum.number, id = "protection_power_strike", def = defaults["outfit_nanosuit_2/protection_power_strike"], hint = "nanosuit_nanosuit_configuration_strike", min = 0, max = defaults["outfit_nanosuit_2/protection_power_strike"] * 2, step = 0.1 },
+                            { type = "line" },
+                            { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_speed" },
+                            { type = "track", val = mcm_types_enum.number, id = "protection_speed_radiation", def = defaults["outfit_nanosuit_2/protection_speed_radiation"], hint = "nanosuit_nanosuit_configuration_radiation", min = 0, max = defaults["outfit_nanosuit_2/protection_speed_radiation"] * 2, step = 0.1 },
                         }
                     }
                 }

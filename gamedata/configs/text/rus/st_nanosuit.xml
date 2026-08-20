@@ -4,7 +4,7 @@
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
 <!--    Edited : Russian translation (VodoXleb - 18/08/2026)                                                         -->
-<!--    Date : 18/08/2026                                                                                            -->
+<!--    Date : 20/08/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -104,7 +104,6 @@
         <text>ЗУМ</text>
     </string>
 
-
     <!--=============================================================================================================-->
     <!--    MCM                                                                                                      -->
     <!--=============================================================================================================-->
@@ -139,15 +138,6 @@
         <text>Протокол заключается в том, чтобы не оставлять свидетелей вашего присутствия. Если включено, игрок будет выпарен, когда он позволит противнику сбежать после боя.</text>
     </string>
 
-    <!-- Enable nanovision -->
-    <string id="ui_mcm_nanosuit_nanosuit_general_use_nanovision">
-        <text>Разрешить нано зрение</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_general_use_nanovision_desc">
-        <text>В лоре Crysis нанокостюм 1.0 не имеет нано зрения. Бэкэнд для него существует в сталкере, так что вы всё равно можете его включить, если хотите.</text>
-    </string>
-
     <!-- Open suit menu -->
     <string id="ui_mcm_nanosuit_nanosuit_keybindings_suit_menu">
         <text>Открыть меню костюма</text>
@@ -175,11 +165,11 @@
         <text>Выберите тип голоса, который вы хотите использовать для костюма.</text>
     </string>
 
-    <string id="nanosuit_nanosuit_general_suit_gender_lst_male">
+    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender_lst_male">
         <text>Мужской</text>
     </string>
 
-    <string id="nanosuit_nanosuit_general_suit_gender_lst_female">
+    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender_lst_female">
         <text>Женский</text>
     </string>
 
@@ -241,6 +231,19 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_energy_regen_factor">
         <text>Множитель восполнения энергии</text>
+    </string>
+
+    <!-- TODO : verify this translation -->
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_vision_perk">
+        <text>Система улучшенного видения</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_vision_perk_lst_nightvision">
+        <text>Ночное видение</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_vision_perk_lst_nanovision">
+        <text>Нано зрение</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_hud_colors_text">

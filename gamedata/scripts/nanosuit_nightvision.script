@@ -2,10 +2,10 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 26/04/2026                                                                                             ---
+---    Date : 20/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
----    Script used to handle the Nanosuit's built-in nightvision system.                                              ---
+---    Script used to handle the Nanosuit's built-in nightvision system.                                             ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -16,6 +16,7 @@
 -- Imports
 actor_slots_enum          = nanosuit_utils.actor_slots_enum
 energy_drain_enum         = nanosuit_utils.energy_drain_enum
+vision_perk_enum          = nanosuit_utils.vision_perk_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Defibrillator class
@@ -92,9 +93,10 @@ function nightvision:deactivate()
 end
 
 function nightvision:can_activate()
+    local enabled = nanosuit_mcm.get_outfit_config("vision_perk") == vision_perk_enum.nightvision
     local no_torch = db.actor:item_in_slot(actor_slots_enum.torch) == nil
     local has_energy = self.m_energy.m_level > 0
-    return no_torch and has_energy
+    return enabled and no_torch and has_energy
 end
 
 function nightvision:is_active()
