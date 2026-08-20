@@ -218,6 +218,8 @@ Credit goes to these people for their work contained in this addon :
 | **[\_Paramonov Alexander\_](https://users.playground.ru/1997780/)** |                       Port of the nanosuit first person, third person and world models                       |                         Proprietary                          |
 |             **[Crytek GmbH](https://www.crytek.com/)**              |                               Various assets (textures, sound effects, models)                               |                         Proprietary                          |
 
+[//]: # (TODO : Need to credit the guy that made the original nanosuit HUD textures, even though I essentially redid them from the ground up since then)
+
 Special thanks to these people for their help in the making of this addon :
 
 |                      Name                      |                                                     Motive                                                     |
