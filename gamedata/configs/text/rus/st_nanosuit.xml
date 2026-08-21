@@ -3,8 +3,8 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
-<!--    Edited : Russian translation (VodoXleb - 18/08/2026)                                                         -->
-<!--    Date : 20/08/2026                                                                                            -->
+<!--    Edited : Russian translation (VodoXleb - 21/08/2026)                                                         -->
+<!--    Date : 21/08/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -233,9 +233,8 @@
         <text>Множитель восполнения энергии</text>
     </string>
 
-    <!-- TODO : verify this translation -->
     <string id="ui_mcm_nanosuit_nanosuit_configuration_vision_perk">
-        <text>Система улучшенного видения</text>
+        <text>Система улучшения видимости</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_vision_perk_lst_nightvision">
