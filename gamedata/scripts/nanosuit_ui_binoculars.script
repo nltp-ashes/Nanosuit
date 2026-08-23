@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 27/02/2026                                                                                             ---
+---    Date : 18/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit binoculars UI.                                                             ---
@@ -32,32 +32,41 @@ function ui_binoculars:__init(parent) super()
 
     self.m_ui_background = self.m_xml:InitStatic("background", self)
     self.m_ui_background:SetTextureColor(self.m_parent.m_colors.background)
+    self.m_ui_background:Show(false)
 
     self.m_ui_text = self.m_xml:InitStatic("text", self)
     self.m_ui_text:SetTextureColor(self.m_parent.m_colors.text)
+    self.m_ui_text:Show(false)
 
     self.m_ui_mode_label = self.m_xml:InitTextWnd("mode_label", self)
     self.m_ui_mode_label:SetTextColor(self.m_parent.m_colors.text)
     self.m_ui_mode_label:SetText(game.translate_string("st_nanosuit_binoculars_mode"))
+    self.m_ui_mode_label:Show(false)
 
     self.m_ui_mode = self.m_xml:InitTextWnd("mode", self)
     self.m_ui_mode:SetTextColor(self.m_parent.m_colors.text)
+    self.m_ui_mode:Show(false)
 
     self.m_ui_zoom_label = self.m_xml:InitTextWnd("zoom_label", self)
     self.m_ui_zoom_label:SetTextColor(self.m_parent.m_colors.text)
     self.m_ui_zoom_label:SetText(game.translate_string("st_nanosuit_binoculars_zoom"))
+    self.m_ui_zoom_label:Show(false)
 
     self.m_ui_zoom = self.m_xml:InitTextWnd("zoom", self)
     self.m_ui_zoom:SetTextColor(self.m_parent.m_colors.text)
+    self.m_ui_zoom:Show(false)
 
     self.m_ui_range = self.m_xml:InitTextWnd("range", self)
     self.m_ui_range:SetTextColor(self.m_parent.m_colors.text)
+    self.m_ui_range:Show(false)
 
     self.m_ui_coordinates_n = self.m_xml:InitTextWnd("coordinates_n", self)
     self.m_ui_coordinates_n:SetTextColor(self.m_parent.m_colors.text)
+    self.m_ui_coordinates_n:Show(false)
 
     self.m_ui_coordinates_w = self.m_xml:InitTextWnd("coordinates_w", self)
     self.m_ui_coordinates_w:SetTextColor(self.m_parent.m_colors.text)
+    self.m_ui_coordinates_w:Show(false)
 end
 
 function ui_binoculars:__finalize()
@@ -91,20 +100,40 @@ end
 
 function ui_binoculars:activate()
     self.m_is_active = true
+
     -- FIXME : This shader doesn't work, don't know why
     -- exec_console_cmd(string.format("vignette_control %s,0.0,%s,0.0", 1, VIGNETTE_EDG))
-    self:Show(true)
+
+    self.m_ui_background:Show(true)
+    self.m_ui_text:Show(true)
+    self.m_ui_mode_label:Show(true)
+    self.m_ui_mode:Show(true)
+    self.m_ui_zoom_label:Show(true)
+    self.m_ui_zoom:Show(true)
+    self.m_ui_range:Show(true)
+    self.m_ui_coordinates_n:Show(true)
+    self.m_ui_coordinates_w:Show(true)
 end
 
 function ui_binoculars:deactivate()
-    self:Show(false)
+    self.m_ui_background:Show(false)
+    self.m_ui_text:Show(false)
+    self.m_ui_mode_label:Show(false)
+    self.m_ui_mode:Show(false)
+    self.m_ui_zoom_label:Show(false)
+    self.m_ui_zoom:Show(false)
+    self.m_ui_range:Show(false)
+    self.m_ui_coordinates_n:Show(false)
+    self.m_ui_coordinates_w:Show(false)
+
     -- FIXME : This shader doesn't work, don't know why
     -- exec_console_cmd(string.format("vignette_control %s,0.0,%s,0.0", 0, VIGNETTE_EDG))
+
     self.m_is_active = false
 end
 
 function ui_binoculars:get_mode()
-    if self.m_parent.m_core.m_nightvision:is_active() then
+    if self.m_parent.m_core.m_nightvision:is_active() or item_device.is_nv_active() then
         return "NV"
     end
     return "VIS"

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 22/08/2025                                                                                             ---
+---    Date : 06/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the animated sequence of the vaporization.                                              ---
@@ -106,7 +106,7 @@ function vaporization_sequence:wait_for_state()
 end
 
 function vaporization_sequence:action_malfunction()
-    self.m_vaporizer.m_core.m_malfunctor:enable_malfunction(true)
+    self.m_vaporizer.m_core.m_malfunctor:enable_malfunction(nil)
     return true
 end
 

@@ -1,0 +1,252 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 16/08/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit tactical map background map UI.                                            ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Tactical map background map UI class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "ui_tacmap_map" (CUIScriptWnd)
+
+function ui_tacmap_map:__init(parent) super()
+    -- Variables
+    self.m_parent = parent
+    self.m_tracked_objects = {}
+    self.m_task_arrows = {}
+    self.m_range = 85
+    self.m_player = nanosuit_utils.scale_ui_position(vector2():set(157.3333, 651))
+    self.m_tacmap_bounds = {
+        [1] = nanosuit_utils.scale_ui_position(vector2():set(256.0000, 584)),
+        [2] = nanosuit_utils.scale_ui_position(vector2():set(66.6667, 595)),
+        [3] = nanosuit_utils.scale_ui_position(vector2():set(66.6667, 685)),
+        [4] = nanosuit_utils.scale_ui_position(vector2():set(86.6667, 697)),
+        [5] = nanosuit_utils.scale_ui_position(vector2():set(86.6667, 725)),
+        [6] = nanosuit_utils.scale_ui_position(vector2():set(234.6667, 719)),
+        [7] = nanosuit_utils.scale_ui_position(vector2():set(256.0000, 700)),
+    }
+    self.m_resolution = self:get_resolution(self.m_range, self.m_player, self.m_tacmap_bounds)
+
+    self.m_object_pool = nanosuit_ui_tacmap_object_pool.ui_tacmap_object_pool()
+
+    -- Build UI
+    self.m_ui_map = self.m_parent.m_xml:InitStatic("map", self)
+    self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map")
+    nanosuit_utils.scale_ui_element(self.m_ui_map, true, true, "left")
+
+    -- FIXME : finish implementing this when I find a way to improve the code's performance
+    -- self.m_ui_map_texture = nanosuit_ui_tacmap_texture.ui_tacmap_texture(self)
+    -- self.m_ui_map_texture:Show(true)
+    -- self:AttachChild(self.m_ui_map_texture)
+end
+
+function ui_tacmap_map:__finalize()
+end
+
+function ui_tacmap_map:destroy()
+    self.m_parent = nil
+
+    -- FIXME : finish implementing this when I find a way to improve the code's performance
+    -- self.m_ui_map_texture:destroy()
+    self.m_object_pool:destroy()
+
+    for id in pairs(self.m_tracked_objects) do
+        self.m_tracked_objects[id]:destroy(self.m_ui_map)
+        self.m_tracked_objects[id] = nil
+    end
+end
+
+function ui_tacmap_map:Update(force)
+    CUIScriptWnd.Update(self)
+
+    self:update_map()
+    self:update_icons()
+end
+
+function ui_tacmap_map:update_map()
+    if not self.m_parent:is_enabled() then
+        self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map_malfunction")
+        return
+    end
+
+    self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map")
+end
+
+function ui_tacmap_map:update_icons()
+    if not self.m_parent:is_enabled() then
+        for id in pairs(self.m_tracked_objects) do
+            self.m_tracked_objects[id]:destroy(self.m_ui_map)
+            self.m_tracked_objects[id] = nil
+        end
+        return
+    end
+
+    for id, obj in self.m_object_pool:iterate_relevant(self.m_range) do
+        if not self.m_tracked_objects[id] then
+            self.m_tracked_objects[id] = nanosuit_ui_tacmap_icon.ui_tacmap_icon(self, self.m_ui_map)
+        end
+        local world_pos = obj:position()
+        local world_dir = obj:direction()
+        local hud_pos = self:pos_world_to_tacmap(world_pos)
+        local task_target_info = self.m_object_pool.m_task_targets_cache[obj:id()]
+        if self:is_within_bounds(hud_pos) then
+            local hud_dir = self:dir_world_to_tacmap(world_dir)
+            self.m_tracked_objects[id]:update_in_bounds(obj, hud_pos, hud_dir, task_target_info)
+        elseif self.m_object_pool.m_task_targets_cache[obj:id()] then
+            local edge_hud_pos, edge_hud_dir = self:get_bounds_intersection(hud_pos)
+            self.m_tracked_objects[id]:update_out_of_bounds(obj, edge_hud_pos, edge_hud_dir, task_target_info)
+        end
+    end
+
+    for id, data in pairs(self.m_tracked_objects) do
+        if data.refreshed then
+            data.refreshed = false
+        else
+            self.m_tracked_objects[id]:destroy(self.m_ui_map)
+            self.m_tracked_objects[id] = nil
+        end
+    end
+end
+
+function ui_tacmap_map:get_resolution(range, center, bounds)
+    local furthest_distance = 0
+
+    local cx = center.x * nanosuit_utils.screen_scale.x
+    local cy = center.y * nanosuit_utils.screen_scale.y
+
+    for i = 1, #bounds do
+        local px = bounds[i].x * nanosuit_utils.screen_scale.x
+        local py = bounds[i].y * nanosuit_utils.screen_scale.y
+        local distance = nanosuit_utils.vec2_distance_to(vector2():set(cx, cy), vector2():set(px, py))
+
+        if distance > furthest_distance then
+            furthest_distance = distance
+        end
+    end
+
+    return furthest_distance / range
+end
+
+-- Anything past this point has been vibe coded and I would gladly take contributions from someone who actually knows vectorial math to replace it
+
+function ui_tacmap_map:pos_world_to_tacmap(pos)
+    -- Translate distance from world space to tacmap space
+    local distance_world = distance_2d(device().cam_pos, pos)
+    local distance_tacmap = distance_world * self.m_resolution
+
+    -- Get angle from player to target in tacmap space
+    local angle = self:get_heading(pos) -- angle in radians
+
+    -- Calculate the x and y coordinates on the tacmap relative to self.m_player
+    local x = self.m_player.x + (distance_tacmap / nanosuit_utils.screen_scale.x) * math.sin(angle)
+    local y = self.m_player.y - (distance_tacmap / nanosuit_utils.screen_scale.y) * math.cos(angle)
+
+    local wnd_pos = self.m_ui_map:GetWndPos()
+
+    return vector2():set(x - wnd_pos.x, y - wnd_pos.y)
+end
+
+function ui_tacmap_map:dir_world_to_tacmap(dir)
+    -- Project both directions onto XZ plane
+    local player_dir_xz = vector():set(device().cam_dir.x, 0, device().cam_dir.z):normalize()
+    local obj_dir_xz = vector():set(dir.x, 0, dir.z):normalize()
+
+    -- Compute angle between object direction and player camera direction
+    local dot_product = player_dir_xz:dotproduct(obj_dir_xz)
+    local angle = math.acos(clamp(dot_product, -1, 1))
+
+    -- Determine sign using cross product (invert sign logic for HUD convention)
+    local cross_product = player_dir_xz.x * obj_dir_xz.z - player_dir_xz.z * obj_dir_xz.x
+    if cross_product < 0 then
+        angle = -angle
+    end
+
+    return angle
+end
+
+function ui_tacmap_map:get_heading(pos)
+    -- Calculate the vector from the player to the target
+    local to_target = vector():sub(pos, device().cam_pos)
+
+    -- Normalize the player's direction and the target vector on the xz plane
+    local player_dir_xz = vector():set(device().cam_dir.x, 0, device().cam_dir.z):normalize()
+    local to_target_xz = vector():set(to_target.x, 0, to_target.z):normalize()
+
+    -- Calculate the angle using the dot product
+    local dot_product = player_dir_xz:dotproduct(to_target_xz)
+    local angle = math.acos(clamp(dot_product, -1, 1)) -- Clamp to avoid precision errors
+
+    -- Determine the sign of the angle using the cross product
+    local cross_product = player_dir_xz.x * to_target_xz.z - player_dir_xz.z * to_target_xz.x
+    if cross_product > 0 then
+        angle = -angle
+    end
+
+    return angle
+end
+
+function ui_tacmap_map:get_bounds_intersection(hud_pos)
+    local wnd_pos = self.m_ui_map:GetWndPos()
+    local cx, cy = self.m_player.x - wnd_pos.x, self.m_player.y - wnd_pos.y
+    local tx, ty = hud_pos.x, hud_pos.y
+    local dx, dy = cx - tx, cy - ty
+    local min_dist, ix, iy, angle = nil, nil, nil, nil
+    for i = 1, #self.m_tacmap_bounds do
+        local j = (i % #self.m_tacmap_bounds) + 1
+        local x1, y1 = self.m_tacmap_bounds[i].x - wnd_pos.x, self.m_tacmap_bounds[i].y - wnd_pos.y
+        local x2, y2 = self.m_tacmap_bounds[j].x - wnd_pos.x, self.m_tacmap_bounds[j].y - wnd_pos.y
+        local denom = (x2 - x1) * dy - (y2 - y1) * dx
+        if math.abs(denom) > 1e-6 then
+            local t = ((cx - x1) * dy - (cy - y1) * dx) / denom
+            local u = ((x1 - cx) * (y2 - y1) - (y1 - cy) * (x2 - x1)) / denom
+            if t >= 0 and t <= 1 and u > 0 then
+                local px = x1 + t * (x2 - x1)
+                local py = y1 + t * (y2 - y1)
+                local dist = (px - cx) ^ 2 + (py - cy) ^ 2
+                if not min_dist or dist < min_dist then
+                    min_dist = dist
+                    ix, iy = px, py
+                    local px_dx = (tx - cx) * nanosuit_utils.screen_scale.x
+                    local px_dy = (ty - cy) * nanosuit_utils.screen_scale.y
+                    angle = math.atan2(px_dy, px_dx) - math.pi / 2
+                end
+            end
+        end
+    end
+    if ix and iy and angle then
+        return vector2():set(ix, iy), -angle
+    end
+    return nil, nil
+end
+
+function ui_tacmap_map:is_within_bounds(pos)
+    local inside = false
+    local wnd_pos = self.m_ui_map:GetWndPos()
+
+    local j = #self.m_tacmap_bounds
+    for i = 1, #self.m_tacmap_bounds do
+
+        local vi_x = self.m_tacmap_bounds[i].x - wnd_pos.x
+        local vi_y = self.m_tacmap_bounds[i].y - wnd_pos.y
+        local vj_x = self.m_tacmap_bounds[j].x - wnd_pos.x
+        local vj_y = self.m_tacmap_bounds[j].y - wnd_pos.y
+
+        if ((vi_y > pos.y) ~= (vj_y > pos.y)) and (pos.x < (vj_x - vi_x) * (pos.y - vi_y) / (vj_y - vi_y) + vi_x) then
+            inside = not inside
+        end
+
+        j = i
+    end
+
+    return inside
+end
