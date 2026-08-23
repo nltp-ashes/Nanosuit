@@ -1,8 +1,6 @@
-## **v0.12.0 - 16/08/2026 - Beta Build**
+## **v0.12.0 - 24/08/2026 - Beta Build**
 
-[![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.11.0/total?label=Downloads)]()
-
-**• Additions :**
+[![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.12.0/total?label=Downloads)]()
 
 **• Changes :**
 > - Removed patches for exoskeleton-related addons, as now the suit should not be considered an exoskeleton anymore;
