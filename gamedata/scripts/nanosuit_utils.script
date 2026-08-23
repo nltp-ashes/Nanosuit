@@ -111,7 +111,7 @@ end
 
 --- Function used to get a sound object localized to the game's language (if available) and in the correct gender.
 --- The gender is decided by the parent directory, the language is decided by a suffix.
---- For example: 
+--- For example:
 --- - path\to\male\my_sound | path\to\female\my_sound
 --- - path\to\male\my_sound_rus | path\to\female\my_sound_rus
 --- - path\to\male\my_sound_fra | path\to\female\my_sound_fra
