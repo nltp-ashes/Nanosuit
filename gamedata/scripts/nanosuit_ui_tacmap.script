@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 16/08/2026                                                                                             ---
+---    Date : 23/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -58,21 +58,24 @@ function ui_tacmap:destroy()
 end
 
 function ui_tacmap:Update(force)
-    CUIScriptWnd.Update(self)
-
     local tg = time_global()
     if tg - self.m_last_update < self.m_update_rate then
         return
     end
     self.m_last_update = tg
 
+    CUIScriptWnd.Update(self)
+
+    self:update_outline()
+    self:update_visibility()
+end
+
+function ui_tacmap:update_outline()
     if self.m_parent.m_core.m_malfunctor.m_enabled then
         self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.red)
     else
         self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
     end
-
-    self:update_visibility()
 end
 
 function ui_tacmap:update_visibility()

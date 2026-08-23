@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 16/08/2026                                                                                             ---
+---    Date : 23/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map icon UI.                                                      ---
@@ -22,16 +22,6 @@ class "ui_tacmap_icon"
 function ui_tacmap_icon:__init(parent, container)
     -- Variables
     self.m_parent = parent
-
-    self.m_default_color = GetARGB(255, 255, 255, 255)
-    self.m_corpse_looted_color = GetARGB(255, 150, 150, 150)
-    self.m_primary_task_color = GetARGB(255, 0, 255, 0)
-    self.m_secondary_task_color = GetARGB(255, 255, 255, 0)
-    self.m_color_per_relation = {
-        [game_object.friend] = GetARGB(255, 0, 255, 0),
-        [game_object.neutral] = GetARGB(255, 255, 255, 0),
-        [game_object.enemy] = GetARGB(255, 255, 0, 0)
-    }
 
     -- Main object icon
     self.m_icon_static = self.m_parent.m_parent.m_xml:InitStatic("icon", container)
@@ -54,7 +44,6 @@ function ui_tacmap_icon:__finalize()
 end
 
 function ui_tacmap_icon:destroy(container)
-    -- Detach child statics
     container:DetachChild(self.m_icon_static)
     container:DetachChild(self.m_task_icon_static)
     container:DetachChild(self.m_task_arrow_static)
@@ -70,7 +59,7 @@ function ui_tacmap_icon:update_in_bounds(obj, hud_pos, hud_dir, task_target_info
     self.m_icon_static:SetWndSize(self:get_size(obj))
     self.m_icon_static:Show(true)
     self.m_task_icon_static:Show(task_target_info ~= nil)
-    self.m_task_icon_static:SetTextureColor(task_target_info and task_target_info.primary and self.m_primary_task_color or self.m_secondary_task_color)
+    self.m_task_icon_static:SetTextureColor(self:get_task_color(task_target_info))
     self.m_task_arrow_static:Show(false)
 
     -- Center statics on coordinates
@@ -91,7 +80,7 @@ function ui_tacmap_icon:update_out_of_bounds(obj, hud_pos, hud_dir, task_target_
     end
 
     self.m_task_arrow_static:Show(task_target_info ~= nil)
-    self.m_task_arrow_static:SetTextureColor(task_target_info and task_target_info.primary and self.m_primary_task_color or self.m_secondary_task_color)
+    self.m_task_arrow_static:SetTextureColor(self:get_task_color(task_target_info))
 
     -- Mark as refreshed
     self.refreshed = true
@@ -121,16 +110,23 @@ end
 function ui_tacmap_icon:get_color(obj)
     if IsStalker(obj) and obj:alive() then
         local relation = obj:relation(db.actor)
-        return self.m_color_per_relation[relation]
+        return self.m_parent.m_parent.m_parent.m_colors.icon_per_relation[relation]
     end
     if (IsStalker(obj) or IsMonster(obj)) and not obj:alive() then
         local is_stalker_looted = se_load_var(obj:id(), obj:name(), "death_dropped")
         local is_mutant_looted = se_load_var(obj:id(), obj:name(), "looted")
         if is_stalker_looted or is_mutant_looted then
-            return self.m_corpse_looted_color
+            return self.m_parent.m_parent.m_parent.m_colors.icon_looted
         end
     end
-    return self.m_default_color
+    return self.m_parent.m_parent.m_parent.m_colors.icon_default
+end
+
+function ui_tacmap_icon:get_task_color(task_target_info)
+    if task_target_info and task_target_info.primary then
+        return self.m_parent.m_parent.m_parent.m_colors.icon_primary_task
+    end
+    return self.m_parent.m_parent.m_parent.m_colors.icon_secondary_task
 end
 
 function ui_tacmap_icon:get_size(obj)
