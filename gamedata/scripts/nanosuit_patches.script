@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 09/11/2025                                                                                             ---
+---    Date : 08/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle all the necessary intercepts to make the Nanosuit addon compatible with other addons.   ---
@@ -12,6 +12,9 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- First Person Visible Body v6.0
@@ -159,19 +162,6 @@ if actor_status_campfire then
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Powered Exoskeletons v2.2
--- ---------------------------------------------------------------------------------------------------------------------
-
-if item_exo_device then
-    item_exo_device_is_exo = item_exo_device.is_exo
-    item_exo_device.is_exo = function(obj)
-        local res = item_exo_device_is_exo(obj)
-
-        return not nanosuit_utils.is_nanosuit(obj) and res
-    end
-end
-
--- ---------------------------------------------------------------------------------------------------------------------
 -- Body Health System Redux v2.0.2
 -- ---------------------------------------------------------------------------------------------------------------------
 
@@ -211,5 +201,20 @@ if z_heatvision then
         local res = nanosuit_nightvision_nightvision_can_activate(self)
 
         return res and not self.m_core.m_nanovision:is_active()
+    end
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Faction Identification UI v1.2.2
+-- ---------------------------------------------------------------------------------------------------------------------
+
+if factionid_hud_mcm then
+    nanosuit_ui_hud_ui_hud_get_elements_to_move_factionid = nanosuit_ui_hud.ui_hud.get_elements_to_move
+    nanosuit_ui_hud.ui_hud.get_elements_to_move = function(self)
+        local elements_to_move = nanosuit_ui_hud_ui_hud_get_elements_to_move_factionid(self)
+        if factionid_hud_mcm.HUD then
+            table.insert(elements_to_move, { element = factionid_hud_mcm.HUD, x = 115, y = -20 })
+        end
+        return elements_to_move
     end
 end

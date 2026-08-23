@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 14/02/2026                                                                                            -->
+<!--    Date : 14/08/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Texture description file for the Nanosuit addon's UI textures.                                               -->
@@ -81,11 +81,18 @@
     <file name="nanosuit\ui\hud\tacmap\map.dds">
         <texture id="ui_nanosuit_tacmap_map"                   x="0"       y="0"      width="998"     height="782" />
     </file>
+    <file name="nanosuit\ui\hud\tacmap\visibility.dds">
+        <texture id="ui_nanosuit_tacmap_visibility_bar"        x="0"       y="0"      width="45"      height="341" />
+    </file>
     <file name="nanosuit\ui\hud\tacmap\map_malfunction.dds">
         <texture id="ui_nanosuit_tacmap_map_malfunction"       x="0"       y="0"      width="998"     height="782" />
     </file>
-    <file name="ui\ui_actor_hint_wnd.dds">
-        <texture id="ui_nanosuit_tacmap_object"                x="4"       y="563"    width="23"      height="23" />
+    <file name="nanosuit\ui\hud\tacmap\icons.dds">
+        <texture id="ui_nanosuit_tacmap_object"                x="0"       y="0"      width="64"      height="64" />
+        <texture id="ui_nanosuit_tacmap_body"                  x="64"      y="0"      width="64"      height="64" />
+        <texture id="ui_nanosuit_tacmap_vehicle"               x="128"     y="0"      width="64"      height="64" />
+        <texture id="ui_nanosuit_tacmap_task_point"            x="192"     y="0"      width="64"      height="64" />
+        <texture id="ui_nanosuit_tacmap_task_arrow"            x="0"       y="64"     width="64"      height="64" />
     </file>
 
     <!-- Auxiliaries UI -->

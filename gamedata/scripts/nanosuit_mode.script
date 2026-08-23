@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/02/2026                                                                                             ---
+---    Date : 06/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract suit mode of the Nanosuit addon.                               ---
@@ -96,6 +96,10 @@ end
 function abstract_mode:on_before_hit_after_calcs(scripted_hit, target, bone_id)
     -- Only apply to actor
     if target:id() ~= AC_ID then
+        return
+    end
+
+    if scripted_hit.power <= 0 then
         return
     end
 

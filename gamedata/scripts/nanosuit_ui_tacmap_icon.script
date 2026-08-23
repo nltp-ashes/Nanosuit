@@ -1,0 +1,147 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 23/08/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the Nanosuit tactical map icon UI.                                                      ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Tactical map icon UI class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "ui_tacmap_icon"
+
+function ui_tacmap_icon:__init(parent, container)
+    -- Variables
+    self.m_parent = parent
+
+    -- Main object icon
+    self.m_icon_static = self.m_parent.m_parent.m_xml:InitStatic("icon", container)
+    self.m_icon_static:SetAutoDelete(true)
+
+    -- Task icon
+    self.m_task_icon_static = self.m_parent.m_parent.m_xml:InitStatic("icon", container)
+    self.m_task_icon_static:InitTexture("ui_nanosuit_tacmap_task_point")
+    self.m_task_icon_static:Show(false)
+    self.m_task_icon_static:SetAutoDelete(true)
+
+    -- Task arrow icon
+    self.m_task_arrow_static = self.m_parent.m_parent.m_xml:InitStatic("icon", container)
+    self.m_task_arrow_static:InitTexture("ui_nanosuit_tacmap_task_arrow")
+    self.m_task_arrow_static:Show(false)
+    self.m_task_arrow_static:SetAutoDelete(true)
+end
+
+function ui_tacmap_icon:__finalize()
+end
+
+function ui_tacmap_icon:destroy(container)
+    container:DetachChild(self.m_icon_static)
+    container:DetachChild(self.m_task_icon_static)
+    container:DetachChild(self.m_task_arrow_static)
+
+    self.m_parent = nil
+end
+
+function ui_tacmap_icon:update_in_bounds(obj, hud_pos, hud_dir, task_target_info)
+    -- Update statics
+    self.m_icon_static:SetHeading(self:get_heading(obj, hud_dir))
+    self.m_icon_static:InitTexture(self:get_texture(obj))
+    self.m_icon_static:SetTextureColor(self:get_color(obj))
+    self.m_icon_static:SetWndSize(self:get_size(obj))
+    self.m_icon_static:Show(true)
+    self.m_task_icon_static:Show(task_target_info ~= nil)
+    self.m_task_icon_static:SetTextureColor(self:get_task_color(task_target_info))
+    self.m_task_arrow_static:Show(false)
+
+    -- Center statics on coordinates
+    arm.move_and_center_element(self.m_icon_static, hud_pos.x, hud_pos.y)
+    arm.move_and_center_element(self.m_task_icon_static, hud_pos.x, hud_pos.y)
+
+    -- Mark as refreshed
+    self.refreshed = true
+end
+
+function ui_tacmap_icon:update_out_of_bounds(obj, hud_pos, hud_dir, task_target_info)
+    self.m_icon_static:Show(false)
+    self.m_task_icon_static:Show(false)
+
+    if hud_pos and hud_dir then
+        arm.move_and_center_element(self.m_task_arrow_static, hud_pos.x, hud_pos.y)
+        self.m_task_arrow_static:SetHeading(hud_dir)
+    end
+
+    self.m_task_arrow_static:Show(task_target_info ~= nil)
+    self.m_task_arrow_static:SetTextureColor(self:get_task_color(task_target_info))
+
+    -- Mark as refreshed
+    self.refreshed = true
+end
+
+function ui_tacmap_icon:get_texture(obj)
+    if nanosuit_utils.is_space_restrictor(obj) or nanosuit_utils.is_smart_terrain(obj) or IsInvbox(obj) then
+        return "ui_nanosuit_no_draw"
+    end
+    if IsCar(obj) then
+        return "ui_nanosuit_tacmap_vehicle"
+    end
+    if IsStalker(obj) or IsMonster(obj) then
+        if not obj:alive() then
+            return "ui_nanosuit_tacmap_body"
+        end
+        if obj:relation(db.actor) == game_object.enemy and not xr_combat_ignore.fighting_with_actor_npcs[obj:id()] then
+            return "ui_nanosuit_no_draw"
+        end
+    end
+    if nanosuit_utils.is_quest_item(obj) then
+        return "ui_nanosuit_no_draw"
+    end
+    return "ui_nanosuit_tacmap_object"
+end
+
+function ui_tacmap_icon:get_color(obj)
+    if IsStalker(obj) and obj:alive() then
+        local relation = obj:relation(db.actor)
+        return self.m_parent.m_parent.m_parent.m_colors.icon_per_relation[relation]
+    end
+    if (IsStalker(obj) or IsMonster(obj)) and not obj:alive() then
+        local is_stalker_looted = se_load_var(obj:id(), obj:name(), "death_dropped")
+        local is_mutant_looted = se_load_var(obj:id(), obj:name(), "looted")
+        if is_stalker_looted or is_mutant_looted then
+            return self.m_parent.m_parent.m_parent.m_colors.icon_looted
+        end
+    end
+    return self.m_parent.m_parent.m_parent.m_colors.icon_default
+end
+
+function ui_tacmap_icon:get_task_color(task_target_info)
+    if task_target_info and task_target_info.primary then
+        return self.m_parent.m_parent.m_parent.m_colors.icon_primary_task
+    end
+    return self.m_parent.m_parent.m_parent.m_colors.icon_secondary_task
+end
+
+function ui_tacmap_icon:get_size(obj)
+    if IsCar(obj) then
+        return vector2():set(15, 15)
+    end
+    return vector2():set(10, 10)
+end
+
+function ui_tacmap_icon:get_heading(obj, dir)
+    if IsCar(obj) then
+        return dir
+    end
+    if (IsStalker(obj) or IsMonster(obj)) and obj:alive() then
+        return dir
+    end
+    return 0
+end

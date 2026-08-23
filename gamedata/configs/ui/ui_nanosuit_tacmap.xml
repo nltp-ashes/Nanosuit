@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 15/06/2025                                                                                            -->
+<!--    Date : 14/08/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    UI template for the Nanosuit tactical map.                                                                   -->
@@ -21,11 +21,19 @@
 
     <!-- Map -->
     <map x="10" y="563" width="249" height="195" stretch="1">
-        <texture a="200">ui_nanosuit_tacmap_map</texture>
+        <texture a="100">ui_nanosuit_tacmap_map</texture>
     </map>
 
+    <!-- Visibility -->
+    <visibility_bar_background x="54" y="597" width="12" height="85" stretch="1">
+        <texture a="200">ui_nanosuit_tacmap_visibility_bar</texture>
+    </visibility_bar_background>
+    <visibility_bar x="54" y="597" width="12" height="85" mode="vert" min="0" max="100" pos="100">
+        <progress stretch="1">
+            <texture>ui_nanosuit_tacmap_visibility_bar</texture>
+        </progress>
+    </visibility_bar>
+
     <!-- Object icon -->
-    <object_icon x="10" y="563" width="10" height="10" stretch="1">
-        <texture>ui_nanosuit_tacmap_object</texture>
-    </object_icon>
+    <icon x="10" y="563" width="10" height="10" stretch="1" align="c" heading="1" heading_angle="0" />
 </w>
