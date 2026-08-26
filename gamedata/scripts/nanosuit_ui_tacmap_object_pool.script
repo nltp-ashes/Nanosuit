@@ -42,7 +42,6 @@ function ui_tacmap_object_pool:__init()
     end
 
     -- Callbacks
-    RegisterScriptCallback("actor_on_update", self)
     RegisterScriptCallback("game_object_on_net_spawn", self)
     RegisterScriptCallback("game_object_on_net_destroy", self)
 end
@@ -51,12 +50,11 @@ function ui_tacmap_object_pool:__finalize()
 end
 
 function ui_tacmap_object_pool:destroy()
-    UnregisterScriptCallback("actor_on_update", self)
     UnregisterScriptCallback("game_object_on_net_spawn", self)
     UnregisterScriptCallback("game_object_on_net_destroy", self)
 end
 
-function ui_tacmap_object_pool:actor_on_update()
+function ui_tacmap_object_pool:update()
     -- Throttle update
     local tg = time_global()
     if tg - self.m_task_targets_cache_last_update < self.m_task_targets_cache_update_rate then
