@@ -4,6 +4,7 @@
 
 **• Additions :**
 > - Added custom icon for weapons that use fire mode "0" (safe);
+> - Added back `repair_type` property because other mods wrongly expect it to be defined and CTD if absent;
 
 **• Changes :**
 
