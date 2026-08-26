@@ -300,8 +300,13 @@ function get_true_task_target(tsk_id)
         return nil
     end
 
-    -- Special case for squads : they don't have game objects, so we target a member instead
+    -- Get server object (and verify its existence, task_manager updates slowly enough that object can be gone already)
     local se_obj = alife_object(target_id)
+    if not se_obj then
+        return nil
+    end
+
+    -- Special case for squads : they don't have game objects, so we target a member instead
     if nanosuit_utils.is_squad(se_obj) then
         for member in se_obj:squad_members() do
             target_id = member.id
@@ -320,7 +325,7 @@ function get_true_task_target(tsk_id)
     end
 
     -- If target is on another level, point to the optimal level changer towards the target
-    if not simulation_objects.is_on_the_same_level(alife():actor(), se_obj) then
+    if se_obj and not simulation_objects.is_on_the_same_level(alife():actor(), se_obj) then
         -- Source level (player location)
         local src_level = level.name()
 

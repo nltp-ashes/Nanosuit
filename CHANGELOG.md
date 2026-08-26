@@ -11,3 +11,4 @@
 > - Fixed some broken translations in Russian;
 > - Fixed tactical map refreshing its object pool even when it is disabled;
 > - Fixed CTD when the player's current weapon's fire mode is not recognized by the Nanosuit HUD;
+> - Fixed CTD when the game task points to an ID that does not exist in the world;
