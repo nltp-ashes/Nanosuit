@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 16/08/2026                                                                                             ---
+---    Date : 26/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit status hub (energy, health, ammo, etc) UI.                                 ---
@@ -275,6 +275,12 @@ function ui_status:update_fire_mode(weapon_obj, weapon_class)
 
     local fire_mode = weapon_class:GetFireMode()
     fire_mode = fire_modes_names_enum[fire_mode]
+
+    if not fire_mode then
+        self.m_ui_fire_mode:InitTexture("ui_nanosuit_no_draw")
+        return
+    end
+
     fire_mode = "ui_nanosuit_status_" .. fire_mode
     self.m_ui_fire_mode:InitTexture(fire_mode)
 end
