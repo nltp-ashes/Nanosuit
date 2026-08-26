@@ -5,8 +5,10 @@
 **• Additions :**
 > - Added custom icon for weapons that use fire mode "0" (safe);
 > - Added back `repair_type` property because other mods wrongly expect it to be defined and CTD if absent;
+> - Added a custom texture for the ammo wheel while wearing the Nanosuit;
 
 **• Changes :**
+> - Removed a part of the patch for SWM First Person Visible Body that was left over; 
 
 **• Bug fixes :**
 > - Fixed some broken translations in Russian;
