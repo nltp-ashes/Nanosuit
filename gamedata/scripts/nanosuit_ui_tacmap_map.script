@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 16/08/2026                                                                                             ---
+---    Date : 26/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map background map UI.                                            ---
@@ -68,6 +68,10 @@ end
 
 function ui_tacmap_map:Update(force)
     CUIScriptWnd.Update(self)
+
+    -- FIXME : finish implementing this when I find a way to improve the code's performance
+    -- self.m_ui_map_texture:update()
+    self.m_object_pool:update()
 
     self:update_map()
     self:update_icons()

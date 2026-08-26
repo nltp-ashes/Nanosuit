@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
-<!--    Date : 27/02/2026                                                                                            -->
+<!--    Date : 26/08/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -101,11 +101,11 @@
         <text>Нанокостюм</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_general_title">
+    <string id="ui_mcm_menu_nanosuit_general">
         <text>Общие</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_keybindings_title">
+    <string id="ui_mcm_menu_nanosuit_keybindings">
         <text>Клавиатура</text>
     </string>
 
@@ -113,7 +113,7 @@
         <text>Настройки</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_technical_settings_title">
+    <string id="ui_mcm_menu_nanosuit_technical">
         <text>Технические</text>
     </string>
 
@@ -135,6 +135,23 @@
         <text>В лоре Crysis нанокостюм 1.0 не имеет нано зрения. Бэкэнд для него существует в сталкере, так что вы всё равно можете его включить, если хотите.</text>
     </string>
 
+    <!-- Suit voice -->
+    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender">
+        <text>Голос костюма</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender_desc">
+        <text>Выберите тип голоса, который вы хотите использовать для костюма.</text>
+    </string>
+
+    <string id="nanosuit_nanosuit_general_suit_gender_lst_male">
+        <text>Мужской</text>
+    </string>
+
+    <string id="nanosuit_nanosuit_general_suit_gender_lst_female">
+        <text>Женский</text>
+    </string>
+
     <!-- Open suit menu -->
     <string id="ui_mcm_nanosuit_nanosuit_keybindings_suit_menu">
         <text>Открыть меню костюма</text>
@@ -151,23 +168,6 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_keybindings_nanovision_desc">
         <text>Клавиша, используемая для активации нано зрение (тепловизионного изображения).</text>
-    </string>
-
-    <!-- Suit voice -->
-    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender">
-        <text>Голос костюма</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender_desc">
-        <text>Выберите тип голоса, который вы хотите использовать для костюма.</text>
-    </string>
-
-    <string id="nanosuit_nanosuit_general_suit_gender_lst_male">
-        <text>Мужской</text>
-    </string>
-
-    <string id="nanosuit_nanosuit_general_suit_gender_lst_female">
-        <text>Женский</text>
     </string>
 
     <!-- Toggle nightvision -->
