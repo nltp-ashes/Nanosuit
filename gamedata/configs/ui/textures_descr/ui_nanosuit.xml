@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 26/08/2026                                                                                            -->
+<!--    Date : 27/08/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Texture description file for the Nanosuit addon's UI textures.                                               -->
@@ -138,5 +138,16 @@
     <file name="nanosuit\ui\hud\ammo_wheel\ammo_wheel.dds">
         <texture id="ui_nanosuit_ammo_wheel_background"        x="0"       y="0"      width="440"     height="420" />
         <texture id="ui_nanosuit_ammo_wheel_outline"           x="440"     y="0"      width="440"     height="420" />
+    </file>
+
+    <!-- Timer UI -->
+    <file name="nanosuit\ui\hud\timer\background.dds">
+        <texture id="ui_nanosuit_timer_background"             x="0"       y="0"      width="564"     height="480" />
+    </file>
+    <file name="nanosuit\ui\hud\timer\outline.dds">
+        <texture id="ui_nanosuit_timer_outline"                x="0"       y="0"      width="564"     height="480" />
+    </file>
+    <file name="nanosuit\ui\hud\timer\icons.dds">
+        <texture id="ui_nanosuit_timer_clock"                  x="0"       y="0"      width="256"     height="256" />
     </file>
 </w>

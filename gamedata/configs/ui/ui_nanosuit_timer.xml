@@ -1,0 +1,31 @@
+<!--=================================================================================================================-->
+<!--                                                                                                                 -->
+<!--    Original Author(s) : NLTP_ASHES                                                                              -->
+<!--    Edited : N/A                                                                                                 -->
+<!--    Date : 27/08/2026                                                                                            -->
+<!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
+<!--                                                                                                                 -->
+<!--    UI template for the Nanosuit timer UI.                                                                       -->
+<!--                                                                                                                 -->
+<!--=================================================================================================================-->
+<w>
+    <background x="808" y="35" width="206" height="110" stretch="1">
+        <texture a="200">ui_nanosuit_timer_background</texture>
+    </background>
+
+    <outline x="808" y="35" width="206" height="110" stretch="1">
+        <texture>ui_nanosuit_timer_outline</texture>
+    </outline>
+
+    <clock x="823" y="60" width="40" height="40" stretch="1">
+        <texture>ui_nanosuit_timer_clock</texture>
+    </clock>
+
+    <timer x="873" y="65" width="116" height="50" stretch="1">
+        <text x="0" y="0" font="letterica25" align="c"/>
+    </timer>
+
+    <text x="823" y="110" width="176" height="50" stretch="1">
+        <text x="0" y="0" font="letterica18" align="c"/>
+    </text>
+</w>
