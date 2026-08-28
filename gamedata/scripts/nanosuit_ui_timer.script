@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 27/08/2026                                                                                             ---
+---    Date : 29/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to stylize the timer (from sr_timer.script) UI like the rest of the Nanosuit HUD.                 ---
@@ -43,7 +43,7 @@ sr_timer.action_timer.deactivate = function(self, delta)
 
     local instance = nanosuit_core.get_instance()
     if instance then
-        instance.m_hud.m_ui_timer:deactivate()
+        instance.m_hud.m_ui_timer:deactivate(self.st)
     end
 end
 
@@ -122,8 +122,12 @@ function ui_timer:activate(st)
     self.m_enabled = true
 end
 
-function ui_timer:deactivate()
+function ui_timer:deactivate(st)
     if not self.m_enabled then
+        return
+    end
+
+    if st and self.m_storage.timer_id ~= st.timer_id then
         return
     end
 
