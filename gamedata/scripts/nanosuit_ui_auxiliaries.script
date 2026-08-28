@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 02/11/2025                                                                                             ---
+---    Date : 29/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit auxiliaries (night-vision) UI.                                             ---
@@ -60,6 +60,8 @@ end
 function ui_auxiliaries:Update(force)
     CUIScriptWnd.Update(self)
 
+    local nv_energy = self.m_parent.m_core.m_nightvision.m_energy.m_level
+
     if self.m_parent.m_core.m_malfunctor.m_enabled then
         -- Outline
         self.m_ui_top_left_corner:SetTextureColor(self.m_parent.m_colors.red)
@@ -69,21 +71,19 @@ function ui_auxiliaries:Update(force)
         -- NV energy
         self.m_ui_nv_energy_bar:SetProgressPos(0)
         self.m_ui_nv_energy_bar_background:SetTextureColor(self.m_parent.m_colors.nv_energy_off_bg)
-        return
+    else
+        -- Outline
+        self.m_ui_top_left_corner:SetTextureColor(self.m_parent.m_colors.background)
+        self.m_ui_top_right_corner:SetTextureColor(self.m_parent.m_colors.background)
+        self.m_ui_nv_energy_outline:SetTextureColor(self.m_parent.m_colors.background)
+
+        -- NV energy
+        nv_energy = round(nv_energy)
+        nv_energy = clamp(nv_energy, 0, 100)
+        self.m_ui_nv_energy_bar:SetColor(self.m_parent.m_colors.nv_energy)
+        self.m_ui_nv_energy_bar:SetProgressPos(nv_energy)
+        self.m_ui_nv_energy_bar_background:SetTextureColor(self.m_parent.m_colors.nv_energy_bg)
     end
-
-    -- Outline
-    self.m_ui_top_left_corner:SetTextureColor(self.m_parent.m_colors.background)
-    self.m_ui_top_right_corner:SetTextureColor(self.m_parent.m_colors.background)
-    self.m_ui_nv_energy_outline:SetTextureColor(self.m_parent.m_colors.background)
-
-    -- NV energy
-    local nv_energy = self.m_parent.m_core.m_nightvision.m_energy.m_level
-    nv_energy = round(nv_energy)
-    nv_energy = clamp(nv_energy, 0, 100)
-    self.m_ui_nv_energy_bar:SetColor(self.m_parent.m_colors.nv_energy)
-    self.m_ui_nv_energy_bar:SetProgressPos(nv_energy)
-    self.m_ui_nv_energy_bar_background:SetTextureColor(self.m_parent.m_colors.nv_energy_bg)
 
     if nv_energy >= 100 then
         self.m_ui_nv_energy_bar:Show(false)

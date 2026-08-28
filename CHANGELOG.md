@@ -12,6 +12,8 @@
 > - Removed a part of the patch for SWM First Person Visible Body that was left over; 
 
 **• Bug fixes :**
+> - Fix binoculars being available when the suit is in malfunction state;
+> - Fix nightvision energy bar not displaying properly when the suit is in malfunction state;
 > - Fixed some broken translations in Russian;
 > - Fixed tactical map refreshing its object pool even when it is disabled;
 > - Fixed CTD when the player's current weapon's fire mode is not recognized by the Nanosuit HUD;

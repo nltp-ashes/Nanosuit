@@ -222,6 +222,7 @@ Special thanks to these people for their help in the making of this addon :
 
 |                      Name                      |                                                     Motive                                                     |
 |:----------------------------------------------:|:--------------------------------------------------------------------------------------------------------------:|
+|                    **Sark**                    |                                      Help with playtesting and bug report                                      |
 |                    **mrrp**                    |                        Help with testing the Nanosuit HUD on 21:9 3440x1440 resolution                         |
 |                    **MFB**                     |                        Tips about invisible walls and how they work in the X-Ray engine                        |
 |                 **Vanquisher**                 |                             For extensive play-testing and all the feedback given                              |
