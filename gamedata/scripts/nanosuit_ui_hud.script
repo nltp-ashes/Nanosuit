@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 23/08/2026                                                                                             ---
+---    Date : 27/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -113,6 +113,14 @@ function ui_hud:__init(core) super()
     self.m_ui_binoculars:Show(true)
     self:AttachChild(self.m_ui_binoculars)
 
+    self.m_ui_ammo_wheel = nanosuit_ui_ammo_wheel.ui_ammo_wheel(self)
+    self.m_ui_ammo_wheel:Show(true)
+    self:AttachChild(self.m_ui_ammo_wheel)
+
+    self.m_ui_timer = nanosuit_ui_timer.ui_timer(self)
+    self.m_ui_timer:Show(true)
+    self:AttachChild(self.m_ui_timer)
+
     self:Show(false)
 
     -- Register callbacks
@@ -140,6 +148,8 @@ function ui_hud:destroy()
     self.m_ui_indicators:destroy()
     self.m_ui_defibrillator:destroy()
     self.m_ui_binoculars:destroy()
+    self.m_ui_ammo_wheel:destroy()
+    self.m_ui_timer:destroy()
 
     self.m_core = nil
 
@@ -267,13 +277,20 @@ function ui_hud:Update(force)
     CUIScriptWnd.Update(self)
 
     -- Handle UI visibility
-    local should_show = (main_hud_shown() or self.m_ui_menu:IsShown()) and (db.actor:alive() or level.get_active_cam() == actor_cameras_enum.first_eye)
-
+    local should_show = self:should_show()
     if not should_show and self:IsShown() then
         self:Show(false)
     elseif should_show and not self:IsShown() then
         self:Show(true)
     end
+end
+
+function ui_hud:should_show()
+    local ammo_wheel_shown = item_weapon.GUI and item_weapon.GUI:IsShown() or false
+    if not main_hud_shown() and not self.m_ui_menu:IsShown() and not ammo_wheel_shown then
+        return false
+    end
+    return db.actor:alive() or level.get_active_cam() == actor_cameras_enum.first_eye
 end
 
 function ui_hud:remove_pda_icon()

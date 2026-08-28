@@ -1,0 +1,146 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 29/08/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to stylize the timer (from sr_timer.script) UI like the rest of the Nanosuit HUD.                 ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+sr_timer_set_scheme = sr_timer.set_scheme
+sr_timer.set_scheme = function(obj, ini, scheme, section, gulag_name)
+    sr_timer_set_scheme(obj, ini, scheme, section, gulag_name)
+
+    local instance = nanosuit_core.get_instance()
+    if instance then
+        instance.m_hud.m_ui_timer:activate(db.storage[obj:id()][scheme])
+    end
+end
+
+sr_timer_action_timer_update = sr_timer.action_timer.update
+sr_timer.action_timer.update = function(self, delta)
+    sr_timer_action_timer_update(self, delta)
+
+    local instance = nanosuit_core.get_instance()
+    if instance then
+        instance.m_hud.m_ui_timer:activate(self.st)
+    end
+end
+
+sr_timer_action_timer_deactivate = sr_timer.action_timer.deactivate
+sr_timer.action_timer.deactivate = function(self, delta)
+    sr_timer_action_timer_deactivate(self, delta)
+
+    local instance = nanosuit_core.get_instance()
+    if instance then
+        instance.m_hud.m_ui_timer:deactivate(self.st)
+    end
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Timer UI class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "ui_timer" (CUIScriptWnd)
+
+function ui_timer:__init(parent) super()
+    -- Variables
+    self.m_parent = parent
+    self.m_enabled = false
+    self.m_storage = nil
+
+    -- Build UI
+    self.m_xml = CScriptXmlInit()
+    self.m_xml:ParseFile("ui_nanosuit_timer.xml")
+
+    self.m_ui_background = self.m_xml:InitStatic("background", self)
+    arm.scale_ui(self.m_ui_background, true, true, "right")
+
+    self.m_ui_outline = self.m_xml:InitStatic("outline", self)
+    self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
+    arm.scale_ui(self.m_ui_outline, true, true, "right")
+
+    self.m_ui_clock = self.m_xml:InitStatic("clock", self)
+    self.m_ui_clock:SetTextureColor(self.m_parent.m_colors.background)
+    arm.scale_ui(self.m_ui_clock, true, true, "right")
+
+    self.m_ui_timer = self.m_xml:InitStatic("timer", self)
+    arm.scale_ui(self.m_ui_timer, true, true, "right")
+
+    self.m_ui_text = self.m_xml:InitStatic("text", self)
+    arm.scale_ui(self.m_ui_text, true, true, "right")
+end
+
+function ui_timer:destroy()
+    self:deactivate()
+end
+
+function ui_timer:Update(force)
+    CUIScriptWnd.Update(self)
+
+    if self.m_parent.m_core.m_malfunctor.m_enabled then
+        self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.red)
+        self.m_ui_clock:SetTextureColor(self.m_parent.m_colors.red)
+    else
+        self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
+        self.m_ui_clock:SetTextureColor(self.m_parent.m_colors.background)
+    end
+
+    self.m_ui_background:Show(self.m_enabled)
+    self.m_ui_outline:Show(self.m_enabled)
+    self.m_ui_clock:Show(self.m_enabled)
+    self.m_ui_text:Show(self.m_enabled)
+end
+
+function ui_timer:activate(st)
+    if self.m_enabled then
+        return
+    end
+
+    self.m_storage = st
+
+    local hud = get_hud()
+    hud:RemoveCustomStatic(self.m_storage.timer_id)
+    hud:RemoveCustomStatic("hud_timer_text")
+
+    self.m_storage.timer = self.m_ui_timer
+
+    if self.m_storage.string ~= nil then
+        self.m_ui_text:TextControl():SetTextST(self.m_storage.string)
+    end
+
+    self.m_enabled = true
+end
+
+function ui_timer:deactivate(st)
+    if not self.m_enabled then
+        return
+    end
+
+    if st and self.m_storage.timer_id ~= st.timer_id then
+        return
+    end
+
+    local hud = get_hud()
+    hud:AddCustomStatic(self.m_storage.timer_id, true)
+    self.m_storage.timer = hud:GetCustomStatic(self.m_storage.timer_id):wnd()
+
+    if self.m_storage.string ~= nil then
+        hud:AddCustomStatic("hud_timer_text", true)
+        local timer_text = hud:GetCustomStatic("hud_timer_text"):wnd()
+        timer_text:TextControl():SetTextST(self.m_storage.string)
+    end
+
+    self.m_storage = nil
+    self.m_enabled = false
+end
