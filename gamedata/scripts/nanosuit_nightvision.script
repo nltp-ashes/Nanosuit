@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 20/08/2026                                                                                             ---
+---    Date : 29/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's built-in nightvision system.                                             ---
@@ -93,10 +93,10 @@ function nightvision:deactivate()
 end
 
 function nightvision:can_activate()
-    local enabled = nanosuit_mcm.get_outfit_config("vision_perk") == vision_perk_enum.nightvision
-    local no_torch = db.actor:item_in_slot(actor_slots_enum.torch) == nil
+    local is_enabled = nanosuit_mcm.get_outfit_config("vision_perk") == vision_perk_enum.nightvision
+    local has_torch = db.actor:item_in_slot(actor_slots_enum.torch) ~= nil
     local has_energy = self.m_energy.m_level > 0
-    return enabled and no_torch and has_energy
+    return is_enabled and not has_torch and has_energy
 end
 
 function nightvision:is_active()
