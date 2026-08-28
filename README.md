@@ -10,7 +10,7 @@ Fend off the Zone's dangers with the Nanosuit, a powerful and extremely versatil
 
 ### ABOUT
 
-This addon adds a fully operational US and Korean nanosuits from Crysis.
+This addon adds a fully operational US and Korean Nanosuits from Crysis.
 
 **Important :** This addon is still in development. You have to spawn the outfit using the [debug menu item spawner](https://igigog.github.io/anomaly-modding-book/modding-tools/in-game-editors/item-spawner.html).
 
@@ -107,8 +107,8 @@ These addons are **absolutely required** in order for the addon to work :
 
 The addon natively integrates[^native_integrations] with the following addons, but they **aren't required** :
 1. [Mod Configuration Menu v1.7](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu) (customizable options for the addon);
-2. [Hunger, thirst, sleepiness bars v1.01](https://www.moddb.com/mods/stalker-anomaly/addons/hunger-thirst-sleepiness-bars) (custom nanosuit styling for hunger, thirst and sleepiness indicator);
-3. [Campfire Healing And Designated Savepoint indicator v2.1](https://www.moddb.com/mods/stalker-anomaly/addons/campfire-healing-and-designated-savepoint-indicator) (custom nanosuit styling for campfire indicators);
+2. [Hunger, thirst, sleepiness bars v1.01](https://www.moddb.com/mods/stalker-anomaly/addons/hunger-thirst-sleepiness-bars) (custom Nanosuit styling for hunger, thirst and sleepiness indicator);
+3. [Campfire Healing And Designated Savepoint indicator v2.1](https://www.moddb.com/mods/stalker-anomaly/addons/campfire-healing-and-designated-savepoint-indicator) (custom Nanosuit styling for campfire indicators);
 4. [Body Health System Redux v2.0.2](https://www.moddb.com/mods/stalker-anomaly/addons/100-groks-body-health-system-redux-for-151) (built-in compatibility, to prevent UI overlaps);
 5. [HeatVision v1.3](https://www.moddb.com/mods/stalker-anomaly/addons/heatvision-v02-extension-for-beefs-nvg-dx11engine-mod) (adds nanovision to the suit, if installed);
 6. [Faction Identification UI v1.2.2](https://www.moddb.com/mods/stalker-anomaly/addons/crooks-faction-identification-ui) (built-in compatibility, to prevent UI overlaps);
@@ -152,7 +152,7 @@ For past updates, please refer to the description of each release, in the [relea
 
 Here is a list of planned features for the addon :
 - Add a storyline that will allow the player to acquire the suit;
-- Add a female version of the nanosuit;
+- Add a female version of the Nanosuit;
 - Custom footsteps when wearing the suit;
 - Add suit modes shortcuts;
 - Finish the tactical map UI (and add range);
@@ -174,7 +174,7 @@ If you would like to help development for future updates, you can :
 The following issues will be fixed in the near future :
 - Cloak mode does not cloak the knife during the mutant skinning animation with FDDA
 - The game crashes if player reloads a save while cloak mode is enabled
-- Indicators are not colored properly when using the Korean nanosuit
+- Indicators are not colored properly when using the Korean Nanosuit
 
 The following issues are technical limitations and will not be fixed in the foreseeable future :
 - The game crashes if actor interacts with an NPC while they're getting vaporized
@@ -201,24 +201,25 @@ Credit goes to these people for their work contained in this addon :
 
 |                                Name                                 |                                                    Motive                                                    |                           License                            |
 |:-------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------:|
+|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |                 Improved the texture quality of the first person models of the Nanosuit 2.0                  |                   See [LICENSE](#license)                    |
 |      **[Captain Vityaz](https://www.youtube.com/@CptVityaz)**       |                               Created high quality icons for the indicators UI                               | [PD 1.0](https://creativecommons.org/publicdomain/mark/1.0/) |
 |                             **Catspaw**                             |                  Allowed the reusing of a custom color picker widget for MCM in this addon                   |                   See [LICENSE](#license)                    |
-|                            **Medialuna**                            |                           Fixed the Korean nanosuit's world model collision volume                           |                         Proprietary                          |
-|         **[Crepis](https://www.moddb.com/members/cr3pis)**          |      Provided high quality inventory icon, upgrade icon and character portrait for the Korean nanosuit       |                         Proprietary                          |
-|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |                   Improved the texture quality of the Korean nanosuit's third person model                   |                   See [LICENSE](#license)                    |
-|                         **wookie, 3vtiger**                         |                                Port of the Korean nanosuit third person model                                |                         Proprietary                          |
-|                          **punished__joe**                          |                Ported the nanosuit hands and edited them to fit S.T.A.L.K.E.R.'s proportions                 |                         Proprietary                          |
+|                            **Medialuna**                            |                           Fixed the Korean Nanosuit's world model collision volume                           |                         Proprietary                          |
+|         **[Crepis](https://www.moddb.com/members/cr3pis)**          |      Provided high quality inventory icon, upgrade icon and character portrait for the Korean Nanosuit       |                         Proprietary                          |
+|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |                   Improved the texture quality of the Korean Nanosuit's third person model                   |                   See [LICENSE](#license)                    |
+|                         **wookie, 3vtiger**                         |                                Port of the Korean Nanosuit third person model                                |                         Proprietary                          |
+|                          **punished__joe**                          |                Ported the Nanosuit hands and edited them to fit S.T.A.L.K.E.R.'s proportions                 |                         Proprietary                          |
 |       **[xfightervn](https://www.deviantart.com/xfightervn)**       |                                     Reused their art for the MCM banner                                      |                         Proprietary                          |
 |              **[LVutner](https://github.com/LVutner)**              |                                Provided an improved shader for the cloak mode                                |                   See [LICENSE](#license)                    |
 |         **[Crepis](https://www.moddb.com/members/cr3pis)**          |                       Provided an inventory icon for the defibrillator powerbank item                        |                         Proprietary                          |
 |                             **Tronex**                              |                            Reused their "Indicators" HUD from actor_status.script                            |                         Proprietary                          |
 |                          **Stalker_Boss**                           |                                      Translated the addon into Russian                                       |                         Proprietary                          |
-|         **[Crepis](https://www.moddb.com/members/cr3pis)**          | Greatly improved the quality of the inventory icon, upgrade icon and character portraits for the US nanosuit |                         Proprietary                          |
-|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |          Greatly improved the texture quality of the first and third person models of the nanosuit           |                   See [LICENSE](#license)                    |
-| **[\_Paramonov Alexander\_](https://users.playground.ru/1997780/)** |                       Port of the nanosuit first person, third person and world models                       |                         Proprietary                          |
+|         **[Crepis](https://www.moddb.com/members/cr3pis)**          | Greatly improved the quality of the inventory icon, upgrade icon and character portraits for the US Nanosuit |                         Proprietary                          |
+|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |        Greatly improved the texture quality of the first and third person models of the Nanosuit 1.0         |                   See [LICENSE](#license)                    |
+| **[\_Paramonov Alexander\_](https://users.playground.ru/1997780/)** |                       Port of the Nanosuit first person, third person and world models                       |                         Proprietary                          |
 |             **[Crytek GmbH](https://www.crytek.com/)**              |                               Various assets (textures, sound effects, models)                               |                         Proprietary                          |
 
-[//]: # (TODO : Need to credit the guy that made the original nanosuit HUD textures, even though I essentially redid them from the ground up since then)
+[//]: # (TODO : Need to credit the guy that made the original Nanosuit HUD textures, even though I essentially redid them from the ground up since then)
 
 Special thanks to these people for their help in the making of this addon :
 
