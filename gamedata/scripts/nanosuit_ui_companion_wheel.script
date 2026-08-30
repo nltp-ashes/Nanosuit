@@ -17,9 +17,9 @@
 -- Companion wheel UI class
 -- ---------------------------------------------------------------------------------------------------------------------
 
-class "ui_wheel_companion" (CUIScriptWnd)
+class "ui_companion_wheel" (CUIScriptWnd)
 
-function ui_wheel_companion:__init(parent) super()
+function ui_companion_wheel:__init(parent) super()
     -- Variables
     self.m_parent = parent
 
@@ -47,7 +47,7 @@ function ui_wheel_companion:__init(parent) super()
     axr_companions.GUI.info_outline:InitTexture("ui_nanosuit_wheel_info_outline")
 end
 
-function ui_wheel_companion:destroy()
+function ui_companion_wheel:destroy()
     -- Destroy wheel outline
     axr_companions.GUI.dialog:DetachChild(axr_companions.GUI.outline)
     axr_companions.GUI.outline = nil
@@ -60,7 +60,7 @@ function ui_wheel_companion:destroy()
     axr_companions.GUI:InitControls()
 end
 
-function ui_wheel_companion:Update(force)
+function ui_companion_wheel:Update(force)
     CUIScriptWnd.Update(self)
 
     if self.m_parent.m_core.m_malfunctor.m_enabled then

@@ -17,9 +17,9 @@
 -- Ammo wheel UI class
 -- ---------------------------------------------------------------------------------------------------------------------
 
-class "ui_wheel_ammo" (CUIScriptWnd)
+class "ui_ammo_wheel" (CUIScriptWnd)
 
-function ui_wheel_ammo:__init(parent) super()
+function ui_ammo_wheel:__init(parent) super()
     -- Variables
     self.m_parent = parent
 
@@ -37,7 +37,7 @@ function ui_wheel_ammo:__init(parent) super()
     item_weapon.GUI.background:SetTextureColor(GetARGB(200, 255, 255, 255))
 end
 
-function ui_wheel_ammo:destroy()
+function ui_ammo_wheel:destroy()
     -- Destroy outline
     item_weapon.GUI.dialog:DetachChild(item_weapon.GUI.outline)
     item_weapon.GUI.outline = nil
@@ -46,7 +46,7 @@ function ui_wheel_ammo:destroy()
     item_weapon.GUI:InitControls()
 end
 
-function ui_wheel_ammo:Update(force)
+function ui_ammo_wheel:Update(force)
     CUIScriptWnd.Update(self)
 
     if self.m_parent.m_core.m_malfunctor.m_enabled then
