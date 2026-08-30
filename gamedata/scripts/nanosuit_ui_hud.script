@@ -47,7 +47,7 @@ function ui_hud:__init(core) super()
 
     -- Variables
     self.m_next_update = time_global()
-    self.m_update_rate = 1000
+    self.m_update_rate = 1 / 60 * 1000 -- 60 Hz
     self.m_set_msg_functor = nil
     self.m_colors = {
         text = nanosuit_mcm.get_constant_color("hud_colors_text", "255,129,183,135"),
@@ -81,7 +81,6 @@ function ui_hud:__init(core) super()
             [game_object.enemy] = GetARGB(255, 255, 0, 0)
         }
     }
-
 
     -- Build UI
     self.m_ui_menu = nanosuit_ui_menu.ui_menu(self)
