@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 29/08/2026                                                                                             ---
+---    Date : 30/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to stylize the companion wheel UI like the rest of the Nanosuit HUD.                              ---
@@ -25,26 +25,36 @@ function ui_wheel_companion:__init(parent) super()
 
     -- Initialize companion wheel if needed
     if not axr_companions.GUI then
-        printf("[ASH] creating companion UI")
         axr_companions.GUI = axr_companions.UIWheelCompanion()
-    else
-        printf("[ASH] companion UI already exists")
     end
 
-    -- Create outline
-    axr_companions.GUI.outline = axr_companions.GUI.xml:InitStatic("wheel:background", axr_companions.GUI.dialog)
-    axr_companions.GUI.outline:InitTexture("ui_nanosuit_ammo_wheel_outline")
-
-    -- Override background
+    -- Override wheel background
     axr_companions.GUI.background = axr_companions.GUI.dialog:FindChild("wheel_background"):cast_Static()
-    axr_companions.GUI.background:InitTexture("ui_nanosuit_ammo_wheel_background")
+    axr_companions.GUI.background:InitTexture("ui_nanosuit_wheel_background")
     axr_companions.GUI.background:SetTextureColor(GetARGB(200, 255, 255, 255))
+
+    -- Create wheel outline
+    axr_companions.GUI.outline = axr_companions.GUI.xml:InitStatic("wheel:background", axr_companions.GUI.dialog)
+    axr_companions.GUI.outline:InitTexture("ui_nanosuit_wheel_outline")
+
+    -- Override info box background
+    axr_companions.GUI.info_background = axr_companions.GUI.dialog_info:FindChild("info_background"):cast_Static()
+    axr_companions.GUI.info_background:InitTexture("ui_nanosuit_wheel_info_background")
+    axr_companions.GUI.info_background:SetTextureColor(GetARGB(200, 255, 255, 255))
+
+    -- Create info box outline
+    axr_companions.GUI.info_outline = axr_companions.GUI.xml:InitStatic("info:background", axr_companions.GUI.dialog_info)
+    axr_companions.GUI.info_outline:InitTexture("ui_nanosuit_wheel_info_outline")
 end
 
 function ui_wheel_companion:destroy()
-    -- Destroy outline
+    -- Destroy wheel outline
     axr_companions.GUI.dialog:DetachChild(axr_companions.GUI.outline)
     axr_companions.GUI.outline = nil
+
+    -- Destroy info outline
+    axr_companions.GUI.dialog_info:DetachChild(axr_companions.GUI.info_outline)
+    axr_companions.GUI.info_outline = nil
 
     -- Reset UI
     axr_companions.GUI:InitControls()
@@ -55,7 +65,9 @@ function ui_wheel_companion:Update(force)
 
     if self.m_parent.m_core.m_malfunctor.m_enabled then
         axr_companions.GUI.outline:SetTextureColor(self.m_parent.m_colors.red)
+        axr_companions.GUI.info_outline:SetTextureColor(self.m_parent.m_colors.red)
     else
         axr_companions.GUI.outline:SetTextureColor(self.m_parent.m_colors.background)
+        axr_companions.GUI.info_outline:SetTextureColor(self.m_parent.m_colors.background)
     end
 end

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 29/08/2026                                                                                             ---
+---    Date : 30/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to stylize the ammo wheel UI like the rest of the Nanosuit HUD.                                   ---
@@ -30,10 +30,10 @@ function ui_wheel_ammo:__init(parent) super()
 
     -- Create outline
     item_weapon.GUI.outline = item_weapon.GUI.xml:InitStatic("wheel:background", item_weapon.GUI.dialog)
-    item_weapon.GUI.outline:InitTexture("ui_nanosuit_ammo_wheel_outline")
+    item_weapon.GUI.outline:InitTexture("ui_nanosuit_wheel_outline")
 
     -- Override background
-    item_weapon.GUI.background:InitTexture("ui_nanosuit_ammo_wheel_background")
+    item_weapon.GUI.background:InitTexture("ui_nanosuit_wheel_background")
     item_weapon.GUI.background:SetTextureColor(GetARGB(200, 255, 255, 255))
 end
 
