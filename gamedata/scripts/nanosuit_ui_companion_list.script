@@ -5,7 +5,7 @@
 ---    Date : 30/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
----    Script used to stylize the ammo wheel UI like the rest of the Nanosuit HUD.                                   ---
+---    Script used to stylize the companion list UI like the rest of the Nanosuit HUD.                              ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -14,44 +14,57 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Ammo wheel UI class
+-- Companion list UI class
 -- ---------------------------------------------------------------------------------------------------------------------
 
-class "ui_ammo_wheel" (CUIScriptWnd)
+class "ui_companion_list" (CUIScriptWnd)
 
-function ui_ammo_wheel:__init(parent) super()
+function ui_companion_list:__init(parent) super()
     -- Variables
     self.m_parent = parent
 
-    -- Initialize ammo wheel if needed
-    if not item_weapon.GUI then
-        item_weapon.GUI = item_weapon.UIWheelAmmo()
+    -- Initialize companion list if needed
+    if not axr_companions.HUD then
+        axr_companions.HUD = axr_companions.UICompanionList()
+        get_hud():AddDialogToRender(axr_companions.HUD)
     end
 
-    -- Create outline
-    item_weapon.GUI.outline = item_weapon.GUI.xml:InitStatic("wheel:background", item_weapon.GUI.dialog)
-    item_weapon.GUI.outline:InitTexture("ui_nanosuit_wheel_outline")
+    local xml = utils_xml.get_hud_xml()
 
-    -- Override background
-    item_weapon.GUI.background:InitTexture("ui_nanosuit_wheel_background")
-    item_weapon.GUI.background:SetTextureColor(GetARGB(200, 255, 255, 255))
+    for idx, info in pairs(axr_companions.HUD.companion_info) do
+        -- Override background
+        info.background:InitTexture("ui_nanosuit_companion_list_background")
+        info.background:SetTextureColor(GetARGB(200, 255, 255, 255))
+
+        -- Create outline
+        info.outline = xml:InitStatic("companion_list:slot:background", info.base)
+        info.outline:InitTexture("ui_nanosuit_companion_list_outline")
+        utils_xml.correct_ratio(info.outline)
+    end
 end
 
-function ui_ammo_wheel:destroy()
-    -- Destroy outline
-    item_weapon.GUI.dialog:DetachChild(item_weapon.GUI.outline)
-    item_weapon.GUI.outline = nil
+function ui_companion_list:destroy()
+    -- Destroy outlines
+    for idx, info in pairs(axr_companions.HUD.companion_info) do
+        info.base:DetachChild(info.outline)
+        info.outline = nil
+    end
 
     -- Reset UI
-    item_weapon.GUI:InitControls()
+    axr_companions.HUD:InitControls()
 end
 
-function ui_ammo_wheel:Update(force)
+function ui_companion_list:Update(force)
     CUIScriptWnd.Update(self)
 
+    local color
     if self.m_parent.m_core.m_malfunctor.m_enabled then
-        item_weapon.GUI.outline:SetTextureColor(self.m_parent.m_colors.red)
+        color = self.m_parent.m_colors.red
     else
-        item_weapon.GUI.outline:SetTextureColor(self.m_parent.m_colors.background)
+        color = self.m_parent.m_colors.background
+    end
+
+    for idx, info in pairs(axr_companions.HUD.companion_info) do
+        info.outline:SetTextureColor(color)
     end
 end

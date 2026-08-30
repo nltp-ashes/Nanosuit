@@ -268,8 +268,6 @@ end
 -- Callbacks registration
 -- ---------------------------------------------------------------------------------------------------------------------
 
---- Function used to register callbacks.
---- @return nil
 function on_game_start()
     --RegisterScriptCallback("on_key_press", on_key_press_tacmap)
     --RegisterScriptCallback("on_key_press", on_key_press_status)

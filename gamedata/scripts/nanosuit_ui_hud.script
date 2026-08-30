@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 27/08/2026                                                                                             ---
+---    Date : 30/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -32,8 +32,6 @@ end
 -- Callbacks registration
 -- ---------------------------------------------------------------------------------------------------------------------
 
---- Function used to register callbacks.
---- @return nil
 function on_game_start()
     RegisterScriptCallback("on_loading_screen_dismissed", on_loading_screen_dismissed)
 end
@@ -117,6 +115,14 @@ function ui_hud:__init(core) super()
     self.m_ui_ammo_wheel:Show(true)
     self:AttachChild(self.m_ui_ammo_wheel)
 
+    self.m_ui_companion_wheel = nanosuit_ui_companion_wheel.ui_companion_wheel(self)
+    self.m_ui_companion_wheel:Show(true)
+    self:AttachChild(self.m_ui_companion_wheel)
+
+    self.m_ui_companion_list = nanosuit_ui_companion_list.ui_companion_list(self)
+    self.m_ui_companion_list:Show(true)
+    self:AttachChild(self.m_ui_companion_list)
+
     self.m_ui_timer = nanosuit_ui_timer.ui_timer(self)
     self.m_ui_timer:Show(true)
     self:AttachChild(self.m_ui_timer)
@@ -149,6 +155,8 @@ function ui_hud:destroy()
     self.m_ui_defibrillator:destroy()
     self.m_ui_binoculars:destroy()
     self.m_ui_ammo_wheel:destroy()
+    self.m_ui_companion_wheel:destroy()
+    self.m_ui_companion_list:destroy()
     self.m_ui_timer:destroy()
 
     self.m_core = nil
@@ -287,7 +295,8 @@ end
 
 function ui_hud:should_show()
     local ammo_wheel_shown = item_weapon.GUI and item_weapon.GUI:IsShown() or false
-    if not main_hud_shown() and not self.m_ui_menu:IsShown() and not ammo_wheel_shown then
+    local companion_wheel_shown = axr_companions.GUI and axr_companions.GUI:IsShown() or false
+    if not main_hud_shown() and not self.m_ui_menu:IsShown() and not ammo_wheel_shown and not companion_wheel_shown then
         return false
     end
     return db.actor:alive() or level.get_active_cam() == actor_cameras_enum.first_eye

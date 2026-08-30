@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 27/08/2026                                                                                            -->
+<!--    Date : 30/08/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Texture description file for the Nanosuit addon's UI textures.                                               -->
@@ -134,10 +134,18 @@
         <texture id="ui_nanosuit_ind_booster_cf_healsave"      x="800"     y="100"    width="100"     height="100" />
     </file>
 
-    <!-- Ammo wheel UI -->
-    <file name="nanosuit\ui\hud\ammo_wheel\ammo_wheel.dds">
-        <texture id="ui_nanosuit_ammo_wheel_background"        x="0"       y="0"      width="440"     height="420" />
-        <texture id="ui_nanosuit_ammo_wheel_outline"           x="440"     y="0"      width="440"     height="420" />
+    <!-- Wheel UIs (ammo & companion) -->
+    <file name="nanosuit\ui\hud\wheels\wheels.dds">
+        <texture id="ui_nanosuit_wheel_background"             x="0"       y="0"      width="440"     height="420" />
+        <texture id="ui_nanosuit_wheel_outline"                x="440"     y="0"      width="440"     height="420" />
+        <texture id="ui_nanosuit_wheel_info_background"        x="0"       y="420"    width="341"     height="112" />
+        <texture id="ui_nanosuit_wheel_info_outline"           x="341"     y="420"    width="341"     height="112" />
+    </file>
+
+    <!-- Companion list UI -->
+    <file name="nanosuit\ui\hud\companion_list\companion_list.dds">
+        <texture id="ui_nanosuit_companion_list_background"    x="0"       y="0"      width="128"     height="95" />
+        <texture id="ui_nanosuit_companion_list_outline"       x="128"     y="0"      width="128"     height="95" />
     </file>
 
     <!-- Timer UI -->
