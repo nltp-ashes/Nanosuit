@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 29/08/2026                                                                                             ---
+---    Date : 30/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -119,6 +119,10 @@ function ui_hud:__init(core) super()
     self.m_ui_wheel_companion:Show(true)
     self:AttachChild(self.m_ui_wheel_companion)
 
+    self.m_ui_companion_list = nanosuit_ui_companion_list.ui_companion_list(self)
+    self.m_ui_companion_list:Show(true)
+    self:AttachChild(self.m_ui_companion_list)
+
     self.m_ui_timer = nanosuit_ui_timer.ui_timer(self)
     self.m_ui_timer:Show(true)
     self:AttachChild(self.m_ui_timer)
@@ -152,6 +156,7 @@ function ui_hud:destroy()
     self.m_ui_binoculars:destroy()
     self.m_ui_wheel_ammo:destroy()
     self.m_ui_wheel_companion:destroy()
+    self.m_ui_companion_list:destroy()
     self.m_ui_timer:destroy()
 
     self.m_core = nil
