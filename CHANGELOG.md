@@ -1,4 +1,4 @@
-## **v0.13.0 - 31/08/2026 - Beta Build**
+## **v0.13.0 - 03/09/2026 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.13.0/total?label=Downloads)]()
 
@@ -6,6 +6,7 @@
 > - Added the Nanosuit to Nimble, Meeker, Spore, Hermann, Monolith and UNISG traders;
 > - Added custom icon for weapons that use fire mode "0" (safe);
 > - Added back `repair_type` property because other mods wrongly expect it to be defined and CTD if absent;
+> - Added a custom ammo type icon when using grenade launchers or under-barrel grenade launchers;
 > - Added a custom texture for the ammo wheel while wearing the Nanosuit;
 > - Added a custom texture for the timer (often seen in labs) while wearing the Nanosuit;
 > - Added a custom texture for the companion command wheel while wearing the Nanosuit;
