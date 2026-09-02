@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/08/2026                                                                                             ---
+---    Date : 01/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to stylize the companion list UI like the rest of the Nanosuit HUD.                              ---
@@ -44,6 +44,11 @@ function ui_companion_list:__init(parent) super()
 end
 
 function ui_companion_list:destroy()
+    -- If we are being called from actor_on_net_destroy, companion list could have been destroyed before us
+    if not axr_companions.HUD then
+        return
+    end
+
     -- Destroy outlines
     for idx, info in pairs(axr_companions.HUD.companion_info) do
         info.base:DetachChild(info.outline)
@@ -57,14 +62,11 @@ end
 function ui_companion_list:Update(force)
     CUIScriptWnd.Update(self)
 
-    local color
-    if self.m_parent.m_core.m_malfunctor.m_enabled then
-        color = self.m_parent.m_colors.red
-    else
-        color = self.m_parent.m_colors.background
-    end
-
     for idx, info in pairs(axr_companions.HUD.companion_info) do
-        info.outline:SetTextureColor(color)
+        if self.m_parent.m_core.m_malfunctor.m_enabled then
+            info.outline:SetTextureColor(self.m_parent.m_colors.red)
+        else
+            info.outline:SetTextureColor(self.m_parent.m_colors.background)
+        end
     end
 end
