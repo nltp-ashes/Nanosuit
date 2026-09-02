@@ -215,6 +215,7 @@ Credit goes to these people for their work contained in this addon :
 |                          **Stalker_Boss**                           |                                      Translated the addon into Russian                                       |                         Proprietary                          |
 |         **[Crepis](https://www.moddb.com/members/cr3pis)**          | Greatly improved the quality of the inventory icon, upgrade icon and character portraits for the US nanosuit |                         Proprietary                          |
 |     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |          Greatly improved the texture quality of the first and third person models of the nanosuit           |                   See [LICENSE](#license)                    |
+|       **[Lapin](https://steamcommunity.com/id/ExtReMLapin)**        |                     Reused some of their dev resources for the first versions of the HUD                     |                   See [LICENSE](#license)                    |
 | **[\_Paramonov Alexander\_](https://users.playground.ru/1997780/)** |                       Port of the nanosuit first person, third person and world models                       |                         Proprietary                          |
 |             **[Crytek GmbH](https://www.crytek.com/)**              |                               Various assets (textures, sound effects, models)                               |                         Proprietary                          |
 
@@ -253,6 +254,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 Content made by Catspaw is provided under the following terms :
 ```
 Redistribution is allowed, as long as Catspaw is credited, and altered copies of the script are not redistributed using the same filename, to avoid conflicts.
+```
+
+Content made by Lapin is provided under the following terms :
+```
+Most of the resource here are made by me, feel free to do what you wants with it (Don't make a porn about this) , and if you wants to release a moded version, make a fork, and add me in the credits, and the others peoples who helped.
+
+(Maybe me sentence make no sense , but i'm tired as hell so fuck the police)
 ```
 
 For the work that wasn't made by me, unless a license is specified in the [Credits](#special-thanks--credits) or in the files themselves, consider these works proprietary. If you want to reuse those, please get in touch with their original authors.
