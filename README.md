@@ -93,7 +93,7 @@ Nanovision :
 
 Nightvision :
 - The suit comes with built-in nightvision
-- Consumes 2% per second when active
+- Consumes 1% per second when active
 - When out of energy, nightvision will be disabled automatically
 - Uses its own source of energy, separate from the suit's main energy pool
 - Having any device equipped in the night-vision slot will make the nightvision unavailable

@@ -15,6 +15,7 @@
 **• Changes :**
 > - Changed price of the Nanosuit 1.0 from 419k RUB to 220k RUB;
 > - Changed price of the Korean Nanosuit from 419k RUB to 190k RUB;
+> - Reduced built-in night-vision energy consumption by half (now 1% every second, was 2%);
 > - Removed a part of the patch for SWM First Person Visible Body that was left over;
 
 **• Bug fixes :**
