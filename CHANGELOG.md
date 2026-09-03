@@ -23,5 +23,7 @@
 > - Fixed nightvision energy bar not displaying properly when the suit is in malfunction state;
 > - Fixed some broken translations in Russian;
 > - Fixed tactical map refreshing its object pool even when it is disabled;
+> - Fixed the player's Nanosuit entering malfunction state when an NPC gets vaporized;
 > - Fixed CTD when the player's current weapon's fire mode is not recognized by the Nanosuit HUD;
 > - Fixed CTD when the game task points to an ID that does not exist in the world;
+> - Fixed CTD when the player is looting an NPC that is being vaporized;
