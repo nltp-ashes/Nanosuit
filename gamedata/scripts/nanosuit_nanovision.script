@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 29/08/2026                                                                                             ---
+---    Date : 03/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's built-in nanovision system.                                              ---
@@ -25,8 +25,9 @@ class "nanovision"
 
 function nanovision:__init(core)
     self.m_core = core
-    self.m_energy_use = 1
-    self.m_energy_use_rate = 500
+    self.m_energy_drain = 1
+    self.m_energy_drain_rate = 500
+    self.m_energy_use_on_activate = 5
     self.m_sounds = {
         on = sound_object([[nanosuit\nanovision\nanovision_on]]),
         off = sound_object([[nanosuit\nanovision\nanovision_off]]),
@@ -49,7 +50,11 @@ function nanovision:destroy()
 end
 
 function nanovision:activate()
-    self.m_core.m_energy:add_drain(energy_drain_enum.nanovision, self.m_energy_use_rate, self.m_energy_use)
+    -- Consume energy on activation
+    self.m_core.m_energy:use_energy(self.m_energy_use_on_activate)
+
+    -- Consume energy while activated
+    self.m_core.m_energy:add_drain(energy_drain_enum.nanovision, self.m_energy_drain_rate, self.m_energy_drain)
 
     -- Play sounds
     self.m_sounds.on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)

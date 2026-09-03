@@ -86,6 +86,7 @@ Vaporization :
 
 Nanovision :
 - If [HeatVision v1.3](https://www.moddb.com/mods/stalker-anomaly/addons/heatvision-v02-extension-for-beefs-nvg-dx11engine-mod) is installed, the suit will have built-in nanovision
+- Consumes 5% once when activated
 - Consumes 2% per second when active
 - When out of energy, nanovision will be disabled automatically
 - Uses the suit's main energy pool
