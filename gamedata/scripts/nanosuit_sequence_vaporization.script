@@ -106,7 +106,9 @@ function vaporization_sequence:wait_for_state()
 end
 
 function vaporization_sequence:action_malfunction()
-    self.m_vaporizer.m_core.m_malfunctor:enable_malfunction(nil)
+    if self.m_id == AC_ID then
+        self.m_vaporizer.m_core.m_malfunctor:enable_malfunction(nil)
+    end
     return true
 end
 
@@ -204,9 +206,17 @@ function vaporization_sequence:action_stop_burn()
     return true
 end
 
--- FIXME : If actor interacts with NPC, this will crash their game
 function vaporization_sequence:action_release_npc()
     if self.m_id ~= AC_ID then
+        -- Close inventory if active with object being vaporized
+        if ui_inventory.GUI and ui_inventory.GUI:IsShown() then
+            local partner = ui_inventory.GUI:GetPartner()
+            if partner and partner:id() == self.m_id then
+                ui_inventory.GUI:Close()
+            end
+        end
+
+        -- Release NPC
         local se_obj = alife_object(self.m_id)
         if se_obj then
             safe_release_manager.release(se_obj)
