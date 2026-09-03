@@ -12,13 +12,12 @@ Fend off the Zone's dangers with the Nanosuit, a powerful and extremely versatil
 
 This addon adds a fully operational US and Korean nanosuits from Crysis.
 
-**Important :** This addon is still in development. You have to spawn the outfit using the [debug menu item spawner](https://igigog.github.io/anomaly-modding-book/modding-tools/in-game-editors/item-spawner.html).
-
 **Important :** Expect soft-conflicts (aka it will work, but it won't look nice) with UI mods. Please report as many UI related issues as you can.
 
 Bellow is a list of features that are currently available in the addon :
 
 Miscellaneous :
+- The suit can be bought from Nimble, Meeker, Spore, Hermann, Monolith and UNISG traders
 - The suit comes with third person, first person and world models; inventory icons and character portraits
 - The suit voice-lines are available in English, French and Russian, depending on the game language
 - The suit has basic ballistic, rupture and explosive protection when out of energy
@@ -61,8 +60,10 @@ HUD :
 - Added a custom HUD when wearing the suit. HUD dynamically switches from vanilla HUD to the Nanosuit's and back
 - HUD is divided in 3 parts : the menu, the left side shows a minimap, the right side shows the suit's status
 - The menu (opened by pressing V, configurable in MCM) allows you to switch from one mode to another
-- The minimap shows all human objects around the player
+- The minimap shows humans (colored by relation), mutants and vehicles, as well as task targets
+- A gauge next to the minimap shows the player's visibility from enemy NPCs and mutants
 - The status hub shows the suit's current mode, energy level, health, stamina, ammo count, ammo reserve and fire mode
+- HUD elements from vanilla Anomaly are also customized : ammo wheel, companion wheel and list
 
 Defibrillator :
 - If the player dies, under certain conditions, an animated sequence will play, giving the option to get a second chance
@@ -73,7 +74,7 @@ Defibrillator :
 - During the defibrillator sequence, the player has a 3 seconds window to press Space (configurable in MCM), after which the player dies
 
 Malfunctions :
-- The suit can malfunction, turning it off (protection and bonuses are removed) and disabling the HUD (turns red and indicators are offline)
+- The suit can malfunction, turning it off (protection and bonuses are removed) and disabling the HUD (turns red and some HUD elements are offline)
 - The suit malfunctions when the player dies, or when hit by a psi-storm vortex, or by a pulse anomaly
 - The suit will also malfunction during the storylines that will be added in the future
 
@@ -172,12 +173,11 @@ If you would like to help development for future updates, you can :
 ### KNOWN ISSUES
 
 The following issues will be fixed in the near future :
-- Cloak mode does not cloak the knife during the mutant skinning animation with FDDA
 - The game crashes if player reloads a save while cloak mode is enabled
 - Indicators are not colored properly when using the Korean nanosuit
 
 The following issues are technical limitations and will not be fixed in the foreseeable future :
-- The game crashes if actor interacts with an NPC while they're getting vaporized
+- Cloak mode does not cloak the knife during the mutant skinning animation with FDDA
 - Cloak mode does not work if the NPC sees the actor before the cloak is applied (workaround : need to break vision for it to work)
 - Cloak mode does not work on mutants
 - Speed mode should increase reload speed
