@@ -1,4 +1,4 @@
-## **v0.13.0 - 03/09/2026 - Beta Build**
+## **v0.13.0 - 04/09/2026 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.13.0/total?label=Downloads)]()
 
@@ -16,10 +16,11 @@
 > - Changed price of the Nanosuit 1.0 from 419k RUB to 220k RUB;
 > - Changed price of the Korean Nanosuit from 419k RUB to 190k RUB;
 > - Changed the nano-vision energy consumption : it now consumes 5% once when activated;
-> - Reduced built-in night-vision energy consumption by half (now 1% every second, was 2%);
+> - Reduced the suit's built-in night-vision energy consumption by half (now 1% every second, was 2%);
 > - Removed a part of the patch for SWM First Person Visible Body that was left over;
 
 **• Bug fixes :**
+> - Fixed detector not being hidden when using the suit's built-in binoculars;
 > - Fixed Nanosuit HUD being frame locked at 1FPS instead of 60FPS when the player is dead;
 > - Fixed binoculars being available when the suit is in malfunction state;
 > - Fixed nightvision energy bar not displaying properly when the suit is in malfunction state;
