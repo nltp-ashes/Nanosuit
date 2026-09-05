@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 01/09/2026                                                                                             ---
+---    Date : 05/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to stylize the companion list UI like the rest of the Nanosuit HUD.                              ---
@@ -22,6 +22,11 @@ class "ui_companion_list" (CUIScriptWnd)
 function ui_companion_list:__init(parent) super()
     -- Variables
     self.m_parent = parent
+    self.m_allowed = nanosuit_mcm.get_config("general", "customize_companion_list")
+
+    if not self.m_allowed then
+        return
+    end
 
     -- Initialize companion list if needed
     if not axr_companions.HUD then
@@ -44,6 +49,10 @@ function ui_companion_list:__init(parent) super()
 end
 
 function ui_companion_list:destroy()
+    if not self.m_allowed then
+        return
+    end
+
     -- If we are being called from actor_on_net_destroy, companion list could have been destroyed before us
     if not axr_companions.HUD then
         return
@@ -62,8 +71,12 @@ end
 function ui_companion_list:Update(force)
     CUIScriptWnd.Update(self)
 
+    if not self.m_allowed then
+        return
+    end
+
     for idx, info in pairs(axr_companions.HUD.companion_info) do
-        if self.m_parent.m_core.m_malfunctor.m_enabled then
+        if self.m_parent.m_core.m_malfunctor.m_allowed then
             info.outline:SetTextureColor(self.m_parent.m_colors.red)
         else
             info.outline:SetTextureColor(self.m_parent.m_colors.background)

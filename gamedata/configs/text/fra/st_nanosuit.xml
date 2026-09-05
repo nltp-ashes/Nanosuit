@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 26/08/2026                                                                                            -->
+<!--    Date : 05/09/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -150,6 +150,33 @@
 
     <string id="nanosuit_nanosuit_general_suit_gender_lst_female">
         <text>Femme</text>
+    </string>
+
+    <!-- Ammo wheel customization -->
+    <string id="ui_mcm_nanosuit_nanosuit_general_customize_ammo_wheel">
+        <text>Styliser la roue des munitions</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_general_customize_ammo_wheel_desc">
+        <text>Styliser la roue des munitions pour la faire ressembler au style du rest de l'ATH de la Nano-combinaison quand celle-ci est équipée.</text>
+    </string>
+
+    <!-- Companion wheel customization -->
+    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_wheel">
+        <text>Styliser la roue des companions</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_wheel_desc">
+        <text>Styliser la roue des companions pour la faire ressembler au style du rest de l'ATH de la Nano-combinaison quand celle-ci est équipée.</text>
+    </string>
+
+    <!-- Companion list customization -->
+    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_list">
+        <text>Styliser la liste des companions</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_list_desc">
+        <text>Styliser la liste des companions pour la faire ressembler au style du rest de l'ATH de la Nano-combinaison quand celle-ci est équipée.</text>
     </string>
 
     <!-- Open suit menu -->

@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 27/02/2026                                                                                            -->
+<!--    Date : 05/09/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -149,6 +149,33 @@
 
     <string id="nanosuit_nanosuit_general_suit_gender_lst_female">
         <text>Female</text>
+    </string>
+
+    <!-- Ammo wheel customization -->
+    <string id="ui_mcm_nanosuit_nanosuit_general_customize_ammo_wheel">
+        <text>Customize the ammo wheel UI</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_general_customize_ammo_wheel_desc">
+        <text>Toggle to override the appearance of the ammo wheel UI to make it look like the rest of the Nanosuit HUD when wearing the suit.</text>
+    </string>
+
+    <!-- Companion wheel customization -->
+    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_wheel">
+        <text>Customize the companion wheel UI</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_wheel_desc">
+        <text>Toggle to override the appearance of the companion wheel UI to make it look like the rest of the Nanosuit HUD when wearing the suit.</text>
+    </string>
+
+    <!-- Companion list customization -->
+    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_list">
+        <text>Customize the companion list UI</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_list_desc">
+        <text>Toggle to override the appearance of the companion list UI to make it look like the rest of the Nanosuit HUD when wearing the suit.</text>
     </string>
 
     <!-- Open suit menu -->

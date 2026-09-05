@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : RavenAscendant                                                                           ---
 ---    Edited : NLTP_ASHES                                                                                           ---
----    Date : 08/02/2026                                                                                             ---
+---    Date : 05/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define the options in MCM.                                                                     ---
@@ -27,6 +27,9 @@ defaults = {
     ["use_witness"] = false,
     ["use_nanovision"] = false,
     ["suit_gender"] = gender_enum.male,
+    ["customize_ammo_wheel"] = true,
+    ["customize_companion_wheel"] = false,
+    ["customize_companion_list"] = true,
     -- Keybindings
     ["defibrillate"] = DIK_keys.DIK_SPACE,
     ["suit_menu"] = DIK_keys.DIK_V,
@@ -131,6 +134,9 @@ function on_mcm_load()
                     { type = "title", text = "ui_mcm_menu_nanosuit_general" },
                     { type = "check", val = mcm_types_enum.boolean, id = "use_witness", def = defaults["use_witness"] },
                     { type = "check", val = mcm_types_enum.boolean, id = "use_nanovision", def = defaults["use_nanovision"], precondition = { function() return z_heatvision ~= nil end } },
+                    { type = "check", val = mcm_types_enum.boolean, id = "customize_ammo_wheel", def = defaults["customize_ammo_wheel"] },
+                    { type = "check", val = mcm_types_enum.boolean, id = "customize_companion_wheel", def = defaults["customize_companion_wheel"] },
+                    { type = "check", val = mcm_types_enum.boolean, id = "customize_companion_list", def = defaults["customize_companion_list"] },
                     { type = "list", val = mcm_types_enum.string, id = "suit_gender", def = defaults["suit_gender"], content = { {gender_enum.male,gender_enum.male}, {gender_enum.female,gender_enum.female} } },
                 }
             },

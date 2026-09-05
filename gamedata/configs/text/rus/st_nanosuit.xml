@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
-<!--    Date : 26/08/2026                                                                                            -->
+<!--    Date : 05/09/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -150,6 +150,33 @@
 
     <string id="nanosuit_nanosuit_general_suit_gender_lst_female">
         <text>Женский</text>
+    </string>
+
+    <!-- Ammo wheel customization -->
+    <string id="ui_mcm_nanosuit_nanosuit_general_customize_ammo_wheel">
+        <text>Настройте интерфейс кругового меню выбора боеприпасов</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_general_customize_ammo_wheel_desc">
+        <text>Переключатель, изменяющий внешний вид интерфейса выбора боеприпасов так, чтобы он соответствовал остальным элементам HUD нанокостюма при его ношении.</text>
+    </string>
+
+    <!-- Companion wheel customization -->
+    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_wheel">
+        <text>Настройте интерфейс кругового меню спутника</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_wheel_desc">
+        <text>Переключатель, позволяющий изменить внешний вид интерфейса кругового меню спутника так, чтобы он соответствовал остальным элементам HUD нанокостюма при его ношении.</text>
+    </string>
+
+    <!-- Companion list customization -->
+    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_list">
+        <text>Настройте интерфейс списка спутников</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_list_desc">
+        <text>Переключатель, позволяющий изменить внешний вид списка напарников так, чтобы он соответствовал остальным элементам интерфейса нанокостюма при его ношении.</text>
     </string>
 
     <!-- Open suit menu -->

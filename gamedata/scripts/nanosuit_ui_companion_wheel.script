@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/08/2026                                                                                             ---
+---    Date : 05/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to stylize the companion wheel UI like the rest of the Nanosuit HUD.                              ---
@@ -22,6 +22,11 @@ class "ui_companion_wheel" (CUIScriptWnd)
 function ui_companion_wheel:__init(parent) super()
     -- Variables
     self.m_parent = parent
+    self.m_allowed = nanosuit_mcm.get_config("general", "customize_companion_wheel")
+
+    if not self.m_allowed then
+        return
+    end
 
     -- Initialize companion wheel if needed
     if not axr_companions.GUI then
@@ -48,6 +53,10 @@ function ui_companion_wheel:__init(parent) super()
 end
 
 function ui_companion_wheel:destroy()
+    if not self.m_allowed then
+        return
+    end
+
     -- Destroy wheel outline
     axr_companions.GUI.dialog:DetachChild(axr_companions.GUI.outline)
     axr_companions.GUI.outline = nil
@@ -63,7 +72,11 @@ end
 function ui_companion_wheel:Update(force)
     CUIScriptWnd.Update(self)
 
-    if self.m_parent.m_core.m_malfunctor.m_enabled then
+    if not self.m_allowed then
+        return
+    end
+
+    if self.m_parent.m_core.m_malfunctor.m_allowed then
         axr_companions.GUI.outline:SetTextureColor(self.m_parent.m_colors.red)
         axr_companions.GUI.info_outline:SetTextureColor(self.m_parent.m_colors.red)
     else
