@@ -174,7 +174,6 @@ If you would like to help development for future updates, you can :
 ### KNOWN ISSUES
 
 The following issues will be fixed in the near future :
-- The game crashes if player reloads a save while cloak mode is enabled
 - Indicators are not colored properly when using the Korean nanosuit
 
 The following issues are technical limitations and will not be fixed in the foreseeable future :
