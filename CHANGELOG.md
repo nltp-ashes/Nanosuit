@@ -20,7 +20,7 @@
 > - Removed a part of the patch for SWM First Person Visible Body that was left over;
 
 **• Bug fixes :**
-> - Fixed moving a weapon from one slot to another while cloak mode is active causing the weapon to remain cloaked even after disabling cloak mode;
+> - Fixed moving a weapon from one slot to another while a suit mode is active causing the weapon to keep the effects after disabling the mode;
 > - Fixed detector not being hidden when using the suit's built-in binoculars;
 > - Fixed Nanosuit HUD being frame locked at 1FPS instead of 60FPS when the player is dead;
 > - Fixed binoculars being available when the suit is in malfunction state;
