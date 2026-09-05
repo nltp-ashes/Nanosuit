@@ -1,0 +1,178 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 05/09/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the footstep sounds while using the Nanosuit.                                           ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+get_sound_object = nanosuit_utils.get_sound_object
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Malfunction class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "footsteps"
+
+function footsteps:__init(core)
+    self.m_core = core
+
+    -- Variables
+    self.m_sounds_per_mtl = {
+        ["materials\\asphalt"] = {
+            get_sound_object([[nanosuit\footsteps\concrete\concrete_01]]),
+            get_sound_object([[nanosuit\footsteps\concrete\concrete_02]]),
+            get_sound_object([[nanosuit\footsteps\concrete\concrete_03]]),
+            get_sound_object([[nanosuit\footsteps\concrete\concrete_04]]),
+            get_sound_object([[nanosuit\footsteps\concrete\concrete_05]])
+        },
+        --["materials\\bricks"] = {
+        --
+        --},
+        --["materials\\bush"] = {
+        --
+        --},
+        --["materials\\bush_sux"] = {
+        --
+        --},
+        --["materials\\concrete"] = {
+        --
+        --},
+        --["materials\\dirt"] = {
+        --
+        --},
+        --["materials\\earth"] = {
+        --
+        --},
+        --["materials\\earth_death"] = {
+        --
+        --},
+        --["materials\\earth_slide"] = {
+        --
+        --},
+        --["materials\\flooring_tile"] = {
+        --
+        --},
+        --["materials\\grass"] = {
+        --
+        --},
+        --["materials\\gravel"] = {
+        --
+        --},
+        --["materials\\metal"] = {
+        --
+        --},
+        --["materials\\metal_pipe"] = {
+        --
+        --},
+        --["materials\\metal_plate"] = {
+        --
+        --},
+        --["materials\\sand"] = {
+        --
+        --},
+        --["materials\\shifer"] = {
+        --
+        --},
+        --["materials\\stucco"] = {
+        --
+        --},
+        --["materials\\tile"] = {
+        --
+        --},
+        --["materials\\tin"] = {
+        --
+        --},
+        --["materials\\tree_trunk"] = {
+        --
+        --},
+        --["materials\\water"] = {
+        --
+        --},
+        --["materials\\water_radiation"] = {
+        --
+        --},
+        --["materials\\wood"] = {
+        --
+        --},
+        --["materials\\wooden_board"] = {
+        --
+        --},
+        --["objects\\barrel"] = {
+        --
+        --},
+        --["objects\\bolt"] = {
+        --
+        --},
+        --["objects\\bullet"] = {
+        --
+        --},
+        --["objects\\car_cabine"] = {
+        --
+        --},
+        --["objects\\concrete_box"] = {
+        --
+        --},
+        --["objects\\fuel_can"] = {
+        --
+        --},
+        --["objects\\knife"] = {
+        --
+        --},
+        --["objects\\large_metal_trash"] = {
+        --
+        --},
+        --["objects\\large_weapon"] = {
+        --
+        --},
+        --["objects\\metal_box"] = {
+        --
+        --},
+        --["objects\\shell"] = {
+        --
+        --},
+        --["objects\\small_box"] = {
+        --
+        --},
+        --["objects\\small_metal_trash"] = {
+        --
+        --},
+        --["objects\\small_weapon"] = {
+        --
+        --},
+        --["objects\\tin_can"] = {
+        --
+        --},
+    }
+
+    -- Callbacks
+    RegisterScriptCallback("actor_on_footstep", self)
+end
+
+function footsteps:destroy()
+    self.m_core = nil
+
+    -- Callbacks
+    UnregisterScriptCallback("actor_on_footstep", self)
+end
+
+function footsteps:actor_on_footstep(material, power, hud_view, flags)
+    local snd_table = self.m_sounds_per_mtl[material]
+    if not snd_table then
+        return
+    end
+
+    local rnd_snd = snd_table[random_number(1, #snd_table)]
+    rnd_snd.volume = 0.5 * clamp(power, 0.5, 1.3)
+    rnd_snd:play(db.actor, 0, sound_object.s2d)
+
+    flags.ret_value = false
+end

@@ -187,15 +187,19 @@ end
 --- - path\to\male\my_sound | path\to\female\my_sound
 --- - path\to\male\my_sound_rus | path\to\female\my_sound_rus
 --- - path\to\male\my_sound_fra | path\to\female\my_sound_fra
---- Then call the function localized_and_genderized_sound_object([[path\to]], "my_sound").
+--- Then call the function get_localized_and_genderized_sound_object([[path\to]], "my_sound").
 --- The sound file without suffix should be the english (or default) version.
 --- @param path string
 --- @param filename string
 --- @return sound_object
-function localized_and_genderized_sound_object(path, filename)
+function get_localized_and_genderized_sound_object(path, filename)
     local gender = nanosuit_mcm.get_outfit_config("suit_gender", gender_enum.male)
     local locale = ini_sys:r_string_ex("string_table", "language")
     return sound_object(path .. [[\]] .. gender .. [[\]] .. filename .. "_" .. locale)
+end
+
+function get_sound_object(path)
+    return sound_object(path)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------

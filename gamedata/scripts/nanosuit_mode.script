@@ -13,9 +13,9 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
-localized_and_genderized_sound_object  = nanosuit_utils.localized_and_genderized_sound_object
-actor_slots_enum                       = nanosuit_utils.actor_slots_enum
-hit_types_enum                         = nanosuit_utils.hit_types_enum
+get_localized_and_genderized_sound_object = nanosuit_utils.get_localized_and_genderized_sound_object
+actor_slots_enum                          = nanosuit_utils.actor_slots_enum
+hit_types_enum                            = nanosuit_utils.hit_types_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Mode class
@@ -27,7 +27,7 @@ function abstract_mode:__init(core, name)
     self.m_core = core
     self.m_name = name
     self.m_sounds = {
-        voice = localized_and_genderized_sound_object([[nanosuit\voice]], "mode_" .. name .. "_voice"),
+        voice = get_localized_and_genderized_sound_object([[nanosuit\voice]], "mode_" .. name .. "_voice"),
     }
     self.m_cache = {}
     self.m_boosters = {}
@@ -102,7 +102,7 @@ function abstract_mode:remove_booster(name)
 end
 
 function abstract_mode:on_option_change()
-    self.m_sounds.voice = localized_and_genderized_sound_object([[nanosuit\voice]], "mode_" .. self.m_name .. "_voice")
+    self.m_sounds.voice = get_localized_and_genderized_sound_object([[nanosuit\voice]], "mode_" .. self.m_name .. "_voice")
 end
 
 function abstract_mode:on_before_hit_after_calcs(scripted_hit, target, bone_id)

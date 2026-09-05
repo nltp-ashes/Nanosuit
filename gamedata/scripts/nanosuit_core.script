@@ -14,9 +14,9 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- Imports
-localized_and_genderized_sound_object  = nanosuit_utils.localized_and_genderized_sound_object
-actor_slots_enum                       = nanosuit_utils.actor_slots_enum
-armor_modes_enum                       = nanosuit_utils.armor_modes_enum
+get_localized_and_genderized_sound_object = nanosuit_utils.get_localized_and_genderized_sound_object
+actor_slots_enum                          = nanosuit_utils.actor_slots_enum
+armor_modes_enum                          = nanosuit_utils.armor_modes_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- General functions
@@ -166,7 +166,7 @@ function core:__init()
 
     -- Sound effects
     self.m_sounds = {
-        energy_low_voice = localized_and_genderized_sound_object([[nanosuit\voice]], [[energy_low_voice]]),
+        energy_low_voice = get_localized_and_genderized_sound_object([[nanosuit\voice]], [[energy_low_voice]]),
         energy_very_low = sound_object([[nanosuit\energy\energy_very_low]]),
         energy_on = sound_object([[nanosuit\energy\energy_on]]),
         energy_off = sound_object([[nanosuit\energy\energy_off]])
@@ -203,6 +203,7 @@ function core:__init()
     self.m_binoculars = nanosuit_binoculars.binoculars(self)
     self.m_interference = nanosuit_interference.interference(self)
     self.m_psy_voices = nanosuit_psy_voices.psy_voices(self)
+    self.m_footsteps = nanosuit_footsteps.footsteps(self)
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_death", self)
@@ -242,6 +243,7 @@ function core:destroy()
     self.m_psy_voices:destroy()
     self.m_glow:destroy()
     self.m_cloak:destroy()
+    self.m_footsteps:destroy()
 end
 
 function core:save()
@@ -264,6 +266,7 @@ function core:save()
     storage.nightvision = self.m_nightvision.save and self.m_nightvision:save() or {}
     storage.binoculars = self.m_binoculars.save and self.m_binoculars:save() or {}
     storage.interference = self.m_interference.save and self.m_interference:save() or {}
+    storage.footsteps = self.m_footsteps.save and self.m_footsteps:save() or {}
 
     return storage
 end
@@ -308,6 +311,10 @@ function core:load(storage)
     if storage.current_mode then
         self:change_mode(storage.current_mode, false)
     end
+
+    if storage.footsteps and self.m_footsteps.load then
+        self.m_footsteps:load(storage.footsteps)
+    end
 end
 
 function core:change_mode(mode, play_voice)
@@ -325,7 +332,7 @@ function core:on_option_change()
     self.m_hud = nanosuit_ui_hud.ui_hud(self)
 
     -- Refresh voice gender/language
-    self.m_sounds.energy_low_voice = localized_and_genderized_sound_object([[nanosuit\voice]], [[energy_low_voice]])
+    self.m_sounds.energy_low_voice = get_localized_and_genderized_sound_object([[nanosuit\voice]], [[energy_low_voice]])
 end
 
 function core:actor_on_death()
