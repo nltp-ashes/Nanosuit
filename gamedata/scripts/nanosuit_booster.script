@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/07/2025                                                                                             ---
+---    Date : 05/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract booster usable by a Nanosuit mode.                             ---
@@ -62,7 +62,6 @@ function abstract_booster:apply()
     RegisterScriptCallback("actor_item_to_slot", self)
     RegisterScriptCallback("actor_item_to_ruck", self)
     RegisterScriptCallback("actor_on_item_drop", self)
-    RegisterScriptCallback("actor_on_changed_slot", self)
 end
 
 function abstract_booster:remove()
@@ -76,7 +75,6 @@ function abstract_booster:remove()
     UnregisterScriptCallback("actor_item_to_slot", self)
     UnregisterScriptCallback("actor_item_to_ruck", self)
     UnregisterScriptCallback("actor_on_item_drop", self)
-    UnregisterScriptCallback("actor_on_changed_slot", self)
 end
 
 function abstract_booster:filter(obj, slot)
@@ -94,6 +92,11 @@ function abstract_booster:unset(obj, slot)
 end
 
 function abstract_booster:actor_item_to_slot(obj)
+    for slot, cache in pairs(self.m_cache) do
+        if cache.obj_id == obj:id() and self:filter(obj, slot) then
+            self:unset(obj, slot)
+        end
+    end
     for slot, _ in pairs(self.m_cache) do
         local item_in_slot = db.actor:item_in_slot(slot)
         if item_in_slot and item_in_slot:id() == obj:id() and self:filter(obj, slot) then
