@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 26/04/2026                                                                                             ---
+---    Date : 07/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -153,16 +153,12 @@ class "core"
 
 function core:__init()
     -- Constants
-    self.m_energy_regen_rate = 100
-    self.m_energy_regen_delay = 5000
     self.m_energy_low_threshold = 20
     self.m_energy_very_low_threshold = 10
     self.m_energy_off_threshold = 0
     self.m_energy_on_threshold = 0
 
     -- Variables
-    self.m_energy_last_use = 0
-    self.m_energy_last_regen = 0
     self.m_energy_low_voiced = true
     self.m_energy_very_low_voiced = true
     self.m_energy_off_voiced = true
@@ -246,6 +242,7 @@ function core:save()
     storage.energy_off_voiced = self.m_energy_off_voiced
     storage.energy_on_voiced = self.m_energy_on_voiced
 
+    storage.current_mode = self.m_current_mode.m_name
     storage.modes = {}
     for name, mode in pairs(self.m_modes) do
         storage.modes[name] = mode.save and mode:save() or {}
@@ -291,6 +288,10 @@ function core:load(storage)
 
     if storage.binoculars and self.m_binoculars.load then
         self.m_binoculars:load(storage.binoculars)
+    end
+
+    if storage.current_mode then
+        self:change_mode(storage.current_mode, false)
     end
 end
 

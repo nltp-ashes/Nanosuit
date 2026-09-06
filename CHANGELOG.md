@@ -1,8 +1,9 @@
-## **v0.13.0 - 05/09/2026 - Beta Build**
+## **v0.13.0 - 07/09/2026 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.13.0/total?label=Downloads)]()
 
 **• Additions :**
+> - The active Nanosuit mode is now persisted through save-loads;
 > - Added the Nanosuit to Nimble, Meeker, Spore, Hermann, Monolith and UNISG traders;
 > - Added custom icon for weapons that use fire mode "0" (safe);
 > - Added back `repair_type` property because other mods wrongly expect it to be defined and CTD if absent;
