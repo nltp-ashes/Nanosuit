@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 29/08/2026                                                                                             ---
+---    Date : 04/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's built-in binoculars system.                                              ---
@@ -29,6 +29,7 @@ function binoculars:__init(core)
     self.m_fov_factor_steps = {2, 4}
     self.m_saved_fov = nil
     self.m_saved_slot = nil
+    self.m_saved_det = nil
     self.m_saved_sensitivity = nil
     self.m_is_active = false
     self.m_sounds = {
@@ -68,7 +69,6 @@ end
 function binoculars:activate()
     self.m_is_active = true
     self.m_fov_factor_idx = 1
-    self.m_saved_slot = db.actor:active_slot()
 
     -- Play sounds
     self.m_sounds.on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
@@ -85,7 +85,15 @@ function binoculars:activate()
     exec_console_cmd("mouse_sens ".. new_sensitivity)
 
     -- Switch to empty hands
-    db.actor:activate_slot(actor_slots_enum.none)
+    self.m_saved_slot = db.actor:active_slot()
+    if self.m_saved_slot ~= actor_slots_enum.none then
+        db.actor:activate_slot(actor_slots_enum.none)
+    end
+
+    self.m_saved_det = db.actor:active_detector() ~= nil
+    if self.m_saved_det then
+        db.actor:hide_detector()
+    end
 
     -- Restrict input to movement keys only
     game.only_allow_movekeys(true)
@@ -102,9 +110,16 @@ function binoculars:deactivate()
     -- Restore mouse sensitivity
     exec_console_cmd("mouse_sens " .. self.m_saved_sensitivity)
 
-    -- Restore previous weapon slot
+    -- Restore previous weapon slot and detector
     if db.actor:active_slot() ~= self.m_saved_slot then
         db.actor:activate_slot(self.m_saved_slot)
+        self.m_saved_slot = nil
+    end
+
+    local active_det = db.actor:active_detector() ~= nil
+    if not active_det and self.m_saved_det then
+        db.actor:show_detector()
+        self.m_saved_det = nil
     end
 
     -- Remove input restriction

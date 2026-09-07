@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 29/08/2026                                                                                             ---
+---    Date : 03/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's built-in nightvision system.                                             ---
@@ -27,8 +27,8 @@ class "nightvision"
 function nightvision:__init(core)
     self.m_core = core
     self.m_energy = nanosuit_energy.energy(core)
-    self.m_energy_use = 1
-    self.m_energy_use_rate = 500
+    self.m_energy_drain = 1
+    self.m_energy_drain_rate = 1000
     self.m_effector_id = 35552
     self.m_effector_name = [[nanosuit\nightvision.ppe]]
     self.m_effector_factor = 0.2
@@ -67,7 +67,7 @@ end
 function nightvision:activate()
     self.m_is_active = true
 
-    self.m_energy:add_drain(energy_drain_enum.nightvision, self.m_energy_use_rate, self.m_energy_use)
+    self.m_energy:add_drain(energy_drain_enum.nightvision, self.m_energy_drain_rate, self.m_energy_drain)
 
     -- Play sounds
     self.m_sounds.on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
