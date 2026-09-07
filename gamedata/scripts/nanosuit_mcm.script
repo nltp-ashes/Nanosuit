@@ -55,7 +55,7 @@ defaults = {
     ["outfit_nanosuit/protection_speed_radiation"] = 0.5,
     ["outfit_nanosuit/hud_colors_text"] = "255,129,183,135",
     ["outfit_nanosuit/hud_colors_background"] = "200,99,125,102",
-    ["outfit_nanosuit/hud_colors_energy"] = "255,0,107,179",
+    ["outfit_nanosuit/hud_colors_energy"] = "255,0,145,189",
     ["outfit_nanosuit/hud_colors_health"] = "255,85,148,17",
     ["outfit_nanosuit/hud_colors_stamina"] = "255,255,255,0",
     ["outfit_nanosuit_2/energy_use_factor"] = 0.8,
@@ -100,8 +100,8 @@ defaults = {
     ["outfit_nanosuit_asian/hud_colors_text"] = "255,142,142,117",
     ["outfit_nanosuit_asian/hud_colors_background"] = "200,125,125,102",
     ["outfit_nanosuit_asian/hud_colors_energy"] = "255,0,59,99",
-    ["outfit_nanosuit_asian/hud_colors_health"] = "255,79,96,60",
-    ["outfit_nanosuit_asian/hud_colors_stamina"] = "255,255,255,0",
+    ["outfit_nanosuit_asian/hud_colors_health"] = "255,75,100,60",
+    ["outfit_nanosuit_asian/hud_colors_stamina"] = "255,100,100,0",
     -- Technical
     ["debug_mode"] = false
 }
@@ -116,8 +116,7 @@ defaults = {
 --- @return any
 function get_outfit_color_config(key, default)
     local res = get_outfit_config(key, default)
-    res = str_explode(res, ",")
-    return GetARGB(res[1], res[2], res[3], res[4])
+    return nanosuit_utils.string_to_float(res)
 end
 
 --- Function used to get a configuration constant based on the currently equipped outfit.
