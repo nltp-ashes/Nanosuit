@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 05/09/2026                                                                                            -->
+<!--    Date : 07/09/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -20,7 +20,7 @@
     </string>
 
     <string id="st_nanosuit_outfit_name_s">
-        <text>US Nanosuit</text>
+        <text>Nanosuit 1.0</text>
     </string>
 
     <string id="st_nanosuit_outfit_descr">
@@ -44,7 +44,7 @@
     </string>
 
     <string id="st_nanosuit_2_outfit_name_s">
-        <text>US Nanosuit 2.0</text>
+        <text>Nanosuit 2.0</text>
     </string>
 
     <string id="st_nanosuit_2_outfit_descr">
