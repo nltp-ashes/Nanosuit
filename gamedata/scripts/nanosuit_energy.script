@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 26/04/2026                                                                                             ---
+---    Date : 18/08/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -48,12 +48,14 @@ function energy:destroy()
 end
 
 function energy:use_energy(amount)
-    self.m_level = clamp(self.m_level - amount, 0, 100)
+    local factored_amount = amount * nanosuit_mcm.get_outfit_config("energy_use_factor", 1.0)
+    self.m_level = clamp(self.m_level - factored_amount, 0, 100)
     self.m_last_use = time_global()
 end
 
 function energy:regen_energy(amount)
-    self.m_level = clamp(self.m_level + amount, 0, 100)
+    local factored_amount = amount * nanosuit_mcm.get_outfit_config("energy_regen_factor", 1.0)
+    self.m_level = clamp(self.m_level + factored_amount, 0, 100)
     self.m_last_regen = time_global()
 end
 

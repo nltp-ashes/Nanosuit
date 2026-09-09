@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 03/09/2026                                                                                             ---
+---    Date : 07/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -15,6 +15,9 @@
 
 -- Constants
 screen_scale            = vector2():set(device().width / 1024, device().height / 768)
+
+contrast_ramp_start     = 0.12
+contrast_ramp_end       = 0.25
 
 -- Enums
 actor_slots_enum        = { none = 0, knife = 1, pistol = 2, rifle = 3, grenade = 4, binoculars = 5, bolt = 6, outfit = 7, pda = 8, detector = 9, torch = 10, artefact = 11, helmet = 12, backpack = 13, animation = 14 }
@@ -30,6 +33,7 @@ constants_types_enum    = { string = "string", boolean = "boolean", number = "nu
 gender_enum             = { male = "male", female = "female" }
 actor_status_types_enum = { indicator = "state", booster = "booster" }
 energy_drain_enum       = { nightvision = "nightvision", nanovision = "nanovision", sprint = "sprint", cloak = "cloak" }
+vision_perk_enum        = { nightvision = "nightvision", nanovision = "nanovision"}
 
 -- Whitelists
 machine_guns_whitelist = {
@@ -103,6 +107,31 @@ end
 --- @return string
 function argb_to_ui(clr)
     return strformat("%c[%s,%s,%s,%s]", clr.a, clr.r, clr.g, clr.b)
+end
+
+--- Function used to get the relative luminance (as defined by the WCAG) of a color, in [0;1].
+--- A dark color returns a value close to 0, a bright color returns a value close to 1.
+--- @param argb table
+--- @return number
+function get_color_luminance(argb)
+    local channels = { argb.r / 255, argb.g / 255, argb.b / 255 }
+    for i = 1, 3 do
+        local c = channels[i]
+        channels[i] = (c <= 0.03928) and (c / 12.92) or (((c + 0.055) / 1.055) ^ 2.4)
+    end
+    return 0.2126 * channels[1] + 0.7152 * channels[2] + 0.0722 * channels[3]
+end
+
+--- Function used to get a color that stays readable when drawn on top of a given background color.
+--- Returns white on a dark background, black on a bright background, and a shade of grey in between.
+--- @param argb table
+--- @return number
+function get_contrasting_color(clr)
+    local argb = float_to_argb(clr)
+    local luminance = get_color_luminance(argb)
+    local factor = clamp((luminance - contrast_ramp_start) / (contrast_ramp_end - contrast_ramp_start), 0, 1)
+    local shade = round(255 * (1 - factor))
+    return GetARGB(argb.a, shade, shade, shade)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------

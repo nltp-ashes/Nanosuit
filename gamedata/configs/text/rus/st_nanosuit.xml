@@ -3,7 +3,8 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
-<!--    Date : 05/09/2026                                                                                            -->
+<!--    Edited : Russian translation (VodoXleb - 21/08/2026)                                                         -->
+<!--    Date : 07/09/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -16,11 +17,11 @@
     <!--=============================================================================================================-->
 
     <string id="st_nanosuit_outfit_name">
-        <text>CryNet Нанокостюм 1.0</text>
+        <text>Нанокостюм CryNet 1.0</text>
     </string>
 
     <string id="st_nanosuit_outfit_name_s">
-        <text>Нанокостюм</text>
+        <text>Нанокостюм 1.0</text>
     </string>
 
     <string id="st_nanosuit_outfit_descr">
@@ -37,6 +38,18 @@
 
     <string id="st_nanosuit_asian_outfit_descr">
         <text>Корейский нанокостюм — это продвинутая тактическая броня, разработанная северокорейскими учеными, предназначенная для улучшения физических и боевых способностей своего носителя. Используя собственную технологию нанофибр, костюм предлагает четыре рабочих режима — Броня, Сила, Скорость и Камуфляж — наряду с надежными системами контроля окружающей среды. Он использует традиционные керамические пластины для компенсации того факта, что его нанофибры имеют трудности с сокращением, что является ключевой особенностью, необходимой для баллистической защиты. Он также обладает возможностями маскировки, хотя нестабильность системы может обнажить носителя из-за случайных искрений. Костюм имеет характерный японский лесной камуфляжный узор. Несмотря на свои небольшие проблемы, корейский нанокостюм остается грозным активом на поле боя, предоставляя своему носителю сверхчеловеческие способности и повышенную выживаемость.\n \n</text>
+    </string>
+
+    <string id="st_nanosuit_2_outfit_name">
+        <text>Нанокостюм CryNet 2.0</text>
+    </string>
+
+    <string id="st_nanosuit_2_outfit_name_s">
+        <text>Нанокостюм 2.0</text>
+    </string>
+
+    <string id="st_nanosuit_2_outfit_descr">
+        <text>Нанокостюм (также известен как Нано-мышечный костюм) – мощный и очень универсальный комплект тактической боевой брони. Нанокостюм 2.0 – это вторая итерация нанокостюмов CryNet Systems, заменившая устаревающий Нанокостюм 1.0 через четыре года.\n \n</text>
     </string>
 
     <!--=============================================================================================================-->
@@ -90,7 +103,6 @@
     <string id="st_nanosuit_binoculars_zoom">
         <text>ЗУМ</text>
     </string>
-
 
     <!--=============================================================================================================-->
     <!--    MCM                                                                                                      -->
@@ -225,6 +237,10 @@
     </string>
 
     <!-- Configuration -->
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_general">
+        <text>Общие настройки</text>
+    </string>
+
     <string id="ui_mcm_nanosuit_nanosuit_configuration_hud">
         <text>Интерфейс</text>
     </string>
@@ -243,6 +259,26 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_speed">
         <text>Режим скорости</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_energy_use_factor">
+        <text>Множитель расхода энергии</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_energy_regen_factor">
+        <text>Множитель восполнения энергии</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_vision_perk">
+        <text>Система улучшения видимости</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_vision_perk_lst_nightvision">
+        <text>Ночное видение</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_vision_perk_lst_nanovision">
+        <text>Нано зрение</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_hud_colors_text">

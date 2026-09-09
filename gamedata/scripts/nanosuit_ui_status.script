@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 03/09/2026                                                                                             ---
+---    Date : 07/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit status hub (energy, health, ammo, etc) UI.                                 ---
@@ -56,7 +56,7 @@ function ui_status:__init(parent) super()
     nanosuit_utils.scale_ui_element(self.m_ui_energy_bar:GetProgressStatic(), true, true, "left", self.m_ui_energy_bar:GetWidth())
 
     self.m_ui_energy_icon = self.m_xml:InitStatic("energy_icon", self)
-    self.m_ui_energy_icon:SetTextureColor(self.m_parent.m_colors.text)
+    self.m_ui_energy_icon:SetTextureColor(nanosuit_utils.get_contrasting_color(self.m_parent.m_colors.energy))
     nanosuit_utils.scale_ui_element(self.m_ui_energy_icon, true, true, "right")
 
     self.m_ui_health = self.m_xml:InitTextWnd("health", self)
@@ -72,7 +72,7 @@ function ui_status:__init(parent) super()
     nanosuit_utils.scale_ui_element(self.m_ui_health_bar:GetProgressStatic(), true, true, "left", self.m_ui_health_bar:GetWidth())
 
     self.m_ui_health_icon = self.m_xml:InitStatic("health_icon", self)
-    self.m_ui_health_icon:SetTextureColor(self.m_parent.m_colors.text)
+    self.m_ui_health_icon:SetTextureColor(nanosuit_utils.get_contrasting_color(self.m_parent.m_colors.health))
     nanosuit_utils.scale_ui_element(self.m_ui_health_icon, true, true, "right")
 
     self.m_ui_stamina = self.m_xml:InitTextWnd("stamina", self)
@@ -88,7 +88,7 @@ function ui_status:__init(parent) super()
     nanosuit_utils.scale_ui_element(self.m_ui_stamina_bar:GetProgressStatic(), true, true, "left", self.m_ui_stamina_bar:GetWidth())
 
     self.m_ui_stamina_icon = self.m_xml:InitStatic("stamina_icon", self)
-    self.m_ui_stamina_icon:SetTextureColor(self.m_parent.m_colors.text)
+    self.m_ui_stamina_icon:SetTextureColor(nanosuit_utils.get_contrasting_color(self.m_parent.m_colors.stamina))
     nanosuit_utils.scale_ui_element(self.m_ui_stamina_icon, true, true, "right")
 
     self.m_ui_ammo_count = self.m_xml:InitTextWnd("ammo_count", self)
@@ -192,7 +192,7 @@ function ui_status:update_energy()
     energy = tostring(energy)
     self.m_ui_energy:SetText(energy)
     self.m_ui_energy:SetTextColor(self.m_parent.m_colors.text)
-    self.m_ui_energy_icon:SetTextureColor(self.m_parent.m_colors.text)
+    self.m_ui_energy_icon:SetTextureColor(nanosuit_utils.get_contrasting_color(self.m_parent.m_colors.energy))
 end
 
 function ui_status:update_health()
@@ -206,7 +206,7 @@ function ui_status:update_health()
     health = tostring(health)
     self.m_ui_health:SetText(health)
     self.m_ui_health:SetTextColor(self.m_parent.m_colors.text)
-    self.m_ui_health_icon:SetTextureColor(self.m_parent.m_colors.text)
+    self.m_ui_health_icon:SetTextureColor(nanosuit_utils.get_contrasting_color(self.m_parent.m_colors.health))
 end
 
 function ui_status:update_stamina()
@@ -220,7 +220,7 @@ function ui_status:update_stamina()
     stamina = tostring(stamina)
     self.m_ui_stamina:SetText(stamina)
     self.m_ui_stamina:SetTextColor(self.m_parent.m_colors.text)
-    self.m_ui_stamina_icon:SetTextureColor(self.m_parent.m_colors.text)
+    self.m_ui_stamina_icon:SetTextureColor(nanosuit_utils.get_contrasting_color(self.m_parent.m_colors.stamina))
 end
 
 function ui_status:update_ammo_count(weapon_obj, weapon_class)

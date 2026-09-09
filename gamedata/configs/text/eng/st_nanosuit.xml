@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 05/09/2026                                                                                            -->
+<!--    Date : 07/09/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -16,15 +16,15 @@
     <!--=============================================================================================================-->
 
     <string id="st_nanosuit_outfit_name">
-        <text>CryNet nanosuit 1.0</text>
+        <text>CryNet Nanosuit 1.0</text>
     </string>
 
     <string id="st_nanosuit_outfit_name_s">
-        <text>US Nanosuit</text>
+        <text>Nanosuit 1.0</text>
     </string>
 
     <string id="st_nanosuit_outfit_descr">
-        <text>The nanosuit (also known as Nano-muscle suit) is a powerful and extremely versatile set of tactical-combat armor originally designed to counter the [CLASSIFIED] threat and circumvent the technological margin between Mankind and [CLASSIFIED]. Reverse-engineered from captured [CLASSIFIED] technology, the suits' CryFibril muscle fibers can be programmed for a variety of purposes (such as hardening, muscle augmentation or camouflage), leading to drastically enhanced combat and physical performance, allowing the operator to execute superhuman feats.\n \n</text>
+        <text>The Nanosuit (also known as Nano-muscle suit) is a powerful and extremely versatile set of tactical-combat armor originally designed to counter the [CLASSIFIED] threat and circumvent the technological margin between Mankind and [CLASSIFIED]. Reverse-engineered from captured [CLASSIFIED] technology, the suits' CryFibril muscle fibers can be programmed for a variety of purposes (such as hardening, muscle augmentation or camouflage), leading to drastically enhanced combat and physical performance, allowing the operator to execute superhuman feats.\n \n</text>
     </string>
 
     <string id="st_nanosuit_asian_outfit_name">
@@ -36,7 +36,19 @@
     </string>
 
     <string id="st_nanosuit_asian_outfit_descr">
-        <text>The Korean nanosuit is an advanced tactical-combat armor developed by North Korean scientists, designed to enhance the physical and combat capabilities of its operator. Utilizing proprietary nanofiber technology, the suit offers four operational modes — Armor, Strength, Speed, and Cloak — alongside robust environmental controls. It employs traditional ceramic plates to compensate for the fact that its nanofibers have difficulties contracting, a key feature required for ballistic protection. It also features cloaking capabilities, although instabilities in the system may expose the wearer due to occasional sparking. The suit features a distinctive Japanese woodland camouflage pattern. Even with its few issues, the Korean nanosuit remains a formidable asset on the battlefield, granting its wearer superhuman abilities and increased survivability.\n \n</text>
+        <text>The Korean Nanosuit is an advanced tactical-combat armor developed by North Korean scientists, designed to enhance the physical and combat capabilities of its operator. Utilizing proprietary nanofiber technology, the suit offers four operational modes — Armor, Strength, Speed, and Cloak — alongside robust environmental controls. It employs traditional ceramic plates to compensate for the fact that its nanofibers have difficulties contracting, a key feature required for ballistic protection. It also features cloaking capabilities, although instabilities in the system may expose the wearer due to occasional sparking. The suit features a distinctive Japanese woodland camouflage pattern. Even with its few issues, the Korean Nanosuit remains a formidable asset on the battlefield, granting its wearer superhuman abilities and increased survivability.\n \n</text>
+    </string>
+
+    <string id="st_nanosuit_2_outfit_name">
+        <text>CryNet Nanosuit 2.0</text>
+    </string>
+
+    <string id="st_nanosuit_2_outfit_name_s">
+        <text>Nanosuit 2.0</text>
+    </string>
+
+    <string id="st_nanosuit_2_outfit_descr">
+        <text>The Nanosuit (also known as Nano-muscle suit) is a powerful and extremely versatile set of tactical-combat armor. The Nanosuit 2.0 is the second iteration of CryNet Systems' Nanosuit, replacing the older Nanosuit 1.0 four years after the latter was created.\n \n</text>
     </string>
 
     <!--=============================================================================================================-->
@@ -125,15 +137,6 @@
         <text>The protocol is to leave no witnesses of your presence. If enabled, the player gets vaporized when they let an enemy get away after they have been in combat.</text>
     </string>
 
-    <!-- Enable nanovision -->
-    <string id="ui_mcm_nanosuit_nanosuit_general_use_nanovision">
-        <text>Allow nanovision</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_general_use_nanovision_desc">
-        <text>In Crysis lore, the Nanosuit 1.0 does not have nano-vision. The back-end for it exists in stalker, so you can still turn it on if you want.</text>
-    </string>
-
     <!-- Suit voice -->
     <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender">
         <text>Suit voice</text>
@@ -143,11 +146,11 @@
         <text>Select the voice type you want to use for the suit.</text>
     </string>
 
-    <string id="nanosuit_nanosuit_general_suit_gender_lst_male">
+    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender_lst_male">
         <text>Male</text>
     </string>
 
-    <string id="nanosuit_nanosuit_general_suit_gender_lst_female">
+    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender_lst_female">
         <text>Female</text>
     </string>
 
@@ -224,6 +227,10 @@
     </string>
 
     <!-- Configuration -->
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_general">
+        <text>General settings</text>
+    </string>
+
     <string id="ui_mcm_nanosuit_nanosuit_configuration_hud">
         <text>HUD</text>
     </string>
@@ -242,6 +249,26 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_speed">
         <text>Speed mode</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_energy_use_factor">
+        <text>Energy use factor</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_energy_regen_factor">
+        <text>Energy regeneration factor</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_vision_perk">
+        <text>Enhanced vision system</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_vision_perk_lst_nightvision">
+        <text>Nightvision</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_vision_perk_lst_nanovision">
+        <text>Nanovision</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_hud_colors_text">
