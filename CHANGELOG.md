@@ -1,8 +1,10 @@
-## **v0.13.0 - 07/09/2026 - Beta Build**
+## **v0.13.0 - 09/09/2026 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.13.0/total?label=Downloads)]()
 
 **• Additions :**
+> - Added a new suit : the CryNet Systems Nanosuit 2.0, with custom hands model and improved stats;
+> - Added ability to customize energy use and energy regen in MCM;
 > - The active Nanosuit mode is now persisted through save-loads;
 > - Added the Nanosuit to Nimble, Meeker, Spore, Hermann, Monolith and UNISG traders;
 > - Added custom icon for weapons that use fire mode "0" (safe);
@@ -14,6 +16,7 @@
 > - Added a custom texture for the companion list while wearing the Nanosuit;
 
 **• Changes :**
+> - The suits can now either use night-vision or nano-vision, but not both at the same time (configurable in MCM);
 > - Changed price of the Nanosuit 1.0 from 419k RUB to 220k RUB;
 > - Changed price of the Korean Nanosuit from 419k RUB to 190k RUB;
 > - Changed the nano-vision energy consumption : it now consumes 5% once when activated;
