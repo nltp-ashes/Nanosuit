@@ -2,7 +2,7 @@
 ;;                                                                                                                    ;;
 ;;    Original Author(s) : NLTP_ASHES                                                                                 ;;
 ;;    Edited : N/A                                                                                                    ;;
-;;    Date : 31/08/2026                                                                                               ;;
+;;    Date : 07/09/2026                                                                                               ;;
 ;;    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)             ;;
 ;;                                                                                                                    ;;
 ;;    Config file used to add new a new outfit : the Nanosuit.                                                        ;;
@@ -16,7 +16,6 @@ ef_equipment_type             = 3
 full_scale_icon               = 0, 11
 
 kind                          = o_heavy
-inv_weight                    = 120
 inv_grid_width                = 2
 inv_grid_height               = 3
 icons_texture                 = nanosuit\ui\icons
@@ -104,6 +103,7 @@ inv_name_short                = st_nanosuit_outfit_name_s
 description                   = st_nanosuit_outfit_descr
 inv_grid_x                    = 0
 inv_grid_y                    = 0
+inv_weight                    = 120
 cost                          = 220000
 
 upgr_icon_x                   = 200
@@ -122,7 +122,27 @@ inv_name_short                = st_nanosuit_asian_outfit_name_s
 description                   = st_nanosuit_asian_outfit_descr
 inv_grid_x                    = 0
 inv_grid_y                    = 3
+inv_weight                    = 120
 cost                          = 190000
 
 upgr_icon_x                   = 200
 upgr_icon_y                   = 150
+
+[outfit_nanosuit_2]:outfit_nanosuit_base
+visual                        = nanosuit\nanosuit\nanosuit_world ; TODO : Replace with nanosuit_2 once the model is ready
+actor_visual                  = nanosuit\nanosuit_2\nanosuit_2_tp
+npc_visual                    = nanosuit\nanosuit_2\nanosuit_2_tp
+player_hud_section            = actor_hud_nanosuit_2
+character_portrait            = ui_nanosuit_portrait_2 ; TODO : Need to get custom portraits
+full_icon_name                = npc_icon_outfit_nanosuit
+
+inv_name                      = st_nanosuit_2_outfit_name
+inv_name_short                = st_nanosuit_2_outfit_name_s
+description                   = st_nanosuit_2_outfit_descr
+inv_grid_x                    = 2
+inv_grid_y                    = 6
+inv_weight                    = 60
+cost                          = 260000
+
+upgr_icon_x                   = 200
+upgr_icon_y                   = 300

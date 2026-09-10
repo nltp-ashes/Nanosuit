@@ -34,7 +34,7 @@ function abstract_mode:__init(core, name)
     self.m_protection_map = {}
     
     for hit_name, hit_id in pairs(hit_types_enum) do
-        self.m_protection_map[hit_id] = nanosuit_mcm.get_constant("protection_" .. name .. "_" .. hit_name, nil)
+        self.m_protection_map[hit_id] = nanosuit_mcm.get_outfit_config("protection_" .. name .. "_" .. hit_name, nil)
     end
 
     -- Register callbacks

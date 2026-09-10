@@ -10,7 +10,7 @@ Fend off the Zone's dangers with the Nanosuit, a powerful and extremely versatil
 
 ### ABOUT
 
-This addon adds a fully operational US and Korean nanosuits from Crysis.
+This addon adds a fully operational both US 1.0 and 2.0 Nanosuits, as well as the Korean Nanosuit from the Crysis series.
 
 **Important :** Expect soft-conflicts (aka it will work, but it won't look nice) with UI mods. Please report as many UI related issues as you can.
 
@@ -107,8 +107,8 @@ These addons are **absolutely required** in order for the addon to work :
 
 The addon natively integrates[^native_integrations] with the following addons, but they **aren't required** :
 1. [Mod Configuration Menu v1.7](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu) (customizable options for the addon);
-2. [Hunger, thirst, sleepiness bars v1.01](https://www.moddb.com/mods/stalker-anomaly/addons/hunger-thirst-sleepiness-bars) (custom nanosuit styling for hunger, thirst and sleepiness indicator);
-3. [Campfire Healing And Designated Savepoint indicator v2.1](https://www.moddb.com/mods/stalker-anomaly/addons/campfire-healing-and-designated-savepoint-indicator) (custom nanosuit styling for campfire indicators);
+2. [Hunger, thirst, sleepiness bars v1.01](https://www.moddb.com/mods/stalker-anomaly/addons/hunger-thirst-sleepiness-bars) (custom Nanosuit styling for hunger, thirst and sleepiness indicator);
+3. [Campfire Healing And Designated Savepoint indicator v2.1](https://www.moddb.com/mods/stalker-anomaly/addons/campfire-healing-and-designated-savepoint-indicator) (custom Nanosuit styling for campfire indicators);
 4. [Body Health System Redux v2.0.2](https://www.moddb.com/mods/stalker-anomaly/addons/100-groks-body-health-system-redux-for-151) (built-in compatibility, to prevent UI overlaps);
 5. [HeatVision v1.3](https://www.moddb.com/mods/stalker-anomaly/addons/heatvision-v02-extension-for-beefs-nvg-dx11engine-mod) (adds nanovision to the suit, if installed);
 6. [Faction Identification UI v1.2.2](https://www.moddb.com/mods/stalker-anomaly/addons/crooks-faction-identification-ui) (built-in compatibility, to prevent UI overlaps);
@@ -182,20 +182,20 @@ Credit goes to these people for their work contained in this addon :
 |                          **Kyne's Peace**                           |                      Ported the Nanosuit 2.0 hands and third person models from Crysis                       |                         Proprietary                          |
 |      **[Captain Vityaz](https://www.youtube.com/@CptVityaz)**       |                               Created high quality icons for the indicators UI                               | [PD 1.0](https://creativecommons.org/publicdomain/mark/1.0/) |
 |                             **Catspaw**                             |                  Allowed the reusing of a custom color picker widget for MCM in this addon                   |                   See [LICENSE](#license)                    |
-|                            **Medialuna**                            |                           Fixed the Korean nanosuit's world model collision volume                           |                         Proprietary                          |
-|         **[Crepis](https://www.moddb.com/members/cr3pis)**          |      Provided high quality inventory icon, upgrade icon and character portrait for the Korean nanosuit       |                         Proprietary                          |
-|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |                   Improved the texture quality of the Korean nanosuit's third person model                   |                   See [LICENSE](#license)                    |
-|                         **wookie, 3vtiger**                         |                                Port of the Korean nanosuit third person model                                |                         Proprietary                          |
-|                          **punished__joe**                          |                Ported the nanosuit hands and edited them to fit S.T.A.L.K.E.R.'s proportions                 |                         Proprietary                          |
+|                            **Medialuna**                            |                           Fixed the Korean Nanosuit's world model collision volume                           |                         Proprietary                          |
+|         **[Crepis](https://www.moddb.com/members/cr3pis)**          |      Provided high quality inventory icon, upgrade icon and character portrait for the Korean Nanosuit       |                         Proprietary                          |
+|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |                   Improved the texture quality of the Korean Nanosuit's third person model                   |                   See [LICENSE](#license)                    |
+|                         **wookie, 3vtiger**                         |                                Port of the Korean Nanosuit third person model                                |                         Proprietary                          |
+|                          **punished__joe**                          |                Ported the Nanosuit hands and edited them to fit S.T.A.L.K.E.R.'s proportions                 |                         Proprietary                          |
 |       **[xfightervn](https://www.deviantart.com/xfightervn)**       |                                     Reused their art for the MCM banner                                      |                         Proprietary                          |
 |              **[LVutner](https://github.com/LVutner)**              |                                Provided an improved shader for the cloak mode                                |                   See [LICENSE](#license)                    |
 |         **[Crepis](https://www.moddb.com/members/cr3pis)**          |                       Provided an inventory icon for the defibrillator powerbank item                        |                         Proprietary                          |
 |                             **Tronex**                              |                            Reused their "Indicators" HUD from actor_status.script                            |                         Proprietary                          |
 |                          **Stalker_Boss**                           |                                      Translated the addon into Russian                                       |                         Proprietary                          |
-|         **[Crepis](https://www.moddb.com/members/cr3pis)**          | Greatly improved the quality of the inventory icon, upgrade icon and character portraits for the US nanosuit |                         Proprietary                          |
-|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |          Greatly improved the texture quality of the first and third person models of the nanosuit           |                   See [LICENSE](#license)                    |
+|         **[Crepis](https://www.moddb.com/members/cr3pis)**          | Greatly improved the quality of the inventory icon, upgrade icon and character portraits for the US Nanosuit |                         Proprietary                          |
+|     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |          Greatly improved the texture quality of the first and third person models of the Nanosuit           |                   See [LICENSE](#license)                    |
 |       **[Lapin](https://steamcommunity.com/id/ExtReMLapin)**        |                     Reused some of their dev resources for the first versions of the HUD                     |                   See [LICENSE](#license)                    |
-| **[\_Paramonov Alexander\_](https://users.playground.ru/1997780/)** |                       Port of the nanosuit first person, third person and world models                       |                         Proprietary                          |
+| **[\_Paramonov Alexander\_](https://users.playground.ru/1997780/)** |                       Port of the Nanosuit first person, third person and world models                       |                         Proprietary                          |
 |             **[Crytek GmbH](https://www.crytek.com/)**              |                               Various assets (textures, sound effects, models)                               |                         Proprietary                          |
 
 Special thanks to these people for their help in the making of this addon :
