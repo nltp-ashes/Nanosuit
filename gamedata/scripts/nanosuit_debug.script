@@ -130,8 +130,8 @@ function on_key_press_defib(dik)
             nanosuit_core.get_instance().m_defibrillator:defibrillate()
         else
             level.remove_cam_effector(nanosuit_defibrillator.cam_effector_start_id)
-            nanosuit_utils.remove_pp_effector(nanosuit_defibrillator.pp_effector_b_id)
-            nanosuit_utils.remove_pp_effector(nanosuit_defibrillator.pp_effector_ftb_id)
+            level.remove_pp_effector(nanosuit_defibrillator.pp_effector_b_id)
+            level.remove_pp_effector(nanosuit_defibrillator.pp_effector_ftb_id)
         end
     end
 end
@@ -266,9 +266,9 @@ end
 
 function on_key_press_interference(dik)
     if dik == DIK_keys.DIK_K then
-        nanosuit_utils.add_pp_effector([[nanosuit\interference.ppe]], 13245, true)
+        level.add_pp_effector([[nanosuit\interference.ppe]], 13245, true)
     elseif dik == DIK_keys.DIK_L then
-        nanosuit_utils.remove_pp_effector(13245)
+        level.remove_pp_effector(13245)
     end
 end
 

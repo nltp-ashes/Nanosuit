@@ -30,7 +30,7 @@ function nightvision:__init(core)
     self.m_energy_drain = 1
     self.m_energy_drain_rate = 1000
     self.m_effector_id = 35552
-    self.m_effector_name = [[nanosuit\nightvision.ppe]]
+    self.m_effector_name = [[nanosuit\post_process\nightvision.ppe]]
     self.m_effector_factor = 0.2
     self.m_is_active = false
     self.m_sounds = {

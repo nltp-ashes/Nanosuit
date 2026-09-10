@@ -22,20 +22,18 @@ class "defibrillator_sequence" (nanosuit_sequence.scripted_sequence)
 function defibrillator_sequence:__init(defibrillator) super()
     self.m_defibrillator = defibrillator
     self.m_effectors = {
-        blur = { id = 3419, path = [[surge_shock_old.ppe]] },
-        fade_in = { id = 3429, path = [[fade_in.ppe]] },
-        fade_out = { id = 3439, path = [[fade_out.ppe]] },
-        blackout = { id = 3449, path = [[black_infinite_2.ppe]] },
-        fall = { id = 3459, path = [[nanosuit\defibrillator_start.anm]] },
-        stand = { id = 3469, path = [[nanosuit\defibrillator_end.anm]] }
+        blur = { id = 3419, path = [[surge_shock_old.ppe]] }, -- TODO : make a copy in the addon's files
+        fade_in = { id = 3429, path = [[fade_in.ppe]] }, -- TODO : make a copy in the addon's files
+        fade_out = { id = 3439, path = [[fade_out.ppe]] }, -- TODO : make a copy in the addon's files
+        blackout = { id = 3449, path = [[black_infinite_2.ppe]] }, -- TODO : make a copy in the addon's files
+        fall = { id = 3459, path = [[nanosuit\cam_anims\defibrillator_start.anm]] },
+        stand = { id = 3469, path = [[nanosuit\cam_anims\defibrillator_end.anm]] }
     }
 end
 
 function defibrillator_sequence:destroy()
     for _, config in pairs(self.m_effectors) do
-        if nanosuit_utils.has_pp_effector(config.id) then
-            nanosuit_utils.remove_pp_effector(config.id)
-        end
+        level.remove_pp_effector(config.id)
     end
 
     self.m_defibrillator = nil
@@ -51,7 +49,7 @@ function defibrillator_sequence:action_start()
 end
 
 function defibrillator_sequence:action_blur()
-    nanosuit_utils.add_pp_effector(self.m_effectors.blur.path, self.m_effectors.blur.id, true)
+    level.add_pp_effector(self.m_effectors.blur.path, self.m_effectors.blur.id, true)
     level.disable_input()
     self.m_last_active_slot = db.actor:active_slot()
     db.actor:activate_slot(0)
@@ -59,13 +57,13 @@ function defibrillator_sequence:action_blur()
 end
 
 function defibrillator_sequence:action_fade_in()
-    nanosuit_utils.add_pp_effector(self.m_effectors.fade_in.path, self.m_effectors.fade_in.id, false)
+    level.add_pp_effector(self.m_effectors.fade_in.path, self.m_effectors.fade_in.id, false)
     return true
 end
 
 function defibrillator_sequence:action_blackout()
-    nanosuit_utils.remove_pp_effector(self.m_effectors.fade_in.id)
-    nanosuit_utils.add_pp_effector(self.m_effectors.blackout.path, self.m_effectors.blackout.id, true)
+    level.remove_pp_effector(self.m_effectors.fade_in.id)
+    level.add_pp_effector(self.m_effectors.blackout.path, self.m_effectors.blackout.id, true)
 
     self.m_defibrillator:set_charging()
 
@@ -88,8 +86,8 @@ end
 
 function defibrillator_sequence:action_fade_out()
     if db.actor:alive() then
-        nanosuit_utils.remove_pp_effector(self.m_effectors.blackout.id)
-        nanosuit_utils.add_pp_effector(self.m_effectors.fade_out.path, self.m_effectors.fade_out.id, false)
+        level.remove_pp_effector(self.m_effectors.blackout.id)
+        level.add_pp_effector(self.m_effectors.fade_out.path, self.m_effectors.fade_out.id, false)
         level.add_cam_effector(self.m_effectors.stand.path, self.m_effectors.stand.id, false, "", 0, false, 1)
     end
     return true
@@ -105,7 +103,7 @@ end
 
 function defibrillator_sequence:action_end()
     if db.actor:alive() then
-        nanosuit_utils.remove_pp_effector(self.m_effectors.blur.id)
+        level.remove_pp_effector(self.m_effectors.blur.id)
         db.actor.health = 0.2
         self.m_defibrillator.m_enabled = false
     end

@@ -13,9 +13,12 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
--- Constants
-screen_scale            = vector2():set(device().width / 1024, device().height / 768)
+-- Configs
+ini_locations           = ini_file_ex([[named_locations.ltx]])
 
+-- Constants
+screen_scale_w          = device().width / 1024
+screen_scale_h          = device().height / 768
 contrast_ramp_start     = 0.12
 contrast_ramp_end       = 0.25
 
@@ -218,47 +221,6 @@ function string_pad_l(var, char, length)
         end
     end
     return ret
-end
-
--- ---------------------------------------------------------------------------------------------------------------------
--- Post-process effectors functions
--- ---------------------------------------------------------------------------------------------------------------------
-
-local active_pp_effectors = {}
-
-function add_pp_effector(name, id, looped)
-    if has_pp_effector(id) then
-        remove_pp_effector(id)
-    end
-    level.add_pp_effector(name, id, looped)
-    if looped then
-        active_pp_effectors[id] = { name = name, factor = 1 }
-    end
-end
-
-function remove_pp_effector(id)
-    if has_pp_effector(id) then
-        level.remove_pp_effector(id)
-        active_pp_effectors[id] = nil
-    end
-end
-
-function has_pp_effector(id)
-    return active_pp_effectors[id] ~= nil
-end
-
-function set_pp_effector_factor(id, factor)
-    if has_pp_effector(id) then
-        level.set_pp_effector_factor(id, factor)
-        active_pp_effectors[id].factor = factor
-    end
-end
-
-function get_pp_effector_factor(id)
-    if has_pp_effector(id) then
-        return active_pp_effectors[id].factor
-    end
-    return 0
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -540,9 +502,40 @@ function scale_ui_element(ele, adjust_x, anchor, anchor_point, parent_width)
 end
 
 function scale_ui_position(pos)
-    local aspect_ratio = screen_scale.y / screen_scale.x
+    local aspect_ratio = screen_scale_h / screen_scale_w
     local pos_x = pos.x * aspect_ratio
     return vector2():set(pos_x, pos.y)
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Named locations
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function get_named_location(location_name)
+    if not ini_locations:section_exist(location_name) then
+        printf("![NS] ERROR | Named location '%s' not found !", location_name)
+        return nil
+    end
+
+    local position = parse_list(ini_locations, location_name, "position")
+    if size_table(position) ~= 5 then
+        printf("![NS] ERROR | Named location '%s' has an invalid position !\n%s", location_name, utils_data.print_table(position, false, true))
+        return nil
+    end
+
+    local orientation = parse_list(ini_locations, location_name, "orientation")
+    if is_not_empty(orientation) and size_table(orientation) ~= 3 then
+        printf("![NS] ERROR | Named location '%s' has an invalid orientation !\n%s", location_name, utils_data.print_table(orientation, false, true))
+        return nil
+    end
+
+    return {
+        name = location_name,
+        lvid = tonumber(position[4]),
+        gvid = tonumber(position[5]),
+        position = vector():set(tonumber(position[1]), tonumber(position[2]), tonumber(position[3])),
+        orientation = vector():set(tonumber(orientation[1] or 0), tonumber(orientation[2] or 0), tonumber(orientation[3] or 0))
+    }
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------

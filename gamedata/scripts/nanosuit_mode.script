@@ -58,7 +58,7 @@ function abstract_mode:apply(play_voice, effector_color)
 
     -- Play switch effector
     if effector_color then
-        level.add_pp_effector([[nanosuit\change_mode_]] .. effector_color .. [[.ppe]], 153951, false)
+        level.add_pp_effector([[nanosuit\post_process\change_mode_]] .. effector_color .. [[.ppe]], 153951, false)
     end
 
     -- Play sounds
