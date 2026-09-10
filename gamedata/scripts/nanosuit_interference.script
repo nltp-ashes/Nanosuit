@@ -1,0 +1,77 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 11/09/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the mysterious interferences with the Nanosuit...                                       ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Interference class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "interference"
+
+function interference:__init(core)
+    -- Variables
+    self.m_core = core
+    self.m_range_sqr = 10 ^ 2
+    self.m_effector = { id = 3592, path = [[nanosuit\post_process\interference.ppe]] }
+    self.m_sound = sound_object([[nanosuit\misc\interference]])
+    self.m_inside = {}
+    self.m_locations = {
+        self:get_location_if_same_level("nanosuit_interference_truck_cemetery"),
+        self:get_location_if_same_level("nanosuit_interference_jupiter")
+    }
+
+    -- Callbacks
+    RegisterScriptCallback("actor_on_update", self)
+end
+
+function interference:destroy()
+    -- Variables
+    self.m_core = nil
+
+    -- Callbacks
+    UnregisterScriptCallback("actor_on_update", self)
+end
+
+function interference:actor_on_update()
+    for idx, location in pairs(self.m_locations) do
+        local distance_sqr = db.actor:position():distance_to_sqr(location.position)
+        if distance_sqr <= self.m_range_sqr and not self.m_inside[location.name] then
+            self.m_inside[location.name] = true
+            level.add_pp_effector(self.m_effector.path, self.m_effector.id, true)
+            self.m_sound:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
+        elseif distance_sqr > self.m_range_sqr and self.m_inside[location.name] then
+            self.m_inside[location.name] = false
+            level.remove_pp_effector(self.m_effector.id)
+            self.m_sound:stop()
+        end
+        if self.m_inside[location.name] then
+            local strength = self:get_strength(distance_sqr)
+            level.set_pp_effector_factor(self.m_effector.id, strength)
+            self.m_sound.volume = strength
+        end
+    end
+end
+
+function interference:get_strength(distance_sqr)
+    return 1 - clamp(normalize(distance_sqr, 0, self.m_range_sqr), 0, 1)
+end
+
+function interference:get_location_if_same_level(location_name)
+    local location = nanosuit_utils.get_named_location(location_name)
+    if simulation_objects.is_on_the_same_level(alife():actor(), { m_game_vertex_id = location.gvid }) then
+        return location
+    end
+    return nil
+end
+
