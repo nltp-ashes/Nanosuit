@@ -21,11 +21,12 @@ class "interference"
 
 function interference:__init(core)
     -- Variables
+    self.m_active = false
     self.m_range_sqr = 10 ^ 2
     self.m_effector = { id = 3592, path = [[nanosuit\post_process\interference.ppe]] }
     self.m_sound = sound_object([[nanosuit\misc\interference]])
-    self.m_active = false
     self.m_locations = {
+        self:get_location_if_same_level("nanosuit_interference_sarcophagus"),
         self:get_location_if_same_level("nanosuit_interference_truck_cemetery"),
         self:get_location_if_same_level("nanosuit_interference_jupiter")
     }
@@ -71,12 +72,12 @@ end
 function interference:update_strength(distance_sqr)
     local strength = self:get_strength(distance_sqr)
 
+    level.set_pp_effector_factor(self.m_effector.id, strength)
+
     if not self.m_sound:playing() then
         self.m_sound:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
     end
-
     self.m_sound.volume = strength
-    level.set_pp_effector_factor(self.m_effector.id, strength)
 end
 
 function interference:get_distance_sqr()
