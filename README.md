@@ -20,6 +20,9 @@ Miscellaneous :
 - The suit comes with third person, first person and world models; inventory icons and character portraits
 - The suit voice-lines are available in English, French and Russian, depending on the game language
 - The suit has built-in binoculars, with x2 and x4 zoom levels
+- When traveling through the Zone with the Nanosuit, the player might experience mysterious interferences...
+
+Protection :
 - The suit will absorb low amounts of radiation, without consuming energy
 - The suit will also absorb higher amounts of radiation, but at the cost of energy
 - The suit has basic ballistic, rupture and explosive protection when out of energy
