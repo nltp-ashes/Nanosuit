@@ -1,9 +1,10 @@
-## **v0.13.0 - 09/09/2026 - Beta Build**
+## **v0.13.0 - 12/09/2026 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.13.0/total?label=Downloads)]()
 
 **• Additions :**
 > - Added a new suit : the CryNet Systems Nanosuit 2.0, with custom hands model and improved stats;
+> - Added locations in the world where mysterious interferences disturb the Nanosuit;
 > - Added ability to customize energy use and energy regen in MCM;
 > - The active Nanosuit mode is now persisted through save-loads;
 > - Added the Nanosuit to Nimble, Meeker, Spore, Hermann, Monolith and UNISG traders;
