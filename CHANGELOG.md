@@ -35,3 +35,5 @@
 > - Fixed CTD when the player's current weapon's fire mode is not recognized by the Nanosuit HUD;
 > - Fixed CTD when the game task points to an ID that does not exist in the world;
 > - Fixed CTD when the player is looting an NPC that is being vaporized;
+
+**Note :** This build requires [Modded Exes version 12.09.2026 (or newer)](https://github.com/themrdemonized/xray-monolith/releases/tag/2026.9.12) for the custom texture of the companion command wheel to work.
