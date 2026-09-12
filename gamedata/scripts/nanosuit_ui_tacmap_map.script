@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 26/08/2026                                                                                             ---
+---    Date : 11/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map background map UI.                                            ---
@@ -125,12 +125,12 @@ end
 function ui_tacmap_map:get_resolution(range, center, bounds)
     local furthest_distance = 0
 
-    local cx = center.x * nanosuit_utils.screen_scale.x
-    local cy = center.y * nanosuit_utils.screen_scale.y
+    local cx = center.x * nanosuit_utils.screen_scale_w
+    local cy = center.y * nanosuit_utils.screen_scale_h
 
     for i = 1, #bounds do
-        local px = bounds[i].x * nanosuit_utils.screen_scale.x
-        local py = bounds[i].y * nanosuit_utils.screen_scale.y
+        local px = bounds[i].x * nanosuit_utils.screen_scale_w
+        local py = bounds[i].y * nanosuit_utils.screen_scale_h
         local distance = nanosuit_utils.vec2_distance_to(vector2():set(cx, cy), vector2():set(px, py))
 
         if distance > furthest_distance then
@@ -152,8 +152,8 @@ function ui_tacmap_map:pos_world_to_tacmap(pos)
     local angle = self:get_heading(pos) -- angle in radians
 
     -- Calculate the x and y coordinates on the tacmap relative to self.m_player
-    local x = self.m_player.x + (distance_tacmap / nanosuit_utils.screen_scale.x) * math.sin(angle)
-    local y = self.m_player.y - (distance_tacmap / nanosuit_utils.screen_scale.y) * math.cos(angle)
+    local x = self.m_player.x + (distance_tacmap / nanosuit_utils.screen_scale_w) * math.sin(angle)
+    local y = self.m_player.y - (distance_tacmap / nanosuit_utils.screen_scale_h) * math.cos(angle)
 
     local wnd_pos = self.m_ui_map:GetWndPos()
 
@@ -220,8 +220,8 @@ function ui_tacmap_map:get_bounds_intersection(hud_pos)
                 if not min_dist or dist < min_dist then
                     min_dist = dist
                     ix, iy = px, py
-                    local px_dx = (tx - cx) * nanosuit_utils.screen_scale.x
-                    local px_dy = (ty - cy) * nanosuit_utils.screen_scale.y
+                    local px_dx = (tx - cx) * nanosuit_utils.screen_scale_w
+                    local px_dy = (ty - cy) * nanosuit_utils.screen_scale_h
                     angle = math.atan2(px_dy, px_dx) - math.pi / 2
                 end
             end

@@ -28,7 +28,7 @@ defaults = {
     ["use_witness"] = false,
     ["suit_gender"] = gender_enum.male,
     ["customize_ammo_wheel"] = true,
-    ["customize_companion_wheel"] = false,
+    ["customize_companion_wheel"] = true,
     ["customize_companion_list"] = true,
     -- Keybindings
     ["defibrillate"] = DIK_keys.DIK_SPACE,

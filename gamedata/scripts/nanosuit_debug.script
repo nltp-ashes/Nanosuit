@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 03/09/2026                                                                                             ---
+---    Date : 11/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to execute debug functions to help in development.                                                ---
@@ -130,8 +130,8 @@ function on_key_press_defib(dik)
             nanosuit_core.get_instance().m_defibrillator:defibrillate()
         else
             level.remove_cam_effector(nanosuit_defibrillator.cam_effector_start_id)
-            nanosuit_utils.remove_pp_effector(nanosuit_defibrillator.pp_effector_b_id)
-            nanosuit_utils.remove_pp_effector(nanosuit_defibrillator.pp_effector_ftb_id)
+            level.remove_pp_effector(nanosuit_defibrillator.pp_effector_b_id)
+            level.remove_pp_effector(nanosuit_defibrillator.pp_effector_ftb_id)
         end
     end
 end
@@ -264,6 +264,14 @@ function actor_on_update_tacmap_border()
     line7.point_b = pos1
 end
 
+function on_key_press_interference(dik)
+    if dik == DIK_keys.DIK_K then
+        level.add_pp_effector([[nanosuit\post_process\interference.ppe]], 13245, true)
+    elseif dik == DIK_keys.DIK_L then
+        level.remove_pp_effector(13245)
+    end
+end
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Callbacks registration
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -277,6 +285,7 @@ function on_game_start()
     --RegisterScriptCallback("on_key_press", on_key_press_defib_ui)
     --RegisterScriptCallback("on_key_press", on_key_press_chainable)
     --RegisterScriptCallback("on_key_press", on_key_press_color)
+    --RegisterScriptCallback("on_key_press", on_key_press_interference)
     --RegisterScriptCallback("on_key_release", on_key_release)
     --RegisterScriptCallback("actor_on_update", actor_on_update_tacmap_border)
 end

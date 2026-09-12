@@ -20,6 +20,9 @@ Miscellaneous :
 - The suit comes with third person, first person and world models; inventory icons and character portraits
 - The suit voice-lines are available in English, French and Russian, depending on the game language
 - The suit has built-in binoculars, with x2 and x4 zoom levels
+- When traveling through the Zone with the Nanosuit, the player might experience mysterious interferences...
+
+Protection :
 - The suit will absorb low amounts of radiation, without consuming energy
 - The suit will also absorb higher amounts of radiation, but at the cost of energy
 - The suit has basic ballistic, rupture and explosive protection when out of energy
@@ -103,7 +106,7 @@ Nightvision :
 
 These addons are **absolutely required** in order for the addon to work :
 1. [S.T.A.L.K.E.R. Anomaly 1.5.3](https://www.moddb.com/mods/stalker-anomaly/downloads/stalker-anomaly-153).
-2. [S.T.A.L.K.E.R. Anomaly Modded Exes 16.08.2026 (or newer)](https://github.com/themrdemonized/xray-monolith)
+2. [S.T.A.L.K.E.R. Anomaly Modded Exes 12.09.2026 (or newer)](https://github.com/themrdemonized/xray-monolith)
 
 The addon natively integrates[^native_integrations] with the following addons, but they **aren't required** :
 1. [Mod Configuration Menu v1.7](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu) (customizable options for the addon);
