@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 22/08/2026                                                                                             ---
+---    Date : 11/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -13,16 +13,22 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
+-- Configs
+ini_locations           = ini_file_ex([[named_locations.ltx]])
+
 -- Constants
-screen_scale            = vector2():set(device().width / 1024, device().height / 768)
+screen_scale_w          = device().width / 1024
+screen_scale_h          = device().height / 768
+contrast_ramp_start     = 0.12
+contrast_ramp_end       = 0.25
 
 -- Enums
 actor_slots_enum        = { none = 0, knife = 1, pistol = 2, rifle = 3, grenade = 4, binoculars = 5, bolt = 6, outfit = 7, pda = 8, detector = 9, torch = 10, artefact = 11, helmet = 12, backpack = 13, animation = 14 }
 hit_types_enum          = { burn = 0, shock = 1, chemical_burn = 2, radiation = 3, telepathic = 4, wound = 5, fire_wound = 6, strike = 7, explosion = 8, wound_2 = 9, light_burn = 10 }
 hit_types_names_enum    = { [0] = "burn", [1] = "shock", [2] = "chemical_burn", [3] = "radiation", [4] = "telepathic", [5] = "wound", [6] = "fire_wound", [7] = "strike", [8] = "explosion", [9] = "wound_2", [10] = "light_burn" }
 armor_modes_enum        = { armor = "armor", power = "power", speed = "speed", cloak = "cloak" }
-fire_modes_enum         = { single = 1, burst_2 = 2, burst_3 = 3, auto = -1 }
-fire_modes_names_enum   = { [1] = "single", [2] = "burst_2", [3] = "burst_3", [-1] = "auto" }
+fire_modes_enum         = { safe = 0, single = 1, burst_2 = 2, burst_3 = 3, auto = -1 }
+fire_modes_names_enum   = { [0] = "safe", [1] = "single", [2] = "burst_2", [3] = "burst_3", [-1] = "auto" }
 actor_cameras_enum      = { first_eye = 0, look_at = 1, free_look = 2, fixed_look_at = 3 }
 renderers_enum          = { dx11 = "dx11", dx10 = "dx10", dx9 = "dx9", dx8 = "dx8" }
 mcm_types_enum          = { string = 0, boolean = 1, number = 2 }
@@ -30,6 +36,7 @@ constants_types_enum    = { string = "string", boolean = "boolean", number = "nu
 gender_enum             = { male = "male", female = "female" }
 actor_status_types_enum = { indicator = "state", booster = "booster" }
 energy_drain_enum       = { nightvision = "nightvision", nanovision = "nanovision", sprint = "sprint", cloak = "cloak" }
+vision_perk_enum        = { nightvision = "nightvision", nanovision = "nanovision"}
 
 -- Whitelists
 machine_guns_whitelist = {
@@ -103,6 +110,31 @@ end
 --- @return string
 function argb_to_ui(clr)
     return strformat("%c[%s,%s,%s,%s]", clr.a, clr.r, clr.g, clr.b)
+end
+
+--- Function used to get the relative luminance (as defined by the WCAG) of a color, in [0;1].
+--- A dark color returns a value close to 0, a bright color returns a value close to 1.
+--- @param argb table
+--- @return number
+function get_color_luminance(argb)
+    local channels = { argb.r / 255, argb.g / 255, argb.b / 255 }
+    for i = 1, 3 do
+        local c = channels[i]
+        channels[i] = (c <= 0.03928) and (c / 12.92) or (((c + 0.055) / 1.055) ^ 2.4)
+    end
+    return 0.2126 * channels[1] + 0.7152 * channels[2] + 0.0722 * channels[3]
+end
+
+--- Function used to get a color that stays readable when drawn on top of a given background color.
+--- Returns white on a dark background, black on a bright background, and a shade of grey in between.
+--- @param argb table
+--- @return number
+function get_contrasting_color(clr)
+    local argb = float_to_argb(clr)
+    local luminance = get_color_luminance(argb)
+    local factor = clamp((luminance - contrast_ramp_start) / (contrast_ramp_end - contrast_ramp_start), 0, 1)
+    local shade = round(255 * (1 - factor))
+    return GetARGB(argb.a, shade, shade, shade)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -192,47 +224,6 @@ function string_pad_l(var, char, length)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Post-process effectors functions
--- ---------------------------------------------------------------------------------------------------------------------
-
-local active_pp_effectors = {}
-
-function add_pp_effector(name, id, looped)
-    if has_pp_effector(id) then
-        remove_pp_effector(id)
-    end
-    level.add_pp_effector(name, id, looped)
-    if looped then
-        active_pp_effectors[id] = { name = name, factor = 1 }
-    end
-end
-
-function remove_pp_effector(id)
-    if has_pp_effector(id) then
-        level.remove_pp_effector(id)
-        active_pp_effectors[id] = nil
-    end
-end
-
-function has_pp_effector(id)
-    return active_pp_effectors[id] ~= nil
-end
-
-function set_pp_effector_factor(id, factor)
-    if has_pp_effector(id) then
-        level.set_pp_effector_factor(id, factor)
-        active_pp_effectors[id].factor = factor
-    end
-end
-
-function get_pp_effector_factor(id)
-    if has_pp_effector(id) then
-        return active_pp_effectors[id].factor
-    end
-    return 0
-end
-
--- ---------------------------------------------------------------------------------------------------------------------
 -- Renderer functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
@@ -300,8 +291,13 @@ function get_true_task_target(tsk_id)
         return nil
     end
 
-    -- Special case for squads : they don't have game objects, so we target a member instead
+    -- Get server object (and verify its existence, task_manager updates slowly enough that object can be gone already)
     local se_obj = alife_object(target_id)
+    if not se_obj then
+        return nil
+    end
+
+    -- Special case for squads : they don't have game objects, so we target a member instead
     if nanosuit_utils.is_squad(se_obj) then
         for member in se_obj:squad_members() do
             target_id = member.id
@@ -320,7 +316,7 @@ function get_true_task_target(tsk_id)
     end
 
     -- If target is on another level, point to the optimal level changer towards the target
-    if not simulation_objects.is_on_the_same_level(alife():actor(), se_obj) then
+    if se_obj and not simulation_objects.is_on_the_same_level(alife():actor(), se_obj) then
         -- Source level (player location)
         local src_level = level.name()
 
@@ -506,9 +502,40 @@ function scale_ui_element(ele, adjust_x, anchor, anchor_point, parent_width)
 end
 
 function scale_ui_position(pos)
-    local aspect_ratio = screen_scale.y / screen_scale.x
+    local aspect_ratio = screen_scale_h / screen_scale_w
     local pos_x = pos.x * aspect_ratio
     return vector2():set(pos_x, pos.y)
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Named locations
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function get_named_location(location_name)
+    if not ini_locations:section_exist(location_name) then
+        printf("![NS] ERROR | Named location '%s' not found !", location_name)
+        return nil
+    end
+
+    local position = parse_list(ini_locations, location_name, "position")
+    if size_table(position) ~= 5 then
+        printf("![NS] ERROR | Named location '%s' has an invalid position !\n%s", location_name, utils_data.print_table(position, false, true))
+        return nil
+    end
+
+    local orientation = parse_list(ini_locations, location_name, "orientation")
+    if is_not_empty(orientation) and size_table(orientation) ~= 3 then
+        printf("![NS] ERROR | Named location '%s' has an invalid orientation !\n%s", location_name, utils_data.print_table(orientation, false, true))
+        return nil
+    end
+
+    return {
+        name = location_name,
+        lvid = tonumber(position[4]),
+        gvid = tonumber(position[5]),
+        position = vector():set(tonumber(position[1]), tonumber(position[2]), tonumber(position[3])),
+        orientation = vector():set(tonumber(orientation[1] or 0), tonumber(orientation[2] or 0), tonumber(orientation[3] or 0))
+    }
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -554,6 +581,14 @@ function is_squad(obj)
     end
     local c = obj:clsid()
     return c == clsid.online_offline_group or c == clsid.online_offline_group_s
+end
+
+function is_grenade_launcher(obj)
+    if not obj then
+        return false
+    end
+    local c = obj:clsid()
+    return c == clsid.wpn_rg6 or c == clsid.wpn_rg6_s
 end
 
 function is_electro_anomaly(obj)

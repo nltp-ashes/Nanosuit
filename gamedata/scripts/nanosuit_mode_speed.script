@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/02/2026                                                                                             ---
+---    Date : 03/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of speed mode of the Nanosuit addon.                                          ---
@@ -24,9 +24,9 @@ class "speed" (nanosuit_mode.abstract_mode)
 
 function speed:__init(core, name) super(core, name)
     -- Energy related variables
-    self.m_energy_use = 1
-    self.m_energy_use_low = 0.2
-    self.m_energy_use_rate = 50
+    self.m_energy_drain = 1
+    self.m_energy_drain_low = 0.2
+    self.m_energy_drain_rate = 50
 
     -- Speed related variables
     self.m_speed_run_coef = 1.25
@@ -89,9 +89,9 @@ function speed:actor_on_update()
     -- Use energy
     local has_drain = self.m_core.m_energy:has_drain(energy_drain_enum.sprint)
     if IsMoveState("mcSprint") and not has_drain then
-        self.m_core.m_energy:add_drain(energy_drain_enum.sprint, self.m_energy_use_rate, function()
+        self.m_core.m_energy:add_drain(energy_drain_enum.sprint, self.m_energy_drain_rate, function()
             local has_enough_energy_very_low = self.m_core.m_energy.m_level >= self.m_core.m_energy_very_low_threshold
-            return has_enough_energy_very_low and self.m_energy_use or self.m_energy_use_low
+            return has_enough_energy_very_low and self.m_energy_drain or self.m_energy_drain_low
         end)
     elseif not IsMoveState("mcSprint") and has_drain then
         self.m_core.m_energy:remove_drain(energy_drain_enum.sprint)
