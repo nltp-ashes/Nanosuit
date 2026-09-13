@@ -1,4 +1,4 @@
-## **v0.13.0 - 12/09/2026 - Beta Build**
+## **v0.13.0 - 13/09/2026 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.13.0/total?label=Downloads)]()
 
