@@ -1,0 +1,71 @@
+//====================================================================================================================//
+//                                                                                                                    //
+//     Original Author(s) : NLTP_ASHES                                                                                //
+//     Edited : N/A                                                                                                   //
+//     Date : 15/09/2026                                                                                              //
+//     License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)            //
+//                                                                                                                    //
+//     Pixel shader for the emissive pass of the Nanosuit glow.                                                       //
+//                                                                                                                    //
+//     Writes light into the accumulator, additively, where the glow map allows it. Combine then does                 //
+//     color = albedo * (accumulated light), so the emitted light is modulated by the diffuse texture :               //
+//     the weave pattern stays readable inside the glow, the way it does in Crysis. That also means a                 //
+//     pure black texel can never glow, and that the strength has to be large to overcome a dark                      //
+//     diffuse, which is why the engine's own accum_emissive.ps uses 16.                                              //
+//                                                                                                                    //
+//     The accumulator is HDR and this runs well before the tonemap, so a strong glow blooms.                         //
+//                                                                                                                    //
+//     Driven by the "nanosuit_glow" shader bus lane, rgb = color, w = strength. All zero, which is                   //
+//     what an unregistered lane reads, emits nothing at all : that is armor mode. Crysis drives the                  //
+//     same effect with these colors (SparksColor in the .mtl files) :                                                //
+//       speed     0.655, 0.592, 0.012   (yellow)                                                                     //
+//       strength  0.353, 0.027, 0.027   (red)                                                                        //
+//                                                                                                                    //
+//====================================================================================================================//
+
+#include "common.h"
+
+//	Glow map. Bound by models_nanosuit_glow.s to "<diffuse texture>_glow".
+Texture2D s_glow;
+
+//	Shader bus lane (see the engine's SHADER_BUS.md) :
+//	  rgb : color of the emitted light
+//	  w   : strength of the emitted light, 0 switches the glow off
+uniform float4 bus_nanosuit_glow;
+
+//	Shape of the wave travelling across the glow. Frequency is in radians per metre of body, so 6.0 is
+//	roughly one band per metre ; speed is in radians per second, so the band climbs at speed/frequency
+//	metres per second. Sharpness narrows the band, floor is how lit the glow stays between two bands.
+static const float GLOW_WAVE_FREQUENCY = 6.00f;
+static const float GLOW_WAVE_SPEED     = 3.00f;
+static const float GLOW_WAVE_SHARPNESS = 6.54f;
+static const float GLOW_WAVE_FLOOR     = 0.50f;
+
+struct v2p
+{
+	float2 tc0  : TEXCOORD0;    // glow map texture coordinates
+	float  wave : TEXCOORD1;    // position along the wave axis, in model space
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////
+float4 main(v2p I) : SV_Target
+{
+	float strength = bus_nanosuit_glow.w;
+
+	//	Uniform branch : costs nothing, and skips the whole pass while the suit is in armor mode.
+	[branch] if (strength <= 0.0f)
+		return float4(0.0f, 0.0f, 0.0f, 0.0f);
+
+	float3 mask = s_glow.Sample(smp_base, I.tc0).rgb;
+
+	//	Wave travelling along the body, sharpened into a band and never dropping below the floor.
+	float wave = 0.5f + 0.5f * sin(I.wave * GLOW_WAVE_FREQUENCY - timers.x * GLOW_WAVE_SPEED);
+	wave = pow(wave, GLOW_WAVE_SHARPNESS);
+	wave = lerp(GLOW_WAVE_FLOOR, 1.0f, wave);
+
+	//	Diffuse light only. Combine multiplies this by the albedo from the g-buffer.
+	float3 emitted = mask * bus_nanosuit_glow.rgb * strength * wave;
+
+	// out
+	return float4(emitted.r, emitted.g, emitted.b, 0.0f);
+}

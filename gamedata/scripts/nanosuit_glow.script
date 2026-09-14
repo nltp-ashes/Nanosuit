@@ -1,0 +1,156 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 15/09/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to drive the glow of the Nanosuit's weave through the shader bus.                                 ---
+---                                                                                                                  ---
+---    The shader that reads this is shaders/r3/models_nanosuit_glow.s. It takes one float4 lane :                   ---
+---    rgb is the color of the light the weave emits, w is its strength, and an all zero lane emits                  ---
+---    nothing at all, which is what armor and cloak modes want.                                                     ---
+---                                                                                                                  ---
+---    Each mode declares its own m_glow in its constructor, abstract_mode:apply() pushes it and                     ---
+---    abstract_mode:remove() clears it, and this class fades between whatever the last two were.                    ---
+---                                                                                                                  ---
+---    Needs an exe carrying the shader bus and a DX10 or DX11 renderer. Without either, the class                   ---
+---    still exists but does nothing, so the suit simply never glows.                                                ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+renderers_enum          = nanosuit_utils.renderers_enum
+
+-- Shader bus lane, see SHADER_BUS.md of the engine
+local BUS_LANE          = "nanosuit_glow"
+local BUS_OWNER         = "Nanosuit"
+local BUS_DESCRIPTION   = "Nanosuit weave glow, rgb = color, w = strength"
+
+-- Seconds the glow takes to fade from one mode's color to the next one's
+local FADE_DURATION     = 0.5
+
+-- Value the lane holds when no mode wants any glow
+local GLOW_OFF          = { r = 0.0, g = 0.0, b = 0.0, strength = 0.0 }
+
+-- Token handed out by shader_bus.try_register, nil when this exe has no shader bus
+local m_bus_token       = nil
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+--- Function used to claim the shader bus lane, on the first call that gets the chance to.
+--- Re-registering with the same owner is free, so this is safe to call whenever.
+--- @return number|nil
+function get_bus_token()
+    if not m_bus_token and shader_bus then
+        m_bus_token = shader_bus.try_register(BUS_LANE, BUS_OWNER, BUS_DESCRIPTION)
+    end
+    return m_bus_token
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Callbacks registration
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function on_game_start()
+    get_bus_token()
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Glow class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "glow"
+
+function glow:__init(core)
+    self.m_core = core
+
+    -- Variables
+    self.m_from = GLOW_OFF
+    self.m_target = GLOW_OFF
+    self.m_progress = 1
+    self.m_last_update = time_global()
+
+    -- The lane is only worth driving on the renderers that compile shaders/r3
+    local renderer = nanosuit_utils.get_renderer()
+    self.m_supported = get_bus_token() ~= nil and (renderer == renderers_enum.dx11 or renderer == renderers_enum.dx10)
+
+    if not self.m_supported then
+        printf("[NS] Suit glow disabled, no shader bus or unsupported renderer")
+        return
+    end
+
+    -- Whatever the lane was left holding before this suit was equipped is not ours
+    self:write(GLOW_OFF)
+
+    -- Register callbacks
+    RegisterScriptCallback("actor_on_update", self)
+end
+
+function glow:destroy()
+    self.m_core = nil
+
+    if not self.m_supported then
+        return
+    end
+
+    -- No fade here, the suit is gone and there is nothing left on screen to fade out
+    self:write(GLOW_OFF)
+
+    -- Unregister callbacks
+    UnregisterScriptCallback("actor_on_update", self)
+end
+
+--- Function used to start fading the glow towards a mode's color.
+--- Called by abstract_mode:apply() and abstract_mode:remove().
+--- @param target table a mode's m_glow, or nil to fade the glow out
+--- @return nil
+function glow:set_target(target)
+    if not self.m_supported then
+        return
+    end
+
+    self.m_from = self:current()
+    self.m_target = target or GLOW_OFF
+    self.m_progress = 0
+end
+
+--- Function used to get the value the lane holds right now.
+--- @return table
+function glow:current()
+    local t = self.m_progress
+    return {
+        r        = self.m_from.r        + (self.m_target.r        - self.m_from.r)        * t,
+        g        = self.m_from.g        + (self.m_target.g        - self.m_from.g)        * t,
+        b        = self.m_from.b        + (self.m_target.b        - self.m_from.b)        * t,
+        strength = self.m_from.strength + (self.m_target.strength - self.m_from.strength) * t
+    }
+end
+
+--- Function used to push a value onto the lane.
+--- @param value table
+--- @return nil
+function glow:write(value)
+    shader_bus.set(m_bus_token, value.r, value.g, value.b, value.strength)
+end
+
+function glow:actor_on_update()
+    local now = time_global()
+    local delta = (now - self.m_last_update) / 1000
+    self.m_last_update = now
+
+    -- The lane keeps its value on its own, only write while a fade is running
+    if self.m_progress >= 1 then
+        return
+    end
+
+    self.m_progress = clamp(self.m_progress + delta / FADE_DURATION, 0, 1)
+
+    self:write(self:current())
+end

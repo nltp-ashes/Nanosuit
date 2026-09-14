@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/02/2026                                                                                             ---
+---    Date : 15/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of strength mode of the Nanosuit addon.                                       ---
@@ -29,6 +29,9 @@ function power:__init(core, name) super(core, name)
 
     -- Cache
     self.m_cache.jump_speed = db.actor:get_actor_jump_speed()
+
+    -- Weave glow, Crysis SparksColor of the strength suit mode
+    self.m_glow = { r = 0.353, g = 0.027, b = 0.027, strength = 16 }
 
     -- Sound effects
     self.m_sounds.power_jump = sound_object([[nanosuit\modes\power\mode_power_jump]])
