@@ -3,7 +3,7 @@
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
 ---    Date : 15/09/2026                                                                                             ---
----    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---    License : See README.md                                                                                       ---
 ---                                                                                                                  ---
 ---    Script shader for the glowing parts of the Nanosuit.                                                          ---
 ---                                                                                                                  ---
@@ -16,6 +16,11 @@
 ---      normal     : the g-buffer pass, flagged emissive so the engine queues l_special for us                      ---
 ---      l_point    : the shadow map pass, so the outfit keeps casting shadows                                       ---
 ---      l_special  : the emissive pass, added into the light accumulator before the dynamic lights                  ---
+---                                                                                                                  ---
+---    The geometry is necessarily submitted twice, once per pass : a deferred renderer has nowhere in               ---
+---    the g-buffer to put emission, so self illumination has to be a second draw into the accumulator.              ---
+---    Both draws share nanosuit_glow_deffer.vs, so the two submissions land on exactly the same depth               ---
+---    and the emissive pass never fights the g-buffer pass for it.                                                  ---
 ---                                                                                                                  ---
 ---    Textures, all derived from the diffuse texture's name :                                                       ---
 ---      <diffuse>        the diffuse texture, as given by the material                                              ---
@@ -36,9 +41,9 @@
 
 function normal(shader, t_base, t_second, t_detail)
 
-	-- Same pass uber_deffer() builds for a bump mapped model at SE_R2_NORMAL_HQ, plus the emissive flag.
-	-- The "-hq" variants are the stock shaders with parallax mapping enabled.
-	shader:begin("deffer_model_bump-hq", "deffer_base_bump-hq")
+	-- Same pass uber_deffer() builds for a bump mapped model at SE_R2_NORMAL_HQ, plus the emissive
+	-- flag. The vertex shader is the stock deffer_model_bump-hq.vs with the wave coordinate added.
+	shader:begin("nanosuit_glow_deffer", "deffer_base_bump-hq")
 	: fog      (false)
 	: emissive (true)
 
@@ -68,8 +73,9 @@ end
 function l_special(shader, t_base, t_second, t_detail)
 
 	-- Emissive pass. Additive, so it brightens the light already in the accumulator instead of
-	-- replacing it, and depth equal because the geometry already wrote its depth in normal().
-	shader:begin("nanosuit_glow", "nanosuit_glow")
+	-- replacing it. Same vertex shader as normal(), so the depth it writes out is bit identical to
+	-- what the g-buffer pass already left behind and depth equal always passes.
+	shader:begin("nanosuit_glow_deffer", "nanosuit_glow")
 	: fog      (false)
 	: zb       (true, false)
 	: blend    (true, blend.one, blend.one)

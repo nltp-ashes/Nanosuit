@@ -3,7 +3,7 @@
 //     Original Author(s) : NLTP_ASHES                                                                                //
 //     Edited : N/A                                                                                                   //
 //     Date : 15/09/2026                                                                                              //
-//     License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)            //
+//     License : See README.md                                                                                        //
 //                                                                                                                    //
 //     Pixel shader for the emissive pass of the Nanosuit glow.                                                       //
 //                                                                                                                    //
@@ -21,9 +21,12 @@
 //       speed     0.655, 0.592, 0.012   (yellow)                                                                     //
 //       strength  0.353, 0.027, 0.027   (red)                                                                        //
 //                                                                                                                    //
+//     Pairs with nanosuit_glow_deffer.vs, which the g-buffer pass uses as well.                                      //
+//                                                                                                                    //
 //====================================================================================================================//
 
 #include "common.h"
+#include "nanosuit_glow.h"
 
 //	Glow map. Bound by models_nanosuit_glow.s to "<diffuse texture>_glow".
 Texture2D s_glow;
@@ -33,22 +36,34 @@ Texture2D s_glow;
 //	  w   : strength of the emitted light, 0 switches the glow off
 uniform float4 bus_nanosuit_glow;
 
-//	Shape of the wave travelling across the glow. Frequency is in radians per metre of body, so 6.0 is
-//	roughly one band per metre ; speed is in radians per second, so the band climbs at speed/frequency
-//	metres per second. Sharpness narrows the band, floor is how lit the glow stays between two bands.
-static const float GLOW_WAVE_FREQUENCY = 6.00f;
-static const float GLOW_WAVE_SPEED     = 3.00f;
-static const float GLOW_WAVE_SHARPNESS = 6.54f;
+//	Shape of the wave travelling across the glow.
+//	  LENGTH    : metres between two bands, measured along the body
+//	  SPEED     : metres per second a band travels
+//	  SHARPNESS : how narrow a band is, 1 is a plain swell, higher is a tighter pulse
+//	  FLOOR     : how lit the glow stays between two bands, 1 disables the wave entirely
+static const float GLOW_WAVE_LENGTH    = 0.20f;
+static const float GLOW_WAVE_SPEED     = 0.35f;
+static const float GLOW_WAVE_SHARPNESS = 3.00f;
 static const float GLOW_WAVE_FLOOR     = 0.50f;
 
-struct v2p
+//////////////////////////////////////////////////////////////////////////////////////////
+//	Three travelling waves at ratios that never line up, summed. A single sine reads as the
+//	whole suit breathing in and out ; this one never quite repeats, and the third term runs
+//	backwards, so no band ever looks like it is marching in step with the others.
+float glow_wave(float along, float time)
 {
-	float2 tc0  : TEXCOORD0;    // glow map texture coordinates
-	float  wave : TEXCOORD1;    // position along the wave axis, in model space
-};
+	float k = 6.28318530f / GLOW_WAVE_LENGTH;
+	float t = time * GLOW_WAVE_SPEED;
+
+	float w  = 1.00f * sin((along          - t         ) * k);
+	      w += 0.60f * sin((along * 1.732f - t * 0.610f) * k);
+	      w += 0.35f * sin((along * 2.610f + t * 0.370f) * k);
+
+	return w * (1.0f / 1.95f);
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
-float4 main(v2p I) : SV_Target
+float4 main(v2p_nanosuit_glow I) : SV_Target
 {
 	float strength = bus_nanosuit_glow.w;
 
@@ -56,10 +71,9 @@ float4 main(v2p I) : SV_Target
 	[branch] if (strength <= 0.0f)
 		return float4(0.0f, 0.0f, 0.0f, 0.0f);
 
-	float3 mask = s_glow.Sample(smp_base, I.tc0).rgb;
+	float3 mask = s_glow.Sample(smp_base, I.tcdh.xy).rgb;
 
-	//	Wave travelling along the body, sharpened into a band and never dropping below the floor.
-	float wave = 0.5f + 0.5f * sin(I.wave * GLOW_WAVE_FREQUENCY - timers.x * GLOW_WAVE_SPEED);
+	float wave = saturate(0.5f + 0.5f * glow_wave(I.wave, timers.x));
 	wave = pow(wave, GLOW_WAVE_SHARPNESS);
 	wave = lerp(GLOW_WAVE_FLOOR, 1.0f, wave);
 
