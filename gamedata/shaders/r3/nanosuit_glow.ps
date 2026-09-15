@@ -15,18 +15,21 @@
 //                                                                                                                    //
 //     The accumulator is HDR and this runs well before the tonemap, so a strong glow blooms.                         //
 //                                                                                                                    //
+//     This pairs with whichever deffer_model_bump-hq.vs is installed, which the g-buffer pass uses                   //
+//     as well. Nothing here is declared by hand : taking p_bumped and reading nothing but fields the                 //
+//     stock shaders already carry is what lets this sit on top of Screen Space Shaders or on top of                  //
+//     plain Anomaly without knowing which is which. SSS adds motion vectors and a TAA jitter to that                 //
+//     vertex shader, and sharing it is what keeps the suit from ghosting under TAA.                                  //
+//                                                                                                                    //
 //     Driven by the "nanosuit_glow" shader bus lane, rgb = color, w = strength. All zero, which is                   //
 //     what an unregistered lane reads, emits nothing at all : that is armor mode. Crysis drives the                  //
 //     same effect with these colors (SparksColor in the .mtl files) :                                                //
 //       speed     0.655, 0.592, 0.012   (yellow)                                                                     //
 //       strength  0.353, 0.027, 0.027   (red)                                                                        //
 //                                                                                                                    //
-//     Pairs with nanosuit_glow_deffer.vs, which the g-buffer pass uses as well.                                      //
-//                                                                                                                    //
 //====================================================================================================================//
 
 #include "common.h"
-#include "nanosuit_glow.h"
 
 //	Glow map. Bound by models_nanosuit_glow.s to "<diffuse texture>_glow".
 Texture2D s_glow;
@@ -36,15 +39,44 @@ Texture2D s_glow;
 //	  w   : strength of the emitted light, 0 switches the glow off
 uniform float4 bus_nanosuit_glow;
 
+//	Axis, in model space, the wave travels along. Y is up the body for a character.
+static const float3 GLOW_WAVE_AXIS = float3(0.0f, 1.0f, 0.0f);
+
 //	Shape of the wave travelling across the glow.
 //	  LENGTH    : metres between two bands, measured along the body
 //	  SPEED     : metres per second a band travels
 //	  SHARPNESS : how narrow a band is, 1 is a plain swell, higher is a tighter pulse
-//	  FLOOR     : how lit the glow stays between two bands, 1 disables the wave entirely
+//	  FLOOR     : how lit the glow stays between two bands. 0 means those texels emit nothing at all
+//	  PEAK      : how far past full strength the crest of a band goes
+//	FLOOR and PEAK together are the contrast knob : drop FLOOR and raise PEAK for sparse hard bands,
+//	close the gap between them for an even glow. As set the weave never goes fully dark : its dimmest
+//	texel sits at a twentieth of a crest, and about half of it stays under a tenth of one at any moment.
 static const float GLOW_WAVE_LENGTH    = 0.20f;
-static const float GLOW_WAVE_SPEED     = 0.35f;
-static const float GLOW_WAVE_SHARPNESS = 3.00f;
-static const float GLOW_WAVE_FLOOR     = 0.50f;
+static const float GLOW_WAVE_SPEED     = 0.0875f;
+static const float GLOW_WAVE_SHARPNESS = 4.00f;
+static const float GLOW_WAVE_FLOOR     = 0.15f;
+static const float GLOW_WAVE_PEAK      = 3.00f;
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//	Where this pixel sits along the wave, in model space, so the wave rides with the bones instead
+//	of sliding around as the character moves.
+//
+//	The interpolated view space position is already in p_bumped, and m_WV is what put it there, so
+//	undoing m_WV recovers what the vertex shader started with and no extra interpolant is needed.
+//	That matters : the interpolant block is the engine's, and SSS declares a different one, so
+//	anything added here by hand would land on the wrong register on one setup or the other.
+//	m_WV is a rotation and a translation for a character, no scale, so its inverse is the transpose
+//	of its rotation. Only one of the three dot products survives, the axis being a constant.
+float glow_wave_coord(float3 pos_e)
+{
+	float3 d = pos_e - float3(m_WV[0].w, m_WV[1].w, m_WV[2].w);
+
+	float3 pos_m = float3(dot(d, float3(m_WV[0].x, m_WV[1].x, m_WV[2].x)),
+	                      dot(d, float3(m_WV[0].y, m_WV[1].y, m_WV[2].y)),
+	                      dot(d, float3(m_WV[0].z, m_WV[1].z, m_WV[2].z)));
+
+	return dot(pos_m, GLOW_WAVE_AXIS);
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //	Three travelling waves at ratios that never line up, summed. A single sine reads as the
@@ -63,7 +95,7 @@ float glow_wave(float along, float time)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-float4 main(v2p_nanosuit_glow I) : SV_Target
+float4 main(p_bumped I) : SV_Target
 {
 	float strength = bus_nanosuit_glow.w;
 
@@ -73,9 +105,9 @@ float4 main(v2p_nanosuit_glow I) : SV_Target
 
 	float3 mask = s_glow.Sample(smp_base, I.tcdh.xy).rgb;
 
-	float wave = saturate(0.5f + 0.5f * glow_wave(I.wave, timers.x));
+	float wave = saturate(0.5f + 0.5f * glow_wave(glow_wave_coord(I.position.xyz), timers.x));
 	wave = pow(wave, GLOW_WAVE_SHARPNESS);
-	wave = lerp(GLOW_WAVE_FLOOR, 1.0f, wave);
+	wave = lerp(GLOW_WAVE_FLOOR, GLOW_WAVE_PEAK, wave);
 
 	//	Diffuse light only. Combine multiplies this by the albedo from the g-buffer.
 	float3 emitted = mask * bus_nanosuit_glow.rgb * strength * wave;

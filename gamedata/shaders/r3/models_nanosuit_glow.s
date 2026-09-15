@@ -19,8 +19,13 @@
 ---                                                                                                                  ---
 ---    The geometry is necessarily submitted twice, once per pass : a deferred renderer has nowhere in               ---
 ---    the g-buffer to put emission, so self illumination has to be a second draw into the accumulator.              ---
----    Both draws share nanosuit_glow_deffer.vs, so the two submissions land on exactly the same depth               ---
----    and the emissive pass never fights the g-buffer pass for it.                                                  ---
+---                                                                                                                  ---
+---    Both passes deliberately run the engine's own deffer_model_bump-hq vertex shader rather than a                ---
+---    copy of it, and the g-buffer pass runs the engine's own pixel shader untouched. Everything that               ---
+---    a shader pack puts in there then applies to this outfit too : with Screen Space Shaders that is               ---
+---    the TAA jitter and the motion vectors, without which the suit ghosts under TAA. Sharing one                   ---
+---    compiled vertex shader between the two passes also means both land on exactly the same depth,                 ---
+---    so the emissive pass never fights the g-buffer pass for it.                                                   ---
 ---                                                                                                                  ---
 ---    Textures, all derived from the diffuse texture's name :                                                       ---
 ---      <diffuse>        the diffuse texture, as given by the material                                              ---
@@ -41,9 +46,9 @@
 
 function normal(shader, t_base, t_second, t_detail)
 
-	-- Same pass uber_deffer() builds for a bump mapped model at SE_R2_NORMAL_HQ, plus the emissive
-	-- flag. The vertex shader is the stock deffer_model_bump-hq.vs with the wave coordinate added.
-	shader:begin("nanosuit_glow_deffer", "deffer_base_bump-hq")
+	-- Exactly the pass uber_deffer() builds for a bump mapped model at SE_R2_NORMAL_HQ, plus the
+	-- emissive flag. Stock vertex and pixel shader, so whatever shader pack is installed owns them.
+	shader:begin("deffer_model_bump-hq", "deffer_base_bump-hq")
 	: fog      (false)
 	: emissive (true)
 
@@ -73,9 +78,9 @@ end
 function l_special(shader, t_base, t_second, t_detail)
 
 	-- Emissive pass. Additive, so it brightens the light already in the accumulator instead of
-	-- replacing it. Same vertex shader as normal(), so the depth it writes out is bit identical to
-	-- what the g-buffer pass already left behind and depth equal always passes.
-	shader:begin("nanosuit_glow_deffer", "nanosuit_glow")
+	-- replacing it. Same vertex shader as normal(), down to the same compiled instance, so the depth
+	-- it writes out is bit identical to what the g-buffer pass left behind and depth equal passes.
+	shader:begin("deffer_model_bump-hq", "nanosuit_glow")
 	: fog      (false)
 	: zb       (true, false)
 	: blend    (true, blend.one, blend.one)
