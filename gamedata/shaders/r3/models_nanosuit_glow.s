@@ -3,7 +3,7 @@
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
 ---    Date : 15/09/2026                                                                                             ---
----    License : See README.md                                                                                       ---
+---    License : Public Domain Mark 1.0 Universal                                                                    ---
 ---                                                                                                                  ---
 ---    Script shader for the glowing parts of the Nanosuit.                                                          ---
 ---                                                                                                                  ---
@@ -45,9 +45,6 @@
 ---==================================================================================================================---
 
 function normal(shader, t_base, t_second, t_detail)
-
-	-- Exactly the pass uber_deffer() builds for a bump mapped model at SE_R2_NORMAL_HQ, plus the
-	-- emissive flag. Stock vertex and pixel shader, so whatever shader pack is installed owns them.
 	shader:begin("deffer_model_bump-hq", "deffer_base_bump-hq")
 	: fog      (false)
 	: emissive (true)
@@ -63,8 +60,6 @@ function normal(shader, t_base, t_second, t_detail)
 end
 
 function l_point(shader, t_base, t_second, t_detail)
-
-	-- Shadow map pass, identical to the one CBlender_deffer_model builds for SE_R2_SHADOW.
 	shader:begin("shadow_direct_model", "dumb")
 	: fog (false)
 	: zb  (true, true)
@@ -76,10 +71,6 @@ function l_point(shader, t_base, t_second, t_detail)
 end
 
 function l_special(shader, t_base, t_second, t_detail)
-
-	-- Emissive pass. Additive, so it brightens the light already in the accumulator instead of
-	-- replacing it. Same vertex shader as normal(), down to the same compiled instance, so the depth
-	-- it writes out is bit identical to what the g-buffer pass left behind and depth equal passes.
 	shader:begin("deffer_model_bump-hq", "nanosuit_glow")
 	: fog      (false)
 	: zb       (true, false)
@@ -87,7 +78,8 @@ function l_special(shader, t_base, t_second, t_detail)
 	: emissive (true)
 
 	shader:dx10zfunc(cmp_func.lessequal)
-
-	shader:dx10texture("s_glow", t_base .. "_glow")
+	shader:dx10texture("s_glow",  t_base .. "_glow")
+	shader:dx10texture("s_bumpX", t_base .. "_bump#")    -- must be bound before s_bump
+	shader:dx10texture("s_bump",  t_base .. "_bump")
 	shader:dx10sampler("smp_base")
 end

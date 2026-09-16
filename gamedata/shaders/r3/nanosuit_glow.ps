@@ -2,8 +2,8 @@
 //                                                                                                                    //
 //     Original Author(s) : NLTP_ASHES                                                                                //
 //     Edited : N/A                                                                                                   //
-//     Date : 15/09/2026                                                                                              //
-//     License : See README.md                                                                                        //
+//     Date : 17/09/2026                                                                                              //
+//     License : Public Domain Mark 1.0 Universal                                                                     //
 //                                                                                                                    //
 //     Pixel shader for the emissive pass of the Nanosuit glow.                                                       //
 //                                                                                                                    //
@@ -31,87 +31,68 @@
 
 #include "common.h"
 
-//	Glow map. Bound by models_nanosuit_glow.s to "<diffuse texture>_glow".
-Texture2D s_glow;
+Texture2D s_glow;                                // Glow map. Bound by models_nanosuit_glow.s to "<diffuse texture>_glow".
 
-//	Shader bus lane (see the engine's SHADER_BUS.md) :
-//	  rgb : color of the emitted light
-//	  w   : strength of the emitted light, 0 switches the glow off
-uniform float4 bus_nanosuit_glow;
+uniform float4 bus_nanosuit_glow;                // Shader bus lane
 
-//	Axis, in model space, the wave travels along. Y is up the body for a character.
-static const float3 GLOW_WAVE_AXIS = float3(0.0f, 1.0f, 0.0f);
+static const float GLOW_SPARKS_PHASE   = 20.00f; // Crysis SparksPhase. Lattice size, and the break-up strength
+static const float GLOW_SPARKS_JITTER  = 0.20f;  // The 0.2 hard coded in Cloth.cfx. PHASE * JITTER = swing in radians
+static const float GLOW_SPARKS_FREQ    = 10.00f; // Crysis SparksFrequency. Drift rate. Scales a clock, never animate
+static const float GLOW_SPARKS_POW     = 6.54f;  // Crysis SparksPow. Sharpens the fold down to the vein cores
+static const float GLOW_FRESNEL_BIAS   = 0.20f;  // Crysis FresnelBias. How lit the glow is head on
+static const float GLOW_FRESNEL_SCALE  = 1.00f;  // Crysis FresnelScale. How much brighter it gets edge on
+static const float GLOW_SPARKS_GAIN    = 2.50f;  // Not Crysis. Its SparksMultiplier assumes no albedo multiply
+static const float GLOW_TIME_SCALE     = 0.25f;  // Crysis samples the clock as PB_time 0.25
 
-//	Shape of the wave travelling across the glow.
-//	  LENGTH    : metres between two bands, measured along the body
-//	  SPEED     : metres per second a band travels
-//	  SHARPNESS : how narrow a band is, 1 is a plain swell, higher is a tighter pulse
-//	  FLOOR     : how lit the glow stays between two bands. 0 means those texels emit nothing at all
-//	  PEAK      : how far past full strength the crest of a band goes
-//	FLOOR and PEAK together are the contrast knob : drop FLOOR and raise PEAK for sparse hard bands,
-//	close the gap between them for an even glow. As set the weave never goes fully dark : its dimmest
-//	texel sits at a twentieth of a crest, and about half of it stays under a tenth of one at any moment.
-static const float GLOW_WAVE_LENGTH    = 0.20f;
-static const float GLOW_WAVE_SPEED     = 0.0875f;
-static const float GLOW_WAVE_SHARPNESS = 4.00f;
-static const float GLOW_WAVE_FLOOR     = 0.15f;
-static const float GLOW_WAVE_PEAK      = 3.00f;
-
-//////////////////////////////////////////////////////////////////////////////////////////
-//	Where this pixel sits along the wave, in model space, so the wave rides with the bones instead
-//	of sliding around as the character moves.
-//
-//	The interpolated view space position is already in p_bumped, and m_WV is what put it there, so
-//	undoing m_WV recovers what the vertex shader started with and no extra interpolant is needed.
-//	That matters : the interpolant block is the engine's, and SSS declares a different one, so
-//	anything added here by hand would land on the wrong register on one setup or the other.
-//	m_WV is a rotation and a translation for a character, no scale, so its inverse is the transpose
-//	of its rotation. Only one of the three dot products survives, the axis being a constant.
-float glow_wave_coord(float3 pos_e)
+// Where this pixel sits in model space.
+float3 glow_model_pos(float3 pos_e)
 {
-	float3 d = pos_e - float3(m_WV[0].w, m_WV[1].w, m_WV[2].w);
+    float3 d = pos_e - float3(m_WV[0].w, m_WV[1].w, m_WV[2].w);
 
-	float3 pos_m = float3(dot(d, float3(m_WV[0].x, m_WV[1].x, m_WV[2].x)),
-	                      dot(d, float3(m_WV[0].y, m_WV[1].y, m_WV[2].y)),
-	                      dot(d, float3(m_WV[0].z, m_WV[1].z, m_WV[2].z)));
-
-	return dot(pos_m, GLOW_WAVE_AXIS);
+    return float3(dot(d, float3(m_WV[0].x, m_WV[1].x, m_WV[2].x)),
+                  dot(d, float3(m_WV[0].y, m_WV[1].y, m_WV[2].y)),
+                  dot(d, float3(m_WV[0].z, m_WV[1].z, m_WV[2].z)));
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-//	Three travelling waves at ratios that never line up, summed. A single sine reads as the
-//	whole suit breathing in and out ; this one never quite repeats, and the third term runs
-//	backwards, so no band ever looks like it is marching in step with the others.
-float glow_wave(float along, float time)
+// How lit this pixel is, 0 in the gaps and 1 in the core of a vein.
+float glow_sparks(float3 pos_m, float3 nrm_t, float time)
 {
-	float k = 6.28318530f / GLOW_WAVE_LENGTH;
-	float t = time * GLOW_WAVE_SPEED;
+    float3 v = pos_m * GLOW_SPARKS_PHASE
+             - nrm_t * (GLOW_SPARKS_PHASE * GLOW_SPARKS_JITTER)
+             + (time * GLOW_TIME_SCALE) * GLOW_SPARKS_FREQ;
 
-	float w  = 1.00f * sin((along          - t         ) * k);
-	      w += 0.60f * sin((along * 1.732f - t * 0.610f) * k);
-	      w += 0.35f * sin((along * 2.610f + t * 0.370f) * k);
+    float3 s = sin(v);
+    float  f = 1.0f - abs((s.x + s.y + s.z) * 0.3333f);
 
-	return w * (1.0f / 1.95f);
+    return pow(f, GLOW_SPARKS_POW);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
+// Crysis ClothEffectsPS, from Cloth.cfx pass p1, on the deferred emissive pass.
 float4 main(p_bumped I) : SV_Target
 {
-	float strength = bus_nanosuit_glow.w;
+    float strength = bus_nanosuit_glow.w;
 
-	//	Uniform branch : costs nothing, and skips the whole pass while the suit is in armor mode.
-	[branch] if (strength <= 0.0f)
-		return float4(0.0f, 0.0f, 0.0f, 0.0f);
+    // Uniform branch : costs nothing, and skips the whole pass if the effect is not active
+    [branch] if (strength <= 0.0f)
+        return float4(0.0f, 0.0f, 0.0f, 0.0f);
 
-	float3 mask = s_glow.Sample(smp_base, I.tcdh.xy).rgb;
+    float3 mask = s_glow.Sample(smp_base, I.tcdh.xy).rgb;
 
-	float wave = saturate(0.5f + 0.5f * glow_wave(glow_wave_coord(I.position.xyz), timers.x));
-	wave = pow(wave, GLOW_WAVE_SHARPNESS);
-	wave = lerp(GLOW_WAVE_FLOOR, GLOW_WAVE_PEAK, wave);
+    float4 Nu  = s_bump.Sample (smp_base, I.tcdh.xy); // normal.gloss
+    float4 NuE = s_bumpX.Sample(smp_base, I.tcdh.xy); // normal_error.height
+    float3 nrm = Nu.wzy + (NuE.xyz - 1.0f);           // -0.5 .. 0.5
 
-	//	Diffuse light only. Combine multiplies this by the albedo from the g-buffer.
-	float3 emitted = mask * bus_nanosuit_glow.rgb * strength * wave;
+    // Fresnel. Crysis reads a LUT whose row 0 alpha is exactly pow(1 - NdotE, 5).
+    float3 nrm_e = normalize(mul(float3x3(I.M1, I.M2, I.M3), nrm));
+    float3 eye_e = normalize(-I.position.xyz);
+    float  n_dot_e = saturate(dot(eye_e, nrm_e));
+    float  fresnel = GLOW_FRESNEL_BIAS + pow(1.0f - n_dot_e, 5.0f) * GLOW_FRESNEL_SCALE;
 
-	// out
-	return float4(emitted.r, emitted.g, emitted.b, 0.0f);
+    float sparks = glow_sparks(glow_model_pos(I.position.xyz), nrm * 2.0f, timers.x); // nrm in -1..1, like GetNormalMap
+
+    // Diffuse light only. Combine multiplies this by the albedo from the g-buffer.
+    float3 emitted = mask * bus_nanosuit_glow.rgb * strength * GLOW_SPARKS_GAIN * sparks * fresnel;
+
+    // Out
+    return float4(emitted.r, emitted.g, emitted.b, 0.0f);
 }
