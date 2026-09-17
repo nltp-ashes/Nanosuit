@@ -1,2 +1,5 @@
 *.ltx linguist-language=INI
 *.script linguist-language=Lua
+*.s linguist-language=Lua
+*.ps linguist-language=HLSL
+*.vs linguist-language=HLSL

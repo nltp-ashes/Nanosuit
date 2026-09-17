@@ -21,6 +21,7 @@ Miscellaneous :
 - The suit voice-lines are available in English, French and Russian, depending on the game language
 - The suit has built-in binoculars, with x2 and x4 zoom levels
 - When traveling through the Zone with the Nanosuit, the player might experience mysterious interferences...
+- Using DirectX 11 or DirectX 10 is highly recommended, although it isn't required
 
 Protection :
 - The suit will absorb low amounts of radiation, without consuming energy
@@ -39,6 +40,7 @@ Speed mode :
 - Increases run speed, consumes energy
 - Decreases time to aim down sights, does not consume energy
 - When low on energy, the bonuses get disabled
+- In this mode, the suit gets a yellow glow
 
 Strength mode :
 - Increases melee damage
@@ -48,6 +50,7 @@ Strength mode :
 - Protects against fall damage, as long as the suit has energy
 - Shooting while in strength mode consumes energy
 - When low on energy, recoil goes back to normal
+- In this mode, the suit gets a red glow
 
 Cloak mode :
 - Visually cloaks the player's hands and items while active

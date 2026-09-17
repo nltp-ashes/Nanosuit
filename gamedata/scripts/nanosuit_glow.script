@@ -1,0 +1,136 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 17/09/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to drive the glow of the Nanosuit's weave through the shader bus.                                 ---
+---                                                                                                                  ---
+---    The shader that reads this is shaders/r3/models_nanosuit_glow.s. It takes one float4 lane :                   ---
+---    rgb is the color of the light the weave emits, w is its strength, and an all zero lane emits                  ---
+---    nothing at all, which is what armor and cloak modes want.                                                     ---
+---                                                                                                                  ---
+---    Each mode declares its own m_glow_settings in its constructor, abstract_mode:apply() pushes it and            ---
+---    abstract_mode:remove() clears it, and this class fades between whatever the last two were.                    ---
+---                                                                                                                  ---
+---    Needs an exe carrying the shader bus and a DX10 or DX11 renderer. Without either, the class                   ---
+---    still exists but does nothing, so the suit simply never glows.                                                ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+renderers_enum         = nanosuit_utils.renderers_enum
+
+-- Constants
+SHADER_BUS_LANE        = "nanosuit_glow"
+SHADER_BUS_OWNER       = "Nanosuit"
+SHADER_BUS_DESCRIPTION = "Nanosuit weave glow, rgb = color, w = strength"
+
+-- Globals
+shader_bus_token       = nil
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function get_bus_token()
+    if shader_bus and not shader_bus_token then
+        shader_bus_token = shader_bus.try_register(SHADER_BUS_LANE, SHADER_BUS_OWNER, SHADER_BUS_DESCRIPTION)
+    end
+    return shader_bus_token
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Callbacks registration
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function on_game_start()
+    get_bus_token()
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Glow class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "glow"
+
+function glow:__init(core)
+    self.m_core = core
+
+    -- Constants
+    self.m_fade_duration = 0.5
+    self.m_glow_settings_off = { r = 0.0, g = 0.0, b = 0.0, strength = 0.0 }
+    self.m_supported = get_bus_token() ~= nil and nanosuit_utils.is_modern_renderer()
+
+    -- Variables
+    self.m_from = self.m_glow_settings_off
+    self.m_target = self.m_glow_settings_off
+    self.m_progress = 1
+    self.m_last_update = time_global()
+
+    if not self.m_supported then
+        printf("[NS] Suit glow disabled, no shader bus or unsupported renderer")
+        return
+    end
+
+    self:write(self.m_glow_settings_off)
+
+    -- Register callbacks
+    RegisterScriptCallback("actor_on_update", self)
+end
+
+function glow:destroy()
+    self.m_core = nil
+
+    if not self.m_supported then
+        return
+    end
+
+    self:write(self.m_glow_settings_off)
+
+    -- Unregister callbacks
+    UnregisterScriptCallback("actor_on_update", self)
+end
+
+function glow:set_target(target)
+    if not self.m_supported then
+        return
+    end
+
+    self.m_from = self:current()
+    self.m_target = target or self.m_glow_settings_off
+    self.m_progress = 0
+end
+
+function glow:current()
+    return {
+        r        = self.m_from.r        + (self.m_target.r        - self.m_from.r)        * self.m_progress,
+        g        = self.m_from.g        + (self.m_target.g        - self.m_from.g)        * self.m_progress,
+        b        = self.m_from.b        + (self.m_target.b        - self.m_from.b)        * self.m_progress,
+        strength = self.m_from.strength + (self.m_target.strength - self.m_from.strength) * self.m_progress
+    }
+end
+
+function glow:write(value)
+    shader_bus.set(shader_bus_token, value.r, value.g, value.b, value.strength)
+end
+
+function glow:actor_on_update()
+    local tg = time_global()
+    local delta = (tg - self.m_last_update) / 1000
+    self.m_last_update = tg
+
+    -- The lane is stateful, only write while a fade is running
+    if self.m_progress >= 1 then
+        return
+    end
+
+    self.m_progress = clamp(self.m_progress + delta / self.m_fade_duration, 0, 1)
+
+    self:write(self:current())
+end

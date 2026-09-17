@@ -1,0 +1,98 @@
+//====================================================================================================================//
+//                                                                                                                    //
+//     Original Author(s) : NLTP_ASHES                                                                                //
+//     Edited : N/A                                                                                                   //
+//     Date : 17/09/2026                                                                                              //
+//     License : Public Domain Mark 1.0 Universal                                                                     //
+//                                                                                                                    //
+//     Pixel shader for the emissive pass of the Nanosuit glow.                                                       //
+//                                                                                                                    //
+//     Writes light into the accumulator, additively, where the glow map allows it. Combine then does                 //
+//     color = albedo * (accumulated light), so the emitted light is modulated by the diffuse texture :               //
+//     the weave pattern stays readable inside the glow, the way it does in Crysis. That also means a                 //
+//     pure black texel can never glow, and that the strength has to be large to overcome a dark                      //
+//     diffuse, which is why the engine's own accum_emissive.ps uses 16.                                              //
+//                                                                                                                    //
+//     The accumulator is HDR and this runs well before the tonemap, so a strong glow blooms.                         //
+//                                                                                                                    //
+//     This pairs with whichever deffer_model_bump-hq.vs is installed, which the g-buffer pass uses                   //
+//     as well. Nothing here is declared by hand : taking p_bumped and reading nothing but fields the                 //
+//     stock shaders already carry is what lets this sit on top of Screen Space Shaders or on top of                  //
+//     plain Anomaly without knowing which is which. SSS adds motion vectors and a TAA jitter to that                 //
+//     vertex shader, and sharing it is what keeps the suit from ghosting under TAA.                                  //
+//                                                                                                                    //
+//     Driven by the "nanosuit_glow" shader bus lane, rgb = color, w = strength. All zero, which is                   //
+//     what an unregistered lane reads, emits nothing at all : that is armor mode. Crysis drives the                  //
+//     same effect with these colors (SparksColor in the .mtl files) :                                                //
+//       speed     0.655, 0.592, 0.012   (yellow)                                                                     //
+//       strength  0.353, 0.027, 0.027   (red)                                                                        //
+//                                                                                                                    //
+//====================================================================================================================//
+
+#include "common.h"
+
+Texture2D s_glow;                                // Glow map. Bound by models_nanosuit_glow.s to "<diffuse texture>_glow".
+
+uniform float4 bus_nanosuit_glow;                // Shader bus lane
+
+static const float GLOW_SPARKS_PHASE   = 20.00f; // Crysis SparksPhase. Lattice size, and the break-up strength
+static const float GLOW_SPARKS_JITTER  = 0.20f;  // The 0.2 hard coded in Cloth.cfx. PHASE * JITTER = swing in radians
+static const float GLOW_SPARKS_FREQ    = 10.00f; // Crysis SparksFrequency. Drift rate. Scales a clock, never animate
+static const float GLOW_SPARKS_POW     = 6.54f;  // Crysis SparksPow. Sharpens the fold down to the vein cores
+static const float GLOW_FRESNEL_BIAS   = 0.20f;  // Crysis FresnelBias. How lit the glow is head on
+static const float GLOW_FRESNEL_SCALE  = 1.00f;  // Crysis FresnelScale. How much brighter it gets edge on
+static const float GLOW_SPARKS_GAIN    = 2.50f;  // Not Crysis. Its SparksMultiplier assumes no albedo multiply
+static const float GLOW_TIME_SCALE     = 0.25f;  // Crysis samples the clock as PB_time 0.25
+
+// Where this pixel sits in model space.
+float3 glow_model_pos(float3 pos_e)
+{
+    float3 d = pos_e - float3(m_WV[0].w, m_WV[1].w, m_WV[2].w);
+
+    return float3(dot(d, float3(m_WV[0].x, m_WV[1].x, m_WV[2].x)),
+                  dot(d, float3(m_WV[0].y, m_WV[1].y, m_WV[2].y)),
+                  dot(d, float3(m_WV[0].z, m_WV[1].z, m_WV[2].z)));
+}
+
+// How lit this pixel is, 0 in the gaps and 1 in the core of a vein.
+float glow_sparks(float3 pos_m, float3 nrm_t, float time)
+{
+    float3 v = pos_m * GLOW_SPARKS_PHASE
+             - nrm_t * (GLOW_SPARKS_PHASE * GLOW_SPARKS_JITTER)
+             + (time * GLOW_TIME_SCALE) * GLOW_SPARKS_FREQ;
+
+    float3 s = sin(v);
+    float  f = 1.0f - abs((s.x + s.y + s.z) * 0.3333f);
+
+    return pow(f, GLOW_SPARKS_POW);
+}
+
+// Crysis ClothEffectsPS, from Cloth.cfx pass p1, on the deferred emissive pass.
+float4 main(p_bumped I) : SV_Target
+{
+    float strength = bus_nanosuit_glow.w;
+
+    // Uniform branch : costs nothing, and skips the whole pass if the effect is not active
+    [branch] if (strength <= 0.0f)
+        return float4(0.0f, 0.0f, 0.0f, 0.0f);
+
+    float3 mask = s_glow.Sample(smp_base, I.tcdh.xy).rgb;
+
+    float4 Nu  = s_bump.Sample (smp_base, I.tcdh.xy); // normal.gloss
+    float4 NuE = s_bumpX.Sample(smp_base, I.tcdh.xy); // normal_error.height
+    float3 nrm = Nu.wzy + (NuE.xyz - 1.0f);           // -0.5 .. 0.5
+
+    // Fresnel. Crysis reads a LUT whose row 0 alpha is exactly pow(1 - NdotE, 5).
+    float3 nrm_e = normalize(mul(float3x3(I.M1, I.M2, I.M3), nrm));
+    float3 eye_e = normalize(-I.position.xyz);
+    float  n_dot_e = saturate(dot(eye_e, nrm_e));
+    float  fresnel = GLOW_FRESNEL_BIAS + pow(1.0f - n_dot_e, 5.0f) * GLOW_FRESNEL_SCALE;
+
+    float sparks = glow_sparks(glow_model_pos(I.position.xyz), nrm * 2.0f, timers.x); // nrm in -1..1, like GetNormalMap
+
+    // Diffuse light only. Combine multiplies this by the albedo from the g-buffer.
+    float3 emitted = mask * bus_nanosuit_glow.rgb * strength * GLOW_SPARKS_GAIN * sparks * fresnel;
+
+    // Out
+    return float4(emitted.r, emitted.g, emitted.b, 0.0f);
+}
