@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 15/09/2026                                                                                             ---
+---    Date : 17/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of speed mode of the Nanosuit addon.                                          ---
@@ -36,7 +36,7 @@ function speed:__init(core, name) super(core, name)
     self.m_cache.run_coef = db.actor:get_actor_run_coef()
     self.m_cache.sprint_coef = db.actor:get_actor_sprint_koef()
 
-    -- Weave glow, Crysis SparksColor of the speed suit mode
+    -- Yellow weave glow
     self.m_glow = { r = 0.655, g = 0.592, b = 0.012, strength = 16 }
 
     -- Sound effects
