@@ -31,7 +31,7 @@ function power:__init(core, name) super(core, name)
     self.m_cache.jump_speed = db.actor:get_actor_jump_speed()
 
     -- Red weave glow
-    self.m_glow = { r = 0.353, g = 0.027, b = 0.027, strength = 16 }
+    self.m_glow_settings = { r = 0.353, g = 0.027, b = 0.027, strength = 16 }
 
     -- Sound effects
     self.m_sounds.power_jump = sound_object([[nanosuit\modes\power\mode_power_jump]])

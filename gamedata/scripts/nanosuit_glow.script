@@ -11,7 +11,7 @@
 ---    rgb is the color of the light the weave emits, w is its strength, and an all zero lane emits                  ---
 ---    nothing at all, which is what armor and cloak modes want.                                                     ---
 ---                                                                                                                  ---
----    Each mode declares its own m_glow in its constructor, abstract_mode:apply() pushes it and                     ---
+---    Each mode declares its own m_glow_settings in its constructor, abstract_mode:apply() pushes it and            ---
 ---    abstract_mode:remove() clears it, and this class fades between whatever the last two were.                    ---
 ---                                                                                                                  ---
 ---    Needs an exe carrying the shader bus and a DX10 or DX11 renderer. Without either, the class                   ---
@@ -64,12 +64,12 @@ function glow:__init(core)
 
     -- Constants
     self.m_fade_duration = 0.5
-    self.m_glow_off = { r = 0.0, g = 0.0, b = 0.0, strength = 0.0 }
+    self.m_glow_settings_off = { r = 0.0, g = 0.0, b = 0.0, strength = 0.0 }
     self.m_supported = get_bus_token() ~= nil and nanosuit_utils.is_modern_renderer()
 
     -- Variables
-    self.m_from = self.m_glow_off
-    self.m_target = self.m_glow_off
+    self.m_from = self.m_glow_settings_off
+    self.m_target = self.m_glow_settings_off
     self.m_progress = 1
     self.m_last_update = time_global()
 
@@ -78,7 +78,7 @@ function glow:__init(core)
         return
     end
 
-    self:write(self.m_glow_off)
+    self:write(self.m_glow_settings_off)
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_update", self)
@@ -91,7 +91,7 @@ function glow:destroy()
         return
     end
 
-    self:write(self.m_glow_off)
+    self:write(self.m_glow_settings_off)
 
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_update", self)
@@ -103,7 +103,7 @@ function glow:set_target(target)
     end
 
     self.m_from = self:current()
-    self.m_target = target or self.m_glow_off
+    self.m_target = target or self.m_glow_settings_off
     self.m_progress = 0
 end
 
