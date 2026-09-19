@@ -91,9 +91,7 @@ function reload:actor_on_hud_animation_play(anm_table, obj)
 
     local anm_speed = anm_table.anm_speed
     if anm_speed == 1 then
-        local hud_sec = ini_sys:r_string_ex(obj:section(), "hud")
-        local anm_params = hud_sec and ini_sys:r_string_ex(hud_sec, anm_name)
-        anm_speed = (anm_params and tonumber(str_explode(anm_params, ",")[3])) or 1
+        anm_speed = self:get_config_anim_speed(obj, anm_name)
     end
 
     anm_table.anm_speed = anm_speed * self.m_reload_speed_coef
@@ -124,12 +122,15 @@ function reload:play_sounds(wpn_sec, line)
         return false
     end
 
-    -- A line pointing at a section is a stack of layers to play together, anything else is the sound itself
-    local layers_sec = str_explode(value, ",")[1]
-    if ini_sys:section_exist(layers_sec) then
+    -- snd_<name> = <sound path>, <volume>, <delay>
+    local snd_params = str_explode(value, ",")
+    local path = snd_params[1]
+
+    -- A path naming a section is a stack of layers to play together, anything else is the sound itself
+    if ini_sys:section_exist(path) then
         local layer = 1
-        while ini_sys:line_exist(layers_sec, "snd_" .. layer .. "_layer") do
-            self:play_sound(layers_sec, "snd_" .. layer .. "_layer")
+        while ini_sys:line_exist(path, "snd_" .. layer .. "_layer") do
+            self:play_sound(path, "snd_" .. layer .. "_layer")
             layer = layer + 1
         end
     else
@@ -140,31 +141,45 @@ function reload:play_sounds(wpn_sec, line)
 end
 
 function reload:play_sound(sec, line)
-    -- The engine indexes the line to find the random variants of a sound, and plays one of them at random
+    local variants = self:get_sound_variants(sec, line)
+    if #variants == 0 then
+        return
+    end
+
+    local variant = variants[math.random(#variants)]
+
+    -- snd_<name> = <sound path>, <volume>, <delay>
+    local snd_params = str_explode(ini_sys:r_string_ex(sec, variant), ",")
+    local path = snd_params[1]
+    local volume = tonumber(snd_params[2]) or 1
+    local delay = tonumber(snd_params[3]) or 0
+
+    if path == "$no_sound" then
+        return
+    end
+
+    -- The delay shrinks with the sound, so it still lands where the animation expects it
+    delay = delay / self.m_reload_speed_coef
+
+    local snd = sound_object(path, snd_type.weapon_reload)
+    snd:play_at_pos(db.actor, VEC_ZERO, delay, sound_object.s2d)
+    snd.volume = volume * self.m_hud_sound_volume
+    snd.frequency = self.m_reload_speed_coef
+
+    self.m_sounds[#self.m_sounds + 1] = snd
+end
+
+function reload:get_sound_variants(sec, line)
+    -- The engine looks for the random variants of a sound by indexing its line, starting at 1
     local variants = {}
     local variant = line
+
     while ini_sys:line_exist(sec, variant) do
         variants[#variants + 1] = variant
         variant = line .. #variants
     end
 
-    if #variants == 0 then
-        return
-    end
-
-    local params = str_explode(ini_sys:r_string_ex(sec, variants[math.random(#variants)]), ",")
-    if params[1] == "$no_sound" then
-        return
-    end
-
-    local delay = (tonumber(params[3]) or 0) / self.m_reload_speed_coef
-    local snd = sound_object(params[1], snd_type.weapon_reload)
-
-    snd:play_at_pos(db.actor, VEC_ZERO, delay, sound_object.s2d)
-    snd.volume = (tonumber(params[2]) or 1) * self.m_hud_sound_volume
-    snd.frequency = self.m_reload_speed_coef
-
-    self.m_sounds[#self.m_sounds + 1] = snd
+    return variants
 end
 
 function reload:stop_sounds()
@@ -175,6 +190,20 @@ function reload:stop_sounds()
     end
 
     self.m_sounds = {}
+end
+
+function reload:get_config_anim_speed(obj, anm_name)
+    local hud_sec = ini_sys:r_string_ex(obj:section(), "hud")
+    local value = hud_sec and ini_sys:r_string_ex(hud_sec, anm_name)
+    if not value then
+        return 1
+    end
+
+    -- anm_<name> = <hand animation>, <item animation>, <speed>, <end>
+    local anm_params = str_explode(value, ",")
+    local speed = anm_params[3]
+
+    return tonumber(speed) or 1
 end
 
 function reload:is_reload_anim(anm_name)
