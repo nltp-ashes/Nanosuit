@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/09/2026                                                                                             ---
+---    Date : 19/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of speed mode of the Nanosuit addon.                                          ---
@@ -56,6 +56,7 @@ function speed:apply(play_voice)
 
     -- Boosters
     self:apply_booster(nanosuit_booster_ads.ads, "ads")
+    self:apply_booster(nanosuit_booster_reload.reload, "reload")
 
     -- Set run and sprint coefficients
     self.m_cache.run_coef = db.actor:get_actor_run_coef()
@@ -80,6 +81,7 @@ function speed:remove(is_destroying)
 
     -- Boosters
     self:remove_booster("ads")
+    self:remove_booster("reload")
 
     -- Reset run and sprint coefficients
     db.actor:set_actor_run_coef(self.m_cache.run_coef)
