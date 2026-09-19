@@ -38,8 +38,9 @@ Armor mode :
 Speed mode :
 - Increases walk speed, does not consume energy
 - Increases run speed, consumes energy
-- Decreases time to aim down sights, does not consume energy
-- When low on energy, the bonuses get disabled
+- When low on energy, the movement speed bonuses get disabled
+- Decreases time to aim down sights
+- Increases reload speed is increased
 - In this mode, the suit gets a yellow glow
 
 Strength mode :
