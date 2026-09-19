@@ -7,9 +7,9 @@
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a reload speed booster usable by a Nanosuit mode.                          ---
 ---                                                                                                                  ---
----    This booster does not derive from nanosuit_booster.abstract_booster : reload speed is not a property          ---
----    that can be set on an item, so there is no slot to cache and nothing to unset when the item leaves the        ---
----    actor. Two engine callbacks drive it instead, one for the animation and one for its sound.                    ---
+---    Reload speed is not a property that can be set on an item, so this booster is not an item booster :           ---
+---    there is no slot to cache and nothing to unset when the item leaves the actor. Two engine callbacks           ---
+---    drive it instead, one for the animation and one for its sound.                                                ---
 ---                                                                                                                  ---
 ---    The animation is the easy half. Beware though that the engine only falls back on the speed written in         ---
 ---    the configs when the callbacks leave anm_speed at 1 (see attachable_hud_item::anim_play), so writing          ---
@@ -37,12 +37,9 @@
 -- Reload booster class
 -- ---------------------------------------------------------------------------------------------------------------------
 
-class "reload"
+class "reload" (nanosuit_booster.abstract_booster)
 
-function reload:__init(core, name)
-    self.m_core = core
-    self.m_name = name
-
+function reload:__init(core, name) super(core, name)
     self.m_reload_speed_coef = 1.25
 
     self.m_anim_prefixes = { "anm_reload", "anm_add_cartridge", "anm_open", "anm_close" }
@@ -63,20 +60,16 @@ function reload:__init(core, name)
     self.m_sounds = {}
 end
 
-function reload:__eq(other)
-    return self.m_name == other.m_name
-end
-
-function reload:destroy()
-    self.m_core = nil
-end
-
 function reload:apply()
+    nanosuit_booster.abstract_booster.apply(self)
+
     RegisterScriptCallback("actor_on_hud_animation_play", self)
     RegisterScriptCallback("on_before_play_hud_sound", self)
 end
 
 function reload:remove()
+    nanosuit_booster.abstract_booster.remove(self)
+
     UnregisterScriptCallback("actor_on_hud_animation_play", self)
     UnregisterScriptCallback("on_before_play_hud_sound", self)
 

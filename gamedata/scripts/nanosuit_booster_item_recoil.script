@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 31/08/2025                                                                                             ---
+---    Date : 19/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a recoil lowering booster usable by a Nanosuit mode.                       ---
@@ -17,10 +17,10 @@
 actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Speed mode class
+-- Item booster class
 -- ---------------------------------------------------------------------------------------------------------------------
 
-class "recoil" (nanosuit_booster.abstract_booster)
+class "recoil" (nanosuit_booster_item.abstract_item_booster)
 
 function recoil:__init(core, name) super(core, name)
     self.m_recoil_factor = 0.1
@@ -33,7 +33,7 @@ function recoil:__init(core, name) super(core, name)
 end
 
 function recoil:apply()
-    nanosuit_booster.abstract_booster.apply(self)
+    nanosuit_booster_item.abstract_item_booster.apply(self)
 
     RegisterScriptCallback("actor_on_update", self)
 end
@@ -41,11 +41,11 @@ end
 function recoil:remove()
     UnregisterScriptCallback("actor_on_update", self)
 
-    nanosuit_booster.abstract_booster.remove(self)
+    nanosuit_booster_item.abstract_item_booster.remove(self)
 end
 
 function recoil:filter(obj, slot)
-    if not nanosuit_booster.abstract_booster.filter(self, obj, slot) then
+    if not nanosuit_booster_item.abstract_item_booster.filter(self, obj, slot) then
         return false
     end
     return IsWeapon(obj) and obj:cast_Weapon()
@@ -53,7 +53,7 @@ end
 
 function recoil:set(obj, slot)
     if not self.m_low_energy then
-        nanosuit_booster.abstract_booster.set(self, obj, slot)
+        nanosuit_booster_item.abstract_item_booster.set(self, obj, slot)
 
         local wpn_obj = obj:cast_Weapon()
 
@@ -75,7 +75,7 @@ function recoil:unset(obj, slot)
         self.m_cache[slot].dispersion = nil
         self.m_cache[slot].dispersion_zoom = nil
 
-        nanosuit_booster.abstract_booster.unset(self, obj, slot)
+        nanosuit_booster_item.abstract_item_booster.unset(self, obj, slot)
     end
 end
 

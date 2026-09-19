@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 31/08/2025                                                                                             ---
+---    Date : 19/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a melee damage booster usable by a Nanosuit mode.                          ---
@@ -17,10 +17,10 @@
 actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Speed mode class
+-- Item booster class
 -- ---------------------------------------------------------------------------------------------------------------------
 
-class "melee" (nanosuit_booster.abstract_booster)
+class "melee" (nanosuit_booster_item.abstract_item_booster)
 
 function melee:__init(core, name) super(core, name)
     self.m_power_factor = 2
@@ -31,14 +31,14 @@ function melee:__init(core, name) super(core, name)
 end
 
 function melee:filter(obj, slot)
-    if not nanosuit_booster.abstract_booster.filter(self, obj, slot) then
+    if not nanosuit_booster_item.abstract_item_booster.filter(self, obj, slot) then
         return false
     end
     return IsMelee(obj) and obj:cast_Knife()
 end
 
 function melee:set(obj, slot)
-    nanosuit_booster.abstract_booster.set(self, obj, slot)
+    nanosuit_booster_item.abstract_item_booster.set(self, obj, slot)
 
     local wpn_obj = obj:cast_Knife()
     wpn_obj:SetHit1Power(wpn_obj:GetHit1Power() * self.m_power_factor)
@@ -58,5 +58,5 @@ function melee:unset(obj, slot)
     wpn_obj:SetHit1Impulse(wpn_obj:GetHit1Impulse() / self.m_impulse_factor)
     wpn_obj:SetHit2Impulse(wpn_obj:GetHit2Impulse() / self.m_impulse_factor)
 
-    nanosuit_booster.abstract_booster.unset(self, obj, slot)
+    nanosuit_booster_item.abstract_item_booster.unset(self, obj, slot)
 end

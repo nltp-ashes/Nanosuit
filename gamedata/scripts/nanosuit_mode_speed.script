@@ -55,7 +55,7 @@ function speed:apply(play_voice)
     RegisterScriptCallback("actor_on_update", self)
 
     -- Boosters
-    self:apply_booster(nanosuit_booster_ads.ads, "ads")
+    self:apply_booster(nanosuit_booster_item_ads.ads, "ads")
     self:apply_booster(nanosuit_booster_reload.reload, "reload")
 
     -- Set run and sprint coefficients

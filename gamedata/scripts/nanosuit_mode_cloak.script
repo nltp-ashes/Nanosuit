@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 03/09/2026                                                                                             ---
+---    Date : 19/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
@@ -74,7 +74,7 @@ function cloak:apply(play_voice)
     RegisterScriptCallback("actor_on_weapon_fired", self)
 
     -- Boosters
-    self:apply_booster(nanosuit_booster_cloak.cloak, "cloak")
+    self:apply_booster(nanosuit_booster_item_cloak.cloak, "cloak")
 
     -- Override visibility from NPCs
     self.m_cache.visibility_functor = visual_memory_manager.get_visible_value

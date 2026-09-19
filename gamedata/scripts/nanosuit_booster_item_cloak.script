@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 26/07/2025                                                                                             ---
+---    Date : 19/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a cloaking booster usable by a Nanosuit mode.                              ---
@@ -18,10 +18,10 @@ actor_slots_enum        = nanosuit_utils.actor_slots_enum
 renderers_enum          = nanosuit_utils.renderers_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Speed mode class
+-- Item booster class
 -- ---------------------------------------------------------------------------------------------------------------------
 
-class "cloak" (nanosuit_booster.abstract_booster)
+class "cloak" (nanosuit_booster_item.abstract_item_booster)
 
 function cloak:__init(core, name) super(core, name)
     if nanosuit_utils.is_modern_renderer() then
@@ -50,7 +50,7 @@ function cloak:__init(core, name) super(core, name)
 end
 
 function cloak:set(obj, slot)
-    nanosuit_booster.abstract_booster.set(self, obj, slot)
+    nanosuit_booster_item.abstract_item_booster.set(self, obj, slot)
 
     self.m_cache[slot].shaders = { hud = obj:get_shaders(true), world = obj:get_shaders() }
 
@@ -72,5 +72,5 @@ function cloak:unset(obj, slot)
 
     self.m_cache[slot].shaders = { hud = nil, world = nil }
 
-    nanosuit_booster.abstract_booster.unset(self, obj, slot)
+    nanosuit_booster_item.abstract_item_booster.unset(self, obj, slot)
 end

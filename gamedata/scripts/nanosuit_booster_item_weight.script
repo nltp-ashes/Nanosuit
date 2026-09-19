@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/07/2025                                                                                             ---
+---    Date : 19/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a carry weight booster usable by a Nanosuit mode.                          ---
@@ -17,10 +17,10 @@
 actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Speed mode class
+-- Item booster class
 -- ---------------------------------------------------------------------------------------------------------------------
 
-class "weight" (nanosuit_booster.abstract_booster)
+class "weight" (nanosuit_booster_item.abstract_item_booster)
 
 function weight:__init(core, name) super(core, name)
     self.m_carry_weight_bonus = 25
@@ -30,14 +30,14 @@ function weight:__init(core, name) super(core, name)
 end
 
 function weight:filter(obj, slot)
-    if not nanosuit_booster.abstract_booster.filter(self, obj, slot) then
+    if not nanosuit_booster_item.abstract_item_booster.filter(self, obj, slot) then
         return false
     end
     return IsOutfit(obj)
 end
 
 function weight:set(obj, slot)
-    nanosuit_booster.abstract_booster.set(self, obj, slot)
+    nanosuit_booster_item.abstract_item_booster.set(self, obj, slot)
 
     local max_weight = obj:get_additional_max_weight()
     local max_walk_weight = obj:get_additional_max_walk_weight()
@@ -51,5 +51,5 @@ function weight:unset(obj, slot)
     obj:set_additional_max_weight(max_weight - self.m_carry_weight_bonus)
     obj:set_additional_max_walk_weight(max_walk_weight - self.m_carry_weight_bonus)
 
-    nanosuit_booster.abstract_booster.unset(self, obj, slot)
+    nanosuit_booster_item.abstract_item_booster.unset(self, obj, slot)
 end
