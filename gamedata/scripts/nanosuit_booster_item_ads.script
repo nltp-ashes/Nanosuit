@@ -17,7 +17,7 @@
 actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Item booster class
+-- ADS booster class
 -- ---------------------------------------------------------------------------------------------------------------------
 
 class "ads" (nanosuit_booster_item.abstract_item_booster)

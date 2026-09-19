@@ -18,7 +18,7 @@ actor_slots_enum        = nanosuit_utils.actor_slots_enum
 renderers_enum          = nanosuit_utils.renderers_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Item booster class
+-- Cloak booster class
 -- ---------------------------------------------------------------------------------------------------------------------
 
 class "cloak" (nanosuit_booster_item.abstract_item_booster)
