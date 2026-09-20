@@ -1,4 +1,4 @@
-## **v0.14.0 - 13/09/2026 - Beta Build**
+## **v0.14.0 - 20/09/2026 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.14.0/total?label=Downloads)]()
 
@@ -8,3 +8,4 @@
 **• Changes :**
 
 **• Bug fixes :**
+> - Fix indicators not using each suit's UI theme and instead always been green like the default Nanosuit 1.0 HUD colors;

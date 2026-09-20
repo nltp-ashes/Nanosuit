@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : Tronex                                                                                   ---
 ---    Edited : Rewrote to improve linking between config table & slots (NLTP_ASHES - 29/05/2025)                    ---
----    Date : 20/08/2025                                                                                             ---
+---    Date : 20/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit indicators UI.                                                             ---
@@ -15,6 +15,7 @@
 
 -- Imports
 actor_status_types_enum = nanosuit_utils.actor_status_types_enum
+color_anm_flags_enum    = nanosuit_utils.color_anm_flags_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- General functions
@@ -46,29 +47,32 @@ function ui_indicators:__init(parent) super()
     self.m_parent = parent
     self.m_spacing = 10
     self.m_slots = {}
+    self.m_color_anm = {
+        name = "ui_slow_blinking_alpha",
+        flags = color_anm_flags_enum.cyclic + color_anm_flags_enum.only_alpha + color_anm_flags_enum.texture_color
+    }
     self.m_state_to_color = {
-        [1] = GetARGB(255, 255, 255, 255), -- white
-        [2] = GetARGB(255, 200, 200, 200), -- grey
-        [3] = GetARGB(255, 255, 255, 50), -- yellow
-        [4] = GetARGB(255, 255, 125, 50), -- orange
-        [5] = GetARGB(255, 255, 50, 50), -- red
+        [1] = self.m_parent.m_colors.background, -- theme defined
+        [2] = GetARGB(255, 255, 255, 50), -- yellow
+        [3] = GetARGB(255, 255, 125, 50), -- orange
+        [4] = GetARGB(255, 255, 50, 50), -- red
     }
     self.m_config_override = {
         -- Indicators
-        ["Radiation"] = { icon = "ui_nanosuit_ind_booster_rad", background = "ui_nanosuit_ind_indicator_slot" },
-        ["Hunger"] = { icon = "ui_nanosuit_ind_indicator_hunger", background = "ui_nanosuit_ind_indicator_slot" },
-        ["Overweight"] = { icon = "ui_nanosuit_ind_indicator_overweight", background = "ui_nanosuit_ind_indicator_slot" },
-        ["NanosuitPsyHealth"] = { icon = "ui_nanosuit_ind_booster_psi", background = "ui_nanosuit_ind_indicator_slot" },
+        ["Radiation"] = { icon = "ui_nanosuit_ind_booster_rad" },
+        ["Hunger"] = { icon = "ui_nanosuit_ind_indicator_hunger" },
+        ["Overweight"] = { icon = "ui_nanosuit_ind_indicator_overweight" },
+        ["NanosuitPsyHealth"] = { icon = "ui_nanosuit_ind_booster_psi" },
 
         -- Boosters
-        ["HpRestore"] = { icon = "ui_nanosuit_ind_booster_health", background = "ui_nanosuit_ind_booster_slot" },
-        ["BleedingRestore"] = { icon = "ui_nanosuit_ind_booster_bleed", background = "ui_nanosuit_ind_booster_slot" },
-        ["RadiationRestore"] = { icon = "ui_nanosuit_ind_booster_rad", background = "ui_nanosuit_ind_booster_slot" },
-        ["MaxWeight"] = { icon = "ui_nanosuit_ind_booster_carry_weight", background = "ui_nanosuit_ind_booster_slot" },
-        ["PowerRestore"] = { icon = "ui_nanosuit_ind_booster_power", background = "ui_nanosuit_ind_booster_slot" },
-        ["RadiationProtection"] = { icon = "ui_nanosuit_ind_booster_ext_rad", background = "ui_nanosuit_ind_booster_slot" },
-        ["TelepaticProtection"] = { icon = "ui_nanosuit_ind_booster_psi", background = "ui_nanosuit_ind_booster_slot" },
-        ["ChemicalBurnProtection"] = { icon = "ui_nanosuit_ind_booster_chem", background = "ui_nanosuit_ind_booster_slot" }
+        ["HpRestore"] = { icon = "ui_nanosuit_ind_booster_health" },
+        ["BleedingRestore"] = { icon = "ui_nanosuit_ind_booster_bleed" },
+        ["RadiationRestore"] = { icon = "ui_nanosuit_ind_booster_rad" },
+        ["MaxWeight"] = { icon = "ui_nanosuit_ind_booster_carry_weight" },
+        ["PowerRestore"] = { icon = "ui_nanosuit_ind_booster_power" },
+        ["RadiationProtection"] = { icon = "ui_nanosuit_ind_booster_ext_rad" },
+        ["TelepaticProtection"] = { icon = "ui_nanosuit_ind_booster_psi" },
+        ["ChemicalBurnProtection"] = { icon = "ui_nanosuit_ind_booster_chem" }
     }
 
     self:add_indicator("NanosuitPsyHealth", actor_status_types_enum.indicator, { "nanosuit_ui_indicators", "get_psy_health", true }, "ui_inGame2_booster_psi", false, false)
@@ -90,38 +94,38 @@ function ui_indicators:destroy()
 end
 
 function ui_indicators:Update(force)
-    CUIScriptWnd.Update(self)
-
     -- Clear all
     self:hide_all()
 
-    if self.m_parent.m_core.m_malfunctor.m_enabled then
-        self.m_ui_dialog:Show(false)
-        return
+    local index = 0
+    if not self.m_parent.m_core.m_malfunctor.m_enabled then
+        self:iterate_indicators(function(name, config, i)
+            local value = config.functor and execute_func(unpack(config.functor))
+
+            local pass = false
+            if config.typ == actor_status_types_enum.indicator then
+                pass = value and value <= 4 and value >= 1
+            elseif config.typ == actor_status_types_enum.booster then
+                pass = value and true or false
+            end
+
+            if not pass then
+                return
+            end
+
+            index = index + 1
+
+            self:update_static(name, config, index, value, "background", "anim_bk")
+            self:update_static(name, config, index, value, "outline", "anim_bk")
+            self:update_static(name, config, index, value, "icon", "anim_icon")
+        end)
     end
 
-    local index = 0
-    self:iterate_indicators(function(name, config, i)
-        local value = config.functor and execute_func(unpack(config.functor))
-
-        local pass = false
-        if config.typ == "state" then
-            pass = value and value <= 4 and value >= 1
-        elseif config.typ == "booster" then
-            pass = value and true or false
-        end
-
-        if not pass then
-            return
-        end
-
-        index = index + 1
-
-        self:update_static(config, index, value, name, "background", "anim_bk")
-        self:update_static(config, index, value, name, "icon", "anim_icon")
-    end)
-
     self.m_ui_dialog:Show(index > 0)
+
+    -- The base update ticks the engine color animations, which substitute their own alpha into the
+    -- texture color written just above. It has to run after those writes, or the blink is lost.
+    CUIScriptWnd.Update(self)
 end
 
 function ui_indicators:create_static(name, i)
@@ -133,27 +137,75 @@ function ui_indicators:create_static(name, i)
     self.m_slots[i].background:SetWndPos(vector2():set(background_x, 0))
     utils_xml.correct_ratio(self.m_slots[i].background)
 
+    self.m_slots[i].outline = self.m_xml:InitStatic("indicators:static", self.m_ui_dialog)
+    local outline_x = (i - 1) * (self.m_slots[i].outline:GetWidth() + self.m_spacing)
+    self.m_slots[i].outline:SetWndPos(vector2():set(outline_x, 0))
+    utils_xml.correct_ratio(self.m_slots[i].outline)
+
     self.m_slots[i].icon = self.m_xml:InitStatic("indicators:static", self.m_ui_dialog)
     local icon_x = (i - 1) * (self.m_slots[i].icon:GetWidth() + self.m_spacing)
     self.m_slots[i].icon:SetWndPos(vector2():set(icon_x, 0))
     utils_xml.correct_ratio(self.m_slots[i].icon)
 end
 
-function ui_indicators:update_static(config, i, value, name, key, anim_flag)
-    if config[key] then
-        if config.typ == "booster" then
-            if (config.anim_period and (value < config.anim_period)) or config[anim_flag] then
-                self.m_slots[i][key]:SetColorAnimation("ui_slow_blinking_alpha", 13, 0)
-            else
-                self.m_slots[i][key]:RemoveColorAnimation()
-            end
-        else
-            self.m_slots[i][key]:SetTextureColor(self.m_state_to_color[value + 1])
-        end
-
-        self.m_slots[i][key]:InitTexture(self:get_config_override(name, key) or config[key])
-        self.m_slots[i][key]:Show(true)
+function ui_indicators:update_static(name, config, i, value, key, anim_flag)
+    local texture = self:get_texture(name, config, key)
+    if not texture then
+        return
     end
+
+    if self:is_blinking(config, value, key, anim_flag) then
+        self.m_slots[i][key]:SetColorAnimation(self.m_color_anm.name, self.m_color_anm.flags, 0)
+    else
+        self.m_slots[i][key]:RemoveColorAnimation()
+    end
+
+    self.m_slots[i][key]:SetTextureColor(self:get_color(config, value, key))
+    self.m_slots[i][key]:InitTexture(texture)
+    self.m_slots[i][key]:Show(true)
+end
+
+function ui_indicators:get_texture(name, config, key)
+    local override = self:get_config_override(name, key)
+    if override then
+        return override
+    end
+
+    local is_indicator = config.typ == actor_status_types_enum.indicator
+
+    if key == "background" then
+        return is_indicator and "ui_nanosuit_ind_indicator_background" or "ui_nanosuit_ind_booster_background"
+    end
+
+    if key == "outline" then
+        return is_indicator and "ui_nanosuit_ind_indicator_outline" or "ui_nanosuit_ind_booster_outline"
+    end
+
+    return config.icon
+end
+
+function ui_indicators:is_blinking(config, value, key, anim_flag)
+    if config[anim_flag] then
+        return true
+    end
+
+    if config.typ ~= actor_status_types_enum.booster or key ~= "icon" then
+        return false
+    end
+
+    return config.anim_period ~= nil and value < config.anim_period
+end
+
+function ui_indicators:get_color(config, value, key)
+    if key == "background" then
+        return GetARGB(200, 255, 255, 255)
+    end
+
+    if config.typ == actor_status_types_enum.booster then
+        return self.m_parent.m_colors.background
+    end
+
+    return self.m_state_to_color[value]
 end
 
 function ui_indicators:get_config_override(name, key)
@@ -163,6 +215,7 @@ end
 function ui_indicators:hide_all()
     self:iterate_indicators(function(_, _, i)
         self.m_slots[i].background:Show(false)
+        self.m_slots[i].outline:Show(false)
         self.m_slots[i].icon:Show(false)
     end)
 end
@@ -175,8 +228,8 @@ function ui_indicators:add_indicator(name, type, functor, icon, anim_icon, anim_
         functor = functor,
         icon = icon,
         background = type == actor_status_types_enum.indicator and "ui_inGame2_indicator_slot" or "ui_inGame2_booster_slot",
-        anim_icon = false,
-        anim_bk = false
+        anim_icon = anim_icon,
+        anim_bk = anim_bk
     }
 end
 
