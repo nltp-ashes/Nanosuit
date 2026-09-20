@@ -2,34 +2,15 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 19/09/2026                                                                                             ---
+---    Date : 20/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a reload speed booster usable by a Nanosuit mode.                          ---
 ---                                                                                                                  ---
----    Reload speed is not a property that can be set on an item, so this booster is not an item booster :           ---
----    there is no slot to cache and nothing to unset when the item leaves the actor. Two engine callbacks           ---
----    drive it instead, one for the animation and one for its sound.                                                ---
----                                                                                                                  ---
----    The animation is the easy half. Beware though that the engine only falls back on the speed written in         ---
----    the configs when the callbacks leave anm_speed at 1 (see attachable_hud_item::anim_play), so writing          ---
----    the boosted speed straight into anm_speed would quietly discard the speed of every weapon that                ---
----    declares one. That speed is resolved by hand before being scaled.                                             ---
----                                                                                                                  ---
----    The sound is the hard half. on_before_play_hud_sound can silence a HUD sound or swap it for another           ---
----    one, but it cannot pitch one, and the engine keeps no scriptable handle on what it plays. The                 ---
----    original is therefore muted and replayed as a script sound, whose frequency carries both the pitch and        ---
----    the playback rate. That means resolving the sound the way HUD_SOUND_COLLECTION_LAYERED::LoadSound             ---
----    would : layers, random variants, volume and delay.                                                            ---
----                                                                                                                  ---
----    Only the reload sounds the engine loads as exclusive are handled. The shell by shell sounds of a              ---
----    shotgun are loaded as non exclusive, which makes the engine play them through play_no_feedback, and a         ---
----    sound without feedback has no frequency to set. They are left to the engine, untouched.                       ---
----                                                                                                                  ---
----    The replayed sound is given the weapon_reload type so that NPCs and mutants keep hearing the actor            ---
----    reload, a sound typed SOUND_TYPE_NO_SOUND never reaching CSoundRender_Emitter::Event_Propagade. This          ---
----    needs the sound_object wrapper of the modded exes (aaa_sound_object_patch.script) to forward that             ---
----    second constructor argument, which as of the 12.09.26 build it does not.                                      ---
+---    Beware that the engine only falls back on the animation speed written in the configs when the callbacks       ---
+---    leave anm_speed at 1 (see attachable_hud_item::anim_play), so writing the boosted speed straight into         ---
+---    anm_speed would quietly discard the speed of every weapon that declares one. That speed is resolved by        ---
+---    hand before being scaled.                                                                                     ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -41,23 +22,26 @@ class "reload" (nanosuit_booster.abstract_booster)
 
 function reload:__init(core, name) super(core, name)
     self.m_reload_speed_coef = 1.25
-
-    self.m_anim_prefixes = { "anm_reload", "anm_add_cartridge", "anm_open", "anm_close" }
-
-    -- Exclusive reload sound aliases, mapped to the config line the engine reads them from
-    self.m_sound_lines = {
-        sndReload             = "snd_reload",
-        sndReload1            = "snd_reload_1",
-        sndReloadActor        = "snd_reload_actor",
-        sndReloadEmpty        = "snd_reload_empty",
-        sndReloadEmptyActor   = "snd_reload_empty_actor",
-        sndReloadG            = "snd_reload_grenade",
-        sndReloadMisfire      = "snd_reload_misfire",
-        sndReloadMisfireActor = "snd_reload_misfire_actor",
+    self.m_anim_prefixes = {
+        "anm_reload",
+        "anm_add_cartridge",
+        "anm_open",
+        "anm_close"
     }
-
-    self.m_hud_sound_volume = ini_sys:r_float_ex("hud_sound", "hud_sound_vol_k") or 1
-    self.m_sounds = {}
+    self.m_sound_aliases = {
+        sndReload             = true,
+        sndReload1            = true,
+        sndReloadActor        = true,
+        sndReloadEmpty        = true,
+        sndReloadEmptyActor   = true,
+        sndReloadG            = true,
+        sndReloadMisfire      = true,
+        sndReloadMisfireActor = true,
+        sndAddCartridge       = true,
+        sndOpen               = true,
+        sndClose              = true,
+        sndCloseEmpty         = true,
+    }
 end
 
 function reload:apply()
@@ -72,19 +56,10 @@ function reload:remove()
 
     UnregisterScriptCallback("actor_on_hud_animation_play", self)
     UnregisterScriptCallback("on_before_play_hud_sound", self)
-
-    self:stop_sounds()
 end
 
 function reload:actor_on_hud_animation_play(anm_table, obj)
     local anm_name = anm_table.anm_name
-
-    -- The engine drops the sounds of a HUD item when it leaves the HUD, the replayed ones have to follow
-    if anm_name == "$cancel" or self:has_prefix(anm_name, "anm_hide") then
-        self:stop_sounds()
-        return
-    end
-
     if not self:is_reload_anim(anm_name) then
         return
     end
@@ -98,98 +73,12 @@ function reload:actor_on_hud_animation_play(anm_table, obj)
 end
 
 function reload:on_before_play_hud_sound(alias, parent, result)
-    local line = self.m_sound_lines[alias]
-    if not line or not parent or parent:id() ~= AC_ID then
+    if not self.m_sound_aliases[alias] or not parent or parent:id() ~= AC_ID then
         return
     end
 
-    local wpn = db.actor:active_item()
-    if not wpn then
-        return
-    end
-
-    -- Only mute the original once the replacement is known to have started, so an unreadable config plays vanilla
-    if self:play_sounds(wpn:section(), line) then
-        result.volume_mult = 0
-    end
-end
-
-function reload:play_sounds(wpn_sec, line)
-    self:stop_sounds()
-
-    local value = ini_sys:r_string_ex(wpn_sec, line)
-    if not value then
-        return false
-    end
-
-    -- snd_<name> = <sound path>, <volume>, <delay>
-    local snd_params = str_explode(value, ",")
-    local path = snd_params[1]
-
-    -- A path naming a section is a stack of layers to play together, anything else is the sound itself
-    if ini_sys:section_exist(path) then
-        local layer = 1
-        while ini_sys:line_exist(path, "snd_" .. layer .. "_layer") do
-            self:play_sound(path, "snd_" .. layer .. "_layer")
-            layer = layer + 1
-        end
-    else
-        self:play_sound(wpn_sec, line)
-    end
-
-    return #self.m_sounds > 0
-end
-
-function reload:play_sound(sec, line)
-    local variants = self:get_sound_variants(sec, line)
-    if #variants == 0 then
-        return
-    end
-
-    local variant = variants[math.random(#variants)]
-
-    -- snd_<name> = <sound path>, <volume>, <delay>
-    local snd_params = str_explode(ini_sys:r_string_ex(sec, variant), ",")
-    local path = snd_params[1]
-    local volume = tonumber(snd_params[2]) or 1
-    local delay = tonumber(snd_params[3]) or 0
-
-    if path == "$no_sound" then
-        return
-    end
-
-    -- The delay shrinks with the sound, so it still lands where the animation expects it
-    delay = delay / self.m_reload_speed_coef
-
-    local snd = sound_object(path, snd_type.weapon_reload)
-    snd:play_at_pos(db.actor, VEC_ZERO, delay, sound_object.s2d)
-    snd.volume = volume * self.m_hud_sound_volume
-    snd.frequency = self.m_reload_speed_coef
-
-    self.m_sounds[#self.m_sounds + 1] = snd
-end
-
-function reload:get_sound_variants(sec, line)
-    -- The engine looks for the random variants of a sound by indexing its line, starting at 1
-    local variants = {}
-    local variant = line
-
-    while ini_sys:line_exist(sec, variant) do
-        variants[#variants + 1] = variant
-        variant = line .. #variants
-    end
-
-    return variants
-end
-
-function reload:stop_sounds()
-    for _, snd in pairs(self.m_sounds) do
-        if snd:playing() then
-            snd:stop()
-        end
-    end
-
-    self.m_sounds = {}
+    result.frequency_mult = result.frequency_mult * self.m_reload_speed_coef
+    result.delay_mult = result.delay_mult / self.m_reload_speed_coef
 end
 
 function reload:get_config_anim_speed(obj, anm_name)
