@@ -241,12 +241,6 @@ function get_config(category, key, default)
     return defaults[key] or default
 end
 
---- Function used to get the identifier of the HUD/UI theme worn by the currently equipped outfit.
---- @return string
-function get_current_theme()
-    return get_outfit_config("theme", themes_enum.nanosuit_1)
-end
-
 --- Function used to get one color of a theme, in the float representation the UI classes expect.
 --- @param theme string
 --- @param key string
@@ -260,7 +254,7 @@ end
 --- gets a sub-table holding the ones only it draws.
 --- @return table
 function get_colors()
-    local theme = get_current_theme()
+    local theme = get_outfit_config("theme", themes_enum.nanosuit_1)
 
     return {
         shared = {
