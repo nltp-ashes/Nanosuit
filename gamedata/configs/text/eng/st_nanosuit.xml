@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 07/09/2026                                                                                            -->
+<!--    Date : 21/09/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -124,6 +124,10 @@
         <text>Configuration</text>
     </string>
 
+    <string id="ui_mcm_menu_nanosuit_hud_ui">
+        <text>HUD/UI</text>
+    </string>
+
     <string id="ui_mcm_menu_nanosuit_technical">
         <text>Technical</text>
     </string>
@@ -231,10 +235,6 @@
         <text>General settings</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_configuration_hud">
-        <text>HUD</text>
-    </string>
-
     <string id="ui_mcm_nanosuit_nanosuit_configuration_armor">
         <text>Armor mode</text>
     </string>
@@ -271,24 +271,12 @@
         <text>Nanovision</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_configuration_hud_colors_text">
-        <text>Text color</text>
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_theme">
+        <text>HUD/UI theme</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_configuration_hud_colors_background">
-        <text>Background color</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_configuration_hud_colors_energy">
-        <text>Energy bar color</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_configuration_hud_colors_health">
-        <text>Health bar color</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_configuration_hud_colors_stamina">
-        <text>Stamina bar color</text>
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_theme_desc">
+        <text>Select the set of colors the suit paints its HUD and its UIs with. Themes are customized under 'Nanosuit > HUD/UI'.</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_burn">
@@ -305,10 +293,6 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_radiation">
         <text>Radiation protection</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_configuration_telepathic">
-        <text>Telepathic protection</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_wound">
@@ -333,6 +317,179 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_light_burn">
         <text>Light burn protection</text>
+    </string>
+
+    <!-- HUD/UI themes -->
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_general">
+        <text>General</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_text">
+        <text>Text color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_text_desc">
+        <text>Color of the text drawn by every Nanosuit UI.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background">
+        <text>Background color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background_desc">
+        <text>Color of the frames, outlines and mode icons every Nanosuit UI is drawn with.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_accent">
+        <text>Accent color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_accent_desc">
+        <text>Color used to highlight what is selected or ready to be used, in the suit menu and in the defibrillator prompt.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_alert">
+        <text>Alert color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_alert_desc">
+        <text>Color every Nanosuit UI turns to when the suit malfunctions, and that the status bars turn to when they run low.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_plate">
+        <text>Panel tint color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_plate_desc">
+        <text>Tint applied to the opaque panels behind the indicators, the ammo and companion wheels, and the companion list.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status">
+        <text>Status UI</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status_energy">
+        <text>Energy bar color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status_energy_bg">
+        <text>Energy bar background color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status_energy_off_bg">
+        <text>Energy bar background color (offline)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status_health">
+        <text>Health bar color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status_health_bg">
+        <text>Health bar background color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status_health_off_bg">
+        <text>Health bar background color (offline)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status_stamina">
+        <text>Stamina bar color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status_stamina_bg">
+        <text>Stamina bar background color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status_stamina_off_bg">
+        <text>Stamina bar background color (offline)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap">
+        <text>Tactical map UI</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_map">
+        <text>Map texture color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_visibility_bg">
+        <text>Visibility bar background color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_visibility_very_low">
+        <text>Visibility bar color (very low)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_visibility_low">
+        <text>Visibility bar color (low)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_visibility_high">
+        <text>Visibility bar color (high)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_visibility_very_high">
+        <text>Visibility bar color (very high)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_default">
+        <text>Object icon color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_looted">
+        <text>Looted body icon color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_friend">
+        <text>Friendly stalker icon color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_neutral">
+        <text>Neutral stalker icon color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_enemy">
+        <text>Hostile stalker icon color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_primary_task">
+        <text>Primary task icon color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_secondary_task">
+        <text>Secondary task icon color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_auxiliaries">
+        <text>Auxiliaries UI</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_auxiliaries_nv_energy">
+        <text>Night-vision energy bar color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_auxiliaries_nv_energy_bg">
+        <text>Night-vision energy bar background color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_auxiliaries_nv_energy_off_bg">
+        <text>Night-vision energy bar background color (offline)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_indicators">
+        <text>Indicators UI</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_indicators_warning_low">
+        <text>Warning color (low)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_indicators_warning_medium">
+        <text>Warning color (medium)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_indicators_warning_high">
+        <text>Warning color (high)</text>
     </string>
 
     <!-- Debug mode -->

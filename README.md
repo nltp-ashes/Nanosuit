@@ -68,6 +68,7 @@ HUD :
 - A gauge next to the minimap shows the player's visibility from enemy NPCs and mutants
 - The status hub shows the suit's current mode, energy level, health, stamina, ammo count, ammo reserve and fire mode
 - HUD elements from vanilla Anomaly are also customized : ammo wheel, companion wheel and list (can be turned on/off in MCM)
+- Every color of the HUD comes from a theme, picked per suit in MCM and fully customizable under 'Nanosuit > HUD/UI'
 
 Defibrillator :
 - If the player dies, under certain conditions, an animated sequence will play, giving the option to get a second chance

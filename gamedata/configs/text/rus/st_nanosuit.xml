@@ -4,7 +4,7 @@
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
 <!--    Edited : Russian translation (VodoXleb - 21/08/2026)                                                         -->
-<!--    Date : 07/09/2026                                                                                            -->
+<!--    Date : 21/09/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -125,6 +125,10 @@
         <text>Настройки</text>
     </string>
 
+    <string id="ui_mcm_menu_nanosuit_hud_ui">
+        <text>Интерфейс</text>
+    </string>
+
     <string id="ui_mcm_menu_nanosuit_technical">
         <text>Технические</text>
     </string>
@@ -138,15 +142,6 @@
         <text>Протокол заключается в том, чтобы не оставлять свидетелей вашего присутствия. Если включено, игрок будет выпарен, когда он позволит противнику сбежать после боя.</text>
     </string>
 
-    <!-- Enable nanovision -->
-    <string id="ui_mcm_nanosuit_nanosuit_general_use_nanovision">
-        <text>Разрешить нано зрение</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_general_use_nanovision_desc">
-        <text>В лоре Crysis нанокостюм 1.0 не имеет нано зрения. Бэкэнд для него существует в сталкере, так что вы всё равно можете его включить, если хотите.</text>
-    </string>
-
     <!-- Suit voice -->
     <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender">
         <text>Голос костюма</text>
@@ -156,11 +151,11 @@
         <text>Выберите тип голоса, который вы хотите использовать для костюма.</text>
     </string>
 
-    <string id="nanosuit_nanosuit_general_suit_gender_lst_male">
+    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender_lst_male">
         <text>Мужской</text>
     </string>
 
-    <string id="nanosuit_nanosuit_general_suit_gender_lst_female">
+    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender_lst_female">
         <text>Женский</text>
     </string>
 
@@ -241,10 +236,6 @@
         <text>Общие настройки</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_configuration_hud">
-        <text>Интерфейс</text>
-    </string>
-
     <string id="ui_mcm_nanosuit_nanosuit_configuration_armor">
         <text>Броневой режим</text>
     </string>
@@ -281,24 +272,12 @@
         <text>Нано зрение</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_configuration_hud_colors_text">
-        <text>Цвет текста</text>
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_theme">
+        <text>Тема интерфейса</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_configuration_hud_colors_background">
-        <text>Цвет фона</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_configuration_hud_colors_energy">
-        <text>Цвет энергетического батончика</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_configuration_hud_colors_health">
-        <text>Цвет полосы здоровья</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_configuration_hud_colors_stamina">
-        <text>Цвет шкалы выносливости</text>
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_theme_desc">
+        <text>Выбор набора цветов, которым костюм отрисовывает свой интерфейс. Темы настраиваются в 'Nanosuit > Интерфейс'.</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_burn">
@@ -315,10 +294,6 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_radiation">
         <text>Радиационная защита</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_configuration_telepathic">
-        <text>Пси-защита</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_wound">
@@ -343,6 +318,179 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_light_burn">
         <text>Защита от лёгких ожогов</text>
+    </string>
+
+    <!-- HUD/UI themes -->
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_general">
+        <text>Общее</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_text">
+        <text>Цвет текста</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_text_desc">
+        <text>Цвет текста, отображаемого всеми интерфейсами Нанокостюма.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background">
+        <text>Цвет фона</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background_desc">
+        <text>Цвет рамок, контуров и значков режимов, из которых состоят интерфейсы Нанокостюма.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_accent">
+        <text>Цвет акцента</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_accent_desc">
+        <text>Цвет выделения того, что выбрано или готово к использованию, в меню костюма и в подсказке дефибриллятора.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_alert">
+        <text>Цвет тревоги</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_alert_desc">
+        <text>Цвет, в который окрашиваются интерфейсы Нанокостюма при сбое костюма, а также шкалы состояния при низких значениях.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_plate">
+        <text>Цвет панелей</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_plate_desc">
+        <text>Оттенок непрозрачных панелей за индикаторами, колесами боеприпасов и напарников, и списком напарников.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status">
+        <text>Панель состояния</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status_energy">
+        <text>Цвет шкалы энергии</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status_energy_bg">
+        <text>Цвет фона шкалы энергии</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status_energy_off_bg">
+        <text>Цвет фона шкалы энергии (при сбое)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status_health">
+        <text>Цвет шкалы здоровья</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status_health_bg">
+        <text>Цвет фона шкалы здоровья</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status_health_off_bg">
+        <text>Цвет фона шкалы здоровья (при сбое)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status_stamina">
+        <text>Цвет шкалы выносливости</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status_stamina_bg">
+        <text>Цвет фона шкалы выносливости</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status_stamina_off_bg">
+        <text>Цвет фона шкалы выносливости (при сбое)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap">
+        <text>Тактическая карта</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_map">
+        <text>Цвет текстуры карты</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_visibility_bg">
+        <text>Цвет фона шкалы заметности</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_visibility_very_low">
+        <text>Цвет шкалы заметности (очень низкая)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_visibility_low">
+        <text>Цвет шкалы заметности (низкая)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_visibility_high">
+        <text>Цвет шкалы заметности (высокая)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_visibility_very_high">
+        <text>Цвет шкалы заметности (очень высокая)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_default">
+        <text>Цвет значков объектов</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_looted">
+        <text>Цвет значков обысканных тел</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_friend">
+        <text>Цвет значков дружественных сталкеров</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_neutral">
+        <text>Цвет значков нейтральных сталкеров</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_enemy">
+        <text>Цвет значков враждебных сталкеров</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_primary_task">
+        <text>Цвет значков основного задания</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_secondary_task">
+        <text>Цвет значков второстепенного задания</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_auxiliaries">
+        <text>Вспомогательные системы</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_auxiliaries_nv_energy">
+        <text>Цвет шкалы энергии ночного видения</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_auxiliaries_nv_energy_bg">
+        <text>Цвет фона шкалы энергии ночного видения</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_auxiliaries_nv_energy_off_bg">
+        <text>Цвет фона шкалы энергии ночного видения (при сбое)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_indicators">
+        <text>Индикаторы</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_indicators_warning_low">
+        <text>Цвет предупреждения (низкий)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_indicators_warning_medium">
+        <text>Цвет предупреждения (средний)</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_indicators_warning_high">
+        <text>Цвет предупреждения (высокий)</text>
     </string>
 
     <!-- Debug mode -->

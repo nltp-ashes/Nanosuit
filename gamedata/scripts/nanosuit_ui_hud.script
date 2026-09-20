@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/08/2026                                                                                             ---
+---    Date : 21/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's main HUD UI.                                                             ---
@@ -49,38 +49,7 @@ function ui_hud:__init(core) super()
     self.m_next_update = time_global()
     self.m_update_rate = 1 / 60 * 1000 -- 60 Hz
     self.m_set_msg_functor = nil
-    self.m_colors = {
-        text = nanosuit_mcm.get_outfit_color_config("hud_colors_text", "255,129,183,135"),
-        background = nanosuit_mcm.get_outfit_color_config("hud_colors_background", "200,99,125,102"),
-        active = GetARGB(200, 250, 173, 44),
-        energy = nanosuit_mcm.get_outfit_color_config("hud_colors_energy", "255,0,107,179"),
-        energy_bg = GetARGB(200, 18, 40, 46),
-        energy_off_bg = GetARGB(200, 24, 24, 24),
-        health = nanosuit_mcm.get_outfit_color_config("hud_colors_health", "255,85,148,17"),
-        health_bg = GetARGB(200, 27, 33, 21),
-        health_off_bg = GetARGB(200, 24, 24, 24),
-        stamina = nanosuit_mcm.get_outfit_color_config("hud_colors_stamina", "255,255,255,0"),
-        stamina_bg = GetARGB(200, 46, 46, 24),
-        stamina_off_bg = GetARGB(200, 24, 24, 24),
-        nv_energy = GetARGB(255, 253, 254, 50),
-        nv_energy_bg = GetARGB(200, 142, 155, 23),
-        nv_energy_off_bg = GetARGB(200, 24, 24, 24),
-        visibility_very_high = GetARGB(255, 255, 0, 0),
-        visibility_high = GetARGB(255, 255, 128, 0),
-        visibility_low = GetARGB(255, 255, 192, 0),
-        visibility_very_low = GetARGB(255, 0, 255, 0),
-        visibility_bg = GetARGB(200, 100, 100, 100),
-        red = GetARGB(255, 255, 0, 0),
-        icon_default = GetARGB(255, 255, 255, 255),
-        icon_looted = GetARGB(255, 150, 150, 150),
-        icon_primary_task = GetARGB(255, 0, 255, 0),
-        icon_secondary_task = GetARGB(255, 255, 255, 0),
-        icon_per_relation = {
-            [game_object.friend] = GetARGB(255, 0, 255, 0),
-            [game_object.neutral] = GetARGB(255, 255, 255, 0),
-            [game_object.enemy] = GetARGB(255, 255, 0, 0)
-        }
-    }
+    self.m_colors = nanosuit_mcm.get_colors()
 
     -- Build UI
     self.m_ui_menu = nanosuit_ui_menu.ui_menu(self)

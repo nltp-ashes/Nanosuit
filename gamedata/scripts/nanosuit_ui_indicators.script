@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : Tronex                                                                                   ---
 ---    Edited : Rewrote to improve linking between config table & slots (NLTP_ASHES - 29/05/2025)                    ---
----    Date : 20/09/2026                                                                                             ---
+---    Date : 21/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit indicators UI.                                                             ---
@@ -52,10 +52,10 @@ function ui_indicators:__init(parent) super()
         flags = color_anm_flags_enum.cyclic + color_anm_flags_enum.only_alpha + color_anm_flags_enum.texture_color
     }
     self.m_state_to_color = {
-        [1] = self.m_parent.m_colors.background, -- theme defined
-        [2] = GetARGB(255, 255, 255, 50), -- yellow
-        [3] = GetARGB(255, 255, 125, 50), -- orange
-        [4] = GetARGB(255, 255, 50, 50), -- red
+        [1] = self.m_parent.m_colors.shared.background,
+        [2] = self.m_parent.m_colors.indicators.warning_low,
+        [3] = self.m_parent.m_colors.indicators.warning_medium,
+        [4] = self.m_parent.m_colors.indicators.warning_high,
     }
     self.m_config_override = {
         -- Indicators
@@ -198,11 +198,11 @@ end
 
 function ui_indicators:get_color(config, value, key)
     if key == "background" then
-        return GetARGB(200, 255, 255, 255)
+        return self.m_parent.m_colors.shared.plate
     end
 
     if config.typ == actor_status_types_enum.booster then
-        return self.m_parent.m_colors.background
+        return self.m_parent.m_colors.shared.background
     end
 
     return self.m_state_to_color[value]
