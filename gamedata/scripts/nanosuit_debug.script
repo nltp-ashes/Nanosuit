@@ -184,7 +184,7 @@ function on_key_press_color(dik)
         printf("[NS] Color : %s,%s,%s", clr[1], clr[2], clr[3])
     end
 
-    nanosuit_core.get_instance().m_hud.m_theme.shared.background = GetARGB(200, nanosuit_debug.clr[1], nanosuit_debug.clr[2], nanosuit_debug.clr[3])
+    nanosuit_core.get_instance().m_hud.m_theme.shared.outline = GetARGB(200, nanosuit_debug.clr[1], nanosuit_debug.clr[2], nanosuit_debug.clr[3])
 end
 
 function on_key_release(dik)

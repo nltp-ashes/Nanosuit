@@ -332,11 +332,11 @@
         <text>Couleur du texte affiché par toutes les interfaces du Nanosuit.</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background">
-        <text>Couleur de fond</text>
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_outline">
+        <text>Couleur des contours</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background_desc">
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_outline_desc">
         <text>Couleur des cadres, des contours et des icônes de mode qui composent les interfaces du Nanosuit.</text>
     </string>
 
@@ -356,11 +356,11 @@
         <text>Couleur que prennent les interfaces du Nanosuit lorsque la combinaison est en panne, et que prennent les barres d'état lorsqu'elles sont au plus bas.</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_plate">
-        <text>Couleur des panneaux</text>
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background">
+        <text>Couleur de fond</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_plate_desc">
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background_desc">
         <text>Teinte appliquée aux panneaux opaques derrière les indicateurs, les roues de munitions et de compagnons, et la liste des compagnons.</text>
     </string>
 

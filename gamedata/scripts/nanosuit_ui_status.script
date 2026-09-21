@@ -36,11 +36,11 @@ function ui_status:__init(parent) super()
     nanosuit_utils.scale_ui_element(self.m_ui_background, true, true, "right")
 
     self.m_ui_outline = self.m_xml:InitStatic("outline", self)
-    self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.background)
+    self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.outline)
     nanosuit_utils.scale_ui_element(self.m_ui_outline, true, true, "right")
 
     self.m_ui_suit_mode = self.m_xml:InitStatic("suit_mode", self)
-    self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_theme.shared.background)
+    self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_theme.shared.outline)
     nanosuit_utils.scale_ui_element(self.m_ui_suit_mode, true, true, "right")
 
     self.m_ui_energy = self.m_xml:InitTextWnd("energy", self)
@@ -100,7 +100,7 @@ function ui_status:__init(parent) super()
     nanosuit_utils.scale_ui_element(self.m_ui_ammo_reserve, true, true, "right")
 
     self.m_ui_fire_mode = self.m_xml:InitStatic("fire_mode", self)
-    self.m_ui_fire_mode:SetTextureColor(self.m_parent.m_theme.shared.background)
+    self.m_ui_fire_mode:SetTextureColor(self.m_parent.m_theme.shared.outline)
     nanosuit_utils.scale_ui_element(self.m_ui_fire_mode, true, true, "right")
 end
 
@@ -173,13 +173,13 @@ function ui_status:update_in_malfunction()
 end
 
 function ui_status:update_outline()
-    self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.background)
+    self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.outline)
 end
 
 function ui_status:update_suit_mode()
     local suit_mode = "ui_nanosuit_status_" .. self.m_parent.m_core.m_current_mode.m_name
     self.m_ui_suit_mode:InitTexture(suit_mode)
-    self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_theme.shared.background)
+    self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_theme.shared.outline)
 end
 
 function ui_status:update_energy()

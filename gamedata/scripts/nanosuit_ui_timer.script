@@ -67,11 +67,11 @@ function ui_timer:__init(parent) super()
     arm.scale_ui(self.m_ui_background, true, true, "right")
 
     self.m_ui_outline = self.m_xml:InitStatic("outline", self)
-    self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.background)
+    self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.outline)
     arm.scale_ui(self.m_ui_outline, true, true, "right")
 
     self.m_ui_clock = self.m_xml:InitStatic("clock", self)
-    self.m_ui_clock:SetTextureColor(self.m_parent.m_theme.shared.background)
+    self.m_ui_clock:SetTextureColor(self.m_parent.m_theme.shared.outline)
     arm.scale_ui(self.m_ui_clock, true, true, "right")
 
     self.m_ui_timer = self.m_xml:InitStatic("timer", self)
@@ -92,8 +92,8 @@ function ui_timer:Update(force)
         self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.alert)
         self.m_ui_clock:SetTextureColor(self.m_parent.m_theme.shared.alert)
     else
-        self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.background)
-        self.m_ui_clock:SetTextureColor(self.m_parent.m_theme.shared.background)
+        self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.outline)
+        self.m_ui_clock:SetTextureColor(self.m_parent.m_theme.shared.outline)
     end
 
     self.m_ui_background:Show(self.m_enabled)

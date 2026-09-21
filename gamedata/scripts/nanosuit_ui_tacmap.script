@@ -33,7 +33,7 @@ function ui_tacmap:__init(parent) super()
     nanosuit_utils.scale_ui_element(self.m_ui_background, true, true, "left")
 
     self.m_ui_outline = self.m_xml:InitStatic("outline", self)
-    self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.background)
+    self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.outline)
     nanosuit_utils.scale_ui_element(self.m_ui_outline, true, true, "left")
 
     self.m_ui_visibility_bar_background = self.m_xml:InitStatic("visibility_bar_background", self)
@@ -74,7 +74,7 @@ function ui_tacmap:update_outline()
     if self.m_parent.m_core.m_malfunctor.m_enabled then
         self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.alert)
     else
-        self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.background)
+        self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.outline)
     end
 end
 

@@ -39,7 +39,7 @@ function ui_ammo_wheel:__init(parent) super()
 
     -- Override background
     item_weapon.GUI.background:InitTexture("ui_nanosuit_wheel_background")
-    item_weapon.GUI.background:SetTextureColor(self.m_parent.m_theme.shared.plate)
+    item_weapon.GUI.background:SetTextureColor(self.m_parent.m_theme.shared.background)
 end
 
 function ui_ammo_wheel:destroy()
@@ -65,6 +65,6 @@ function ui_ammo_wheel:Update(force)
     if self.m_parent.m_core.m_malfunctor.m_allowed then
         item_weapon.GUI.outline:SetTextureColor(self.m_parent.m_theme.shared.alert)
     else
-        item_weapon.GUI.outline:SetTextureColor(self.m_parent.m_theme.shared.background)
+        item_weapon.GUI.outline:SetTextureColor(self.m_parent.m_theme.shared.outline)
     end
 end

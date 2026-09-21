@@ -26,10 +26,10 @@ function get_theme()
     return {
         shared = {
             text = get_color(theme, "text"),
-            background = get_color(theme, "background"),
+            outline = get_color(theme, "outline"),
             accent = get_color(theme, "accent"),
             alert = get_color(theme, "alert"),
-            plate = get_color(theme, "plate")
+            background = get_color(theme, "background")
         },
         status = {
             energy = get_color(theme, "status_energy"),
@@ -73,5 +73,5 @@ function get_theme()
 end
 
 function get_color(theme, key)
-    return nanosuit_utils.string_to_float(get_config("hud_ui", theme .. "/" .. key))
+    return nanosuit_utils.string_to_float(nanosuit_mcm.get_config("hud_ui", theme .. "/" .. key))
 end

@@ -98,10 +98,10 @@ defaults = {
     -- HUD/UI themes
     -- nanosuit_1 theme, General
     ["nanosuit_1/text"] = "255,129,183,135",
-    ["nanosuit_1/background"] = "200,99,125,102",
+    ["nanosuit_1/outline"] = "200,99,125,102",
     ["nanosuit_1/accent"] = "200,250,173,44",
     ["nanosuit_1/alert"] = "255,255,0,0",
-    ["nanosuit_1/plate"] = "200,255,255,255",
+    ["nanosuit_1/background"] = "200,255,255,255",
     -- nanosuit_1 theme, Status UI
     ["nanosuit_1/status_energy"] = "255,0,145,189",
     ["nanosuit_1/status_energy_bg"] = "200,18,40,46",
@@ -136,10 +136,10 @@ defaults = {
     ["nanosuit_1/indicators_warning_high"] = "255,255,50,50",
     -- nanosuit_korean theme, General
     ["nanosuit_korean/text"] = "255,142,142,117",
-    ["nanosuit_korean/background"] = "200,125,125,102",
+    ["nanosuit_korean/outline"] = "200,125,125,102",
     ["nanosuit_korean/accent"] = "200,250,173,44",
     ["nanosuit_korean/alert"] = "255,255,0,0",
-    ["nanosuit_korean/plate"] = "200,255,255,255",
+    ["nanosuit_korean/background"] = "200,255,255,255",
     -- nanosuit_korean theme, Status UI
     ["nanosuit_korean/status_energy"] = "255,0,59,99",
     ["nanosuit_korean/status_energy_bg"] = "200,18,40,46",
@@ -174,10 +174,10 @@ defaults = {
     ["nanosuit_korean/indicators_warning_high"] = "255,255,50,50",
     -- nanosuit_2 theme, General
     ["nanosuit_2/text"] = "255,226,255,228",
-    ["nanosuit_2/background"] = "200,210,255,210",
+    ["nanosuit_2/outline"] = "200,210,255,210",
     ["nanosuit_2/accent"] = "200,250,173,44",
     ["nanosuit_2/alert"] = "255,255,0,0",
-    ["nanosuit_2/plate"] = "200,255,255,255",
+    ["nanosuit_2/background"] = "200,255,255,255",
     -- nanosuit_2 theme, Status UI
     ["nanosuit_2/status_energy"] = "255,210,255,210",
     ["nanosuit_2/status_energy_bg"] = "200,18,40,46",
@@ -372,10 +372,10 @@ function build_theme_page(theme, name)
         { type = "line" },
         { type = "desc", text = "ui_mcm_nanosuit_nanosuit_hud_ui_general" },
         { type = "input", val = mcm_types_enum.string, id = "text", def = defaults[theme .. "/text"], hint = "nanosuit_nanosuit_hud_ui_text", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
-        { type = "input", val = mcm_types_enum.string, id = "background", def = defaults[theme .. "/background"], hint = "nanosuit_nanosuit_hud_ui_background", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+        { type = "input", val = mcm_types_enum.string, id = "outline", def = defaults[theme .. "/outline"], hint = "nanosuit_nanosuit_hud_ui_outline", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
         { type = "input", val = mcm_types_enum.string, id = "accent", def = defaults[theme .. "/accent"], hint = "nanosuit_nanosuit_hud_ui_accent", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
         { type = "input", val = mcm_types_enum.string, id = "alert", def = defaults[theme .. "/alert"], hint = "nanosuit_nanosuit_hud_ui_alert", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
-        { type = "input", val = mcm_types_enum.string, id = "plate", def = defaults[theme .. "/plate"], hint = "nanosuit_nanosuit_hud_ui_plate", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+        { type = "input", val = mcm_types_enum.string, id = "background", def = defaults[theme .. "/background"], hint = "nanosuit_nanosuit_hud_ui_background", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
         { type = "line" },
         { type = "desc", text = "ui_mcm_nanosuit_nanosuit_hud_ui_status" },
         { type = "input", val = mcm_types_enum.string, id = "status_energy", def = defaults[theme .. "/status_energy"], hint = "nanosuit_nanosuit_hud_ui_status_energy", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },

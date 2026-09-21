@@ -31,7 +31,7 @@ function ui_binoculars:__init(parent) super()
     self.m_xml:ParseFile("ui_nanosuit_binoculars.xml")
 
     self.m_ui_background = self.m_xml:InitStatic("background", self)
-    self.m_ui_background:SetTextureColor(self.m_parent.m_theme.shared.background)
+    self.m_ui_background:SetTextureColor(self.m_parent.m_theme.shared.outline)
     self.m_ui_background:Show(false)
 
     self.m_ui_text = self.m_xml:InitStatic("text", self)

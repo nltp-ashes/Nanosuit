@@ -9,3 +9,5 @@
 
 **• Bug fixes :**
 > - Fix indicators not using each suit's UI theme and instead always been green like the default Nanosuit 1.0 HUD colors;
+
+**Note :** It is recommended to reset your MCM options for this update, as some options were swapped around and using old values might cause UIs to look weird.

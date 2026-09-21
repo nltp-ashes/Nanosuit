@@ -31,15 +31,15 @@ function ui_auxiliaries:__init(parent) super()
     self.m_xml:ParseFile("ui_nanosuit_auxiliaries.xml")
 
     self.m_ui_top_left_corner = self.m_xml:InitStatic("top_left_corner", self)
-    self.m_ui_top_left_corner:SetTextureColor(self.m_parent.m_theme.shared.background)
+    self.m_ui_top_left_corner:SetTextureColor(self.m_parent.m_theme.shared.outline)
     arm.scale_ui(self.m_ui_top_left_corner, true, true, "left")
 
     self.m_ui_top_right_corner = self.m_xml:InitStatic("top_right_corner", self)
-    self.m_ui_top_right_corner:SetTextureColor(self.m_parent.m_theme.shared.background)
+    self.m_ui_top_right_corner:SetTextureColor(self.m_parent.m_theme.shared.outline)
     arm.scale_ui(self.m_ui_top_right_corner, true, true, "right")
 
     self.m_ui_nv_energy_outline = self.m_xml:InitStatic("nv_energy_outline", self)
-    self.m_ui_nv_energy_outline:SetTextureColor(self.m_parent.m_theme.shared.background)
+    self.m_ui_nv_energy_outline:SetTextureColor(self.m_parent.m_theme.shared.outline)
     arm.scale_ui(self.m_ui_nv_energy_outline, true, true, "right")
 
     self.m_ui_nv_energy_bar_background = self.m_xml:InitStatic("nv_energy_bar_background", self)
@@ -73,9 +73,9 @@ function ui_auxiliaries:Update(force)
         self.m_ui_nv_energy_bar_background:SetTextureColor(self.m_parent.m_theme.auxiliaries.nv_energy_off_bg)
     else
         -- Outline
-        self.m_ui_top_left_corner:SetTextureColor(self.m_parent.m_theme.shared.background)
-        self.m_ui_top_right_corner:SetTextureColor(self.m_parent.m_theme.shared.background)
-        self.m_ui_nv_energy_outline:SetTextureColor(self.m_parent.m_theme.shared.background)
+        self.m_ui_top_left_corner:SetTextureColor(self.m_parent.m_theme.shared.outline)
+        self.m_ui_top_right_corner:SetTextureColor(self.m_parent.m_theme.shared.outline)
+        self.m_ui_nv_energy_outline:SetTextureColor(self.m_parent.m_theme.shared.outline)
 
         -- NV energy
         nv_energy = round(nv_energy)

@@ -333,11 +333,11 @@
         <text>Цвет текста, отображаемого всеми интерфейсами Нанокостюма.</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background">
-        <text>Цвет фона</text>
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_outline">
+        <text>Цвет контуров</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background_desc">
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_outline_desc">
         <text>Цвет рамок, контуров и значков режимов, из которых состоят интерфейсы Нанокостюма.</text>
     </string>
 
@@ -357,11 +357,11 @@
         <text>Цвет, в который окрашиваются интерфейсы Нанокостюма при сбое костюма, а также шкалы состояния при низких значениях.</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_plate">
-        <text>Цвет панелей</text>
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background">
+        <text>Цвет фона</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_plate_desc">
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background_desc">
         <text>Оттенок непрозрачных панелей за индикаторами, колесами боеприпасов и напарников, и списком напарников.</text>
     </string>
 

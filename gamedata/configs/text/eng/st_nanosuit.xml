@@ -332,11 +332,11 @@
         <text>Color of the text drawn by every Nanosuit UI.</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background">
-        <text>Background color</text>
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_outline">
+        <text>Outline color</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background_desc">
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_outline_desc">
         <text>Color of the frames, outlines and mode icons every Nanosuit UI is drawn with.</text>
     </string>
 
@@ -356,11 +356,11 @@
         <text>Color every Nanosuit UI turns to when the suit malfunctions, and that the status bars turn to when they run low.</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_plate">
-        <text>Panel tint color</text>
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background">
+        <text>Background color</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_plate_desc">
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background_desc">
         <text>Tint applied to the opaque panels behind the indicators, the ammo and companion wheels, and the companion list.</text>
     </string>
 

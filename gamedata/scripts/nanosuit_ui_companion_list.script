@@ -39,7 +39,7 @@ function ui_companion_list:__init(parent) super()
     for idx, info in pairs(axr_companions.HUD.companion_info) do
         -- Override background
         info.background:InitTexture("ui_nanosuit_companion_list_background")
-        info.background:SetTextureColor(self.m_parent.m_theme.shared.plate)
+        info.background:SetTextureColor(self.m_parent.m_theme.shared.background)
 
         -- Create outline
         info.outline = xml:InitStatic("companion_list:slot:background", info.base)
@@ -79,7 +79,7 @@ function ui_companion_list:Update(force)
         if self.m_parent.m_core.m_malfunctor.m_allowed then
             info.outline:SetTextureColor(self.m_parent.m_theme.shared.alert)
         else
-            info.outline:SetTextureColor(self.m_parent.m_theme.shared.background)
+            info.outline:SetTextureColor(self.m_parent.m_theme.shared.outline)
         end
     end
 end
