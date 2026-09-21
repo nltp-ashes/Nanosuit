@@ -52,10 +52,10 @@ function ui_indicators:__init(parent) super()
         flags = color_anm_flags_enum.cyclic + color_anm_flags_enum.only_alpha + color_anm_flags_enum.texture_color
     }
     self.m_state_to_color = {
-        [1] = self.m_parent.m_colors.shared.background,
-        [2] = self.m_parent.m_colors.indicators.warning_low,
-        [3] = self.m_parent.m_colors.indicators.warning_medium,
-        [4] = self.m_parent.m_colors.indicators.warning_high,
+        [1] = self.m_parent.m_theme.shared.background,
+        [2] = self.m_parent.m_theme.indicators.warning_low,
+        [3] = self.m_parent.m_theme.indicators.warning_medium,
+        [4] = self.m_parent.m_theme.indicators.warning_high,
     }
     self.m_config_override = {
         -- Indicators
@@ -198,11 +198,11 @@ end
 
 function ui_indicators:get_color(config, value, key)
     if key == "background" then
-        return self.m_parent.m_colors.shared.plate
+        return self.m_parent.m_theme.shared.plate
     end
 
     if config.typ == actor_status_types_enum.booster then
-        return self.m_parent.m_colors.shared.background
+        return self.m_parent.m_theme.shared.background
     end
 
     return self.m_state_to_color[value]

@@ -48,7 +48,7 @@ function ui_tacmap_texture:update()
         local shape = {
             texture = self:get_texture(level.name()),
             shader = "hud\\default",
-            color = self.m_parent.m_parent.m_parent.m_colors.tacmap.map
+            color = self.m_parent.m_parent.m_parent.m_theme.tacmap.map
         }
         hud:AddCustomShapeToRender("nanosuit_tacmap", shape)
     end

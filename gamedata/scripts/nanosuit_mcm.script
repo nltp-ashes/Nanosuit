@@ -218,10 +218,6 @@ defaults = {
 -- General functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
---- Function used to get a configuration constant based on the currently equipped outfit.
---- @param key string
---- @param default any
---- @return any
 function get_outfit_config(key, default)
     local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
     if not outfit then
@@ -230,10 +226,6 @@ function get_outfit_config(key, default)
     return get_config("configuration", outfit:section() .. "/" .. key, default)
 end
 
---- Function used to get a given setting defined in MCM.
---- If MCM isn't installed, it will default back to a value in defaults table.
---- @param key string
---- @return any
 function get_config(category, key, default)
     if ui_mcm then
         return ui_mcm.get("nanosuit/nanosuit_" .. category .. "/" .. key) or default
@@ -241,72 +233,10 @@ function get_config(category, key, default)
     return defaults[key] or default
 end
 
---- Function used to get one color of a theme, in the float representation the UI classes expect.
---- @param theme string
---- @param key string
---- @return number
-function get_color(theme, key)
-    return nanosuit_utils.string_to_float(get_config("hud_ui", theme .. "/" .. key))
-end
+-- ---------------------------------------------------------------------------------------------------------------------
+-- MCM UI definition
+-- ---------------------------------------------------------------------------------------------------------------------
 
---- Function used to build the color table of the theme worn by the currently equipped outfit.
---- The table is laid out the way MCM groups the options : the colors every UI shares sit in 'shared', and each UI
---- gets a sub-table holding the ones only it draws.
---- @return table
-function get_colors()
-    local theme = get_outfit_config("theme", themes_enum.nanosuit_1)
-
-    return {
-        shared = {
-            text = get_color(theme, "text"),
-            background = get_color(theme, "background"),
-            accent = get_color(theme, "accent"),
-            alert = get_color(theme, "alert"),
-            plate = get_color(theme, "plate")
-        },
-        status = {
-            energy = get_color(theme, "status_energy"),
-            energy_bg = get_color(theme, "status_energy_bg"),
-            energy_off_bg = get_color(theme, "status_energy_off_bg"),
-            health = get_color(theme, "status_health"),
-            health_bg = get_color(theme, "status_health_bg"),
-            health_off_bg = get_color(theme, "status_health_off_bg"),
-            stamina = get_color(theme, "status_stamina"),
-            stamina_bg = get_color(theme, "status_stamina_bg"),
-            stamina_off_bg = get_color(theme, "status_stamina_off_bg")
-        },
-        tacmap = {
-            map = get_color(theme, "tacmap_map"),
-            visibility_bg = get_color(theme, "tacmap_visibility_bg"),
-            visibility_very_low = get_color(theme, "tacmap_visibility_very_low"),
-            visibility_low = get_color(theme, "tacmap_visibility_low"),
-            visibility_high = get_color(theme, "tacmap_visibility_high"),
-            visibility_very_high = get_color(theme, "tacmap_visibility_very_high"),
-            icon_default = get_color(theme, "tacmap_icon_default"),
-            icon_looted = get_color(theme, "tacmap_icon_looted"),
-            icon_primary_task = get_color(theme, "tacmap_icon_primary_task"),
-            icon_secondary_task = get_color(theme, "tacmap_icon_secondary_task"),
-            icon_per_relation = {
-                [game_object.friend] = get_color(theme, "tacmap_icon_friend"),
-                [game_object.neutral] = get_color(theme, "tacmap_icon_neutral"),
-                [game_object.enemy] = get_color(theme, "tacmap_icon_enemy")
-            }
-        },
-        auxiliaries = {
-            nv_energy = get_color(theme, "auxiliaries_nv_energy"),
-            nv_energy_bg = get_color(theme, "auxiliaries_nv_energy_bg"),
-            nv_energy_off_bg = get_color(theme, "auxiliaries_nv_energy_off_bg")
-        },
-        indicators = {
-            warning_low = get_color(theme, "indicators_warning_low"),
-            warning_medium = get_color(theme, "indicators_warning_medium"),
-            warning_high = get_color(theme, "indicators_warning_high")
-        }
-    }
-end
-
---- MCM UI definition.
---- @return table
 function on_mcm_load()
     op = {
         id = "nanosuit",
@@ -398,11 +328,6 @@ function on_mcm_load()
     return op
 end
 
---- Function used to build the MCM page of a given outfit.
---- Every outfit gets the same options and only draws its defaults from its own section.
---- @param section string
---- @param name string
---- @return table
 function build_outfit_page(section, name)
     return {
         { type = "slide", text = "ui_mcm_menu_nanosuit", link = "ui_nanosuit_mcm_banner", spacing = 20, size = { 512, 50 } },
@@ -439,11 +364,6 @@ function build_outfit_page(section, name)
     }
 end
 
---- Function used to build the MCM page of a given HUD/UI theme.
---- Every theme gets the same colors and only draws its defaults from its own section.
---- @param theme string
---- @param name string
---- @return table
 function build_theme_page(theme, name)
     return {
         { type = "slide", text = "ui_mcm_menu_nanosuit", link = "ui_nanosuit_mcm_banner", spacing = 20, size = { 512, 50 } },

@@ -1,0 +1,77 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 21/09/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to give every Nanosuit UI the colors of the theme the equipped outfit wears.                      ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+themes_enum             = nanosuit_utils.themes_enum
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function get_theme()
+    local theme = nanosuit_mcm.get_outfit_config("theme", themes_enum.nanosuit_1)
+
+    return {
+        shared = {
+            text = get_color(theme, "text"),
+            background = get_color(theme, "background"),
+            accent = get_color(theme, "accent"),
+            alert = get_color(theme, "alert"),
+            plate = get_color(theme, "plate")
+        },
+        status = {
+            energy = get_color(theme, "status_energy"),
+            energy_bg = get_color(theme, "status_energy_bg"),
+            energy_off_bg = get_color(theme, "status_energy_off_bg"),
+            health = get_color(theme, "status_health"),
+            health_bg = get_color(theme, "status_health_bg"),
+            health_off_bg = get_color(theme, "status_health_off_bg"),
+            stamina = get_color(theme, "status_stamina"),
+            stamina_bg = get_color(theme, "status_stamina_bg"),
+            stamina_off_bg = get_color(theme, "status_stamina_off_bg")
+        },
+        tacmap = {
+            map = get_color(theme, "tacmap_map"),
+            visibility_bg = get_color(theme, "tacmap_visibility_bg"),
+            visibility_very_low = get_color(theme, "tacmap_visibility_very_low"),
+            visibility_low = get_color(theme, "tacmap_visibility_low"),
+            visibility_high = get_color(theme, "tacmap_visibility_high"),
+            visibility_very_high = get_color(theme, "tacmap_visibility_very_high"),
+            icon_default = get_color(theme, "tacmap_icon_default"),
+            icon_looted = get_color(theme, "tacmap_icon_looted"),
+            icon_primary_task = get_color(theme, "tacmap_icon_primary_task"),
+            icon_secondary_task = get_color(theme, "tacmap_icon_secondary_task"),
+            icon_per_relation = {
+                [game_object.friend] = get_color(theme, "tacmap_icon_friend"),
+                [game_object.neutral] = get_color(theme, "tacmap_icon_neutral"),
+                [game_object.enemy] = get_color(theme, "tacmap_icon_enemy")
+            }
+        },
+        auxiliaries = {
+            nv_energy = get_color(theme, "auxiliaries_nv_energy"),
+            nv_energy_bg = get_color(theme, "auxiliaries_nv_energy_bg"),
+            nv_energy_off_bg = get_color(theme, "auxiliaries_nv_energy_off_bg")
+        },
+        indicators = {
+            warning_low = get_color(theme, "indicators_warning_low"),
+            warning_medium = get_color(theme, "indicators_warning_medium"),
+            warning_high = get_color(theme, "indicators_warning_high")
+        }
+    }
+end
+
+function get_color(theme, key)
+    return nanosuit_utils.string_to_float(get_config("hud_ui", theme .. "/" .. key))
+end

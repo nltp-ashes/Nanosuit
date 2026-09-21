@@ -44,7 +44,7 @@ function ui_menu:__init(parent) super()
 
     -- Replace cursor
     self.cursor:InitTexture("ui_nanosuit_menu_cursor")
-    self.cursor:SetTextureColor(self.m_parent.m_colors.shared.background)
+    self.cursor:SetTextureColor(self.m_parent.m_theme.shared.background)
     self.cursor:SetWndSize(vector2():set(100, 50))
 
     -- Override icon position & size
@@ -66,9 +66,9 @@ function ui_menu:__init(parent) super()
         opt:SetText({ title = "", description = "" })
         opt:SetColour(function(state)
             if state == arm.States.TOUCHED then
-                return self.m_parent.m_colors.shared.accent
+                return self.m_parent.m_theme.shared.accent
             end
-            return self.m_parent.m_colors.shared.background
+            return self.m_parent.m_theme.shared.background
         end)
         self:AddOption(opt)
         self:RegisterCallback(mode, function(flags)

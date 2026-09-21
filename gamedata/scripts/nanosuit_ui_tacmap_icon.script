@@ -110,23 +110,23 @@ end
 function ui_tacmap_icon:get_color(obj)
     if IsStalker(obj) and obj:alive() then
         local relation = obj:relation(db.actor)
-        return self.m_parent.m_parent.m_parent.m_colors.tacmap.icon_per_relation[relation]
+        return self.m_parent.m_parent.m_parent.m_theme.tacmap.icon_per_relation[relation]
     end
     if (IsStalker(obj) or IsMonster(obj)) and not obj:alive() then
         local is_stalker_looted = se_load_var(obj:id(), obj:name(), "death_dropped")
         local is_mutant_looted = se_load_var(obj:id(), obj:name(), "looted")
         if is_stalker_looted or is_mutant_looted then
-            return self.m_parent.m_parent.m_parent.m_colors.tacmap.icon_looted
+            return self.m_parent.m_parent.m_parent.m_theme.tacmap.icon_looted
         end
     end
-    return self.m_parent.m_parent.m_parent.m_colors.tacmap.icon_default
+    return self.m_parent.m_parent.m_parent.m_theme.tacmap.icon_default
 end
 
 function ui_tacmap_icon:get_task_color(task_target_info)
     if task_target_info and task_target_info.primary then
-        return self.m_parent.m_parent.m_parent.m_colors.tacmap.icon_primary_task
+        return self.m_parent.m_parent.m_parent.m_theme.tacmap.icon_primary_task
     end
-    return self.m_parent.m_parent.m_parent.m_colors.tacmap.icon_secondary_task
+    return self.m_parent.m_parent.m_parent.m_theme.tacmap.icon_secondary_task
 end
 
 function ui_tacmap_icon:get_size(obj)

@@ -32,7 +32,7 @@ function ui_defibrillator:__init(parent) super()
     arm.scale_ui(self.m_ui_message, true, true, "center")
 
     self.m_ui_key = self.m_xml:InitTextWnd("key", self)
-    self.m_ui_key:SetTextColor(self.m_parent.m_colors.shared.accent)
+    self.m_ui_key:SetTextColor(self.m_parent.m_theme.shared.accent)
     self.m_ui_key:Show(false)
     arm.scale_ui(self.m_ui_key, true, true, "center")
 end

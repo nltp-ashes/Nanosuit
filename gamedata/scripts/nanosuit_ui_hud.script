@@ -49,7 +49,9 @@ function ui_hud:__init(core) super()
     self.m_next_update = time_global()
     self.m_update_rate = 1 / 60 * 1000 -- 60 Hz
     self.m_set_msg_functor = nil
-    self.m_colors = nanosuit_mcm.get_colors()
+
+    -- Theme
+    self.m_theme = nanosuit_ui_theme.get_theme()
 
     -- Build UI
     self.m_ui_menu = nanosuit_ui_menu.ui_menu(self)
