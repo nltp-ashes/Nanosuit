@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 21/09/2026                                                                                            -->
+<!--    Date : 22/09/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -141,50 +141,6 @@
         <text>Le protocole est de ne laisser aucun témoin de votre présence. Si activé, le joueur sera vaporisé s'il laisse un ennemi s'échapper après avoir été en combat.</text>
     </string>
 
-    <!-- Suit voice -->
-    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender">
-        <text>Voix de la combinaison</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender_desc">
-        <text>Choix de la voix à utiliser par la combinaison.</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender_lst_male">
-        <text>Homme</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender_lst_female">
-        <text>Femme</text>
-    </string>
-
-    <!-- Ammo wheel customization -->
-    <string id="ui_mcm_nanosuit_nanosuit_general_customize_ammo_wheel">
-        <text>Styliser la roue des munitions</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_general_customize_ammo_wheel_desc">
-        <text>Styliser la roue des munitions pour la faire ressembler au style du rest de l'ATH de la Nano-combinaison quand celle-ci est équipée.</text>
-    </string>
-
-    <!-- Companion wheel customization -->
-    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_wheel">
-        <text>Styliser la roue des companions</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_wheel_desc">
-        <text>Styliser la roue des companions pour la faire ressembler au style du rest de l'ATH de la Nano-combinaison quand celle-ci est équipée.</text>
-    </string>
-
-    <!-- Companion list customization -->
-    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_list">
-        <text>Styliser la liste des companions</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_list_desc">
-        <text>Styliser la liste des companions pour la faire ressembler au style du rest de l'ATH de la Nano-combinaison quand celle-ci est équipée.</text>
-    </string>
-
     <!-- Open suit menu -->
     <string id="ui_mcm_nanosuit_nanosuit_keybindings_suit_menu">
         <text>Menu combinaison</text>
@@ -279,6 +235,22 @@
         <text>Sélectionne le jeu de couleurs avec lequel la combinaison peint son ATH et ses interfaces. Les thèmes se personnalisent dans 'Nanosuit > ATH/UI'.</text>
     </string>
 
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_suit_gender">
+        <text>Voix de la combinaison</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_suit_gender_desc">
+        <text>Choix de la voix à utiliser par la combinaison.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_suit_gender_lst_male">
+        <text>Homme</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_suit_gender_lst_female">
+        <text>Femme</text>
+    </string>
+
     <string id="ui_mcm_nanosuit_nanosuit_configuration_burn">
         <text>Protection aux brulures</text>
     </string>
@@ -319,7 +291,46 @@
         <text>Protection aux brulures légères</text>
     </string>
 
+    <!-- Ammo wheel customization -->
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_customize_ammo_wheel">
+        <text>Styliser la roue des munitions</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_customize_ammo_wheel_desc">
+        <text>Styliser la roue des munitions pour la faire ressembler au style du rest de l'ATH de la Nano-combinaison quand celle-ci est équipée.</text>
+    </string>
+
+    <!-- Companion wheel customization -->
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_customize_companion_wheel">
+        <text>Styliser la roue des companions</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_customize_companion_wheel_desc">
+        <text>Styliser la roue des companions pour la faire ressembler au style du rest de l'ATH de la Nano-combinaison quand celle-ci est équipée.</text>
+    </string>
+
+    <!-- Companion list customization -->
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_customize_companion_list">
+        <text>Styliser la liste des companions</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_customize_companion_list_desc">
+        <text>Styliser la liste des companions pour la faire ressembler au style du rest de l'ATH de la Nano-combinaison quand celle-ci est équipée.</text>
+    </string>
+
     <!-- HUD/UI themes -->
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_1">
+        <text>Thème 1.0</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_2">
+        <text>Thème 2.0</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_korean">
+        <text>Thème coréen</text>
+    </string>
+
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_general">
         <text>Général</text>
     </string>

@@ -8,6 +8,7 @@
 > - Added rare Ceph grunts and horns when wearing the Nanosuit and being low on psy-health;
 
 **• Changes :**
+> - Made the suit voice MCM option per-suit instead of global to the entire addon;
 
 **• Bug fixes :**
 > - Fix indicators not using each suit's UI theme and instead always been green like the default Nanosuit 1.0 HUD colors;

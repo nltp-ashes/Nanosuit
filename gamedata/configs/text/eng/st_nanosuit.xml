@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 21/09/2026                                                                                            -->
+<!--    Date : 22/09/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -141,50 +141,6 @@
         <text>The protocol is to leave no witnesses of your presence. If enabled, the player gets vaporized when they let an enemy get away after they have been in combat.</text>
     </string>
 
-    <!-- Suit voice -->
-    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender">
-        <text>Suit voice</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender_desc">
-        <text>Select the voice type you want to use for the suit.</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender_lst_male">
-        <text>Male</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_general_suit_gender_lst_female">
-        <text>Female</text>
-    </string>
-
-    <!-- Ammo wheel customization -->
-    <string id="ui_mcm_nanosuit_nanosuit_general_customize_ammo_wheel">
-        <text>Customize the ammo wheel UI</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_general_customize_ammo_wheel_desc">
-        <text>Toggle to override the appearance of the ammo wheel UI to make it look like the rest of the Nanosuit HUD when wearing the suit.</text>
-    </string>
-
-    <!-- Companion wheel customization -->
-    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_wheel">
-        <text>Customize the companion wheel UI</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_wheel_desc">
-        <text>Toggle to override the appearance of the companion wheel UI to make it look like the rest of the Nanosuit HUD when wearing the suit.</text>
-    </string>
-
-    <!-- Companion list customization -->
-    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_list">
-        <text>Customize the companion list UI</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_general_customize_companion_list_desc">
-        <text>Toggle to override the appearance of the companion list UI to make it look like the rest of the Nanosuit HUD when wearing the suit.</text>
-    </string>
-
     <!-- Open suit menu -->
     <string id="ui_mcm_nanosuit_nanosuit_keybindings_suit_menu">
         <text>Open suit menu</text>
@@ -279,6 +235,22 @@
         <text>Select the set of colors the suit paints its HUD and its UIs with. Themes are customized under 'Nanosuit > HUD/UI'.</text>
     </string>
 
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_suit_gender">
+        <text>Suit voice</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_suit_gender_desc">
+        <text>Select the voice type you want to use for the suit.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_suit_gender_lst_male">
+        <text>Male</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_suit_gender_lst_female">
+        <text>Female</text>
+    </string>
+
     <string id="ui_mcm_nanosuit_nanosuit_configuration_burn">
         <text>Burn protection</text>
     </string>
@@ -319,7 +291,46 @@
         <text>Light burn protection</text>
     </string>
 
+    <!-- Ammo wheel customization -->
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_customize_ammo_wheel">
+        <text>Customize the ammo wheel UI</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_customize_ammo_wheel_desc">
+        <text>Toggle to override the appearance of the ammo wheel UI to make it look like the rest of the Nanosuit HUD when wearing the suit.</text>
+    </string>
+
+    <!-- Companion wheel customization -->
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_customize_companion_wheel">
+        <text>Customize the companion wheel UI</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_customize_companion_wheel_desc">
+        <text>Toggle to override the appearance of the companion wheel UI to make it look like the rest of the Nanosuit HUD when wearing the suit.</text>
+    </string>
+
+    <!-- Companion list customization -->
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_customize_companion_list">
+        <text>Customize the companion list UI</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_customize_companion_list_desc">
+        <text>Toggle to override the appearance of the companion list UI to make it look like the rest of the Nanosuit HUD when wearing the suit.</text>
+    </string>
+
     <!-- HUD/UI themes -->
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_1">
+        <text>1.0 theme</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_2">
+        <text>2.0 theme</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_korean">
+        <text>Korean theme</text>
+    </string>
+
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_general">
         <text>General</text>
     </string>

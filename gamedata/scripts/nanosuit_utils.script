@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 21/09/2026                                                                                             ---
+---    Date : 22/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -155,7 +155,7 @@ end
 --- @param filename string
 --- @return sound_object
 function localized_and_genderized_sound_object(path, filename)
-    local gender = nanosuit_mcm.get_config("general", "suit_gender")
+    local gender = nanosuit_mcm.get_outfit_config("suit_gender", gender_enum.male)
     local locale = ini_sys:r_string_ex("string_table", "language")
     return sound_object(path .. [[\]] .. gender .. [[\]] .. filename .. "_" .. locale)
 end
