@@ -1,0 +1,92 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 22/09/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to mix rare Ceph voices into the whispers heard at low psy-health.                                ---
+---                                                                                                                  ---
+---    The whispers belong to arszi_psy, which starts and stops its looping sound_zombified on its own thresholds.   ---
+---    That sound is unlocalized (configs\unlocalizers) so the voices follow it exactly.                             ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Psy voices class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "psy_voices"
+
+function psy_voices:__init(core)
+    -- Constants
+    self.m_delay_min = 30000
+    self.m_delay_max = 90000
+
+    -- Variables
+    self.m_core = core
+    self.m_next_play = nil
+    self.m_last_index = nil
+
+    -- Sound effects
+    self.m_sounds = {
+        sound_object([[nanosuit\psy_voices\ceph_trooper_01]]),
+        sound_object([[nanosuit\psy_voices\ceph_trooper_02]]),
+        sound_object([[nanosuit\psy_voices\ceph_trooper_03]]),
+        sound_object([[nanosuit\psy_voices\ceph_warrior_01]]),
+        sound_object([[nanosuit\psy_voices\ceph_warrior_02]]),
+        sound_object([[nanosuit\psy_voices\ceph_warrior_03]])
+    }
+
+    -- Callbacks
+    RegisterScriptCallback("actor_on_update", self)
+end
+
+function psy_voices:destroy()
+    for _, sfx in pairs(self.m_sounds) do
+        if sfx:playing() then
+            sfx:stop()
+        end
+    end
+
+    -- Callbacks
+    UnregisterScriptCallback("actor_on_update", self)
+end
+
+function psy_voices:actor_on_update()
+    if not arszi_psy.sound_zombified:playing() then
+        self.m_next_play = nil
+        return
+    end
+
+    if self:is_playing() then
+        return
+    end
+
+    local tg = time_global()
+    if not self.m_next_play then
+        self.m_next_play = tg + math.random(self.m_delay_min, self.m_delay_max)
+    elseif tg >= self.m_next_play then
+        self.m_next_play = nil
+        self:play_random()
+    end
+end
+
+function psy_voices:play_random()
+    local index = math.random(1, #self.m_sounds)
+    if index == self.m_last_index then
+        index = index % #self.m_sounds + 1
+    end
+    self.m_last_index = index
+
+    self.m_sounds[index]:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+end
+
+function psy_voices:is_playing()
+    for _, sfx in pairs(self.m_sounds) do
+        if sfx:playing() then
+            return true
+        end
+    end
+    return false
+end
