@@ -4,6 +4,7 @@
 
 **• Additions :**
 > - Added a new shader to make the Nanosuit 1.0 and the Korean Nanosuit glow red and yellow respectively in strength and speed modes;
+> - Added an option in MCM to select a "UI theme" for each Nanosuit, and a new section in MCM customize every color of each theme;
 
 **• Changes :**
 
