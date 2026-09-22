@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 23/08/2026                                                                                             ---
+---    Date : 21/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -33,11 +33,11 @@ function ui_tacmap:__init(parent) super()
     nanosuit_utils.scale_ui_element(self.m_ui_background, true, true, "left")
 
     self.m_ui_outline = self.m_xml:InitStatic("outline", self)
-    self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
+    self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.outline)
     nanosuit_utils.scale_ui_element(self.m_ui_outline, true, true, "left")
 
     self.m_ui_visibility_bar_background = self.m_xml:InitStatic("visibility_bar_background", self)
-    self.m_ui_visibility_bar_background:SetTextureColor(self.m_parent.m_colors.visibility_bg)
+    self.m_ui_visibility_bar_background:SetTextureColor(self.m_parent.m_theme.tacmap.visibility_bg)
     nanosuit_utils.scale_ui_element(self.m_ui_visibility_bar_background, true, true, "left")
 
     self.m_ui_visibility_bar = self.m_xml:InitProgressBar("visibility_bar", self)
@@ -72,9 +72,9 @@ end
 
 function ui_tacmap:update_outline()
     if self.m_parent.m_core.m_malfunctor.m_enabled then
-        self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.red)
+        self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.alert)
     else
-        self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
+        self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.outline)
     end
 end
 
@@ -87,13 +87,13 @@ function ui_tacmap:update_visibility()
     local vis = db.actor:get_actor_visibility()
 
     if vis < 0.25 then
-        self.m_ui_visibility_bar:SetColor(self.m_parent.m_colors.visibility_very_low)
+        self.m_ui_visibility_bar:SetColor(self.m_parent.m_theme.tacmap.visibility_very_low)
     elseif vis < 0.5 then
-        self.m_ui_visibility_bar:SetColor(self.m_parent.m_colors.visibility_low)
+        self.m_ui_visibility_bar:SetColor(self.m_parent.m_theme.tacmap.visibility_low)
     elseif vis < 0.75 then
-        self.m_ui_visibility_bar:SetColor(self.m_parent.m_colors.visibility_high)
+        self.m_ui_visibility_bar:SetColor(self.m_parent.m_theme.tacmap.visibility_high)
     else
-        self.m_ui_visibility_bar:SetColor(self.m_parent.m_colors.visibility_very_high)
+        self.m_ui_visibility_bar:SetColor(self.m_parent.m_theme.tacmap.visibility_very_high)
     end
 
     self.m_ui_visibility_bar:SetProgressPos(vis * 100)
