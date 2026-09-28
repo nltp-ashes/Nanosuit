@@ -1,4 +1,4 @@
-## **v0.14.0 - 22/09/2026 - Beta Build**
+## **v0.14.0 - 29/09/2026 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.14.0/total?label=Downloads)]()
 
@@ -12,5 +12,7 @@
 
 **• Bug fixes :**
 > - Fix indicators not using each suit's UI theme and instead always been green like the default Nanosuit 1.0 HUD colors;
+> - Fixed cloak mode not hiding the player from mutant's vision;
+> - Fixed cloak mode not hiding the player from stalker's vision if the mode was activated in the line of sight of the NPC;
 
 **Note :** It is recommended to reset the MCM options for this update, as some options were swapped around and using old values might cause UIs to look weird.
