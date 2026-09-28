@@ -2,10 +2,17 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 03/09/2026                                                                                             ---
+---    Date : 28/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
+---                                                                                                                  ---
+---    The engine adds get_visible_value() to a per-NPC accumulator clamped to [0, visibility_threshold], and        ---
+---    the actor stays seen while it sits at the threshold. Returning 0 would only freeze it, so an NPC that had     ---
+---    already spotted the actor kept seeing it until line of sight broke. Beyond the see distance, the hook         ---
+---    returns a negative value on the same scale as the gain instead, so the NPC loses the actor about as fast      ---
+---    as it would have spotted it. That value must stay finite : the engine multiplies it by the NPC's vision       ---
+---    speed, which can be 0, and a NaN accumulator never recovers.                                                  ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -110,7 +117,6 @@ function cloak:remove(is_destroying)
     end
 end
 
--- FIXME : This fails if the NPC sees the actor before the cloak is applied, right now you need to break vision for this to take effect
 function cloak:get_visible_value(npc, who, time_delta, time_quant, luminosity, velocity_factor, velocity, distance, object_distance, always_visible_distance)
     local original_value = self.m_cache.visibility_functor(npc, who, time_delta, time_quant, luminosity, velocity_factor, velocity, distance, object_distance, always_visible_distance)
 
@@ -119,7 +125,7 @@ function cloak:get_visible_value(npc, who, time_delta, time_quant, luminosity, v
     end
 
     if object_distance > self.m_cloak_npc_see_distance then
-        return 0
+        return -time_delta / time_quant
     end
 
     local distance_factor = 1 - (object_distance / self.m_cloak_npc_see_distance)
