@@ -7,9 +7,9 @@
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a cloaking booster usable by a Nanosuit mode.                              ---
 ---                                                                                                                  ---
----    The booster only decides which items are cloaked : the swapping itself belongs to the core's m_cloak.         ---
----    An item leaving its slot is restored right away. When the booster is removed, its items are handed over       ---
----    instead, so that they fade out with the suit and are restored when the cloak finishes.                        ---
+---    The booster picks which items are cloaked, and the core's m_cloak swaps them. An item leaving its slot is     ---
+---    restored right away. When the booster is removed, its items are handed over instead, to fade out with the     ---
+---    suit.                                                                                                         ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 

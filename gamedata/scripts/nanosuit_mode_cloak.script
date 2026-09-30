@@ -2,21 +2,19 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 29/09/2026                                                                                             ---
+---    Date : 30/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
 ---                                                                                                                  ---
----    The engine adds get_visible_value() to a per-NPC accumulator clamped to [0, visibility_threshold], and        ---
----    the actor stays seen while it sits at the threshold. Returning 0 would only freeze it, so an NPC that had     ---
----    already spotted the actor kept seeing it until line of sight broke. Beyond the see distance, the hook         ---
----    returns a negative value on the same scale as the gain instead, so the NPC loses the actor about as fast      ---
----    as it would have spotted it. That value must stay finite : the engine multiplies it by the NPC's vision       ---
----    speed, which can be 0, and a NaN accumulator never recovers.                                                  ---
+---    The engine adds get_visible_value() to a per-NPC accumulator clamped to [0, visibility_threshold], and the    ---
+---    actor stays seen while it sits at the threshold. Beyond the see distance, the hook returns a negative value   ---
+---    on the gain's scale, so the NPC loses the actor about as fast as it would have spotted it; 0 would only       ---
+---    freeze the accumulator. The value must stay finite : the engine multiplies it by the NPC's vision speed,      ---
+---    which can be 0, and a NaN accumulator never recovers.                                                         ---
 ---                                                                                                                  ---
----    The look of the cloak belongs to the core's m_cloak (nanosuit_cloak.script) : this mode engages it and        ---
----    disengages it, and the cloak finishes its own fade after the mode is gone. Everything gameplay, the NPC       ---
----    vision, the drain and the sounds, stops with the mode.                                                        ---
+---    The look belongs to the core's m_cloak, which this mode engages and disengages, and which finishes its fade   ---
+---    after the mode is gone. The NPC vision, the drain and the sounds stop with the mode.                          ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 

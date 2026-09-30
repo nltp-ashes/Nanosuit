@@ -2,20 +2,19 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/09/2026                                                                                             ---
+---    Date : 30/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to drive the glow of the Nanosuit's weave through the shader bus.                                 ---
 ---                                                                                                                  ---
----    The shader that reads this is shaders/r3/models_nanosuit_glow.s. It takes one float4 lane :                   ---
----    rgb is the color of the light the weave emits, w is its strength, and an all zero lane emits                  ---
----    nothing at all, which is what armor and cloak modes want.                                                     ---
+---    shaders/r3/models_nanosuit_glow.s reads one float4 lane : rgb is the color of the light the weave emits, w    ---
+---    its strength. An all zero lane, which armor and cloak modes want, emits nothing.                              ---
 ---                                                                                                                  ---
----    Each mode declares its own m_glow_settings in its constructor, abstract_mode:apply() pushes it and            ---
----    abstract_mode:remove() clears it, and this class fades between whatever the last two were.                    ---
+---    Each mode declares its m_glow_settings in its constructor, abstract_mode:apply() pushes it,                   ---
+---    abstract_mode:remove() clears it, and this class fades between the last two.                                  ---
 ---                                                                                                                  ---
----    Needs an exe carrying the shader bus and a DX10 or DX11 renderer. Without either, the class                   ---
----    still exists but does nothing, so the suit simply never glows.                                                ---
+---    Without an exe carrying the shader bus or a DX10 or DX11 renderer, the class does nothing and the suit never  ---
+---    glows.                                                                                                        ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 

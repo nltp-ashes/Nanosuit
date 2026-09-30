@@ -7,25 +7,20 @@
 ---                                                                                                                  ---
 ---    Script shader for the Nanosuit cloak mode, a port of Crysis's CloakLayer.cfx.                                 ---
 ---                                                                                                                  ---
----    The cloaked surface is a single strict-sorted pass in the forward phase, with Crysis's own states for         ---
----    its refraction pass : alpha blended, z tested and z written. Forward, because it refracts the scene           ---
----    behind it and the engine copies that scene to $user$generic_temp right before the forward phase. Strict       ---
----    sorted, because that is what puts HUD geometry into the forward phase too, rather than in the g-buffer,       ---
----    and a strict-sorted element only ever draws its first pass : nanosuit_cloak.ps explains how both of           ---
----    Crysis's passes fit in one.                                                                                   ---
+---    One strict-sorted forward pass, with the states of Crysis's refraction pass : alpha blended, z tested and z   ---
+---    written. Forward, because it refracts $user$generic_temp, the copy of the scene the engine takes right before ---
+---    that phase. Strict-sorted, because that also brings HUD geometry into it; such an element only draws its      ---
+---    first pass, and nanosuit_cloak.ps folds Crysis's two into one.                                                ---
 ---                                                                                                                  ---
----    There is no l_point element, so a cloaked surface casts no shadow.                                            ---
+---    With no l_point element, a cloaked surface casts no shadow.                                                   ---
 ---                                                                                                                  ---
----    It runs the engine's own deffer_model_bump-hq vertex shader, so a shader pack's TAA jitter applies to it      ---
----    like to any other model.                                                                                      ---
+---    Runs the engine's own deffer_model_bump-hq vertex shader, so a shader pack's TAA jitter applies.              ---
 ---                                                                                                                  ---
 ---    Textures :                                                                                                    ---
----      t_base    the surface's own diffuse texture, unused but kept so that it identifies the surface              ---
----      t_second  the surface's normal map, whose "#" error map must exist next to it. Anything without a           ---
----                normal map of its own gets nanosuit\cloak\cloak_flat_bump, see nanosuit_cloak.script              ---
+---      t_base    the surface's diffuse, unused but kept to identify the surface                                    ---
+---      t_second  the surface's normal map, with its "#" error map, or nanosuit\cloak\cloak_flat_bump               ---
 ---                                                                                                                  ---
----    The cloak itself is driven from Lua by nanosuit_cloak.script, through the "nanosuit_cloak" shader bus         ---
----    lane. See the header of nanosuit_cloak.ps for its layout.                                                     ---
+---    Driven by nanosuit_cloak.script through the "nanosuit_cloak" shader bus lane, laid out in nanosuit_cloak.ps.  ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 

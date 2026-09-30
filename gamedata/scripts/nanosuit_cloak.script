@@ -7,38 +7,24 @@
 ---                                                                                                                  ---
 ---    Script used to drive the cloak shader of the Nanosuit, and to swap the surfaces it covers.                    ---
 ---                                                                                                                  ---
----    On DX10 and DX11 the cloaked surfaces run shaders/r3/models_nanosuit_cloak.s, a port of Crysis's cloak,       ---
----    driven through the "nanosuit_cloak" shader bus lane :                                                         ---
----      x : refraction falloff, 1 for full strength                                                                 ---
----      y : unused, the sparks are held at a fixed level in the shader                                              ---
----      z : light amount, how much light reaches the suit                                                           ---
----      w : cloak blend, 0 uncloaked, 1 fully cloaked                                                               ---
+---    On DX10 and DX11, cloaked surfaces run shaders/r3/models_nanosuit_cloak.s, driven through the                 ---
+---    "nanosuit_cloak" shader bus lane : x = refraction falloff, y = unused, z = light amount, w = cloak blend. DX9 ---
+---    gets the old xanomaly pattern.                                                                                ---
 ---                                                                                                                  ---
----    The cloak refracts through each surface's own normal map, so a surface's texture becomes "diffuse,bump",      ---
----    which the blender receives as t_base and t_second. The engine's bump names come from .thm files that Lua      ---
----    cannot read, so <diffuse>_bump is looked up, error map included, and a surface without both gets the flat     ---
----    nanosuit\cloak\cloak_flat_bump instead of the magenta placeholder. DX9 keeps the old xanomaly pattern.        ---
+---    The shader refracts through each surface's normal map, so a surface's texture becomes "diffuse,bump". Lua     ---
+---    cannot read the .thm files that name the bumps, so <diffuse>_bump and its # error map are probed, with        ---
+---    nanosuit\cloak\cloak_flat_bump as the fallback.                                                               ---
 ---                                                                                                                  ---
----    The blend follows Crysis's CRenderProxy, which moves a layer's blend by 255 per second toward its target,     ---
----    so the cloak takes a second to engage and the same to fade. On uncloak, the blend runs down by 0.25 before    ---
----    the suit's own shaders come back : from full cloak that ends at 0.75, where Crysis's suit is whole again,     ---
----    since it draws the suit's own material under the cloak with an opacity of min(1, 4 * (1 - blend)). X-Ray      ---
----    cannot draw both at once, so the rest of Crysis's fade, the cloak over an opaque suit, is left out. The       ---
----    tail is a fixed 0.25 rather than a fixed 0.75 because the suit here is invisible from the first frame of      ---
----    the cloak : uncloaking during the fade-in would otherwise snap straight back to visible. Either way that      ---
----    is a quarter of a second of the refraction swelling back, which is what the suit shimmers back in with.       ---
+---    As in Crysis, the blend moves by 1 per second both ways. On uncloak, the suit's own shaders come back 0.25    ---
+---    below the current blend : Crysis draws the suit again under the cloak from 0.75 down, which X-Ray cannot. The ---
+---    offset is relative so that uncloaking mid fade-in does not snap back to visible.                              ---
 ---                                                                                                                  ---
----    Everything the cloak covers is swapped once and restored once. Engaging again during the tail only turns      ---
----    the blend around, and keeps the shaders saved the first time, which are the surfaces' own and not the         ---
----    cloak. Which items are covered is the booster's call : it restores an item leaving its slot right away, and   ---
----    one that leaves during the tail is restored with the rest when the cloak finishes. On destroy, the items are  ---
----    restored but the actor is not : the core is destroyed when the suit is taken off, and the new outfit brings   ---
----    its own visuals.                                                                                              ---
+---    Surfaces are swapped once and restored once, so engaging again during the fade-out keeps the shaders first    ---
+---    saved. The booster picks the items, and restores one leaving its slot right away, or with the rest during the ---
+---    fade-out. On destroy, the actor is not restored, as the next outfit brings its own visuals.                   ---
 ---                                                                                                                  ---
----    The light amount is the actor's luminosity, which X-Ray clamps to 1 and builds from unit scale colours.       ---
----    Crysis sums the same terms, ambient, sun and lights, in HDR, which the shader makes up for on the sparks      ---
----    alone. Here it is only doubled in first person, as Remastered's r_CloakFirstPersonLightScale (2.0) does,      ---
----    where the only cloaked surfaces in view are the HUD models.                                                   ---
+---    The light amount is the actor's luminosity, doubled in first person like Remastered's                         ---
+---    r_CloakFirstPersonLightScale.                                                                                 ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
