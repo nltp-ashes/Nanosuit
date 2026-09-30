@@ -1,4 +1,4 @@
-## **v0.14.0 - 29/09/2026 - Beta Build**
+## **v0.14.0 - 30/09/2026 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.14.0/total?label=Downloads)]()
 
@@ -9,6 +9,7 @@
 
 **• Changes :**
 > - Made the suit voice MCM option per-suit instead of global to the entire addon;
+> - Replaced the cloak mode shader with a port of Crysis' own cloak shader (refraction, hex pattern, chromatic aberration, and occasional sparks);
 
 **• Bug fixes :**
 > - Fix indicators not using each suit's UI theme and instead always been green like the default Nanosuit 1.0 HUD colors;

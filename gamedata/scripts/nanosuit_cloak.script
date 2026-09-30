@@ -1,0 +1,258 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 30/09/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to drive the cloak shader of the Nanosuit, and to swap the surfaces it covers.                    ---
+---                                                                                                                  ---
+---    On DX10 and DX11 the cloaked surfaces run shaders/r3/models_nanosuit_cloak.s, a port of Crysis's cloak,       ---
+---    driven through the "nanosuit_cloak" shader bus lane :                                                         ---
+---      x : refraction falloff, 1 for full strength                                                                 ---
+---      y : unused, the sparks are held at a fixed level in the shader                                              ---
+---      z : light amount, how much light reaches the suit                                                           ---
+---      w : cloak blend, 0 uncloaked, 1 fully cloaked                                                               ---
+---                                                                                                                  ---
+---    The cloak refracts through each surface's own normal map, so a surface's texture becomes "diffuse,bump",      ---
+---    which the blender receives as t_base and t_second. The engine's bump names come from .thm files that Lua      ---
+---    cannot read, so <diffuse>_bump is looked up, error map included, and a surface without both gets the flat     ---
+---    nanosuit\cloak\cloak_flat_bump instead of the magenta placeholder. DX9 keeps the old xanomaly pattern.        ---
+---                                                                                                                  ---
+---    The blend follows Crysis's CRenderProxy, which moves a layer's blend by 255 per second toward its target,     ---
+---    so the cloak takes a second to engage and the same to fade. On uncloak, the blend runs down by 0.25 before    ---
+---    the suit's own shaders come back : from full cloak that ends at 0.75, where Crysis's suit is whole again,     ---
+---    since it draws the suit's own material under the cloak with an opacity of min(1, 4 * (1 - blend)). X-Ray      ---
+---    cannot draw both at once, so the rest of Crysis's fade, the cloak over an opaque suit, is left out. The       ---
+---    tail is a fixed 0.25 rather than a fixed 0.75 because the suit here is invisible from the first frame of      ---
+---    the cloak : uncloaking during the fade-in would otherwise snap straight back to visible. Either way that      ---
+---    is a quarter of a second of the refraction swelling back, which is what the suit shimmers back in with.       ---
+---                                                                                                                  ---
+---    Everything the cloak covers is swapped once and restored once. Engaging again during the tail only turns      ---
+---    the blend around, and keeps the shaders saved the first time, which are the surfaces' own and not the         ---
+---    cloak. Which items are covered is the booster's call : it restores an item leaving its slot right away, and   ---
+---    one that leaves during the tail is restored with the rest when the cloak finishes. On destroy, the items are  ---
+---    restored but the actor is not : the core is destroyed when the suit is taken off, and the new outfit brings   ---
+---    its own visuals.                                                                                              ---
+---                                                                                                                  ---
+---    The light amount is the actor's luminosity, which X-Ray clamps to 1 and builds from unit scale colours.       ---
+---    Crysis sums the same terms, ambient, sun and lights, in HDR, which the shader makes up for on the sparks      ---
+---    alone. Here it is only doubled in first person, as Remastered's r_CloakFirstPersonLightScale (2.0) does,      ---
+---    where the only cloaked surfaces in view are the HUD models.                                                   ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+actor_cameras_enum      = nanosuit_utils.actor_cameras_enum
+
+-- Constants
+SHADER_BUS_LANE         = "nanosuit_cloak"
+SHADER_BUS_OWNER        = "Nanosuit"
+SHADER_BUS_DESCRIPTION  = "Nanosuit cloak, x = refraction falloff, y = unused, z = light amount, w = cloak blend"
+
+-- Globals
+shader_bus_token        = nil
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function get_bus_token()
+    if not shader_bus_token then
+        shader_bus_token = shader_bus.try_register(SHADER_BUS_LANE, SHADER_BUS_OWNER, SHADER_BUS_DESCRIPTION)
+    end
+    return shader_bus_token
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Callbacks registration
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function on_game_start()
+    get_bus_token()
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Cloak class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "cloak"
+
+function cloak:__init(core)
+    self.m_core = core
+
+    -- Constants
+    self.m_blend_speed = 1
+    self.m_tail_blend = 0.25
+    self.m_refraction_falloff = 1
+    self.m_first_person_light_scale = 2
+    self.m_cloak_textures = {
+        [[nanosuit\cloak\cloak_hex_ddn]],
+        [[nanosuit\cloak\cloak_perlin]],
+        [[nanosuit\cloak\cloak_noise3d]],
+        [[nanosuit\cloak\cloak_sparks]],
+        [[nanosuit\cloak\cloak_flat_bump]],
+        [[nanosuit\cloak\cloak_flat_bump#]],
+    }
+
+    -- Variables
+    self.m_active = false
+    self.m_engaged = false
+    self.m_blend = 0
+    self.m_restore_blend = 0
+    self.m_last_update = 0
+    self.m_objects = {}
+
+    -- Prefetch textures
+    if nanosuit_utils.is_modern_renderer() then
+        for _, texture in ipairs(self.m_cloak_textures) do
+            game.prefetch_texture(texture .. ".dds")
+        end
+    else
+        game.prefetch_texture([[nanosuit\cloak_pattern_old.dds]])
+    end
+end
+
+function cloak:destroy()
+    if self.m_active then
+        UnregisterScriptCallback("actor_on_update", self)
+    end
+
+    for id, _ in pairs(self.m_objects) do
+        if id ~= AC_ID then
+            self:remove_object(id)
+        end
+    end
+    self.m_objects = {}
+
+    self:write(0, 0, 0)
+
+    self.m_active = false
+    self.m_engaged = false
+    self.m_core = nil
+end
+
+function cloak:engage()
+    if not self.m_active then
+        self.m_active = true
+        self.m_blend = 0
+        self.m_last_update = time_global()
+        RegisterScriptCallback("actor_on_update", self)
+    end
+
+    self.m_engaged = true
+    self:add_object(db.actor)
+end
+
+function cloak:disengage()
+    self.m_engaged = false
+    self.m_restore_blend = math.max(self.m_blend - self.m_tail_blend, 0)
+
+    if self.m_active and self.m_blend <= self.m_restore_blend then
+        self:finish()
+    end
+end
+
+function cloak:finish()
+    UnregisterScriptCallback("actor_on_update", self)
+
+    for id, _ in pairs(self.m_objects) do
+        self:remove_object(id)
+    end
+
+    self.m_objects = {}
+    self.m_active = false
+
+    self:write(0, 0, 0)
+end
+
+function cloak:add_object(obj)
+    local id = obj:id()
+    if self.m_objects[id] then
+        return
+    end
+    self.m_objects[id] = { hud = obj:get_shaders(true), world = obj:get_shaders() }
+
+    for idx, save in pairs(self.m_objects[id].hud) do
+        if type(save) == "table" then
+            local shader, texture = self:get_cloak_shader(save.texture)
+            obj:set_shader(idx, shader, texture, true)
+        end
+    end
+    for idx, save in pairs(self.m_objects[id].world) do
+        if type(save) == "table" then
+            local shader, texture = self:get_cloak_shader(save.texture)
+            obj:set_shader(idx, shader, texture)
+        end
+    end
+end
+
+function cloak:remove_object(id)
+    local saved = self.m_objects[id]
+    if not saved then
+        return
+    end
+    self.m_objects[id] = nil
+
+    local obj = level.object_by_id(id)
+    if not obj then
+        return
+    end
+
+    for idx, save in pairs(saved.hud) do
+        if type(save) == "table" then
+            obj:set_shader(idx, save.shader, save.texture, true)
+        end
+    end
+    for idx, save in pairs(saved.world) do
+        if type(save) == "table" then
+            obj:set_shader(idx, save.shader, save.texture)
+        end
+    end
+end
+
+function cloak:actor_on_update()
+    local tg = time_global()
+    local delta = (tg - self.m_last_update) / 1000
+    self.m_last_update = tg
+
+    local direction = self.m_engaged and 1 or -1
+    self.m_blend = clamp(self.m_blend + direction * delta * self.m_blend_speed, 0, 1)
+
+    if not self.m_engaged and self.m_blend <= self.m_restore_blend then
+        self:finish()
+        return
+    end
+
+    local light_scale = level.get_active_cam() == actor_cameras_enum.first_eye and self.m_first_person_light_scale or 1
+    local light_amount = db.actor:get_luminocity() * light_scale
+
+    self:write(self.m_refraction_falloff, light_amount, self.m_blend)
+end
+
+function cloak:write(refraction_falloff, light_amount, blend)
+    local token = get_bus_token()
+    if token then
+        shader_bus.set(token, refraction_falloff, 0, light_amount, blend)
+    end
+end
+
+function cloak:get_cloak_shader(texture)
+    if not nanosuit_utils.is_modern_renderer() then
+        return [[models\xanomaly]], [[nanosuit\cloak_pattern_old]]
+    end
+
+    local diffuse = string.match(texture or "", "^[^,]*")
+    local bump = diffuse .. "_bump"
+    local fs = getFS()
+
+    if not (fs:exist("$game_textures$", bump .. ".dds") and fs:exist("$game_textures$", bump .. "#.dds")) then
+        bump = [[nanosuit\cloak\cloak_flat_bump]]
+    end
+
+    return [[models\nanosuit_cloak]], diffuse .. "," .. bump
+end
