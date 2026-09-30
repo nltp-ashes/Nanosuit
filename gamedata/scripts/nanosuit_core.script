@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 29/09/2026                                                                                             ---
+---    Date : 30/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -181,8 +181,8 @@ function core:__init()
     }
 
     -- Shaders
-    self.m_glow = nanosuit_glow.glow(self)
-    self.m_cloak = nanosuit_cloak.cloak(self)
+    self.m_glow = nanosuit_shader_glow.glow(self)
+    self.m_cloak = nanosuit_shader_cloak.cloak(self)
 
     -- Default mode initialization
     self.m_default_mode = armor_modes_enum.armor

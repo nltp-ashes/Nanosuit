@@ -20,7 +20,8 @@
 ---      t_base    the surface's diffuse, unused but kept to identify the surface                                    ---
 ---      t_second  the surface's normal map, with its "#" error map, or nanosuit\cloak\cloak_flat_bump               ---
 ---                                                                                                                  ---
----    Driven by nanosuit_cloak.script through the "nanosuit_cloak" shader bus lane, laid out in nanosuit_cloak.ps.  ---
+---    Driven by nanosuit_shader_cloak.script through the "nanosuit_cloak" shader bus lane, laid out in              ---
+---    nanosuit_cloak.ps.                                                                                            ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
