@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 22/09/2026                                                                                             ---
+---    Date : 03/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -543,6 +543,21 @@ function get_named_location(location_name)
         position = vector():set(tonumber(position[1]), tonumber(position[2]), tonumber(position[3])),
         orientation = vector():set(tonumber(orientation[1] or 0), tonumber(orientation[2] or 0), tonumber(orientation[3] or 0))
     }
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Texture functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function get_bump_for_texture(texture, default)
+    local bump = texture .. "_bump"
+    local fs = getFS()
+
+    if fs:exist("$game_textures$", bump .. ".dds") and fs:exist("$game_textures$", bump .. "#.dds") then
+        return bump
+    else
+        return default
+    end
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------

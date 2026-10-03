@@ -8,20 +8,17 @@
 ---    Script used to drive the cloak shader of the Nanosuit, and to swap the surfaces it covers.                    ---
 ---                                                                                                                  ---
 ---    On DX10 and DX11, cloaked surfaces run shaders/r3/models_nanosuit_cloak.s, driven through the                 ---
----    "nanosuit_cloak" shader bus lane : x = refraction falloff, y = unused, z = light amount, w = cloak blend. DX9 ---
----    gets the old xanomaly pattern.                                                                                ---
+---    "nanosuit_cloak" shader bus lane :                                                                            ---
+---    - x = refraction falloff                                                                                      ---
+---    - y = unused                                                                                                  ---
+---    - z = light amount                                                                                            ---
+---    - w = cloak blend                                                                                             ---
+---                                                                                                                  ---
+---    DX8 and DX9 gets the old xanomaly shader and hex pattern.                                                     ---
 ---                                                                                                                  ---
 ---    The shader refracts through each surface's normal map, so a surface's texture becomes "diffuse,bump". Lua     ---
 ---    cannot read the .thm files that name the bumps, so <diffuse>_bump and its # error map are probed, with        ---
 ---    nanosuit\cloak\cloak_flat_bump as the fallback.                                                               ---
----                                                                                                                  ---
----    As in Crysis, the blend moves by 1 per second both ways. On uncloak, the suit's own shaders come back 0.25    ---
----    below the current blend : Crysis draws the suit again under the cloak from 0.75 down, which X-Ray cannot. The ---
----    offset is relative so that uncloaking mid fade-in does not snap back to visible.                              ---
----                                                                                                                  ---
----    Surfaces are swapped once and restored once, so engaging again during the fade-out keeps the shaders first    ---
----    saved. The booster picks the items, and restores one leaving its slot right away, or with the rest during the ---
----    fade-out. On destroy, the actor is not restored, as the next outfit brings its own visuals.                   ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -157,16 +154,12 @@ function cloak:add_object(obj)
     self.m_objects[id] = { hud = obj:get_shaders(true), world = obj:get_shaders() }
 
     for idx, save in pairs(self.m_objects[id].hud) do
-        if type(save) == "table" then
-            local shader, texture = self:get_cloak_shader(save.texture)
-            obj:set_shader(idx, shader, texture, true)
-        end
+        local shader, texture = self:get_cloak_shader(save.texture)
+        obj:set_shader(idx, shader, texture, true)
     end
     for idx, save in pairs(self.m_objects[id].world) do
-        if type(save) == "table" then
-            local shader, texture = self:get_cloak_shader(save.texture)
-            obj:set_shader(idx, shader, texture)
-        end
+        local shader, texture = self:get_cloak_shader(save.texture)
+        obj:set_shader(idx, shader, texture)
     end
 end
 
@@ -183,14 +176,10 @@ function cloak:remove_object(id)
     end
 
     for idx, save in pairs(saved.hud) do
-        if type(save) == "table" then
-            obj:set_shader(idx, save.shader, save.texture, true)
-        end
+        obj:set_shader(idx, save.shader, save.texture, true)
     end
     for idx, save in pairs(saved.world) do
-        if type(save) == "table" then
-            obj:set_shader(idx, save.shader, save.texture)
-        end
+        obj:set_shader(idx, save.shader, save.texture)
     end
 end
 
@@ -223,12 +212,7 @@ function cloak:get_cloak_shader(texture)
     end
 
     local diffuse = string.match(texture or "", "^[^,]*")
-    local bump = diffuse .. "_bump"
-    local fs = getFS()
-
-    if not (fs:exist("$game_textures$", bump .. ".dds") and fs:exist("$game_textures$", bump .. "#.dds")) then
-        bump = [[nanosuit\cloak\cloak_flat_bump]]
-    end
+    local bump = nanosuit_utils.get_bump_for_texture(diffuse, [[nanosuit\cloak\cloak_flat_bump]])
 
     return [[models\nanosuit_cloak]], diffuse .. "," .. bump
 end
