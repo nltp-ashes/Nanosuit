@@ -2,7 +2,7 @@
 //                                                                                                                    //
 //     Original Author(s) : NLTP_ASHES                                                                                //
 //     Edited : N/A                                                                                                   //
-//     Date : 30/09/2026                                                                                              //
+//     Date : 03/10/2026                                                                                              //
 //     License : Public Domain Mark 1.0 Universal                                                                     //
 //                                                                                                                    //
 //     Pixel shader for the Nanosuit cloak mode.                                                                      //
@@ -32,6 +32,7 @@
 //       - the rim reads |NdotE|, so a normal map pointing away from the eye does not fill the face                   //
 //       - the refraction takes three taps, Crysis's fourth only fed the engaging blur                                //
 //       - the sparks are phased by the distance to the model origin rather than the world one                        //
+//       - the sparks noise drifts on its own, uneven, wrapped axes, where Crysis's frac(time) snaps back each cycle  //
 //       - the scene is tinted a faint purple, after the addon's previous cloak shader                                //
 //                                                                                                                    //
 //====================================================================================================================//
@@ -67,6 +68,7 @@ static const float  CLOAK_SPARKS_NOISE_SCALE   = 1.50f;
 static const float  CLOAK_SPARKS_ALPHA         = 0.80f;  // Not Crysis's
 static const float  CLOAK_SPARKS_LIGHT_SCALE   = 3.00f;  // X-Ray's unit scale light to Crysis's HDR
 static const float  CLOAK_SPARKS_SPEED         = 0.50f;  // How fast the sparks crawl. Crysis's is 0.8, slowed by eye
+static const float3 CLOAK_SPARKS_DRIFT         = float3(0.31f, -0.23f, 0.19f); // Noise tiles per time unit, uneven
 static const float3 CLOAK_CA_OFFSETS           = float3(0.040f, 0.030f, 0.015f);
 static const float  CLOAK_AVG_OFFSET           = 0.83f;  // Pixels. Crysis's 1.66 * PS_ScreenSize.zw, a half texel
 static const float  CLOAK_TIME_SCALE           = 0.40f;  // Crysis samples the clock as PB_time 0.4
@@ -218,8 +220,9 @@ float4 main(p_bumped I, float4 hpos : SV_Position) : SV_Target
 
     float3 pos_m = cloak_model_pos(I.position.xyz);
 
-    float3 sparks_variation = frac(time) * 0.2f + nrm_t * 0.02f;
-    float  sparks_noise = cloak_noise((pos_m * CLOAK_SPARKS_TILLING + sparks_variation) * CLOAK_SPARKS_NOISE_SCALE);
+    // The noise tiles at 1, so the drift is wrapped in noise space, where the wrap is seamless
+    float3 sparks_variation = (pos_m * CLOAK_SPARKS_TILLING + nrm_t * 0.02f) * CLOAK_SPARKS_NOISE_SCALE;
+    float  sparks_noise = cloak_noise(sparks_variation + frac(time * CLOAK_SPARKS_DRIFT));
 
     // Three palette peaks sweep through the noise at three rates, the second shifted by the distance to the origin
     float  sparks_timer = time * CLOAK_SPARKS_SPEED;
