@@ -1,0 +1,218 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 03/10/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to drive the cloak shader of the Nanosuit, and to swap the surfaces it covers.                    ---
+---                                                                                                                  ---
+---    On DX10 and DX11, cloaked surfaces run shaders/r3/models_nanosuit_cloak.s, driven through the                 ---
+---    "nanosuit_cloak" shader bus lane :                                                                            ---
+---    - x = refraction falloff                                                                                      ---
+---    - y = unused                                                                                                  ---
+---    - z = light amount                                                                                            ---
+---    - w = cloak blend                                                                                             ---
+---                                                                                                                  ---
+---    DX8 and DX9 gets the old xanomaly shader and hex pattern.                                                     ---
+---                                                                                                                  ---
+---    The shader refracts through each surface's normal map, so a surface's texture becomes "diffuse,bump". Lua     ---
+---    cannot read the .thm files that name the bumps, so <diffuse>_bump and its # error map are probed, with        ---
+---    nanosuit\cloak\cloak_flat_bump as the fallback.                                                               ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Constants
+SHADER_BUS_LANE         = "nanosuit_cloak"
+SHADER_BUS_OWNER        = "Nanosuit"
+SHADER_BUS_DESCRIPTION  = "Nanosuit cloak, x = refraction falloff, y = unused, z = light amount, w = cloak blend"
+
+-- Globals
+shader_bus_token        = nil
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function get_bus_token()
+    if not shader_bus_token then
+        shader_bus_token = shader_bus.try_register(SHADER_BUS_LANE, SHADER_BUS_OWNER, SHADER_BUS_DESCRIPTION)
+    end
+    return shader_bus_token
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Callbacks registration
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function on_game_start()
+    get_bus_token()
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Cloak class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "cloak"
+
+function cloak:__init(core)
+    self.m_core = core
+
+    -- Constants
+    self.m_blend_speed = 1
+    self.m_tail_blend = 0.25
+    self.m_refraction_falloff = 1
+    self.m_cloak_textures = {
+        [[nanosuit\cloak\cloak_hex_ddn]],
+        [[nanosuit\cloak\cloak_perlin]],
+        [[nanosuit\cloak\cloak_noise3d]],
+        [[nanosuit\cloak\cloak_sparks]],
+        [[nanosuit\cloak\cloak_flat_bump]],
+        [[nanosuit\cloak\cloak_flat_bump#]],
+    }
+
+    -- Variables
+    self.m_active = false
+    self.m_engaged = false
+    self.m_blend = 0
+    self.m_restore_blend = 0
+    self.m_last_update = 0
+    self.m_objects = {}
+
+    -- Prefetch textures
+    if nanosuit_utils.is_modern_renderer() then
+        for _, texture in ipairs(self.m_cloak_textures) do
+            game.prefetch_texture(texture .. ".dds")
+        end
+    else
+        game.prefetch_texture([[nanosuit\cloak_pattern_old.dds]])
+    end
+end
+
+function cloak:destroy()
+    if self.m_active then
+        UnregisterScriptCallback("actor_on_update", self)
+    end
+
+    for id, _ in pairs(self.m_objects) do
+        if id ~= AC_ID then
+            self:remove_object(id)
+        end
+    end
+    self.m_objects = {}
+
+    self:write(0, 0, 0)
+
+    self.m_active = false
+    self.m_engaged = false
+    self.m_core = nil
+end
+
+function cloak:engage()
+    if not self.m_active then
+        self.m_active = true
+        self.m_blend = 0
+        self.m_last_update = time_global()
+        RegisterScriptCallback("actor_on_update", self)
+    end
+
+    self.m_engaged = true
+    self:add_object(db.actor)
+end
+
+function cloak:disengage()
+    self.m_engaged = false
+    self.m_restore_blend = math.max(self.m_blend - self.m_tail_blend, 0)
+
+    if self.m_active and self.m_blend <= self.m_restore_blend then
+        self:finish()
+    end
+end
+
+function cloak:finish()
+    UnregisterScriptCallback("actor_on_update", self)
+
+    for id, _ in pairs(self.m_objects) do
+        self:remove_object(id)
+    end
+
+    self.m_objects = {}
+    self.m_active = false
+
+    self:write(0, 0, 0)
+end
+
+function cloak:add_object(obj)
+    local id = obj:id()
+    if self.m_objects[id] then
+        return
+    end
+    self.m_objects[id] = { hud = obj:get_shaders(true), world = obj:get_shaders() }
+
+    for idx, save in pairs(self.m_objects[id].hud) do
+        local shader, texture = self:get_cloak_shader(save.texture)
+        obj:set_shader(idx, shader, texture, true)
+    end
+    for idx, save in pairs(self.m_objects[id].world) do
+        local shader, texture = self:get_cloak_shader(save.texture)
+        obj:set_shader(idx, shader, texture)
+    end
+end
+
+function cloak:remove_object(id)
+    local saved = self.m_objects[id]
+    if not saved then
+        return
+    end
+    self.m_objects[id] = nil
+
+    local obj = level.object_by_id(id)
+    if not obj then
+        return
+    end
+
+    for idx, save in pairs(saved.hud) do
+        obj:set_shader(idx, save.shader, save.texture, true)
+    end
+    for idx, save in pairs(saved.world) do
+        obj:set_shader(idx, save.shader, save.texture)
+    end
+end
+
+function cloak:actor_on_update()
+    local tg = time_global()
+    local delta = (tg - self.m_last_update) / 1000
+    self.m_last_update = tg
+
+    local direction = self.m_engaged and 1 or -1
+    self.m_blend = clamp(self.m_blend + direction * delta * self.m_blend_speed, 0, 1)
+
+    if not self.m_engaged and self.m_blend <= self.m_restore_blend then
+        self:finish()
+        return
+    end
+
+    self:write(self.m_refraction_falloff, db.actor:get_luminocity(), self.m_blend)
+end
+
+function cloak:write(refraction_falloff, light_amount, blend)
+    local token = get_bus_token()
+    if token then
+        shader_bus.set(token, refraction_falloff, 0, light_amount, blend)
+    end
+end
+
+function cloak:get_cloak_shader(texture)
+    if not nanosuit_utils.is_modern_renderer() then
+        return [[models\xanomaly]], [[nanosuit\cloak_pattern_old]]
+    end
+
+    local diffuse = string.match(texture or "", "^[^,]*")
+    local bump = nanosuit_utils.get_bump_for_texture(diffuse, [[nanosuit\cloak\cloak_flat_bump]])
+
+    return [[models\nanosuit_cloak]], diffuse .. "," .. bump
+end

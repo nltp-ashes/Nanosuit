@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 22/09/2026                                                                                             ---
+---    Date : 30/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -180,8 +180,9 @@ function core:__init()
         [armor_modes_enum.cloak] = nanosuit_mode_cloak[armor_modes_enum.cloak](self, armor_modes_enum.cloak)
     }
 
-    -- Weave glow
-    self.m_glow = nanosuit_glow.glow(self)
+    -- Shaders
+    self.m_glow = nanosuit_shader_glow.glow(self)
+    self.m_cloak = nanosuit_shader_cloak.cloak(self)
 
     -- Default mode initialization
     self.m_default_mode = armor_modes_enum.armor
@@ -240,6 +241,7 @@ function core:destroy()
     self.m_interference:destroy()
     self.m_psy_voices:destroy()
     self.m_glow:destroy()
+    self.m_cloak:destroy()
 end
 
 function core:save()
