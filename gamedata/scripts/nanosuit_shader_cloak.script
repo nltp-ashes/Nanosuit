@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/09/2026                                                                                             ---
+---    Date : 03/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to drive the cloak shader of the Nanosuit, and to swap the surfaces it covers.                    ---
@@ -23,17 +23,11 @@
 ---    saved. The booster picks the items, and restores one leaving its slot right away, or with the rest during the ---
 ---    fade-out. On destroy, the actor is not restored, as the next outfit brings its own visuals.                   ---
 ---                                                                                                                  ---
----    The light amount is the actor's luminosity, doubled in first person like Remastered's                         ---
----    r_CloakFirstPersonLightScale.                                                                                 ---
----                                                                                                                  ---
 ---==================================================================================================================---
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
-
--- Imports
-actor_cameras_enum      = nanosuit_utils.actor_cameras_enum
 
 -- Constants
 SHADER_BUS_LANE         = "nanosuit_cloak"
@@ -75,7 +69,6 @@ function cloak:__init(core)
     self.m_blend_speed = 1
     self.m_tail_blend = 0.25
     self.m_refraction_falloff = 1
-    self.m_first_person_light_scale = 2
     self.m_cloak_textures = {
         [[nanosuit\cloak\cloak_hex_ddn]],
         [[nanosuit\cloak\cloak_perlin]],
@@ -214,10 +207,7 @@ function cloak:actor_on_update()
         return
     end
 
-    local light_scale = level.get_active_cam() == actor_cameras_enum.first_eye and self.m_first_person_light_scale or 1
-    local light_amount = db.actor:get_luminocity() * light_scale
-
-    self:write(self.m_refraction_falloff, light_amount, self.m_blend)
+    self:write(self.m_refraction_falloff, db.actor:get_luminocity(), self.m_blend)
 end
 
 function cloak:write(refraction_falloff, light_amount, blend)
