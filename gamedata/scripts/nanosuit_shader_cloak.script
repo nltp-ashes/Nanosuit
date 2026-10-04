@@ -7,13 +7,37 @@
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract cloak shader, swapping the surfaces the cloak covers.          ---
 ---                                                                                                                  ---
----    Each suit picks its cloak shader in MCM, and the core builds the matching subclass when the suit is put on or ---
----    the game is loaded. Subclasses name the shader and texture of each surface, and the textures to prefetch.     ---
+---    Each suit picks its cloak shader in MCM, and cloak() builds the matching subclass when the suit is put        ---
+---    on or the game is loaded. Subclasses name each surface's shader and texture, and the textures to prefetch.    ---
 ---                                                                                                                  ---
 ---    Every surface is swapped once and restored once, so the saved shaders are always the surface's own. By        ---
 ---    default the cloak swaps in and out at once.                                                                   ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+cloak_shaders_enum      = nanosuit_utils.cloak_shaders_enum
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function cloak(core)
+    local cloak_shaders = {
+        [cloak_shaders_enum.crysis] = nanosuit_shader_cloak_crysis.crysis,
+        [cloak_shaders_enum.lv] = nanosuit_shader_cloak_lv.lv,
+        [cloak_shaders_enum.legacy] = nanosuit_shader_cloak_legacy.legacy
+    }
+    local cloak_shader = nanosuit_mcm.get_outfit_config("cloak_shader", cloak_shaders_enum.crysis)
+    if not cloak_shaders[cloak_shader] then
+        printf("![NS] ERROR | Abstract Cloak | Unknown cloak shader %s", cloak_shader)
+    end
+    return cloak_shaders[cloak_shader](core)
+end
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Cloak shader class
