@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 22/09/2026                                                                                            -->
+<!--    Date : 04/10/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -259,11 +259,11 @@
         <text>Select the shader used by the suit's cloak mode. Only the DX8/9 compatible shader works on DirectX 8 and 9.</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_lst_default">
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_lst_crysis">
         <text>Default shader</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_lst_lvutner">
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_lst_lv">
         <text>LVutner edition</text>
     </string>
 

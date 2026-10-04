@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/09/2026                                                                                             ---
+---    Date : 04/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -17,6 +17,7 @@
 localized_and_genderized_sound_object  = nanosuit_utils.localized_and_genderized_sound_object
 actor_slots_enum                       = nanosuit_utils.actor_slots_enum
 armor_modes_enum                       = nanosuit_utils.armor_modes_enum
+cloak_shaders_enum                     = nanosuit_utils.cloak_shaders_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- General functions
@@ -181,8 +182,18 @@ function core:__init()
     }
 
     -- Shaders
+    local cloak_shaders = {
+        [cloak_shaders_enum.crysis] = nanosuit_shader_cloak_crysis.crysis,
+        [cloak_shaders_enum.lv] = nanosuit_shader_cloak_lv.lv,
+        [cloak_shaders_enum.legacy] = nanosuit_shader_cloak_legacy.legacy
+    }
+    local cloak_shader = nanosuit_mcm.get_outfit_config("cloak_shader", cloak_shaders_enum.crysis)
+    if not cloak_shaders[cloak_shader] then
+        printf("![NS] ERROR | Core | Unknown cloak shader %s", cloak_shader)
+    end
+
     self.m_glow = nanosuit_shader_glow.glow(self)
-    self.m_cloak = nanosuit_shader_cloak.cloak(self)
+    self.m_cloak = cloak_shaders[cloak_shader](self)
 
     -- Default mode initialization
     self.m_default_mode = armor_modes_enum.armor

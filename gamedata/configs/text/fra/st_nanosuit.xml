@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 22/09/2026                                                                                            -->
+<!--    Date : 04/10/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -259,11 +259,11 @@
         <text>Choix du shader utilisé par le mode camouflage de la combinaison. Seul le shader compatible DX8/9 fonctionne sous DirectX 8 et 9.</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_lst_default">
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_lst_crysis">
         <text>Shader par défaut</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_lst_lvutner">
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_lst_lv">
         <text>Édition LVutner</text>
     </string>
 

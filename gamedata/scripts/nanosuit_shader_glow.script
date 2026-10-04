@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/09/2026                                                                                             ---
+---    Date : 04/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to drive the glow of the Nanosuit's weave through the shader bus.                                 ---
@@ -13,17 +13,13 @@
 ---    Each mode declares its m_glow_settings in its constructor, abstract_mode:apply() pushes it,                   ---
 ---    abstract_mode:remove() clears it, and this class fades between the last two.                                  ---
 ---                                                                                                                  ---
----    Without an exe carrying the shader bus or a DX10 or DX11 renderer, the class does nothing and the suit never  ---
----    glows.                                                                                                        ---
+---    On DX8 and DX9, the class does nothing and the suit never glows.                                              ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
-
--- Imports
-renderers_enum         = nanosuit_utils.renderers_enum
 
 -- Constants
 SHADER_BUS_LANE        = "nanosuit_glow"
@@ -38,7 +34,7 @@ shader_bus_token       = nil
 -- ---------------------------------------------------------------------------------------------------------------------
 
 function get_bus_token()
-    if shader_bus and not shader_bus_token then
+    if not shader_bus_token then
         shader_bus_token = shader_bus.try_register(SHADER_BUS_LANE, SHADER_BUS_OWNER, SHADER_BUS_DESCRIPTION)
     end
     return shader_bus_token
@@ -64,7 +60,7 @@ function glow:__init(core)
     -- Constants
     self.m_fade_duration = 0.5
     self.m_glow_settings_off = { r = 0.0, g = 0.0, b = 0.0, strength = 0.0 }
-    self.m_supported = get_bus_token() ~= nil and nanosuit_utils.is_modern_renderer()
+    self.m_supported = nanosuit_utils.is_modern_renderer()
 
     -- Variables
     self.m_from = self.m_glow_settings_off
@@ -73,7 +69,7 @@ function glow:__init(core)
     self.m_last_update = time_global()
 
     if not self.m_supported then
-        printf("[NS] Suit glow disabled, no shader bus or unsupported renderer")
+        printf("[NS] Suit glow disabled, unsupported renderer")
         return
     end
 

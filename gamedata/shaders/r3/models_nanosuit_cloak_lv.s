@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : LVutner                                                                                  ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 07/07/2025                                                                                             ---
+---    Date : 04/10/2026                                                                                             ---
 ---    License : See README.md                                                                                       ---
 ---                                                                                                                  ---
 ---    Script shader for the Nanosuit cloak mode, LVutner edition.                                                   ---

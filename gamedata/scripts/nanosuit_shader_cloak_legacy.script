@@ -5,7 +5,8 @@
 ---    Date : 04/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
----    Script used to handle the logic of a ADS (Aim Down Sights) booster usable by a Nanosuit mode.                 ---
+---    Script used to drive the legacy cloak shader, vanilla's models\xanomaly over a hex pattern. It is the only    ---
+---    cloak shader DX8 and DX9 can run.                                                                             ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -13,42 +14,21 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
--- Imports
-actor_slots_enum        = nanosuit_utils.actor_slots_enum
-
 -- ---------------------------------------------------------------------------------------------------------------------
--- Speed mode class
+-- Legacy cloak shader class
 -- ---------------------------------------------------------------------------------------------------------------------
 
-class "ads" (nanosuit_booster.abstract_booster)
+class "legacy" (nanosuit_shader_cloak.abstract_cloak)
 
-function ads:__init(core, name) super(core, name)
-    self.m_ads_factor = 0.6
-
-    -- Cache
-    self.m_cache[actor_slots_enum.knife] = { enabled = true, obj_id = nil, ads_time = nil }
-    self.m_cache[actor_slots_enum.pistol] = { enabled = true, obj_id = nil, ads_time = nil }
-    self.m_cache[actor_slots_enum.rifle] = { enabled = true, obj_id = nil, ads_time = nil }
+function legacy:__init(core) super(core)
 end
 
-function ads:filter(obj, slot)
-    if not nanosuit_booster.abstract_booster.filter(self, obj, slot) then
-        return false
-    end
-    return IsWeapon(obj) and obj:cast_Weapon()
+function legacy:get_prefetch_textures()
+    return {
+        [[models\xanomaly]]
+    }
 end
 
-function ads:set(obj, slot)
-    nanosuit_booster.abstract_booster.set(self, obj, slot)
-
-    local wpn_obj = obj:cast_Weapon()
-    self.m_cache[slot].ads_time = wpn_obj:GetZoomRotateTime()
-    wpn_obj:SetZoomRotateTime(self.m_cache[slot].ads_time * self.m_ads_factor)
-end
-
-function ads:unset(obj, slot, is_removing)
-    local wpn_obj = obj:cast_Weapon()
-    wpn_obj:SetZoomRotateTime(self.m_cache[slot].ads_time)
-
-    nanosuit_booster.abstract_booster.unset(self, obj, slot, is_removing)
+function legacy:get_shader_texture_pair(texture)
+    return [[models\xanomaly]], [[nanosuit\cloak\cloak_pattern_old]]
 end

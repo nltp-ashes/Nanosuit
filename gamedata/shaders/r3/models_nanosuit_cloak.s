@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/09/2026                                                                                             ---
+---    Date : 04/10/2026                                                                                             ---
 ---    License : Public Domain Mark 1.0 Universal                                                                    ---
 ---                                                                                                                  ---
 ---    Script shader for the Nanosuit cloak mode, a port of Crysis's CloakLayer.cfx.                                 ---
@@ -20,7 +20,7 @@
 ---      t_base    the surface's diffuse, unused but kept to identify the surface                                    ---
 ---      t_second  the surface's normal map, with its "#" error map, or nanosuit\cloak\cloak_flat_bump               ---
 ---                                                                                                                  ---
----    Driven by nanosuit_shader_cloak.script through the "nanosuit_cloak" shader bus lane, laid out in              ---
+---    Driven by nanosuit_shader_cloak_crysis.script through the "nanosuit_cloak" shader bus lane, laid out in       ---
 ---    nanosuit_cloak.ps.                                                                                            ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
