@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/09/2026                                                                                             ---
+---    Date : 04/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
@@ -23,10 +23,6 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 
 -- Imports
-armor_modes_enum        = nanosuit_utils.armor_modes_enum
-actor_slots_enum        = nanosuit_utils.actor_slots_enum
-renderers_enum          = nanosuit_utils.renderers_enum
-actor_cameras_enum      = nanosuit_utils.actor_cameras_enum
 energy_drain_enum       = nanosuit_utils.energy_drain_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
