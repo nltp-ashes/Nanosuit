@@ -208,10 +208,10 @@ function cloak:fetch_shader()
             [[nanosuit\cloak\cloak_flat_bump#]],
         },
         [cloak_shaders_enum.lvutner] = {
-            [[nanosuit\cloak_pattern]]
+            [[nanosuit\cloak\cloak_pattern]]
         },
         [cloak_shaders_enum.legacy] = {
-            [[nanosuit\cloak_pattern_old]]
+            [[nanosuit\cloak\cloak_pattern_old]]
         }
     }
 
@@ -227,11 +227,11 @@ end
 
 function cloak:get_shader_texture_pair(texture)
     if self.m_shader == cloak_shaders_enum.legacy then
-        return [[models\xanomaly]], [[nanosuit\cloak_pattern_old]]
+        return [[models\xanomaly]], [[nanosuit\cloak\cloak_pattern_old]]
     end
 
     if self.m_shader == cloak_shaders_enum.lvutner then
-        return [[models\nanosuit_cloak_lv]], [[nanosuit\cloak_pattern]]
+        return [[models\nanosuit_cloak_lv]], [[nanosuit\cloak\cloak_pattern]]
     end
 
     if self.m_shader == cloak_shaders_enum.default then

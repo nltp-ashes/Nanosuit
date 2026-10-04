@@ -21,7 +21,7 @@ function normal(shader, t_base, t_second, t_detail)
           :distort         (true)
 
     shader:dx10texture     ("s_image",   "$user$generic_temp")
-    shader:dx10texture     ("s_pattern", [[nanosuit\cloak_pattern]])
+    shader:dx10texture     ("s_pattern", [[nanosuit\cloak\cloak_pattern]])
 
     shader:dx10sampler     ("smp_base")
     shader:dx10sampler     ("smp_linear")
