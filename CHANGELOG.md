@@ -1,4 +1,4 @@
-## **v0.14.0 - 29/09/2026 - Beta Build**
+## **v0.14.0 - 30/09/2026 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.14.0/total?label=Downloads)]()
 
@@ -6,9 +6,11 @@
 > - Added a new shader to make the Nanosuit 1.0 and the Korean Nanosuit glow red and yellow respectively in strength and speed modes;
 > - Added an option in MCM to select a "UI theme" for each Nanosuit, and a new section in MCM customize every color of each theme;
 > - Added rare Ceph grunts and horns when wearing the Nanosuit and being low on psy-health;
+> - Added an option in MCM to select the cloak mode shader for each Nanosuit (default, LVutner edition, or DX8/9 compatible, which DirectX 8 & 9 users must select);
 
 **• Changes :**
 > - Made the suit voice MCM option per-suit instead of global to the entire addon;
+> - Replaced the default cloak mode shader with a port of Crysis' own cloak shader (refraction, hex pattern, chromatic aberration, and occasional sparks);
 
 **• Bug fixes :**
 > - Fix indicators not using each suit's UI theme and instead always been green like the default Nanosuit 1.0 HUD colors;

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 31/08/2025                                                                                             ---
+---    Date : 04/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a melee damage booster usable by a Nanosuit mode.                          ---
@@ -49,7 +49,7 @@ function melee:set(obj, slot)
     wpn_obj:SetHit2Impulse(wpn_obj:GetHit2Impulse() * self.m_impulse_factor)
 end
 
-function melee:unset(obj, slot)
+function melee:unset(obj, slot, is_removing)
     local wpn_obj = obj:cast_Knife()
     wpn_obj:SetHit1Power(wpn_obj:GetHit1Power() / self.m_power_factor)
     wpn_obj:SetHit2Power(wpn_obj:GetHit2Power() / self.m_power_factor)
@@ -58,5 +58,5 @@ function melee:unset(obj, slot)
     wpn_obj:SetHit1Impulse(wpn_obj:GetHit1Impulse() / self.m_impulse_factor)
     wpn_obj:SetHit2Impulse(wpn_obj:GetHit2Impulse() / self.m_impulse_factor)
 
-    nanosuit_booster.abstract_booster.unset(self, obj, slot)
+    nanosuit_booster.abstract_booster.unset(self, obj, slot, is_removing)
 end

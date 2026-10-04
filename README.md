@@ -58,7 +58,7 @@ Cloak mode :
 - Shooting while in cloak mode completely depletes the suit's energy
 - The player is cloaked from NPC's vision while cloak mode is active
 - When getting too close to an NPC while in cloak mode, they will start to notice you
-- On semi-modern renderers (DirectX 10 & 11), the cloak mode uses a custom-made shader
+- The cloak mode shader can be selected per suit in MCM : a port of Crysis' cloak shader (default), LVutner's shader, or a DX8/9 compatible one, which DirectX 8 & 9 users must select
 
 HUD :
 - Added a custom HUD when wearing the suit. HUD dynamically switches from vanilla HUD to the Nanosuit's and back

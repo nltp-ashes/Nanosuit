@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 25/07/2025                                                                                             ---
+---    Date : 04/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a ADS (Aim Down Sights) booster usable by a Nanosuit mode.                 ---
@@ -46,9 +46,9 @@ function ads:set(obj, slot)
     wpn_obj:SetZoomRotateTime(self.m_cache[slot].ads_time * self.m_ads_factor)
 end
 
-function ads:unset(obj, slot)
+function ads:unset(obj, slot, is_removing)
     local wpn_obj = obj:cast_Weapon()
     wpn_obj:SetZoomRotateTime(self.m_cache[slot].ads_time)
 
-    nanosuit_booster.abstract_booster.unset(self, obj, slot)
+    nanosuit_booster.abstract_booster.unset(self, obj, slot, is_removing)
 end

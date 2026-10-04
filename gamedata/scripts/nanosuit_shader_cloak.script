@@ -1,0 +1,131 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 04/10/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the logic of an abstract cloak shader, swapping the surfaces the cloak covers.          ---
+---                                                                                                                  ---
+---    Each suit picks its cloak shader in MCM, and cloak() builds the matching subclass when the suit is put        ---
+---    on or the game is loaded. Subclasses name each surface's shader and texture, and the textures to prefetch.    ---
+---                                                                                                                  ---
+---    Every surface is swapped once and restored once, so the saved shaders are always the surface's own. By        ---
+---    default the cloak swaps in and out at once.                                                                   ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+cloak_shaders_enum      = nanosuit_utils.cloak_shaders_enum
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function cloak(core)
+    local cloak_shaders = {
+        [cloak_shaders_enum.crysis] = nanosuit_shader_cloak_crysis.crysis,
+        [cloak_shaders_enum.lv] = nanosuit_shader_cloak_lv.lv,
+        [cloak_shaders_enum.legacy] = nanosuit_shader_cloak_legacy.legacy
+    }
+    local cloak_shader = nanosuit_mcm.get_outfit_config("cloak_shader", cloak_shaders_enum.crysis)
+    if not cloak_shaders[cloak_shader] then
+        printf("![NS] ERROR | Abstract Cloak | Unknown cloak shader %s", cloak_shader)
+    end
+    return cloak_shaders[cloak_shader](core)
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Cloak shader class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "abstract_cloak"
+
+function abstract_cloak:__init(core)
+    self.m_core = core
+
+    -- Variables
+    self.m_objects = {}
+
+    -- Prefetch shader textures to avoid stutters
+    for _, texture in ipairs(self:get_prefetch_textures()) do
+        game.prefetch_texture(texture .. ".dds")
+    end
+end
+
+function abstract_cloak:destroy()
+    -- Not the actor : the core only goes away with the suit or the level, which both replace the actor's visual
+    for id, _ in pairs(self.m_objects) do
+        if id ~= AC_ID then
+            self:remove_object(id)
+        end
+    end
+    self.m_objects = {}
+
+    self.m_core = nil
+end
+
+function abstract_cloak:engage()
+    self:add_object(db.actor)
+end
+
+function abstract_cloak:disengage()
+    self:finish()
+end
+
+function abstract_cloak:finish()
+    for id, _ in pairs(self.m_objects) do
+        self:remove_object(id)
+    end
+    self.m_objects = {}
+end
+
+function abstract_cloak:add_object(obj)
+    local id = obj:id()
+    if self.m_objects[id] then
+        return
+    end
+    self.m_objects[id] = { hud = obj:get_shaders(true), world = obj:get_shaders() }
+
+    for idx, save in pairs(self.m_objects[id].hud) do
+        local shader, texture = self:get_shader_texture_pair(save.texture)
+        obj:set_shader(idx, shader, texture, true)
+    end
+    for idx, save in pairs(self.m_objects[id].world) do
+        local shader, texture = self:get_shader_texture_pair(save.texture)
+        obj:set_shader(idx, shader, texture)
+    end
+end
+
+function abstract_cloak:remove_object(id)
+    local saved = self.m_objects[id]
+    if not saved then
+        return
+    end
+    self.m_objects[id] = nil
+
+    local obj = level.object_by_id(id)
+    if not obj then
+        return
+    end
+
+    for idx, save in pairs(saved.hud) do
+        obj:set_shader(idx, save.shader, save.texture, true)
+    end
+    for idx, save in pairs(saved.world) do
+        obj:set_shader(idx, save.shader, save.texture)
+    end
+end
+
+function abstract_cloak:get_prefetch_textures()
+    return {}
+end
+
+function abstract_cloak:get_shader_texture_pair(texture)
+    printf("![NS] ERROR | Cloak shader | get_shader_texture_pair is not implemented")
+    return nil, nil
+end

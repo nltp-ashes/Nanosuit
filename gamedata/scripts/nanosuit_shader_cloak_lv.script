@@ -1,0 +1,29 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 04/10/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to drive LVutner's cloak shader, shaders/r3/models_nanosuit_cloak_lv.s.                           ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- LVutner cloak shader class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "lv" (nanosuit_shader_cloak.abstract_cloak)
+
+function lv:__init(core) super(core)
+end
+
+function lv:get_prefetch_textures()
+    return {
+        [[nanosuit\cloak\cloak_pattern]]
+    }
+end
+
+function lv:get_shader_texture_pair(texture)
+    return [[models\nanosuit_cloak_lv]], [[nanosuit\cloak\cloak_pattern]]
+end

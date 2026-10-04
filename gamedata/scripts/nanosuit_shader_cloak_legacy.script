@@ -1,0 +1,30 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 04/10/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to drive the legacy cloak shader, vanilla's models\xanomaly over a hex pattern. It is the only    ---
+---    cloak shader DX8 and DX9 can run.                                                                             ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Legacy cloak shader class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "legacy" (nanosuit_shader_cloak.abstract_cloak)
+
+function legacy:__init(core) super(core)
+end
+
+function legacy:get_prefetch_textures()
+    return {
+        [[nanosuit\cloak\cloak_pattern_old]]
+    }
+end
+
+function legacy:get_shader_texture_pair(texture)
+    return [[models\xanomaly]], [[nanosuit\cloak\cloak_pattern_old]]
+end

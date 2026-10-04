@@ -4,7 +4,7 @@
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
 <!--    Edited : Russian translation (VodoXleb - 21/08/2026)                                                         -->
-<!--    Date : 22/09/2026                                                                                            -->
+<!--    Date : 04/10/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -250,6 +250,26 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_suit_gender_lst_female">
         <text>Женский</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader">
+        <text>Шейдер режима маскировки</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_desc">
+        <text>Выберите шейдер, используемый режимом маскировки костюма. На DirectX 8 и 9 работает только шейдер, совместимый с DX8/9.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_lst_crysis">
+        <text>Шейдер по умолчанию</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_lst_lv">
+        <text>Версия LVutner</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_lst_legacy">
+        <text>Совместимый с DX8/9</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_burn">
