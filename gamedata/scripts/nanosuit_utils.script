@@ -39,6 +39,7 @@ energy_drain_enum       = { nightvision = "nightvision", nanovision = "nanovisio
 vision_perk_enum        = { nightvision = "nightvision", nanovision = "nanovision"}
 color_anm_flags_enum    = { cyclic = 1, only_alpha = 2, text_color = 4, texture_color = 8 }
 themes_enum             = { nanosuit_1 = "nanosuit_1", nanosuit_korean = "nanosuit_korean", nanosuit_2 = "nanosuit_2" }
+cloak_shaders_enum      = { default = "default", lvutner = "lvutner", legacy = "legacy" }
 
 -- Whitelists
 machine_guns_whitelist = {

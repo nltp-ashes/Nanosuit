@@ -58,7 +58,7 @@ Cloak mode :
 - Shooting while in cloak mode completely depletes the suit's energy
 - The player is cloaked from NPC's vision while cloak mode is active
 - When getting too close to an NPC while in cloak mode, they will start to notice you
-- On semi-modern renderers (DirectX 10 & 11), the cloak mode uses a port of Crysis' cloak shader
+- The cloak mode shader can be selected per suit in MCM : a port of Crysis' cloak shader (default), LVutner's shader, or a DX8/9 compatible one, which DirectX 8 & 9 users must select
 
 HUD :
 - Added a custom HUD when wearing the suit. HUD dynamically switches from vanilla HUD to the Nanosuit's and back
@@ -195,7 +195,7 @@ Credit goes to these people for their work contained in this addon :
 |                         **wookie, 3vtiger**                         |                                Port of the Korean Nanosuit third person model                                |                         Proprietary                          |
 |                          **punished__joe**                          |                Ported the Nanosuit hands and edited them to fit S.T.A.L.K.E.R.'s proportions                 |                         Proprietary                          |
 |       **[xfightervn](https://www.deviantart.com/xfightervn)**       |                                     Reused their art for the MCM banner                                      |                         Proprietary                          |
-|              **[LVutner](https://github.com/LVutner)**              |                      Provided an improved shader (no longer in use) for the cloak mode                       |                   See [LICENSE](#license)                    |
+|              **[LVutner](https://github.com/LVutner)**              |                                Provided an improved shader for the cloak mode                                |                   See [LICENSE](#license)                    |
 |         **[Crepis](https://www.moddb.com/members/cr3pis)**          |                       Provided an inventory icon for the defibrillator powerbank item                        |                         Proprietary                          |
 |                             **Tronex**                              |                            Reused their "Indicators" HUD from actor_status.script                            |                         Proprietary                          |
 |                          **Stalker_Boss**                           |                                      Translated the addon into Russian                                       |                         Proprietary                          |
@@ -230,6 +230,11 @@ This means you're allowed to redistribute and/or adapt the work, as long as you 
 Content made by Blackgrowl is provided under the following license :
 ```
 The work can be reused, as long as you credit Blackgrowl for the work he did in this addon (texture work, model fixes).
+```
+
+Content made by LVutner is provided under the following license :
+```
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
 
 Content made by Catspaw is provided under the following terms :

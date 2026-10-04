@@ -251,6 +251,26 @@
         <text>Femme</text>
     </string>
 
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader">
+        <text>Shader du mode camouflage</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_desc">
+        <text>Choix du shader utilisé par le mode camouflage de la combinaison. Seul le shader compatible DX8/9 fonctionne sous DirectX 8 et 9.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_lst_default">
+        <text>Shader par défaut</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_lst_lvutner">
+        <text>Édition LVutner</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_lst_legacy">
+        <text>Compatible DX8/9</text>
+    </string>
+
     <string id="ui_mcm_nanosuit_nanosuit_configuration_burn">
         <text>Protection aux brulures</text>
     </string>

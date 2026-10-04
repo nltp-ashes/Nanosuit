@@ -251,6 +251,26 @@
         <text>Female</text>
     </string>
 
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader">
+        <text>Cloak shader</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_desc">
+        <text>Select the shader used by the suit's cloak mode. Only the DX8/9 compatible shader works on DirectX 8 and 9.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_lst_default">
+        <text>Default shader</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_lst_lvutner">
+        <text>LVutner edition</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_configuration_cloak_shader_lst_legacy">
+        <text>DX8/9 compatible</text>
+    </string>
+
     <string id="ui_mcm_nanosuit_nanosuit_configuration_burn">
         <text>Burn protection</text>
     </string>

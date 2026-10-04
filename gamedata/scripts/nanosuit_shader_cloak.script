@@ -7,14 +7,13 @@
 ---                                                                                                                  ---
 ---    Script used to drive the cloak shader of the Nanosuit, and to swap the surfaces it covers.                    ---
 ---                                                                                                                  ---
----    On DX10 and DX11, cloaked surfaces run shaders/r3/models_nanosuit_cloak.s, driven through the                 ---
----    "nanosuit_cloak" shader bus lane :                                                                            ---
----    - x = refraction falloff                                                                                      ---
----    - y = unused                                                                                                  ---
----    - z = light amount                                                                                            ---
----    - w = cloak blend                                                                                             ---
+---    Each suit picks its cloak shader in MCM, read when the suit is put on or the game is loaded :                 ---
+---    - default : shaders/r3/models_nanosuit_cloak.s, driven through the "nanosuit_cloak" shader bus lane :         ---
+---        x = refraction falloff, y = unused, z = light amount, w = cloak blend                                     ---
+---    - lvutner : shaders/r3/models_nanosuit_cloak_lv.s, LVutner's refraction, swapped in and out at once           ---
+---    - legacy  : the xanomaly shader and hex pattern, swapped in and out at once                                   ---
 ---                                                                                                                  ---
----    DX8 and DX9 gets the old xanomaly shader and hex pattern.                                                     ---
+---    Only the legacy one runs on DX8 and DX9, it is up to the player to select it.                                 ---
 ---                                                                                                                  ---
 ---    The shader refracts through each surface's normal map, so a surface's texture becomes "diffuse,bump". Lua     ---
 ---    cannot read the .thm files that name the bumps, so <diffuse>_bump and its # error map are probed, with        ---
@@ -25,6 +24,9 @@
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+cloak_shaders_enum      = nanosuit_utils.cloak_shaders_enum
 
 -- Constants
 SHADER_BUS_LANE         = "nanosuit_cloak"
@@ -66,14 +68,7 @@ function cloak:__init(core)
     self.m_blend_speed = 1
     self.m_tail_blend = 0.25
     self.m_refraction_falloff = 1
-    self.m_cloak_textures = {
-        [[nanosuit\cloak\cloak_hex_ddn]],
-        [[nanosuit\cloak\cloak_perlin]],
-        [[nanosuit\cloak\cloak_noise3d]],
-        [[nanosuit\cloak\cloak_sparks]],
-        [[nanosuit\cloak\cloak_flat_bump]],
-        [[nanosuit\cloak\cloak_flat_bump#]],
-    }
+    self.m_shader = self:fetch_shader()
 
     -- Variables
     self.m_active = false
@@ -82,15 +77,6 @@ function cloak:__init(core)
     self.m_restore_blend = 0
     self.m_last_update = 0
     self.m_objects = {}
-
-    -- Prefetch textures
-    if nanosuit_utils.is_modern_renderer() then
-        for _, texture in ipairs(self.m_cloak_textures) do
-            game.prefetch_texture(texture .. ".dds")
-        end
-    else
-        game.prefetch_texture([[nanosuit\cloak_pattern_old.dds]])
-    end
 end
 
 function cloak:destroy()
@@ -126,7 +112,10 @@ end
 
 function cloak:disengage()
     self.m_engaged = false
-    self.m_restore_blend = math.max(self.m_blend - self.m_tail_blend, 0)
+
+    -- Only the default shader fades, the others are restored right away
+    local tail_blend = self.m_shader == cloak_shaders_enum.default and self.m_tail_blend or 0
+    self.m_restore_blend = math.max(self.m_blend - tail_blend, 0)
 
     if self.m_active and self.m_blend <= self.m_restore_blend then
         self:finish()
@@ -154,11 +143,11 @@ function cloak:add_object(obj)
     self.m_objects[id] = { hud = obj:get_shaders(true), world = obj:get_shaders() }
 
     for idx, save in pairs(self.m_objects[id].hud) do
-        local shader, texture = self:get_cloak_shader(save.texture)
+        local shader, texture = self:get_shader_texture_pair(save.texture)
         obj:set_shader(idx, shader, texture, true)
     end
     for idx, save in pairs(self.m_objects[id].world) do
-        local shader, texture = self:get_cloak_shader(save.texture)
+        local shader, texture = self:get_shader_texture_pair(save.texture)
         obj:set_shader(idx, shader, texture)
     end
 end
@@ -206,13 +195,52 @@ function cloak:write(refraction_falloff, light_amount, blend)
     end
 end
 
-function cloak:get_cloak_shader(texture)
-    if not nanosuit_utils.is_modern_renderer() then
+function cloak:fetch_shader()
+    local shader = nanosuit_mcm.get_outfit_config("cloak_shader", cloak_shaders_enum.default)
+
+    local textures = {
+        [cloak_shaders_enum.default] = {
+            [[nanosuit\cloak\cloak_hex_ddn]],
+            [[nanosuit\cloak\cloak_perlin]],
+            [[nanosuit\cloak\cloak_noise3d]],
+            [[nanosuit\cloak\cloak_sparks]],
+            [[nanosuit\cloak\cloak_flat_bump]],
+            [[nanosuit\cloak\cloak_flat_bump#]],
+        },
+        [cloak_shaders_enum.lvutner] = {
+            [[nanosuit\cloak_pattern]]
+        },
+        [cloak_shaders_enum.legacy] = {
+            [[nanosuit\cloak_pattern_old]]
+        }
+    }
+
+    -- Prefetch shader textures to avoid stutters
+    if textures[shader] then
+        for _, texture in ipairs(textures[shader]) do
+            game.prefetch_texture(texture .. ".dds")
+        end
+    end
+
+    return shader
+end
+
+function cloak:get_shader_texture_pair(texture)
+    if self.m_shader == cloak_shaders_enum.legacy then
         return [[models\xanomaly]], [[nanosuit\cloak_pattern_old]]
     end
 
-    local diffuse = string.match(texture or "", "^[^,]*")
-    local bump = nanosuit_utils.get_bump_for_texture(diffuse, [[nanosuit\cloak\cloak_flat_bump]])
+    if self.m_shader == cloak_shaders_enum.lvutner then
+        return [[models\nanosuit_cloak_lv]], [[nanosuit\cloak_pattern]]
+    end
 
-    return [[models\nanosuit_cloak]], diffuse .. "," .. bump
+    if self.m_shader == cloak_shaders_enum.default then
+        local diffuse = string.match(texture or "", "^[^,]*")
+        local bump = nanosuit_utils.get_bump_for_texture(diffuse, [[nanosuit\cloak\cloak_flat_bump]])
+
+        return [[models\nanosuit_cloak]], diffuse .. "," .. bump
+    end
+
+    printf("![NS] ERROR | Cloak shader | Unknown shader %s", self.m_shader)
+    return nil, nil
 end
