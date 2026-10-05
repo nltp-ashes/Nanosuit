@@ -12,13 +12,15 @@ const ENV_FILE = path.join(__dirname, "..", "..", "env", ".env");
 const CRLF_EXTENSIONS = [".script", ".ltx", ".xml", ".s", ".ps", ".vs", ".gs", ".cs", ".h", ".md"];
 const HEADER_LINES = 15;
 
-// <KEY>=<value>, one per line, # for comments, values unquoted
+// <KEY>=<value>, one per line, # for comments, values optionally wrapped in matching '' or ""
 function readEnv() {
     const env = {};
     if (!fs.existsSync(ENV_FILE)) return env;
     for (const line of fs.readFileSync(ENV_FILE, "utf8").split(/\r?\n/)) {
         const match = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/);
-        if (match && match[2]) env[match[1]] = match[2];
+        if (!match) continue;
+        const value = match[2].replace(/^(['"])(.*)\1$/, "$2");
+        if (value) env[match[1]] = value;
     }
     return env;
 }
