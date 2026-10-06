@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 14/08/2026                                                                                            -->
+<!--    Date : 07/10/2026                                                                                           -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    UI template for the Nanosuit tactical map.                                                                   -->
@@ -36,4 +36,9 @@
 
     <!-- Object icon -->
     <icon x="10" y="563" width="10" height="10" stretch="1" align="c" heading="1" heading_angle="0" />
+
+    <!-- Halloween theme : leaves, candles, skull, pumpkins, crow and cat sitting on the top edge -->
+    <halloween_pile x="56" y="512" width="184" height="76" stretch="1">
+        <texture>ui_nanosuit_halloween_pile</texture>
+    </halloween_pile>
 </w>

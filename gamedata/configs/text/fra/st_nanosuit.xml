@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 04/10/2026                                                                                            -->
+<!--    Date : 07/10/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -349,6 +349,10 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_korean">
         <text>Thème coréen</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_theme_halloween">
+        <text>Thème Halloween</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_general">

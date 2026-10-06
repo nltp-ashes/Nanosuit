@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 21/09/2026                                                                                             ---
+---    Date : 07/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to give every Nanosuit UI the colors of the theme the equipped outfit wears.                      ---
@@ -24,6 +24,7 @@ function get_theme()
     local theme = nanosuit_mcm.get_outfit_config("theme", themes_enum.nanosuit_1)
 
     return {
+        is_halloween = theme == themes_enum.halloween,
         shared = {
             text = get_color(theme, "text"),
             outline = get_color(theme, "outline"),

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 21/09/2026                                                                                             ---
+---    Date : 07/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -47,6 +47,11 @@ function ui_tacmap:__init(parent) super()
     self.m_ui_map = nanosuit_ui_tacmap_map.ui_tacmap_map(self)
     self.m_ui_map:Show(true)
     self:AttachChild(self.m_ui_map)
+
+    if self.m_parent.m_theme.is_halloween then
+        self.m_ui_halloween_pile = self.m_xml:InitStatic("halloween_pile", self)
+        nanosuit_utils.scale_ui_element(self.m_ui_halloween_pile, true, true, "left")
+    end
 end
 
 function ui_tacmap:__finalize()

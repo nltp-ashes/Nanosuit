@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : RavenAscendant                                                                           ---
 ---    Edited : NLTP_ASHES                                                                                           ---
----    Date : 04/10/2026                                                                                             ---
+---    Date : 07/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define the options in MCM.                                                                     ---
@@ -217,6 +217,44 @@ defaults = {
     ["nanosuit_2/indicators_warning_low"] = "255,255,255,50",
     ["nanosuit_2/indicators_warning_medium"] = "255,255,125,50",
     ["nanosuit_2/indicators_warning_high"] = "255,255,50,50",
+    -- halloween theme, General
+    ["halloween/text"] = "255,255,170,70",
+    ["halloween/outline"] = "200,235,115,20",
+    ["halloween/accent"] = "200,175,95,235",
+    ["halloween/alert"] = "255,255,35,35",
+    ["halloween/background"] = "200,255,235,215",
+    -- halloween theme, Status UI
+    ["halloween/status_energy"] = "255,255,128,0",
+    ["halloween/status_energy_bg"] = "200,58,30,8",
+    ["halloween/status_energy_off_bg"] = "200,24,24,24",
+    ["halloween/status_health"] = "255,125,205,35",
+    ["halloween/status_health_bg"] = "200,30,46,14",
+    ["halloween/status_health_off_bg"] = "200,24,24,24",
+    ["halloween/status_stamina"] = "255,170,95,235",
+    ["halloween/status_stamina_bg"] = "200,42,26,58",
+    ["halloween/status_stamina_off_bg"] = "200,24,24,24",
+    -- halloween theme, Tactical map UI
+    ["halloween/tacmap_map"] = "127,255,175,95",
+    ["halloween/tacmap_visibility_bg"] = "200,100,70,50",
+    ["halloween/tacmap_visibility_very_low"] = "255,125,205,35",
+    ["halloween/tacmap_visibility_low"] = "255,255,200,0",
+    ["halloween/tacmap_visibility_high"] = "255,255,128,0",
+    ["halloween/tacmap_visibility_very_high"] = "255,255,35,35",
+    ["halloween/tacmap_icon_default"] = "255,255,225,190",
+    ["halloween/tacmap_icon_looted"] = "255,150,130,120",
+    ["halloween/tacmap_icon_friend"] = "255,125,205,35",
+    ["halloween/tacmap_icon_neutral"] = "255,255,200,0",
+    ["halloween/tacmap_icon_enemy"] = "255,255,35,35",
+    ["halloween/tacmap_icon_primary_task"] = "255,125,205,35",
+    ["halloween/tacmap_icon_secondary_task"] = "255,255,200,0",
+    -- halloween theme, Auxiliaries UI
+    ["halloween/auxiliaries_nv_energy"] = "255,255,145,0",
+    ["halloween/auxiliaries_nv_energy_bg"] = "200,95,48,10",
+    ["halloween/auxiliaries_nv_energy_off_bg"] = "200,24,24,24",
+    -- halloween theme, Indicators UI
+    ["halloween/indicators_warning_low"] = "255,255,220,60",
+    ["halloween/indicators_warning_medium"] = "255,255,140,30",
+    ["halloween/indicators_warning_high"] = "255,255,35,35",
     -- Technical
     ["debug_mode"] = false
 }
@@ -325,6 +363,12 @@ function on_mcm_load()
                         text = "ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_korean",
                         sh = true,
                         gr = build_theme_page(themes_enum.nanosuit_korean)
+                    },
+                    {
+                        id = themes_enum.halloween,
+                        text = "ui_mcm_nanosuit_nanosuit_hud_ui_theme_halloween",
+                        sh = true,
+                        gr = build_theme_page(themes_enum.halloween)
                     }
                 }
             },
@@ -353,7 +397,7 @@ function build_outfit_page(section, name)
         { type = "track", val = mcm_types_enum.number, id = "energy_use_factor", def = defaults[section .. "/energy_use_factor"], hint = "nanosuit_nanosuit_configuration_energy_use_factor", min = 0, max = defaults[section .. "/energy_use_factor"] * 2, step = 0.1 },
         { type = "track", val = mcm_types_enum.number, id = "energy_regen_factor", def = defaults[section .. "/energy_regen_factor"], hint = "nanosuit_nanosuit_configuration_energy_regen_factor", min = 0, max = defaults[section .. "/energy_regen_factor"] * 2, step = 0.1 },
         { type = "list", val = mcm_types_enum.string, id = "vision_perk", def = defaults[section .. "/vision_perk"], hint = "nanosuit_nanosuit_configuration_vision_perk", no_str = true, content = { {vision_perk_enum.nightvision,"ui_mcm_nanosuit_nanosuit_configuration_vision_perk_lst_nightvision"}, {vision_perk_enum.nanovision,"ui_mcm_nanosuit_nanosuit_configuration_vision_perk_lst_nanovision"} } },
-        { type = "list", val = mcm_types_enum.string, id = "theme", def = defaults[section .. "/theme"], hint = "nanosuit_nanosuit_configuration_theme", no_str = true, content = { {themes_enum.nanosuit_1,"ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_1"}, {themes_enum.nanosuit_2,"ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_2"}, {themes_enum.nanosuit_korean,"ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_korean"} } },
+        { type = "list", val = mcm_types_enum.string, id = "theme", def = defaults[section .. "/theme"], hint = "nanosuit_nanosuit_configuration_theme", no_str = true, content = { {themes_enum.nanosuit_1,"ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_1"}, {themes_enum.nanosuit_2,"ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_2"}, {themes_enum.nanosuit_korean,"ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_korean"}, {themes_enum.halloween,"ui_mcm_nanosuit_nanosuit_hud_ui_theme_halloween"} } },
         { type = "list", val = mcm_types_enum.string, id = "suit_gender", def = defaults[section .. "/suit_gender"], hint = "nanosuit_nanosuit_configuration_suit_gender", no_str = true, content = { {gender_enum.male,"ui_mcm_nanosuit_nanosuit_configuration_suit_gender_lst_male"}, {gender_enum.female,"ui_mcm_nanosuit_nanosuit_configuration_suit_gender_lst_female"} } },
         { type = "line" },
         { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_armor" },

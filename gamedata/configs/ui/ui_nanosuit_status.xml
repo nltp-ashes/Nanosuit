@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 02/09/2025                                                                                            -->
+<!--    Date : 07/10/2026                                                                                           -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    UI template for the Nanosuit status hub.                                                                     -->
@@ -81,4 +81,15 @@
 
     <!-- Fire mode -->
     <fire_mode x="935" y="624" width="25" height="25" stretch="1" />
+
+    <!-- Halloween theme : cemetery and haunted house on the ammo box, ghost on the bars, web in the hexagon corner -->
+    <halloween_house x="844" y="566" width="124" height="66" stretch="1">
+        <texture>ui_nanosuit_halloween_house</texture>
+    </halloween_house>
+    <halloween_ghost x="778" y="624" width="54" height="54" stretch="1">
+        <texture>ui_nanosuit_halloween_ghost</texture>
+    </halloween_ghost>
+    <halloween_web x="966" y="634" width="46" height="72" stretch="1">
+        <texture>ui_nanosuit_halloween_web</texture>
+    </halloween_web>
 </w>
