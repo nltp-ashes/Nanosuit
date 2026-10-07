@@ -51,6 +51,12 @@ function ui_tacmap:__init(parent) super()
     if self.m_parent.m_theme.is_halloween then
         self.m_ui_halloween_pile = self.m_xml:InitStatic("halloween_pile", self)
         nanosuit_utils.scale_ui_element(self.m_ui_halloween_pile, true, true, "left")
+
+        self.m_ui_halloween_crow = self.m_xml:InitStatic("halloween_crow", self)
+        nanosuit_utils.scale_ui_element(self.m_ui_halloween_crow, true, true, "left")
+
+        self.m_ui_halloween_cat_eyes = self.m_xml:InitStatic("halloween_cat_eyes", self)
+        nanosuit_utils.scale_ui_element(self.m_ui_halloween_cat_eyes, true, true, "left")
     end
 end
 

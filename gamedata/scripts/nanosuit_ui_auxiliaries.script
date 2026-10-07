@@ -51,6 +51,9 @@ function ui_auxiliaries:__init(parent) super()
     arm.scale_ui(self.m_ui_nv_energy_bar:GetProgressStatic(), true, true, "left", self.m_ui_nv_energy_bar:GetWidth())
 
     if self.m_parent.m_theme.is_halloween then
+        self.m_ui_halloween_cobweb = self.m_xml:InitStatic("halloween_cobweb", self)
+        arm.scale_ui(self.m_ui_halloween_cobweb, true, true, "left")
+
         self.m_ui_halloween_skeleton = self.m_xml:InitStatic("halloween_skeleton", self)
         arm.scale_ui(self.m_ui_halloween_skeleton, true, true, "left")
     end

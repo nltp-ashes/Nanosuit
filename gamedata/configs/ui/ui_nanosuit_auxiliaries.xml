@@ -31,7 +31,10 @@
         </progress>
     </nv_energy_bar>
 
-    <!-- Halloween theme : skeleton hanging from the top-left corner -->
+    <!-- Halloween theme -->
+    <halloween_cobweb x="8" y="9" width="36" height="28" stretch="1">
+        <texture>ui_nanosuit_halloween_cobweb</texture>
+    </halloween_cobweb>
     <halloween_skeleton x="8" y="9" width="44" height="104" stretch="1">
         <texture>ui_nanosuit_halloween_skeleton</texture>
     </halloween_skeleton>

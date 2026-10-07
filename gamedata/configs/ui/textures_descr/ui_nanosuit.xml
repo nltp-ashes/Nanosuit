@@ -163,11 +163,25 @@
     </file>
 
     <!-- Halloween theme decorations -->
-    <file name="nanosuit\ui\hud\decorations\halloween.dds">
+    <file name="nanosuit\ui\hud\decorations\halloween\halloween.dds">
+        <texture id="ui_nanosuit_halloween_pile"               x="0"       y="0"      width="736"     height="304" />
+        <texture id="ui_nanosuit_halloween_house"              x="0"       y="308"    width="496"     height="264" />
+        <texture id="ui_nanosuit_halloween_web"                x="740"     y="0"      width="184"     height="288" />
+        <texture id="ui_nanosuit_halloween_cobweb"             x="500"     y="308"    width="144"     height="112" />
+    </file>
+    <file name="nanosuit\ui\hud\decorations\halloween\cat_eyes.dds"> <!-- .seq file -->
+        <texture id="ui_nanosuit_halloween_cat_eyes"           x="0"       y="0"      width="64"      height="28" />
+    </file>
+    <file name="nanosuit\ui\hud\decorations\halloween\crow.dds"> <!-- .seq file -->
+        <texture id="ui_nanosuit_halloween_crow"               x="0"       y="0"      width="176"     height="124" />
+    </file>
+    <file name="nanosuit\ui\hud\decorations\halloween\ghost.dds"> <!-- .seq file -->
+        <texture id="ui_nanosuit_halloween_ghost"              x="0"       y="0"      width="216"     height="216" />
+    </file>
+    <file name="nanosuit\ui\hud\decorations\halloween\bat.dds"> <!-- .seq file -->
+        <texture id="ui_nanosuit_halloween_bat"                x="0"       y="0"      width="224"     height="88" />
+    </file>
+    <file name="nanosuit\ui\hud\decorations\halloween\skeleton.dds"> <!-- .seq file -->
         <texture id="ui_nanosuit_halloween_skeleton"           x="0"       y="0"      width="176"     height="416" />
-        <texture id="ui_nanosuit_halloween_pile"               x="180"     y="0"      width="736"     height="304" />
-        <texture id="ui_nanosuit_halloween_web"                x="0"       y="420"    width="184"     height="288" />
-        <texture id="ui_nanosuit_halloween_house"              x="188"     y="420"    width="496"     height="264" />
-        <texture id="ui_nanosuit_halloween_ghost"              x="688"     y="420"    width="216"     height="216" />
     </file>
 </w>
