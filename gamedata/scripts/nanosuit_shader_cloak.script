@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 06/10/2026                                                                                             ---
+---    Date : 07/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract cloak shader, swapping the surfaces the cloak covers.          ---
@@ -12,8 +12,9 @@
 ---                                                                                                                  ---
 ---    Every surface is swapped once and restored once, so the saved shaders are always the surface's own.           ---
 ---                                                                                                                  ---
----    The item model a game.play_hud_motion() animation brings along is a fresh copy of its visual, loaded anew by  ---
----    every animation, so each one is swapped as its animation starts.                                              ---
+---    The item model a game.play_hud_motion() animation creates and the first person legs are fresh copies of their ---
+---    visual, loaded anew by every animation and every time the legs show again, so each copy is swapped as it is   ---
+---    created.                                                                                                      ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -53,6 +54,7 @@ function abstract_cloak:__init(core)
     -- Variables
     self.m_objects = {}
     self.m_hud_motion_item_cloaked = false
+    self.m_legs_cloaked = false
 
     -- Prefetch shader textures to avoid stutters
     for _, texture in ipairs(self:get_prefetch_textures()) do
@@ -61,16 +63,10 @@ function abstract_cloak:__init(core)
 end
 
 function abstract_cloak:destroy()
-    self:remove_hud_motion_item()
-
     -- Not the actor : the core only goes away with the suit or the level, which both replace the actor's visual
-    for id, _ in pairs(self.m_objects) do
-        if id ~= AC_ID then
-            self:remove_object(id)
-        end
-    end
-
-    self.m_objects = {}
+    self:remove_actor_objects()
+    self:remove_actor_legs()
+    self:remove_actor_hud_motion_item()
     self.m_core = nil
 end
 
@@ -78,9 +74,14 @@ function abstract_cloak:engage()
     self:add_object(db.actor)
 
     if not self.m_hud_motion_item_cloaked then
-        self:add_hud_motion_item()
+        self:add_actor_hud_motion_item()
     end
-    RegisterScriptCallback("actor_on_script_anim_play", self)
+    RegisterScriptCallback("actor_on_create_hud_motion_item", self)
+
+    if not self.m_legs_cloaked then
+        self:add_actor_legs()
+    end
+    RegisterScriptCallback("actor_on_create_legs", self)
 end
 
 function abstract_cloak:disengage()
@@ -88,16 +89,27 @@ function abstract_cloak:disengage()
 end
 
 function abstract_cloak:finish()
-    self:remove_hud_motion_item()
-
-    for id, _ in pairs(self.m_objects) do
-        self:remove_object(id)
-    end
-    self.m_objects = {}
+    self:remove_object(AC_ID)
+    self:remove_actor_objects()
+    self:remove_actor_legs()
+    self:remove_actor_hud_motion_item()
 end
 
-function abstract_cloak:actor_on_script_anim_play(section)
-    self:add_hud_motion_item()
+function abstract_cloak:actor_on_create_hud_motion_item(section)
+    self:add_actor_hud_motion_item()
+end
+
+function abstract_cloak:actor_on_create_legs(section)
+    self:add_actor_legs()
+end
+
+function abstract_cloak:remove_actor_objects()
+    for id, _ in pairs(self.m_objects) do
+        if id ~= AC_ID then
+            self:remove_object(id)
+        end
+    end
+    self.m_objects = {}
 end
 
 function abstract_cloak:add_object(obj)
@@ -137,7 +149,7 @@ function abstract_cloak:remove_object(id)
     end
 end
 
-function abstract_cloak:add_hud_motion_item()
+function abstract_cloak:add_actor_hud_motion_item()
     self.m_hud_motion_item_cloaked = true
 
     for idx, save in pairs(db.actor:get_hud_motion_item_shaders()) do
@@ -146,12 +158,30 @@ function abstract_cloak:add_hud_motion_item()
     end
 end
 
-function abstract_cloak:remove_hud_motion_item()
-    UnregisterScriptCallback("actor_on_script_anim_play", self)
+function abstract_cloak:remove_actor_hud_motion_item()
+    UnregisterScriptCallback("actor_on_create_hud_motion_item", self)
 
     if self.m_hud_motion_item_cloaked then
         self.m_hud_motion_item_cloaked = false
         db.actor:reset_hud_motion_item_shader(-1)
+    end
+end
+
+function abstract_cloak:add_actor_legs()
+    self.m_legs_cloaked = true
+
+    for idx, save in pairs(db.actor:get_legs_shaders()) do
+        local shader, texture = self:get_shader_texture_pair(save.texture)
+        db.actor:set_legs_shader(idx, shader, texture)
+    end
+end
+
+function abstract_cloak:remove_actor_legs()
+    UnregisterScriptCallback("actor_on_create_legs", self)
+
+    if self.m_legs_cloaked then
+        self.m_legs_cloaked = false
+        db.actor:reset_legs_shader(-1)
     end
 end
 
