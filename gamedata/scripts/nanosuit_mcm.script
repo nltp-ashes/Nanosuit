@@ -108,7 +108,6 @@ defaults = {
     ["nanosuit_1/outline"] = "200,99,125,102",
     ["nanosuit_1/accent"] = "200,250,173,44",
     ["nanosuit_1/alert"] = "255,255,0,0",
-    ["nanosuit_1/background"] = "200,255,255,255",
     -- nanosuit_1 theme, Status UI
     ["nanosuit_1/status_energy"] = "255,0,145,189",
     ["nanosuit_1/status_energy_bg"] = "200,18,40,46",
@@ -121,6 +120,7 @@ defaults = {
     ["nanosuit_1/status_stamina_off_bg"] = "200,24,24,24",
     -- nanosuit_1 theme, Tactical map UI
     ["nanosuit_1/tacmap_map"] = "127,255,255,255",
+    ["nanosuit_1/tacmap_map_bg"] = "100,135,173,141",
     ["nanosuit_1/tacmap_visibility_bg"] = "200,100,100,100",
     ["nanosuit_1/tacmap_visibility_very_low"] = "255,0,255,0",
     ["nanosuit_1/tacmap_visibility_low"] = "255,255,192,0",
@@ -146,7 +146,6 @@ defaults = {
     ["nanosuit_korean/outline"] = "200,125,125,102",
     ["nanosuit_korean/accent"] = "200,250,173,44",
     ["nanosuit_korean/alert"] = "255,255,0,0",
-    ["nanosuit_korean/background"] = "200,255,255,255",
     -- nanosuit_korean theme, Status UI
     ["nanosuit_korean/status_energy"] = "255,0,59,99",
     ["nanosuit_korean/status_energy_bg"] = "200,18,40,46",
@@ -159,6 +158,7 @@ defaults = {
     ["nanosuit_korean/status_stamina_off_bg"] = "200,24,24,24",
     -- nanosuit_korean theme, Tactical map UI
     ["nanosuit_korean/tacmap_map"] = "127,255,255,255",
+    ["nanosuit_korean/tacmap_map_bg"] = "100,170,135,95",
     ["nanosuit_korean/tacmap_visibility_bg"] = "200,100,100,100",
     ["nanosuit_korean/tacmap_visibility_very_low"] = "255,0,255,0",
     ["nanosuit_korean/tacmap_visibility_low"] = "255,255,192,0",
@@ -184,7 +184,6 @@ defaults = {
     ["nanosuit_2/outline"] = "200,210,255,210",
     ["nanosuit_2/accent"] = "200,250,173,44",
     ["nanosuit_2/alert"] = "255,255,0,0",
-    ["nanosuit_2/background"] = "200,255,255,255",
     -- nanosuit_2 theme, Status UI
     ["nanosuit_2/status_energy"] = "255,210,255,210",
     ["nanosuit_2/status_energy_bg"] = "200,18,40,46",
@@ -197,6 +196,7 @@ defaults = {
     ["nanosuit_2/status_stamina_off_bg"] = "200,24,24,24",
     -- nanosuit_2 theme, Tactical map UI
     ["nanosuit_2/tacmap_map"] = "127,255,255,255",
+    ["nanosuit_2/tacmap_map_bg"] = "100,120,160,195",
     ["nanosuit_2/tacmap_visibility_bg"] = "200,100,100,100",
     ["nanosuit_2/tacmap_visibility_very_low"] = "255,0,255,0",
     ["nanosuit_2/tacmap_visibility_low"] = "255,255,192,0",
@@ -222,7 +222,6 @@ defaults = {
     ["halloween/outline"] = "200,235,115,20",
     ["halloween/accent"] = "200,175,95,235",
     ["halloween/alert"] = "255,255,35,35",
-    ["halloween/background"] = "200,255,235,215",
     -- halloween theme, Status UI
     ["halloween/status_energy"] = "255,255,128,0",
     ["halloween/status_energy_bg"] = "200,58,30,8",
@@ -235,6 +234,7 @@ defaults = {
     ["halloween/status_stamina_off_bg"] = "200,24,24,24",
     -- halloween theme, Tactical map UI
     ["halloween/tacmap_map"] = "127,255,175,95",
+    ["halloween/tacmap_map_bg"] = "100,215,130,55",
     ["halloween/tacmap_visibility_bg"] = "200,100,70,50",
     ["halloween/tacmap_visibility_very_low"] = "255,125,205,35",
     ["halloween/tacmap_visibility_low"] = "255,255,200,0",
@@ -434,7 +434,6 @@ function build_theme_page(theme)
         { type = "input", val = mcm_types_enum.string, id = "outline", def = defaults[theme .. "/outline"], hint = "nanosuit_nanosuit_hud_ui_outline", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
         { type = "input", val = mcm_types_enum.string, id = "accent", def = defaults[theme .. "/accent"], hint = "nanosuit_nanosuit_hud_ui_accent", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
         { type = "input", val = mcm_types_enum.string, id = "alert", def = defaults[theme .. "/alert"], hint = "nanosuit_nanosuit_hud_ui_alert", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
-        { type = "input", val = mcm_types_enum.string, id = "background", def = defaults[theme .. "/background"], hint = "nanosuit_nanosuit_hud_ui_background", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
         { type = "line" },
         { type = "desc", text = "ui_mcm_nanosuit_nanosuit_hud_ui_status" },
         { type = "input", val = mcm_types_enum.string, id = "status_energy", def = defaults[theme .. "/status_energy"], hint = "nanosuit_nanosuit_hud_ui_status_energy", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
@@ -449,6 +448,7 @@ function build_theme_page(theme)
         { type = "line" },
         { type = "desc", text = "ui_mcm_nanosuit_nanosuit_hud_ui_tacmap" },
         { type = "input", val = mcm_types_enum.string, id = "tacmap_map", def = defaults[theme .. "/tacmap_map"], hint = "nanosuit_nanosuit_hud_ui_tacmap_map", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+        { type = "input", val = mcm_types_enum.string, id = "tacmap_map_bg", def = defaults[theme .. "/tacmap_map_bg"], hint = "nanosuit_nanosuit_hud_ui_tacmap_map_bg", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
         { type = "input", val = mcm_types_enum.string, id = "tacmap_visibility_bg", def = defaults[theme .. "/tacmap_visibility_bg"], hint = "nanosuit_nanosuit_hud_ui_tacmap_visibility_bg", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
         { type = "input", val = mcm_types_enum.string, id = "tacmap_visibility_very_low", def = defaults[theme .. "/tacmap_visibility_very_low"], hint = "nanosuit_nanosuit_hud_ui_tacmap_visibility_very_low", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
         { type = "input", val = mcm_types_enum.string, id = "tacmap_visibility_low", def = defaults[theme .. "/tacmap_visibility_low"], hint = "nanosuit_nanosuit_hud_ui_tacmap_visibility_low", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },

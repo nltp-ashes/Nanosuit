@@ -30,7 +30,7 @@ function get_theme()
             outline = get_color(theme, "outline"),
             accent = get_color(theme, "accent"),
             alert = get_color(theme, "alert"),
-            background = get_color(theme, "background")
+            background = GetARGB(200, 255, 255, 255)
         },
         status = {
             energy = get_color(theme, "status_energy"),
@@ -45,6 +45,7 @@ function get_theme()
         },
         tacmap = {
             map = get_color(theme, "tacmap_map"),
+            map_bg = get_color(theme, "tacmap_map_bg"),
             visibility_bg = get_color(theme, "tacmap_visibility_bg"),
             visibility_very_low = get_color(theme, "tacmap_visibility_very_low"),
             visibility_low = get_color(theme, "tacmap_visibility_low"),

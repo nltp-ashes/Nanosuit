@@ -391,14 +391,6 @@
         <text>Couleur que prennent les interfaces du Nanosuit lorsque la combinaison est en panne, et que prennent les barres d'état lorsqu'elles sont au plus bas.</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background">
-        <text>Couleur de fond</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background_desc">
-        <text>Teinte appliquée aux panneaux opaques derrière les indicateurs, les roues de munitions et de compagnons, et la liste des compagnons.</text>
-    </string>
-
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status">
         <text>Interface d'état</text>
     </string>
@@ -445,6 +437,10 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_map">
         <text>Couleur de la texture de la carte</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_map_bg">
+        <text>Couleur du fond de la carte</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_visibility_bg">

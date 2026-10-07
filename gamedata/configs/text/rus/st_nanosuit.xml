@@ -392,14 +392,6 @@
         <text>Цвет, в который окрашиваются интерфейсы Нанокостюма при сбое костюма, а также шкалы состояния при низких значениях.</text>
     </string>
 
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background">
-        <text>Цвет фона</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background_desc">
-        <text>Оттенок непрозрачных панелей за индикаторами, колесами боеприпасов и напарников, и списком напарников.</text>
-    </string>
-
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status">
         <text>Панель состояния</text>
     </string>
@@ -446,6 +438,10 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_map">
         <text>Цвет текстуры карты</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_map_bg">
+        <text>Цвет фона карты</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_visibility_bg">
