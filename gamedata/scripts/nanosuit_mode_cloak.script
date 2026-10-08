@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 04/10/2026                                                                                             ---
+---    Date : 08/10/2026                                                                                            ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of cloak mode of the Nanosuit addon.                                          ---
@@ -44,14 +44,14 @@ function cloak:__init(core, name) super(core, name)
     self.m_cache.visibility_functor = nil
 
     -- Sound effects
-    self.m_sounds.cloak_loop = sound_object([[nanosuit\modes\cloak\mode_cloak_loop]])
-    self.m_sounds.cloak_shoot = sound_object([[nanosuit\modes\cloak\mode_cloak_shoot]])
-    self.m_sounds.cloak_on = sound_object([[nanosuit\modes\cloak\mode_cloak_on]])
-    self.m_sounds.cloak_off = sound_object([[nanosuit\modes\cloak\mode_cloak_off]])
+    self.m_sounds.loop = sound_object([[nanosuit\modes\cloak\mode_cloak_loop]])
+    self.m_sounds.shoot = sound_object([[nanosuit\modes\cloak\mode_cloak_shoot]])
+    self.m_sounds.on = sound_object([[nanosuit\modes\cloak\mode_cloak_on]])
+    self.m_sounds.off = sound_object([[nanosuit\modes\cloak\mode_cloak_off]])
 end
 
-function cloak:apply(play_voice)
-    nanosuit_mode.abstract_mode.apply(self, play_voice, nil)
+function cloak:apply(play_voice, play_on)
+    nanosuit_mode.abstract_mode.apply(self, play_voice, play_on, nil)
 
     self.m_core.m_energy:add_drain(energy_drain_enum.cloak, self.m_energy_drain_rate, function()
         local movement = db.actor:get_movement_speed()
@@ -60,8 +60,7 @@ function cloak:apply(play_voice)
     end)
     
     -- Play sounds
-    self.m_sounds.cloak_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
-    self.m_sounds.cloak_loop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
+    self.m_sounds.loop:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
 
     -- Register callbacks
     RegisterScriptCallback("actor_on_update", self)
@@ -84,8 +83,8 @@ function cloak:remove(is_destroying)
     self.m_core.m_energy:remove_drain(energy_drain_enum.cloak)
 
     -- Play sounds
-    self.m_sounds.cloak_off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
-    self.m_sounds.cloak_loop:stop()
+    self.m_sounds.off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    self.m_sounds.loop:stop()
 
     -- Unregister callbacks
     UnregisterScriptCallback("actor_on_update", self)
@@ -128,7 +127,7 @@ function cloak:actor_on_update()
 end
 
 function cloak:actor_on_weapon_fired()
-    self.m_sounds.cloak_shoot:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    self.m_sounds.shoot:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
     self.m_core.m_energy:use_energy(100)
     self.m_core:change_mode(self.m_core.m_default_mode, true)
 end

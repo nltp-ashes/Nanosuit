@@ -1,4 +1,4 @@
-## **v0.14.0 - 30/09/2026 - Beta Build**
+## **v0.14.0 - 08/10/2026 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.14.0/total?label=Downloads)]()
 
@@ -9,6 +9,7 @@
 > - Added an option in MCM to select the cloak mode shader for each Nanosuit (default, LVutner edition, or DX8/9 compatible, which DirectX 8 & 9 users must select);
 
 **• Changes :**
+> - Changed how sound effects play when coming out of cloak mode;
 > - Made the suit voice MCM option per-suit instead of global to the entire addon;
 > - Replaced the default cloak mode shader with a port of Crysis' own cloak shader (refraction, hex pattern, chromatic aberration, and occasional sparks);
 

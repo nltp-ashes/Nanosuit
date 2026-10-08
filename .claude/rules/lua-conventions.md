@@ -67,7 +67,7 @@ is not, which is why `nanosuit_booster_reload.script` sits on the plain base.
 
 `__init` / `destroy` bracket the object, `apply` / `remove` bracket the effect. Callbacks are
 registered in `apply` and unregistered in `remove`, never in the constructor. Overrides call the
-base implementation explicitly — `nanosuit_mode.abstract_mode.apply(self, play_voice, "yellow")` —
+base implementation explicitly — `nanosuit_mode.abstract_mode.apply(self, play_voice, play_on, "yellow")` —
 and modes attach their boosters through `apply_booster` / `remove_booster`.
 
 Tuning constants live in `__init` as `m_`-fields (`m_ads_factor`, `m_recoil_factor`,

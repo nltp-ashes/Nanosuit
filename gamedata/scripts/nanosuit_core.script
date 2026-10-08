@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/10/2026                                                                                            ---
+---    Date : 08/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -187,7 +187,7 @@ function core:__init()
     -- Default mode initialization
     self.m_default_mode = armor_modes_enum.armor
     self.m_current_mode = self.m_modes[self.m_default_mode]
-    self.m_current_mode:apply(false)
+    self.m_current_mode:apply(false, true)
 
     -- UIs
     self.m_hud = nanosuit_ui_hud.ui_hud(self)
@@ -312,9 +312,10 @@ end
 
 function core:change_mode(mode, play_voice)
     if self.m_current_mode ~= self.m_modes[mode] then
+        local current_mode_name = self.m_current_mode.m_name
         self.m_current_mode:remove(false)
         self.m_current_mode = self.m_modes[mode]
-        self.m_current_mode:apply(play_voice)
+        self.m_current_mode:apply(play_voice, current_mode_name ~= armor_modes_enum.cloak)
     end
 end
 
