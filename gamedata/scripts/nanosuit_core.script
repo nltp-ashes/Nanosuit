@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 04/10/2026                                                                                             ---
+---    Date : 08/10/2026                                                                                            ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -45,7 +45,7 @@ end
 class "nanosuit_binder" (object_binder)
 
 function nanosuit_binder:__init(obj) super(obj)
-    printf("[NS] Binding object %s", obj:name())
+    nanosuit_utils.print_i("Binding object %s", obj:name())
     self.m_object = obj
     self.m_instance = nil
     self.m_loaded_storage = nil
@@ -72,39 +72,39 @@ function nanosuit_binder:save(output_packet)
     object_binder.save(self, output_packet)
 
     if self.m_instance ~= nil then
-        printf("[NS] Nanosuit saving variables")
+        nanosuit_utils.print_i("Saving variables")
         se_save_var(self.object:id(), nil, "nanosuit_storage", self.m_instance:save())
-        printf("[NS] Nanosuit saved variables")
+        nanosuit_utils.print_i("Saved variables")
     end
 end
 
 function nanosuit_binder:load(input_packet)
     object_binder.load(self, input_packet)
 
-    printf("[NS] Nanosuit pre-loading variables")
+    nanosuit_utils.print_i("Pre-loading variables")
     self.m_loaded_storage = se_load_var(self.object:id(), nil, "nanosuit_storage") or {}
 end
 
 function nanosuit_binder:create_instance_if_not_exists()
     if self.m_instance == nil then
-        printf("[NS] Nanosuit core initializing")
+        nanosuit_utils.print_i("Core initializing")
         self.m_instance = core()
         if self.m_loaded_storage ~= nil then
-            printf("[NS] Nanosuit loading variables")
+            nanosuit_utils.print_i("Loading variables")
             self.m_instance:load(self.m_loaded_storage)
             self.m_loaded_storage = nil
-            printf("[NS] Nanosuit loaded variables")
+            nanosuit_utils.print_i("Loaded variables")
         end
-        printf("[NS] Nanosuit core initialized")
+        nanosuit_utils.print_i("Core initialized")
     end
 end
 
 function nanosuit_binder:destroy_instance_if_exists()
     if self.m_instance ~= nil then
-        printf("[NS] Nanosuit core destroying")
+        nanosuit_utils.print_i("Core destroying")
         self.m_instance:destroy()
         self.m_instance = nil
-        printf("[NS] Nanosuit core destroyed")
+        nanosuit_utils.print_i("Core destroyed")
     end
 end
 
@@ -211,7 +211,7 @@ function core:__init()
 end
 
 function core:__finalize()
-    printf("[NS] Nanosuit core garbage collected")
+    nanosuit_utils.print_i("Core garbage collected")
 end
 
 function core:destroy()

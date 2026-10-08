@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 04/10/2026                                                                                             ---
+---    Date : 08/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -40,6 +40,8 @@ vision_perk_enum        = { nightvision = "nightvision", nanovision = "nanovisio
 color_anm_flags_enum    = { cyclic = 1, only_alpha = 2, text_color = 4, texture_color = 8 }
 themes_enum             = { nanosuit_1 = "nanosuit_1", nanosuit_korean = "nanosuit_korean", nanosuit_2 = "nanosuit_2" }
 cloak_shaders_enum      = { crysis = "crysis", lv = "lv", legacy = "legacy" }
+log_levels_enum         = { debug = "DEBUG", info = "INFO", warning = "WARNING", error = "ERROR" }
+log_levels_prefix_enum  = { [log_levels_enum.debug] = "+", [log_levels_enum.info] = "", [log_levels_enum.warning] = "~", [log_levels_enum.error] = "!" }
 
 -- Whitelists
 machine_guns_whitelist = {
@@ -53,15 +55,50 @@ machine_guns_whitelist = {
 }
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Debug functions
+-- Logging functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
---- Function used to print information into the console/log file only when Nanosuit' debug mode is enabled.
+--- Function used to print a debug line into the console/log file, only when Nanosuit' debug mode is enabled.
+--- @param fmt string
 --- @return nil
-function dbg_printf(...)
+function print_dbg(fmt, ...)
     if nanosuit_mcm.get_config("technical", "debug_mode") then
-        printf(...)
+        print_log(log_levels_enum.debug, fmt, ...)
     end
+end
+
+--- Function used to print an information line into the console/log file.
+--- @param fmt string
+--- @return nil
+function print_i(fmt, ...)
+    print_log(log_levels_enum.info, fmt, ...)
+end
+
+--- Function used to print a warning line into the console/log file.
+--- @param fmt string
+--- @return nil
+function print_w(fmt, ...)
+    print_log(log_levels_enum.warning, fmt, ...)
+end
+
+--- Function used to print an error line into the console/log file.
+--- @param fmt string
+--- @return nil
+function print_e(fmt, ...)
+    print_log(log_levels_enum.error, fmt, ...)
+end
+
+--- Function used to print a line into the console/log file, as `<prefix>[NS] <level> | <script_name> | <message>`.
+--- The script name is read from the stack, three levels up : this function, the public logging function, its caller.
+--- The public logging functions must therefore call this one directly, never through a `return` (a tail call would
+--- drop their frame from the stack and shift the caller one level up).
+--- @param level log_level_enum
+--- @param fmt string
+--- @return nil
+function print_log(level, fmt, ...)
+    local source = debug.getinfo(3, "S").source
+    local script_name = source:match("([^\\/]+)%.script$") or source
+    printf(log_levels_prefix_enum[level] .. "[NS] " .. level .. " | " .. script_name .. " | " .. fmt, ...)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -521,19 +558,19 @@ end
 
 function get_named_location(location_name)
     if not ini_locations:section_exist(location_name) then
-        printf("![NS] ERROR | Named location '%s' not found !", location_name)
+        print_e("Named location '%s' not found !", location_name)
         return nil
     end
 
     local position = parse_list(ini_locations, location_name, "position")
     if size_table(position) ~= 5 then
-        printf("![NS] ERROR | Named location '%s' has an invalid position !\n%s", location_name, utils_data.print_table(position, false, true))
+        print_e("Named location '%s' has an invalid position !\n%s", location_name, utils_data.print_table(position, false, true))
         return nil
     end
 
     local orientation = parse_list(ini_locations, location_name, "orientation")
     if is_not_empty(orientation) and size_table(orientation) ~= 3 then
-        printf("![NS] ERROR | Named location '%s' has an invalid orientation !\n%s", location_name, utils_data.print_table(orientation, false, true))
+        print_e("Named location '%s' has an invalid orientation !\n%s", location_name, utils_data.print_table(orientation, false, true))
         return nil
     end
 

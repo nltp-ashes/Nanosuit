@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 04/10/2026                                                                                             ---
+---    Date : 08/10/2026                                                                                            ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract cloak shader, swapping the surfaces the cloak covers.          ---
@@ -34,7 +34,7 @@ function cloak(core)
     }
     local cloak_shader = nanosuit_mcm.get_outfit_config("cloak_shader", cloak_shaders_enum.crysis)
     if not cloak_shaders[cloak_shader] then
-        printf("![NS] ERROR | Abstract Cloak | Unknown cloak shader %s", cloak_shader)
+        nanosuit_utils.print_e("Unknown cloak shader %s", cloak_shader)
     end
     return cloak_shaders[cloak_shader](core)
 end
@@ -126,6 +126,6 @@ function abstract_cloak:get_prefetch_textures()
 end
 
 function abstract_cloak:get_shader_texture_pair(texture)
-    printf("![NS] ERROR | Cloak shader | get_shader_texture_pair is not implemented")
+    nanosuit_utils.print_e("get_shader_texture_pair is not implemented")
     return nil, nil
 end
