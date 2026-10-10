@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 07/10/2026                                                                                             ---
+---    Date : 10/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -224,6 +224,15 @@ function string_pad_l(var, char, length)
         end
     end
     return ret
+end
+
+--- Function used to turn a "major.minor.patch" version string into a number that sorts like the version.
+--- @param version string
+--- @return number
+function version_to_number(version)
+    local major, minor, patch = version:match("^(%d+)%.(%d+)%.(%d+)$")
+    assert(major, "[NS] Invalid version string '" .. tostring(version) .. "'")
+    return tonumber(major) * 1000000 + tonumber(minor) * 1000 + tonumber(patch)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : RavenAscendant                                                                           ---
 ---    Edited : NLTP_ASHES                                                                                           ---
----    Date : 07/10/2026                                                                                             ---
+---    Date : 10/10/2026                                                                                            ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define the options in MCM.                                                                     ---
@@ -276,6 +276,12 @@ function get_config(category, key, default)
         return ui_mcm.get("nanosuit/nanosuit_" .. category .. "/" .. key) or default
     end
     return defaults[key] or default
+end
+
+function set_config(category, key, value)
+    if ui_mcm then
+        ui_mcm.set("nanosuit/nanosuit_" .. category .. "/" .. key, value)
+    end
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------

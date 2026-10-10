@@ -1,0 +1,84 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 10/10/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to run one-off changes when the addon is installed or upgraded to a newer version.                ---
+---                                                                                                                  ---
+---    The last version that ran is kept in axr_options.ltx, which belongs to the game install, not to a save : each ---
+---    migration runs once per install, at the first game start on a version newer than the recorded one.            ---
+---    An install with no recorded version (a first install, or a release older than this script) runs them all.     ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+version_to_number       = nanosuit_utils.version_to_number
+themes_enum             = nanosuit_utils.themes_enum
+
+-- Constants
+OPTIONS_SECTION         = "nanosuit"
+NO_VERSION              = "0.0.0"
+
+-- One function per version, run when moving from any older version (or none) to it
+MIGRATIONS = {
+    ["0.14.0"] = function()
+        -- Every Nanosuit starts wearing the Halloween theme
+        for key in pairs(nanosuit_mcm.defaults) do
+            local outfit_section = key:match("^(outfit_[%w_]+)/theme$")
+            if outfit_section then
+                nanosuit_mcm.set_config("configuration", outfit_section .. "/theme", themes_enum.halloween)
+            end
+        end
+    end,
+}
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function get_installed_version()
+    return axr_main.config:r_value(OPTIONS_SECTION, "version") or NO_VERSION
+end
+
+function get_migrations_between(start_version, end_version)
+    local start_number = version_to_number(start_version)
+    local end_number = version_to_number(end_version)
+
+    -- Versions in (start_version ; end_version], oldest first
+    local versions = {}
+    for version in pairs(MIGRATIONS) do
+        local number = version_to_number(version)
+        if number > start_number and number <= end_number then
+            table.insert(versions, version)
+        end
+    end
+    table.sort(versions, function(lhs, rhs) return version_to_number(lhs) < version_to_number(rhs) end)
+
+    return versions
+end
+
+function migrate()
+    local installed_version = get_installed_version()
+
+    for _, version in ipairs(get_migrations_between(installed_version, nanosuit_core.VERSION)) do
+        printf("[NS] Migration | Running the migration of version %s (recorded version : %s)", version, installed_version)
+        MIGRATIONS[version]()
+    end
+
+    axr_main.config:w_value(OPTIONS_SECTION, "version", nanosuit_core.VERSION)
+    axr_main.config:save()
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Callbacks registration
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function on_game_start()
+    migrate()
+end
