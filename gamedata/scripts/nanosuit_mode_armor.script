@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/02/2026                                                                                             ---
+---    Date : 08/10/2026                                                                                            ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of armor mode of the Nanosuit addon.                                          ---
@@ -24,7 +24,7 @@ class "armor" (nanosuit_mode.abstract_mode)
 
 function armor:__init(core, name) super(core, name)
     -- Sound effects
-    self.m_sounds.armor_on = sound_object([[nanosuit\modes\armor\mode_armor_on]])
+    self.m_sounds.on = sound_object([[nanosuit\modes\armor\mode_armor_on]])
     self.m_sounds.impacts = {
         sound_object([[nanosuit\modes\armor\mode_armor_hit_01]]),
         sound_object([[nanosuit\modes\armor\mode_armor_hit_02]]),
@@ -34,11 +34,8 @@ function armor:__init(core, name) super(core, name)
     }
 end
 
-function armor:apply(play_voice)
-    nanosuit_mode.abstract_mode.apply(self, play_voice, "blue")
-
-    -- Play sounds
-    self.m_sounds.armor_on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+function armor:apply(play_voice, play_on)
+    nanosuit_mode.abstract_mode.apply(self, play_voice, play_on, "blue")
 end
 
 function armor:remove(is_destroying)

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 30/08/2026                                                                                             ---
+---    Date : 08/10/2026                                                                                            ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    DXML script used to modify some XML files according to some criteria.                                         ---
@@ -47,7 +47,7 @@ function add_window_name(xml_obj, query, window_name)
     -- XML code to inject
     local xml_inject = [[<window_name>]] .. window_name .. [[</window_name>]]
 
-    printf("[ASH] Injecting '%s' in '%s'", xml_inject, query)
+    nanosuit_utils.print_i("Injecting '%s' in '%s'", xml_inject, query)
 
     -- Inject XML code
     xml_obj:insertFromXMLString(xml_inject, xml_elem, #xml_elem.kids)

@@ -67,7 +67,7 @@ function migrate()
     local installed_version = get_installed_version()
 
     for _, version in ipairs(get_migrations_between(installed_version, nanosuit_core.VERSION)) do
-        printf("[NS] Migration | Running the migration of version %s (recorded version : %s)", version, installed_version)
+        nanosuit_utils.print_i("Running the migration of version %s (recorded version : %s)", version, installed_version)
         MIGRATIONS[version]()
     end
 

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 21/09/2026                                                                                             ---
+---    Date : 08/10/2026                                                                                            ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to execute debug functions to help in development.                                                ---
@@ -52,18 +52,18 @@ function on_key_press_tacmap(dik)
     elseif dik == DIK_keys.DIK_ADD then
         if poly_point < 7 then
             poly_point = poly_point + 1
-            printf("[NS] Poly point set to : poly_point:%s", poly_point)
+            nanosuit_utils.print_dbg("Poly point set to : poly_point:%s", poly_point)
         end
     elseif dik == DIK_keys.DIK_SUBTRACT then
         if poly_point > 1 then
             poly_point = poly_point - 1
-            printf("[NS] Poly point set to : poly_point:%s", poly_point)
+            nanosuit_utils.print_dbg("Poly point set to : poly_point:%s", poly_point)
         else
             poly_point = 0
-            printf("[NS] Poly point set to player")
+            nanosuit_utils.print_dbg("Poly point set to player")
         end
     elseif dik == DIK_keys.DIK_HOME then
-        printf("[NS] Poly : x:%s y:%s", pos.x, pos.y)
+        nanosuit_utils.print_dbg("Poly : x:%s y:%s", pos.x, pos.y)
         return
     end
 end
@@ -94,7 +94,7 @@ function on_key_press_status(dik)
         pos.x = pos.x + transform
         x_transforms = x_transforms + transform
     elseif dik == DIK_keys.DIK_HOME then
-        printf("[NS] Static transforms: x:%s y:%s", x_transforms, y_transforms)
+        nanosuit_utils.print_dbg("Static transforms: x:%s y:%s", x_transforms, y_transforms)
     end
     static:SetWndPos(pos)
 end
@@ -181,7 +181,7 @@ function on_key_press_color(dik)
             clr_idx = 1
         end
     elseif dik == DIK_keys.DIK_HOME then
-        printf("[NS] Color : %s,%s,%s", clr[1], clr[2], clr[3])
+        nanosuit_utils.print_dbg("Color : %s,%s,%s", clr[1], clr[2], clr[3])
     end
 
     nanosuit_core.get_instance().m_hud.m_theme.shared.outline = GetARGB(200, nanosuit_debug.clr[1], nanosuit_debug.clr[2], nanosuit_debug.clr[3])
@@ -304,21 +304,21 @@ function dummy_sequence:destroy()
 end
 
 function dummy_sequence:action_1()
-    printf("[NS] Dummy anim seq action 1 called")
+    nanosuit_utils.print_dbg("Dummy anim seq action 1 called")
     return true
 end
 
 function dummy_sequence:action_2()
-    printf("[NS] Dummy anim seq action 2 called")
+    nanosuit_utils.print_dbg("Dummy anim seq action 2 called")
     return true
 end
 
 function dummy_sequence:action_3()
-    printf("[NS] Dummy anim seq action 3 called")
+    nanosuit_utils.print_dbg("Dummy anim seq action 3 called")
     return true
 end
 
 function dummy_sequence:action_4()
-    printf("[NS] Dummy anim seq action 4 called")
+    nanosuit_utils.print_dbg("Dummy anim seq action 4 called")
     return true
 end

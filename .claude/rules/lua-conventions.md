@@ -67,7 +67,7 @@ is not, which is why `nanosuit_booster_reload.script` sits on the plain base.
 
 `__init` / `destroy` bracket the object, `apply` / `remove` bracket the effect. Callbacks are
 registered in `apply` and unregistered in `remove`, never in the constructor. Overrides call the
-base implementation explicitly — `nanosuit_mode.abstract_mode.apply(self, play_voice, "yellow")` —
+base implementation explicitly — `nanosuit_mode.abstract_mode.apply(self, play_voice, play_on, "yellow")` —
 and modes attach their boosters through `apply_booster` / `remove_booster`.
 
 Tuning constants live in `__init` as `m_`-fields (`m_ads_factor`, `m_recoil_factor`,
@@ -106,8 +106,18 @@ omission someone would otherwise "fix".
 
 ## Logging
 
-`printf("[NS] <Subsystem> | <message>", …)` for anything that should always appear;
-`nanosuit_utils.dbg_printf` for anything gated on the MCM debug option.
+Log through `nanosuit_utils`, never `printf` directly. Each helper prefixes the line with its level
+and the calling script's name, read from the stack — do not repeat the subsystem in the message:
+
+| Helper      | Output                                   | For                                          |
+|-------------|------------------------------------------|----------------------------------------------|
+| `print_dbg` | `[NS] DEBUG \| <script> \| <message>`    | traces, only printed with the MCM debug mode |
+| `print_i`   | `[NS] INFO \| <script> \| <message>`     | lifecycle events that should always appear   |
+| `print_w`   | `~[NS] WARNING \| <script> \| <message>` | degraded but working                         |
+| `print_e`   | `![NS] ERROR \| <script> \| <message>`   | broken                                       |
+
+Never tail-call them (`return nanosuit_utils.print_i(…)`): the tail call drops the caller's frame and
+the line is tagged with the wrong script.
 
 Anomaly's `printf` (`_g.script`) is not `string.format`: it only substitutes `%s`, running each
 argument through `tostring` (vectors print as `x,y,z`). `%d`, `%.2f` and the like are printed

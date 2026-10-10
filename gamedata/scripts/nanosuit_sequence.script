@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 26/07/2025                                                                                             ---
+---    Date : 08/10/2026                                                                                            ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to run chained scripted events, with custom delay and precedence between scripts.                 ---
@@ -43,7 +43,7 @@ function scripted_sequence:after(next_func, delay)
 end
 
 function scripted_sequence:execute()
-    printf("[NS] Scripted sequence started")
+    nanosuit_utils.print_dbg("Scripted sequence started")
     assert(not self.m_unique_call_wrapper, "Scripted sequence already running, cannot execute again")
     self.m_unique_call_wrapper = nanosuit_utils.add_unique_call(self.update, self)
     self.m_cursor = 0
@@ -55,14 +55,14 @@ function scripted_sequence:update()
     if self.m_cursor == 0 and self:m_init_func() then
         self.m_cursor = 1
         self.m_last_update = tg
-        printf("[NS] Init step done, moving to next step %s", self.m_cursor)
+        nanosuit_utils.print_dbg("Init step done, moving to next step %s", self.m_cursor)
         return
     end
 
     if self:is_done() then
         nanosuit_utils.remove_unique_call(self.m_unique_call_wrapper)
         self.m_unique_call_wrapper = nil
-        printf("[NS] Scripted sequence completed")
+        nanosuit_utils.print_dbg("Scripted sequence completed")
         return
     end
 
@@ -70,7 +70,7 @@ function scripted_sequence:update()
     if (tg - self.m_last_update) >= current.delay and current.func(self) then
         self.m_cursor = self.m_cursor + 1
         self.m_last_update = tg
-        printf("[NS] Step done, moving to next step %s", self.m_cursor)
+        nanosuit_utils.print_dbg("Step done, moving to next step %s", self.m_cursor)
     end
 end
 

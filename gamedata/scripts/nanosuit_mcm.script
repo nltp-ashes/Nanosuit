@@ -272,10 +272,13 @@ function get_outfit_config(key, default)
 end
 
 function get_config(category, key, default)
+    if defaults[key] == nil then
+        return default
+    end
     if ui_mcm then
         return ui_mcm.get("nanosuit/nanosuit_" .. category .. "/" .. key) or default
     end
-    return defaults[key] or default
+    return defaults[key]
 end
 
 function set_config(category, key, value)
