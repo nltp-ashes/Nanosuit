@@ -2,10 +2,22 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 05/09/2026                                                                                             ---
+---    Date : 10/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
----    Script used to handle the footstep sounds while using the Nanosuit.                                           ---
+---    Script used to replace the footstep sounds with the Crysis ones while using the Nanosuit.                     ---
+---                                                                                                                  ---
+---    The engine raises actor_on_footstep in CStepManager::update (step_manager.cpp) right before it plays the      ---
+---    vanilla step sound, and setting flags.ret_value to false skips that sound alone : the step particles and the  ---
+---    camera effects still play. Materials missing from MATERIAL_SURFACES keep their vanilla sound.                 ---
+---                                                                                                                  ---
+---    The gait is read from the actor movement state : crouching plays the stealth samples, and mcAccel plays       ---
+---    the walk ones. Despite its name, the engine sets mcAccel while walking (ActorInput.cpp). Anything else runs.  ---
+---                                                                                                                  ---
+---    Sounds are played the way the engine plays its own steps (CStepManager::material_sound::play_next) : 2D at    ---
+---    the listener and scaled by hud_step_sound_vol_k in first person, 3D half a metre above the feet otherwise.    ---
+---    They go through play_no_feedback, which takes the volume with the play call. Setting sound_object.volume      ---
+---    before play does nothing, as there is no emitter to apply it to yet. It also lets a sample overlap itself.    ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -13,145 +25,106 @@
 -- Constants, global variables and imported functions
 -- ---------------------------------------------------------------------------------------------------------------------
 
--- Imports
-get_sound_object = nanosuit_utils.get_sound_object
+-- Constants
+-- <gait> = <gaits to take the samples from, in order of preference>
+GAIT_FALLBACKS = {
+    stealth = { "stealth", "walk", "run" },
+    walk = { "walk", "stealth", "run" },
+    run = { "run", "walk", "stealth" }
+}
+
+-- <surface> = { <gait> = <sample count> }, played from nanosuit\footsteps\<surface>\<surface>_<gait>_<index>
+SURFACES = {
+    concrete = { run = 5 },
+    dirt = { walk = 5, run = 5, stealth = 5 },
+    drysand = { walk = 5, run = 5, stealth = 5 },
+    grass = { walk = 5, run = 5, stealth = 5 },
+    gravel = { walk = 5, run = 5, stealth = 5 },
+    metalchainlink = { walk = 5 },
+    metalgrate = { walk = 5, run = 5, stealth = 5 },
+    metalsheet = { walk = 5, run = 5, stealth = 5 },
+    metalthick = { walk = 5, run = 5, stealth = 5 },
+    rubblemetal = { walk = 5, run = 5, stealth = 5 },
+    vegetation = { walk = 5, run = 5, stealth = 5 },
+    watershallow = { walk = 5, run = 5, stealth = 5 },
+    woodhollow = { walk = 5, run = 5, stealth = 5 },
+    woodsolid = { walk = 5, run = 5, stealth = 5 }
+}
+
+-- <material from gamemtl.xr> = <surface>
+-- Cloth, bodies and creatures are left out on purpose : no Crysis surface fits, they keep the vanilla soft step.
+MATERIAL_SURFACES = {
+    ["default"] = "dirt",
+    ["default_object"] = "dirt",
+    ["materials\\asphalt"] = "concrete",
+    ["materials\\bricks"] = "concrete",
+    ["materials\\bush"] = "vegetation",
+    ["materials\\bush_sux"] = "vegetation",
+    ["materials\\concrete"] = "concrete",
+    ["materials\\dirt"] = "dirt",
+    ["materials\\earth"] = "dirt",
+    ["materials\\earth_death"] = "dirt",
+    ["materials\\earth_slide"] = "dirt",
+    ["materials\\fake"] = "concrete",
+    ["materials\\fake_ladders"] = "metalgrate",
+    ["materials\\flooring_tile"] = "concrete",
+    ["materials\\glass"] = "concrete",
+    ["materials\\grass"] = "grass",
+    ["materials\\gravel"] = "gravel",
+    ["materials\\metal"] = "metalthick",
+    ["materials\\metal_pipe"] = "metalthick",
+    ["materials\\metal_plate"] = "metalgrate",
+    ["materials\\sand"] = "drysand",
+    ["materials\\setka_rabica"] = "metalchainlink",
+    ["materials\\shifer"] = "concrete",
+    ["materials\\stucco"] = "concrete",
+    ["materials\\tin"] = "metalsheet",
+    ["materials\\tree_trunk"] = "woodsolid",
+    ["materials\\water"] = "watershallow",
+    ["materials\\water_radiation"] = "watershallow",
+    ["materials\\wood"] = "woodsolid",
+    ["materials\\wooden_board"] = "woodhollow",
+    ["objects\\barrel"] = "metalsheet",
+    ["objects\\bottle"] = "concrete",
+    ["objects\\car_cabine"] = "metalsheet",
+    ["objects\\car_wheel"] = "concrete",
+    ["objects\\concrete_box"] = "concrete",
+    ["objects\\fuel_can"] = "metalsheet",
+    ["objects\\glass"] = "concrete",
+    ["objects\\knife"] = "rubblemetal",
+    ["objects\\large_furniture"] = "woodsolid",
+    ["objects\\large_metal_trash"] = "metalsheet",
+    ["objects\\large_weapon"] = "rubblemetal",
+    ["objects\\metal_box"] = "metalsheet",
+    ["objects\\small_box"] = "woodhollow",
+    ["objects\\small_metal_trash"] = "rubblemetal",
+    ["objects\\small_weapon"] = "rubblemetal",
+    ["objects\\tin_can"] = "rubblemetal"
+}
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Malfunction class
+-- Footsteps class
 -- ---------------------------------------------------------------------------------------------------------------------
 
 class "footsteps"
 
 function footsteps:__init(core)
-    self.m_core = core
+    -- Constants
+    self.m_volume_factor = 0.5
+    self.m_volume_power_min = 0.5
+    self.m_volume_power_max = 1.3
+    self.m_hud_volume_k = ini_sys:r_float_ex("hud_sound", "hud_step_sound_vol_k")
+    self.m_sound_offset = vector():set(0, 0.5, 0)
 
     -- Variables
-    self.m_sounds_per_mtl = {
-        ["materials\\asphalt"] = {
-            get_sound_object([[nanosuit\footsteps\concrete\concrete_01]]),
-            get_sound_object([[nanosuit\footsteps\concrete\concrete_02]]),
-            get_sound_object([[nanosuit\footsteps\concrete\concrete_03]]),
-            get_sound_object([[nanosuit\footsteps\concrete\concrete_04]]),
-            get_sound_object([[nanosuit\footsteps\concrete\concrete_05]])
-        },
-        --["materials\\bricks"] = {
-        --
-        --},
-        --["materials\\bush"] = {
-        --
-        --},
-        --["materials\\bush_sux"] = {
-        --
-        --},
-        --["materials\\concrete"] = {
-        --
-        --},
-        --["materials\\dirt"] = {
-        --
-        --},
-        --["materials\\earth"] = {
-        --
-        --},
-        --["materials\\earth_death"] = {
-        --
-        --},
-        --["materials\\earth_slide"] = {
-        --
-        --},
-        --["materials\\flooring_tile"] = {
-        --
-        --},
-        --["materials\\grass"] = {
-        --
-        --},
-        --["materials\\gravel"] = {
-        --
-        --},
-        --["materials\\metal"] = {
-        --
-        --},
-        --["materials\\metal_pipe"] = {
-        --
-        --},
-        --["materials\\metal_plate"] = {
-        --
-        --},
-        --["materials\\sand"] = {
-        --
-        --},
-        --["materials\\shifer"] = {
-        --
-        --},
-        --["materials\\stucco"] = {
-        --
-        --},
-        --["materials\\tile"] = {
-        --
-        --},
-        --["materials\\tin"] = {
-        --
-        --},
-        --["materials\\tree_trunk"] = {
-        --
-        --},
-        --["materials\\water"] = {
-        --
-        --},
-        --["materials\\water_radiation"] = {
-        --
-        --},
-        --["materials\\wood"] = {
-        --
-        --},
-        --["materials\\wooden_board"] = {
-        --
-        --},
-        --["objects\\barrel"] = {
-        --
-        --},
-        --["objects\\bolt"] = {
-        --
-        --},
-        --["objects\\bullet"] = {
-        --
-        --},
-        --["objects\\car_cabine"] = {
-        --
-        --},
-        --["objects\\concrete_box"] = {
-        --
-        --},
-        --["objects\\fuel_can"] = {
-        --
-        --},
-        --["objects\\knife"] = {
-        --
-        --},
-        --["objects\\large_metal_trash"] = {
-        --
-        --},
-        --["objects\\large_weapon"] = {
-        --
-        --},
-        --["objects\\metal_box"] = {
-        --
-        --},
-        --["objects\\shell"] = {
-        --
-        --},
-        --["objects\\small_box"] = {
-        --
-        --},
-        --["objects\\small_metal_trash"] = {
-        --
-        --},
-        --["objects\\small_weapon"] = {
-        --
-        --},
-        --["objects\\tin_can"] = {
-        --
-        --},
-    }
+    self.m_core = core
+    self.m_last_indexes = {}
+
+    -- Sound effects
+    self.m_sounds = {}
+    for surface, gaits in pairs(SURFACES) do
+        self.m_sounds[surface] = self:load_surface(surface, gaits)
+    end
 
     -- Callbacks
     RegisterScriptCallback("actor_on_footstep", self)
@@ -164,15 +137,79 @@ function footsteps:destroy()
     UnregisterScriptCallback("actor_on_footstep", self)
 end
 
+function footsteps:load_surface(surface, gaits)
+    local sounds_per_gait = {}
+    for gait, count in pairs(gaits) do
+        sounds_per_gait[gait] = {}
+        for index = 1, count do
+            local path = string.format([[nanosuit\footsteps\%s\%s_%s_%02d]], surface, surface, gait, index)
+            -- FIXME : the sound_object override of the modded exes (aaa_sound_object_patch) drops the sound type
+            table.insert(sounds_per_gait[gait], sound_object(path, snd_type.monster_step))
+        end
+    end
+
+    local sounds = {}
+    for gait, fallbacks in pairs(GAIT_FALLBACKS) do
+        for _, fallback in ipairs(fallbacks) do
+            if sounds_per_gait[fallback] then
+                sounds[gait] = sounds_per_gait[fallback]
+                break
+            end
+        end
+    end
+    return sounds
+end
+
 function footsteps:actor_on_footstep(material, power, hud_view, flags)
-    local snd_table = self.m_sounds_per_mtl[material]
-    if not snd_table then
+    local surface = MATERIAL_SURFACES[material]
+    if not surface then
         return
     end
 
-    local rnd_snd = snd_table[random_number(1, #snd_table)]
-    rnd_snd.volume = 0.5 * clamp(power, 0.5, 1.3)
-    rnd_snd:play(db.actor, 0, sound_object.s2d)
+    local snd = self:pick_sound(self.m_sounds[surface][self:get_gait()])
+    local volume = self:get_volume(power, hud_view)
+
+    if hud_view then
+        snd:play_no_feedback(db.actor, sound_object.s2d, 0, VEC_ZERO, volume, 1)
+    else
+        local pos = db.actor:position():add(self.m_sound_offset)
+        snd:play_no_feedback(db.actor, sound_object.s3d, 0, pos, volume, 1)
+    end
 
     flags.ret_value = false
+end
+
+function footsteps:get_gait()
+    if IsMoveState("mcCrouch") then
+        return "stealth"
+    elseif IsMoveState("mcAccel") then
+        return "walk"
+    end
+    return "run"
+end
+
+function footsteps:get_volume(power, hud_mode)
+    local volume = self.m_volume_factor * clamp(power, self.m_volume_power_min, self.m_volume_power_max)
+    if hud_mode then
+        volume = volume * self.m_hud_volume_k
+    end
+    return volume
+end
+
+function footsteps:pick_sound(sounds)
+    local count = #sounds
+    local last_index = self.m_last_indexes[sounds]
+
+    local index
+    if last_index and count > 1 then
+        index = random_number(1, count - 1)
+        if index >= last_index then
+            index = index + 1
+        end
+    else
+        index = random_number(1, count)
+    end
+
+    self.m_last_indexes[sounds] = index
+    return sounds[index]
 end
