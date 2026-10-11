@@ -1,51 +1,242 @@
 //====================================================================================================================//
 //                                                                                                                    //
-//     Original Author(s) : LVutner                                                                                   //
-//     Edited : Removed dependency on SSS (NLTP_ASHES - 07/07/2025)                                                   //
-//     Date : 07/07/2025                                                                                              //
-//     License : See README.md                                                                                        //
+//     Original Author(s) : NLTP_ASHES                                                                                //
+//     Edited : N/A                                                                                                   //
+//     Date : 03/10/2026                                                                                              //
+//     License : Public Domain Mark 1.0 Universal                                                                     //
 //                                                                                                                    //
 //     Pixel shader for the Nanosuit cloak mode.                                                                      //
+//                                                                                                                    //
+//     A port of Crysis's CloakLayer.cfx, which draws in two passes : p0 alpha blends a refraction of the scene, p1   //
+//     adds sparks. Strict-sorted geometry, HUD included, only draws its first pass here, so both are folded into one //
+//     by outputting p0 + sparks / a. The alpha never drops below 0.5.                                                //
+//                                                                                                                    //
+//     The scene is $user$generic_temp, copied right before the forward phase, so the suit is not in it.              //
+//                                                                                                                    //
+//     The forward phase runs after the tonemap, in gamma space, where the small additive terms, rim and sparks,      //
+//     would all but vanish. They are added in linear (gamma 2) and clip at 1; the alpha blend stays in gamma space.  //
+//                                                                                                                    //
+//     Reading p_bumped plus the SV_Position that ends v2p_bumped keeps it working with any deffer_model_bump-hq.vs,  //
+//     Screen Space Shaders included.                                                                                 //
+//                                                                                                                    //
+//     Driven by the "nanosuit_cloak" shader bus lane, laid out like Crysis's PI_CloakParams[0] :                     //
+//       x : refraction falloff, 1 for full strength                                                                  //
+//       y : unused, Crysis's sparks alpha                                                                            //
+//       z : light amount, how much light reaches the suit                                                            //
+//       w : cloak blend, 0 uncloaked, 1 fully cloaked                                                                //
+//                                                                                                                    //
+//     Departures from Crysis :                                                                                       //
+//       - the sparks alpha is a constant, tuned by eye, where Crysis animates it                                     //
+//       - the light amount is X-Ray's unit scale one, raised by 3 for the sparks only : on the rim it fills the      //
+//         hex cells with grey                                                                                        //
+//       - the rim reads |NdotE|, so a normal map pointing away from the eye does not fill the face                   //
+//       - the refraction takes three taps, Crysis's fourth only fed the engaging blur                                //
+//       - the sparks are phased by the distance to the model origin rather than the world one                        //
+//       - the sparks noise drifts on its own, uneven, wrapped axes, where Crysis's frac(time) snaps back each cycle  //
+//       - the scene is tinted a faint purple, after the addon's previous cloak shader                                //
 //                                                                                                                    //
 //====================================================================================================================//
 
 #include "common.h"
 
-Texture2D s_pattern;
+#ifdef USE_MSAA
+    #ifndef SM_5
+        Texture2DMS<float4, MSAA_SAMPLES> s_cloak_scene; // Scene behind the suit, $user$generic_temp
+    #else
+        Texture2DMS<float4> s_cloak_scene;
+    #endif
+#else
+    Texture2D s_cloak_scene;
+#endif
 
-void main(p_bumped r, float4 f: SV_Position, out float4 x: SV_Target, out float4 z: SV_Target2) {
-    f_deffer w;
-    float3 o = -normalize(r.position.xyz);
-    float3x3 i = float3x3(r.M1, r.M2, r.M3);
-    float3 y = s_pattern.Sample(smp_linear, r.tcdh.xy * 8).xyz * 2. - 1.;
-    y = mul(i, y);
-    y = normalize(y);
-    float m = dot(y, o);
-    float3 t = -2. * m * y + o;
-    m = saturate(m);
-    float3 e;
-    e.x = dot(t, i[0]);
-    e.y = dot(t, i[1]);
-    e.z = dot(t, i[2]);
-    float a = exp2(-9.28 * m);
-    float2 n = f.xy;
-    n *= screen_res.zw;
-    //n += ssfx_jitter.xy * float2(.5, -.5);
-    n = n.xy + e.xy / e.z * .01;
-    n = saturate(n);
-    float3 v = s_image.SampleLevel(smp_rtlinear, n, 0.);
-    float4 d = 0;
-    for (int p = 0; p < 2; p++) {
-        for (int l = 0; l < 2; l++) {
-            float3 h = s_image.SampleLevel(smp_rtlinear, n + float2(p, l) * screen_res.zw, 0.).xyz;
-            h.x = s_image.SampleLevel(smp_rtlinear, n + float2(p, l) * screen_res.zw + float2(.0014, .0014), 0.).x;
-            h.z = s_image.SampleLevel(smp_rtlinear, n + float2(p, l) * screen_res.zw - float2(.0014, .0014), 0.).z;
-            d += float4(h, 1);
-        }
-    }
-    d.xyz /= d.w;
-    v = d;
-    v = float3(.955, .95, 1.1) * v + float3(.4, .5, 1.) * a * .15;
-    x = float4(v, 1.);
-    z = 0; //ssfx_mv_calc(r.vel_curr, r.vel_prev, 1, 0);
+Texture2D s_cloak_hex;                                 // Crysis hex_ddn.dds, the nano net
+Texture2D s_cloak_perlin;                              // Crysis perlinNoise_sum.dds
+Texture2D s_cloak_noise;                               // Crysis Noise3D.dds, flattened to an atlas
+Texture2D s_cloak_sparks;                              // Crysis palette/cloak_sparks.dds
+
+uniform float4 bus_nanosuit_cloak;                     // Shader bus lane
+
+static const float  CLOAK_REFR_BUMP_SCALE      = 1.00f;  // RefrBumpScale, the same 1 in every Crysis material
+static const float  CLOAK_SPARKS_TILLING       = 1.00f;  // SparksTilling, the same
+static const float  CLOAK_NANOMASK_OFFSET      = 0.00f;  // PI_CloakParams[1].x. Anything above 0 fades the hex net
+static const float  CLOAK_NANO_TILLING         = 30.00f; // Hex net repeats per uv unit
+static const float  CLOAK_NANO_LAYER_INTENSITY = 0.25f;
+static const float  CLOAK_NANO_COLOR_AMOUNT    = 0.33f;
+static const float3 CLOAK_NANO_COLOR           = float3(0.20f, 0.40f, 1.00f);
+static const float3 CLOAK_SPARKS_COLOR         = float3(0.23f, 0.20f, 1.00f);
+static const float  CLOAK_SPARKS_NOISE_SCALE   = 1.50f;
+static const float  CLOAK_SPARKS_ALPHA         = 0.80f;  // Not Crysis's
+static const float  CLOAK_SPARKS_LIGHT_SCALE   = 3.00f;  // X-Ray's unit scale light to Crysis's HDR
+static const float  CLOAK_SPARKS_SPEED         = 0.50f;  // How fast the sparks crawl. Crysis's is 0.8, slowed by eye
+static const float3 CLOAK_SPARKS_DRIFT         = float3(0.31f, -0.23f, 0.19f); // Noise tiles per time unit, uneven
+static const float3 CLOAK_CA_OFFSETS           = float3(0.040f, 0.030f, 0.015f);
+static const float  CLOAK_AVG_OFFSET           = 0.83f;  // Pixels. Crysis's 1.66 * PS_ScreenSize.zw, a half texel
+static const float  CLOAK_TIME_SCALE           = 0.40f;  // Crysis samples the clock as PB_time 0.4
+static const float3 CLOAK_TINT                 = float3(0.970f, 0.965f, 1.070f); // Not Crysis's
+
+static const float  CLOAK_NOISE_SIZE           = 128.0f; // Noise3D is 128^3
+static const float  CLOAK_NOISE_TILE           = 130.0f; // Each slice padded by one texel wrapped from the far edge
+static const float2 CLOAK_NOISE_GRID           = float2(16.0f, 8.0f);
+
+float3 cloak_scene(float2 tc)
+{
+#ifdef USE_MSAA
+    int2 texel = int2(min(saturate(tc) * screen_res.xy, screen_res.xy - 1.0f));
+    return s_cloak_scene.Load(texel, 0).rgb;
+#else
+    return s_cloak_scene.SampleLevel(smp_nofilter, tc, 0).rgb;
+#endif
+}
+
+float2 cloak_noise_tc(float2 texel, float slice)
+{
+    float2 tile = float2(fmod(slice, CLOAK_NOISE_GRID.x), floor(slice / CLOAK_NOISE_GRID.x));
+
+    return (tile * CLOAK_NOISE_TILE + 1.0f + texel) / (CLOAK_NOISE_TILE * CLOAK_NOISE_GRID);
+}
+
+// tex3D with wrap and trilinear filtering over the atlas : the padding filters within a slice, and the two nearest
+// slices are blended here.
+float cloak_noise(float3 uvw)
+{
+    float3 texel = frac(uvw) * CLOAK_NOISE_SIZE;
+
+    float slice = texel.z - 0.5f;
+    float z0 = floor(slice);
+    float fz = slice - z0;
+    float z1 = z0 + 1.0f;
+
+    z0 = (z0 < 0.0f) ? CLOAK_NOISE_SIZE - 1.0f : z0;
+    z1 = (z1 >= CLOAK_NOISE_SIZE) ? 0.0f : z1;
+
+    float n0 = s_cloak_noise.SampleLevel(smp_linear, cloak_noise_tc(texel.xy, z0), 0).r;
+    float n1 = s_cloak_noise.SampleLevel(smp_linear, cloak_noise_tc(texel.xy, z1), 0).r;
+
+    return lerp(n0, n1, fz);
+}
+
+// Where a view space point lands on the screen. m_P is the HUD projection while HUD geometry draws.
+float2 cloak_screen_tc(float3 pos_e)
+{
+    float4 pos_p = mul(m_P, float4(pos_e, 1.0f));
+
+    return pos_p.xy / pos_p.w * float2(0.5f, -0.5f) + 0.5f;
+}
+
+// Model space position, Crysis's vPosOS.
+float3 cloak_model_pos(float3 pos_e)
+{
+    float3 d = pos_e - float3(m_WV[0].w, m_WV[1].w, m_WV[2].w);
+
+    return float3(dot(d, float3(m_WV[0].x, m_WV[1].x, m_WV[2].x)),
+                  dot(d, float3(m_WV[0].y, m_WV[1].y, m_WV[2].y)),
+                  dot(d, float3(m_WV[0].z, m_WV[1].z, m_WV[2].z)));
+}
+
+float4 main(p_bumped I, float4 hpos : SV_Position) : SV_Target
+{
+    float refr_falloff = bus_nanosuit_cloak.x;
+    float light_amount = bus_nanosuit_cloak.z;
+    float cloak_blend  = saturate(bus_nanosuit_cloak.w);
+
+    float2 tc = I.tcdh.xy;
+    float2 screen_tc = hpos.xy * screen_res.zw;
+    float  time = timers.x * CLOAK_TIME_SCALE;
+    float  random = frac(timers.w * 43758.5453f); // PB_RandomParams, timers.w is sin(time)
+
+    // Normal, as GetNormalMap gives it
+    float4 Nu  = s_bump.Sample (smp_base, tc);          // normal.gloss
+    float4 NuE = s_bumpX.Sample(smp_base, tc);          // normal_error.height
+    float3 nrm_t = Nu.wzy + (NuE.xyz - 1.0f);
+
+    float3 nrm_e = normalize(mul(float3x3(I.M1, I.M2, I.M3), nrm_t));
+    float3 eye_e = normalize(-I.position.xyz);
+
+    float n_dot_e = dot(eye_e, nrm_e);
+    float n_dot_e_abs = abs(n_dot_e);
+    n_dot_e = saturate(n_dot_e);
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Pass p0, CloakRefrationPS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    // Strong while the cloak engages, settling to a quarter of the bump scale
+    float refr_amount = (0.25f + 2.5f * (1.0f - cloak_blend)) * CLOAK_REFR_BUMP_SCALE * refr_falloff;
+
+    float mask_variation = saturate(s_cloak_perlin.Sample(smp_linear, tc * 0.5f + time * 0.25f).x * 2.0f - 1.0f);
+
+    float2 nano = -(s_cloak_hex.Sample(smp_linear, tc * CLOAK_NANO_TILLING).xy * 2.0f - 1.0f) * cloak_blend * 2.0f;
+    float  nano_mask = saturate(saturate(1.0f - 100.0f * dot(nano, nano)) + CLOAK_NANOMASK_OFFSET);
+
+    // Scanlines, 4 pixels apart, jumping every frame
+    float  scanline = abs(frac((screen_tc.y + random) * screen_res.y * 0.25f) * 2.0f - 1.0f);
+    float2 interlation = scanline * 0.1f + 0.9f;
+    interlation -= nano * (1.0f - nano_mask);
+
+    // Refraction, with an index of 1, projected back to the screen
+    float3 refr_dir = -2.0f * n_dot_e * nrm_e + eye_e;
+    float2 refr_tc = cloak_screen_tc(I.position.xyz + 0.4f * refr_dir * 0.05f * refr_amount * interlation.x);
+
+    // A slight blur while engaging, chromatic aberration around the screen center once settled. ca_scale is blend^32
+    float  ca_scale = cloak_blend * cloak_blend;
+    ca_scale *= ca_scale;
+    ca_scale *= ca_scale;
+    ca_scale *= ca_scale;
+    ca_scale *= ca_scale;
+    float3 ca_offsets = lerp(0.0f, CLOAK_CA_OFFSETS, ca_scale);
+    float2 avg_offsets = lerp(screen_res.zw * CLOAK_AVG_OFFSET, 0.0f, ca_scale);
+
+    float2 refr_center = refr_tc - 0.5f;
+    float3 refr_x = cloak_scene(refr_center * (1.0f - ca_offsets.x) + 0.5f + avg_offsets);
+    float3 refr_y = cloak_scene(refr_center * (1.0f - ca_offsets.y) + 0.5f - avg_offsets);
+    float3 refr_z = cloak_scene(refr_center * (1.0f - ca_offsets.z) + 0.5f + float2(avg_offsets.x, -avg_offsets.y));
+
+    float3 refr_ca = float3(refr_x.r, refr_y.g, refr_z.b);
+    float3 refr_avg = (refr_x + refr_y + refr_z) / 3.0f;
+    float3 refr_gamma = lerp(refr_avg, refr_ca, ca_scale);
+    refr_gamma *= lerp(float3(1.0f, 1.0f, 1.0f), CLOAK_TINT, cloak_blend);
+    float3 refr_color = refr_gamma * refr_gamma; // Linear, as Crysis reads it
+
+    // The nano layer, a faint blue rim along the silhouette, with 20% of the light amount as in CloakVS
+    float  gradient = interlation.y * saturate(1.0f - n_dot_e_abs);
+    float3 cloak = dot(refr_color, 0.5f / 3.0f) + light_amount * 0.2f * 0.5f;
+    cloak *= gradient * lerp(float3(1.0f, 1.0f, 1.0f), CLOAK_NANO_COLOR, CLOAK_NANO_COLOR_AMOUNT);
+
+    // pow(1 - |NdotE|, 16)
+    float  rim = saturate(1.0f - n_dot_e_abs);
+    rim *= rim;
+    rim *= rim;
+    rim *= rim;
+    rim *= rim;
+
+    float  has_nano = (nano_mask > 0.0f) ? 1.0f : 0.0f;
+    float3 nano_layer = mask_variation * has_nano * cloak * rim * CLOAK_NANO_LAYER_INTENSITY;
+
+    float alpha = 0.5f + nano_mask * cloak_blend * 0.5f;
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Pass p1, CloakSparksPS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    float3 pos_m = cloak_model_pos(I.position.xyz);
+
+    // The noise tiles at 1, so the drift is wrapped in noise space, where the wrap is seamless
+    float3 sparks_variation = (pos_m * CLOAK_SPARKS_TILLING + nrm_t * 0.02f) * CLOAK_SPARKS_NOISE_SCALE;
+    float  sparks_noise = cloak_noise(sparks_variation + frac(time * CLOAK_SPARKS_DRIFT));
+
+    // Three palette peaks sweep through the noise at three rates, the second shifted by the distance to the origin
+    float  sparks_timer = time * CLOAK_SPARKS_SPEED;
+    float3 sparks = float3(
+        s_cloak_sparks.Sample(smp_linear, float2(sparks_noise         + sparks_timer        + 0.1f, 0.5f)).x,
+        s_cloak_sparks.Sample(smp_linear, float2(sparks_noise * 1.53f + sparks_timer * 2.0f + 0.4f
+                                               + length(pos_m) * 0.1f,                              0.5f)).y,
+        s_cloak_sparks.Sample(smp_linear, float2(sparks_noise * 1.70f + sparks_timer * 1.4f + 0.2f, 0.5f)).z);
+
+    sparks = CLOAK_SPARKS_COLOR * dot(sparks, 1.0f);
+    sparks *= sparks;
+    sparks *= scanline * CLOAK_SPARKS_ALPHA * light_amount * CLOAK_SPARKS_LIGHT_SCALE;
+
+    // Out
+    float3 color = sqrt(saturate(refr_color + nano_layer + sparks / alpha));
+    return float4(color.r, color.g, color.b, alpha);
 }

@@ -40,7 +40,7 @@ Speed mode :
 - Increases run speed, consumes energy
 - When low on energy, the movement speed bonuses get disabled
 - Decreases time to aim down sights
-- Increases reload speed is increased
+- Increases reload speed
 - In this mode, the suit gets a yellow glow
 
 Strength mode :
@@ -59,7 +59,7 @@ Cloak mode :
 - Shooting while in cloak mode completely depletes the suit's energy
 - The player is cloaked from NPC's vision while cloak mode is active
 - When getting too close to an NPC while in cloak mode, they will start to notice you
-- On semi-modern renderers (DirectX 10 & 11), the cloak mode uses a custom-made shader
+- The cloak mode shader can be selected per suit in MCM : a port of Crysis' cloak shader (default), LVutner's shader, or a DX8/9 compatible one, which DirectX 8 & 9 users must select
 
 HUD :
 - Added a custom HUD when wearing the suit. HUD dynamically switches from vanilla HUD to the Nanosuit's and back
@@ -69,6 +69,7 @@ HUD :
 - A gauge next to the minimap shows the player's visibility from enemy NPCs and mutants
 - The status hub shows the suit's current mode, energy level, health, stamina, ammo count, ammo reserve and fire mode
 - HUD elements from vanilla Anomaly are also customized : ammo wheel, companion wheel and list (can be turned on/off in MCM)
+- Every color of the HUD comes from a theme, picked per suit in MCM and fully customizable under 'Nanosuit > HUD/UI'
 
 Defibrillator :
 - If the player dies, under certain conditions, an animated sequence will play, giving the option to get a second chance
@@ -110,7 +111,7 @@ Nightvision :
 
 These addons are **absolutely required** in order for the addon to work :
 1. [S.T.A.L.K.E.R. Anomaly 1.5.3](https://www.moddb.com/mods/stalker-anomaly/downloads/stalker-anomaly-153).
-2. [S.T.A.L.K.E.R. Anomaly Modded Exes 12.09.2026 (or newer)](https://github.com/themrdemonized/xray-monolith)
+2. [S.T.A.L.K.E.R. Anomaly Modded Exes 11.10.2026 (or newer)](https://github.com/themrdemonized/xray-monolith)
 
 The addon natively integrates[^native_integrations] with the following addons, but they **aren't required** :
 1. [Mod Configuration Menu v1.7](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu) (customizable options for the addon);

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 29/08/2026                                                                                             ---
+---    Date : 21/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to stylize the timer (from sr_timer.script) UI like the rest of the Nanosuit HUD.                 ---
@@ -67,11 +67,11 @@ function ui_timer:__init(parent) super()
     arm.scale_ui(self.m_ui_background, true, true, "right")
 
     self.m_ui_outline = self.m_xml:InitStatic("outline", self)
-    self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
+    self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.outline)
     arm.scale_ui(self.m_ui_outline, true, true, "right")
 
     self.m_ui_clock = self.m_xml:InitStatic("clock", self)
-    self.m_ui_clock:SetTextureColor(self.m_parent.m_colors.background)
+    self.m_ui_clock:SetTextureColor(self.m_parent.m_theme.shared.outline)
     arm.scale_ui(self.m_ui_clock, true, true, "right")
 
     self.m_ui_timer = self.m_xml:InitStatic("timer", self)
@@ -89,11 +89,11 @@ function ui_timer:Update(force)
     CUIScriptWnd.Update(self)
 
     if self.m_parent.m_core.m_malfunctor.m_enabled then
-        self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.red)
-        self.m_ui_clock:SetTextureColor(self.m_parent.m_colors.red)
+        self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.alert)
+        self.m_ui_clock:SetTextureColor(self.m_parent.m_theme.shared.alert)
     else
-        self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
-        self.m_ui_clock:SetTextureColor(self.m_parent.m_colors.background)
+        self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.outline)
+        self.m_ui_clock:SetTextureColor(self.m_parent.m_theme.shared.outline)
     end
 
     self.m_ui_background:Show(self.m_enabled)

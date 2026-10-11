@@ -2,45 +2,32 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/09/2026                                                                                             ---
+---    Date : 30/09/2026                                                                                             ---
 ---    License : Public Domain Mark 1.0 Universal                                                                    ---
 ---                                                                                                                  ---
 ---    Script shader for the glowing parts of the Nanosuit.                                                          ---
 ---                                                                                                                  ---
----    The surface is a normal, deferred rendered, bump mapped model : with the glow switched off it is              ---
----    lit exactly like any other outfit (normal map, sun shadows, dynamic lights, SSAO), which is what              ---
----    armor mode should look like. On top of that, an emissive pass adds self illumination where the                ---
----    glow map says so, which is what speed and strength modes look like.                                           ---
+---    The surface is a deferred bump mapped model, lit like any other outfit, which is armor mode. An emissive pass ---
+---    adds self illumination where the glow map says so, which is speed and strength modes. The g-buffer has        ---
+---    nowhere to store emission, hence the second draw.                                                             ---
 ---                                                                                                                  ---
----    Three elements are compiled :                                                                                 ---
----      normal     : the g-buffer pass, flagged emissive so the engine queues l_special for us                      ---
----      l_point    : the shadow map pass, so the outfit keeps casting shadows                                       ---
+---    Elements :                                                                                                    ---
+---      normal     : the g-buffer pass, flagged emissive so the engine queues l_special                             ---
+---      l_point    : the shadow map pass                                                                            ---
 ---      l_special  : the emissive pass, added into the light accumulator before the dynamic lights                  ---
 ---                                                                                                                  ---
----    The geometry is necessarily submitted twice, once per pass : a deferred renderer has nowhere in               ---
----    the g-buffer to put emission, so self illumination has to be a second draw into the accumulator.              ---
+---    Both passes run the engine's own deffer_model_bump-hq vertex shader, and the g-buffer pass its own pixel      ---
+---    shader, so a shader pack's changes apply here too : with Screen Space Shaders, the TAA jitter and the motion  ---
+---    vectors that keep the suit from ghosting. The shared vertex shader also puts both passes on the same depth.   ---
 ---                                                                                                                  ---
----    Both passes deliberately run the engine's own deffer_model_bump-hq vertex shader rather than a                ---
----    copy of it, and the g-buffer pass runs the engine's own pixel shader untouched. Everything that               ---
----    a shader pack puts in there then applies to this outfit too : with Screen Space Shaders that is               ---
----    the TAA jitter and the motion vectors, without which the suit ghosts under TAA. Sharing one                   ---
----    compiled vertex shader between the two passes also means both land on exactly the same depth,                 ---
----    so the emissive pass never fights the g-buffer pass for it.                                                   ---
+---    Textures, named after the diffuse, all mandatory :                                                            ---
+---      <diffuse>        the diffuse texture                                                                        ---
+---      <diffuse>_bump   the normal map                                                                             ---
+---      <diffuse>_bump#  the normal map's error map                                                                 ---
+---      <diffuse>_glow   the glow map : black never emits, white emits at full strength, a color tints the light    ---
 ---                                                                                                                  ---
----    Textures, all derived from the diffuse texture's name :                                                       ---
----      <diffuse>        the diffuse texture, as given by the material                                              ---
----      <diffuse>_bump   the normal map          (mandatory, this is a bump mapped shader)                          ---
----      <diffuse>_bump#  the normal map's errors (mandatory, same)                                                  ---
----      <diffuse>_glow   the glow map            (mandatory)                                                        ---
----                                                                                                                  ---
----    In the glow map, black means the texel never emits light, white means it emits at full strength.              ---
----    A colored glow map additionally tints the emitted light, on top of the color the script sends.                ---
----                                                                                                                  ---
----    The glow itself is driven from Lua, through the "nanosuit_glow" shader bus lane :                             ---
----      rgb : color of the emitted light                                                                            ---
----      w   : strength of the emitted light, 0 switches the glow off entirely                                       ---
----    A lane nobody registered reads (0,0,0,0), so with no script running the outfit is simply a normal             ---
----    deferred outfit. See the header of nanosuit_glow.ps for the values Crysis uses per mode.                      ---
+---    Driven by the "nanosuit_glow" shader bus lane, see nanosuit_glow.ps. An unregistered lane reads zero, which   ---
+---    leaves a plain deferred outfit.                                                                               ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 

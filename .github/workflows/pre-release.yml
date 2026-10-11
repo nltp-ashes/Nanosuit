@@ -31,7 +31,7 @@ jobs:
       with:
         type: 'zip'
         filename: 'Nanosuit.${{ github.event.inputs.build-ver }}.RC${{ github.event.inputs.rc-ver }}.zip'
-        exclusions: '*.git*'
+        exclusions: '*.git* *.claude* CLAUDE.md'
 
     - name: Release
       id: release

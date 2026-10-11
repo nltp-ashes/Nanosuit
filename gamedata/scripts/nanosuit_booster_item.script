@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 19/09/2026                                                                                             ---
+---    Date : 11/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract booster applying an effect to the items of the actor.          ---
@@ -66,7 +66,7 @@ function abstract_item_booster:remove()
     for slot, _ in pairs(self.m_cache) do
         local obj = db.actor:item_in_slot(slot)
         if obj and self:filter(obj, slot) then
-            self:unset(obj, slot)
+            self:unset(obj, slot, true)
         end
     end
 
@@ -80,19 +80,19 @@ function abstract_item_booster:filter(obj, slot)
 end
 
 function abstract_item_booster:set(obj, slot)
-    printf("[NS] Abstract Item Booster | Setting effect %s to object %s in slot %s", self.m_name, obj:name(), slot)
+    nanosuit_utils.print_dbg("Setting effect %s to object %s in slot %s", self.m_name, obj:name(), slot)
     self.m_cache[slot].obj_id = obj:id()
 end
 
-function abstract_item_booster:unset(obj, slot)
-    printf("[NS] Abstract Item Booster | Unsetting effect %s to object %s in slot %s", self.m_name, obj:name(), slot)
+function abstract_item_booster:unset(obj, slot, is_removing)
+    nanosuit_utils.print_dbg("Unsetting effect %s to object %s in slot %s", self.m_name, obj:name(), slot)
     self.m_cache[slot].obj_id = nil
 end
 
 function abstract_item_booster:actor_item_to_slot(obj)
     for slot, cache in pairs(self.m_cache) do
         if cache.obj_id == obj:id() and self:filter(obj, slot) then
-            self:unset(obj, slot)
+            self:unset(obj, slot, false)
         end
     end
     for slot, _ in pairs(self.m_cache) do
@@ -107,7 +107,7 @@ end
 function abstract_item_booster:actor_item_to_ruck(obj)
     for slot, cache in pairs(self.m_cache) do
         if cache.obj_id == obj:id() and self:filter(obj, slot) then
-            self:unset(obj, slot)
+            self:unset(obj, slot, false)
             return
         end
     end
@@ -116,7 +116,7 @@ end
 function abstract_item_booster:actor_on_item_drop(obj)
     for slot, cache in pairs(self.m_cache) do
         if cache.obj_id == obj:id() and self:filter(obj, slot) then
-            self:unset(obj, slot)
+            self:unset(obj, slot, false)
             return
         end
     end

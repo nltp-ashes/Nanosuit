@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 07/09/2026                                                                                             ---
+---    Date : 21/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit status hub (energy, health, ammo, etc) UI.                                 ---
@@ -36,19 +36,19 @@ function ui_status:__init(parent) super()
     nanosuit_utils.scale_ui_element(self.m_ui_background, true, true, "right")
 
     self.m_ui_outline = self.m_xml:InitStatic("outline", self)
-    self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
+    self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.outline)
     nanosuit_utils.scale_ui_element(self.m_ui_outline, true, true, "right")
 
     self.m_ui_suit_mode = self.m_xml:InitStatic("suit_mode", self)
-    self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_colors.background)
+    self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_theme.shared.outline)
     nanosuit_utils.scale_ui_element(self.m_ui_suit_mode, true, true, "right")
 
     self.m_ui_energy = self.m_xml:InitTextWnd("energy", self)
-    self.m_ui_energy:SetTextColor(self.m_parent.m_colors.text)
+    self.m_ui_energy:SetTextColor(self.m_parent.m_theme.shared.text)
     nanosuit_utils.scale_ui_element(self.m_ui_energy, true, true, "right")
 
     self.m_ui_energy_bar_background = self.m_xml:InitStatic("energy_bar_background", self)
-    self.m_ui_energy_bar_background:SetTextureColor(self.m_parent.m_colors.energy_bg)
+    self.m_ui_energy_bar_background:SetTextureColor(self.m_parent.m_theme.status.energy_bg)
     nanosuit_utils.scale_ui_element(self.m_ui_energy_bar_background, true, true, "right")
 
     self.m_ui_energy_bar = self.m_xml:InitProgressBar("energy_bar", self)
@@ -56,15 +56,15 @@ function ui_status:__init(parent) super()
     nanosuit_utils.scale_ui_element(self.m_ui_energy_bar:GetProgressStatic(), true, true, "left", self.m_ui_energy_bar:GetWidth())
 
     self.m_ui_energy_icon = self.m_xml:InitStatic("energy_icon", self)
-    self.m_ui_energy_icon:SetTextureColor(nanosuit_utils.get_contrasting_color(self.m_parent.m_colors.energy))
+    self.m_ui_energy_icon:SetTextureColor(nanosuit_utils.get_contrasting_color(self.m_parent.m_theme.status.energy))
     nanosuit_utils.scale_ui_element(self.m_ui_energy_icon, true, true, "right")
 
     self.m_ui_health = self.m_xml:InitTextWnd("health", self)
-    self.m_ui_health:SetTextColor(self.m_parent.m_colors.text)
+    self.m_ui_health:SetTextColor(self.m_parent.m_theme.shared.text)
     nanosuit_utils.scale_ui_element(self.m_ui_health, true, true, "right")
 
     self.m_ui_health_bar_background = self.m_xml:InitStatic("health_bar_background", self)
-    self.m_ui_health_bar_background:SetTextureColor(self.m_parent.m_colors.health_bg)
+    self.m_ui_health_bar_background:SetTextureColor(self.m_parent.m_theme.status.health_bg)
     nanosuit_utils.scale_ui_element(self.m_ui_health_bar_background, true, true, "right")
 
     self.m_ui_health_bar = self.m_xml:InitProgressBar("health_bar", self)
@@ -72,15 +72,15 @@ function ui_status:__init(parent) super()
     nanosuit_utils.scale_ui_element(self.m_ui_health_bar:GetProgressStatic(), true, true, "left", self.m_ui_health_bar:GetWidth())
 
     self.m_ui_health_icon = self.m_xml:InitStatic("health_icon", self)
-    self.m_ui_health_icon:SetTextureColor(nanosuit_utils.get_contrasting_color(self.m_parent.m_colors.health))
+    self.m_ui_health_icon:SetTextureColor(nanosuit_utils.get_contrasting_color(self.m_parent.m_theme.status.health))
     nanosuit_utils.scale_ui_element(self.m_ui_health_icon, true, true, "right")
 
     self.m_ui_stamina = self.m_xml:InitTextWnd("stamina", self)
-    self.m_ui_stamina:SetTextColor(self.m_parent.m_colors.text)
+    self.m_ui_stamina:SetTextColor(self.m_parent.m_theme.shared.text)
     nanosuit_utils.scale_ui_element(self.m_ui_stamina, true, true, "right")
 
     self.m_ui_stamina_bar_background = self.m_xml:InitStatic("stamina_bar_background", self)
-    self.m_ui_stamina_bar_background:SetTextureColor(self.m_parent.m_colors.stamina_bg)
+    self.m_ui_stamina_bar_background:SetTextureColor(self.m_parent.m_theme.status.stamina_bg)
     nanosuit_utils.scale_ui_element(self.m_ui_stamina_bar_background, true, true, "right")
 
     self.m_ui_stamina_bar = self.m_xml:InitProgressBar("stamina_bar", self)
@@ -88,19 +88,19 @@ function ui_status:__init(parent) super()
     nanosuit_utils.scale_ui_element(self.m_ui_stamina_bar:GetProgressStatic(), true, true, "left", self.m_ui_stamina_bar:GetWidth())
 
     self.m_ui_stamina_icon = self.m_xml:InitStatic("stamina_icon", self)
-    self.m_ui_stamina_icon:SetTextureColor(nanosuit_utils.get_contrasting_color(self.m_parent.m_colors.stamina))
+    self.m_ui_stamina_icon:SetTextureColor(nanosuit_utils.get_contrasting_color(self.m_parent.m_theme.status.stamina))
     nanosuit_utils.scale_ui_element(self.m_ui_stamina_icon, true, true, "right")
 
     self.m_ui_ammo_count = self.m_xml:InitTextWnd("ammo_count", self)
-    self.m_ui_ammo_count:SetTextColor(self.m_parent.m_colors.text)
+    self.m_ui_ammo_count:SetTextColor(self.m_parent.m_theme.shared.text)
     nanosuit_utils.scale_ui_element(self.m_ui_ammo_count, true, true, "right")
 
     self.m_ui_ammo_reserve = self.m_xml:InitTextWnd("ammo_reserve", self)
-    self.m_ui_ammo_reserve:SetTextColor(self.m_parent.m_colors.text)
+    self.m_ui_ammo_reserve:SetTextColor(self.m_parent.m_theme.shared.text)
     nanosuit_utils.scale_ui_element(self.m_ui_ammo_reserve, true, true, "right")
 
     self.m_ui_fire_mode = self.m_xml:InitStatic("fire_mode", self)
-    self.m_ui_fire_mode:SetTextureColor(self.m_parent.m_colors.background)
+    self.m_ui_fire_mode:SetTextureColor(self.m_parent.m_theme.shared.outline)
     nanosuit_utils.scale_ui_element(self.m_ui_fire_mode, true, true, "right")
 end
 
@@ -135,32 +135,32 @@ end
 
 function ui_status:update_in_malfunction()
     -- Outline
-    self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.red)
+    self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.alert)
 
     -- Current suit mode
-    self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_colors.red)
+    self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_theme.shared.alert)
     self.m_ui_suit_mode:InitTexture("ui_nanosuit_no_draw")
 
     -- Energy
     self.m_ui_energy:SetText("!")
-    self.m_ui_energy:SetTextColor(self.m_parent.m_colors.red)
+    self.m_ui_energy:SetTextColor(self.m_parent.m_theme.shared.alert)
     self.m_ui_energy_bar:SetProgressPos(0)
-    self.m_ui_energy_bar_background:SetTextureColor(self.m_parent.m_colors.energy_off_bg)
-    self.m_ui_energy_icon:SetTextureColor(self.m_parent.m_colors.red)
+    self.m_ui_energy_bar_background:SetTextureColor(self.m_parent.m_theme.status.energy_off_bg)
+    self.m_ui_energy_icon:SetTextureColor(self.m_parent.m_theme.shared.alert)
 
     -- Health
     self.m_ui_health:SetText("!")
-    self.m_ui_health:SetTextColor(self.m_parent.m_colors.red)
+    self.m_ui_health:SetTextColor(self.m_parent.m_theme.shared.alert)
     self.m_ui_health_bar:SetProgressPos(0)
-    self.m_ui_health_bar_background:SetTextureColor(self.m_parent.m_colors.health_off_bg)
-    self.m_ui_health_icon:SetTextureColor(self.m_parent.m_colors.red)
+    self.m_ui_health_bar_background:SetTextureColor(self.m_parent.m_theme.status.health_off_bg)
+    self.m_ui_health_icon:SetTextureColor(self.m_parent.m_theme.shared.alert)
 
     -- Stamina
     self.m_ui_stamina:SetText("!")
-    self.m_ui_stamina:SetTextColor(self.m_parent.m_colors.red)
+    self.m_ui_stamina:SetTextColor(self.m_parent.m_theme.shared.alert)
     self.m_ui_stamina_bar:SetProgressPos(0)
-    self.m_ui_stamina_bar_background:SetTextureColor(self.m_parent.m_colors.stamina_off_bg)
-    self.m_ui_stamina_icon:SetTextureColor(self.m_parent.m_colors.red)
+    self.m_ui_stamina_bar_background:SetTextureColor(self.m_parent.m_theme.status.stamina_off_bg)
+    self.m_ui_stamina_icon:SetTextureColor(self.m_parent.m_theme.shared.alert)
 
     -- Ammo count
     self.m_ui_ammo_count:SetText("")
@@ -173,26 +173,26 @@ function ui_status:update_in_malfunction()
 end
 
 function ui_status:update_outline()
-    self.m_ui_outline:SetTextureColor(self.m_parent.m_colors.background)
+    self.m_ui_outline:SetTextureColor(self.m_parent.m_theme.shared.outline)
 end
 
 function ui_status:update_suit_mode()
     local suit_mode = "ui_nanosuit_status_" .. self.m_parent.m_core.m_current_mode.m_name
     self.m_ui_suit_mode:InitTexture(suit_mode)
-    self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_colors.background)
+    self.m_ui_suit_mode:SetTextureColor(self.m_parent.m_theme.shared.outline)
 end
 
 function ui_status:update_energy()
     local energy = self.m_parent.m_core.m_energy.m_level
     energy = round(energy)
     energy = clamp(energy, 0, 100)
-    self.m_ui_energy_bar:SetColor(energy > 20 and self.m_parent.m_colors.energy or self.m_parent.m_colors.red)
+    self.m_ui_energy_bar:SetColor(energy > 20 and self.m_parent.m_theme.status.energy or self.m_parent.m_theme.shared.alert)
     self.m_ui_energy_bar:SetProgressPos(energy)
-    self.m_ui_energy_bar_background:SetTextureColor(self.m_parent.m_colors.energy_bg)
+    self.m_ui_energy_bar_background:SetTextureColor(self.m_parent.m_theme.status.energy_bg)
     energy = tostring(energy)
     self.m_ui_energy:SetText(energy)
-    self.m_ui_energy:SetTextColor(self.m_parent.m_colors.text)
-    self.m_ui_energy_icon:SetTextureColor(nanosuit_utils.get_contrasting_color(self.m_parent.m_colors.energy))
+    self.m_ui_energy:SetTextColor(self.m_parent.m_theme.shared.text)
+    self.m_ui_energy_icon:SetTextureColor(nanosuit_utils.get_contrasting_color(self.m_parent.m_theme.status.energy))
 end
 
 function ui_status:update_health()
@@ -200,13 +200,13 @@ function ui_status:update_health()
     health = health * 100
     health = round(health)
     health = clamp(health, 0, 100)
-    self.m_ui_health_bar:SetColor(health > 20 and self.m_parent.m_colors.health or self.m_parent.m_colors.red)
+    self.m_ui_health_bar:SetColor(health > 20 and self.m_parent.m_theme.status.health or self.m_parent.m_theme.shared.alert)
     self.m_ui_health_bar:SetProgressPos(health)
-    self.m_ui_health_bar_background:SetTextureColor(self.m_parent.m_colors.health_bg)
+    self.m_ui_health_bar_background:SetTextureColor(self.m_parent.m_theme.status.health_bg)
     health = tostring(health)
     self.m_ui_health:SetText(health)
-    self.m_ui_health:SetTextColor(self.m_parent.m_colors.text)
-    self.m_ui_health_icon:SetTextureColor(nanosuit_utils.get_contrasting_color(self.m_parent.m_colors.health))
+    self.m_ui_health:SetTextColor(self.m_parent.m_theme.shared.text)
+    self.m_ui_health_icon:SetTextureColor(nanosuit_utils.get_contrasting_color(self.m_parent.m_theme.status.health))
 end
 
 function ui_status:update_stamina()
@@ -214,19 +214,19 @@ function ui_status:update_stamina()
     stamina = stamina * 100
     stamina = round(stamina)
     stamina = clamp(stamina, 0, 100)
-    self.m_ui_stamina_bar:SetColor(stamina > 20 and self.m_parent.m_colors.stamina or self.m_parent.m_colors.red)
+    self.m_ui_stamina_bar:SetColor(stamina > 20 and self.m_parent.m_theme.status.stamina or self.m_parent.m_theme.shared.alert)
     self.m_ui_stamina_bar:SetProgressPos(stamina)
-    self.m_ui_stamina_bar_background:SetTextureColor(self.m_parent.m_colors.stamina_bg)
+    self.m_ui_stamina_bar_background:SetTextureColor(self.m_parent.m_theme.status.stamina_bg)
     stamina = tostring(stamina)
     self.m_ui_stamina:SetText(stamina)
-    self.m_ui_stamina:SetTextColor(self.m_parent.m_colors.text)
-    self.m_ui_stamina_icon:SetTextureColor(nanosuit_utils.get_contrasting_color(self.m_parent.m_colors.stamina))
+    self.m_ui_stamina:SetTextColor(self.m_parent.m_theme.shared.text)
+    self.m_ui_stamina_icon:SetTextureColor(nanosuit_utils.get_contrasting_color(self.m_parent.m_theme.status.stamina))
 end
 
 function ui_status:update_ammo_count(weapon_obj, weapon_class)
     if not weapon_obj or not weapon_class then
         self.m_ui_ammo_count:SetText("---")
-        self.m_ui_ammo_count:SetTextColor(self.m_parent.m_colors.text)
+        self.m_ui_ammo_count:SetTextColor(self.m_parent.m_theme.shared.text)
         return
     end
 
@@ -234,9 +234,9 @@ function ui_status:update_ammo_count(weapon_obj, weapon_class)
     local mag_size = weapon_class:GetAmmoMagSize()
 
     if ammo <= mag_size * self.m_ammo_count_low_threshold then
-        self.m_ui_ammo_count:SetTextColor(self.m_parent.m_colors.red)
+        self.m_ui_ammo_count:SetTextColor(self.m_parent.m_theme.shared.alert)
     else
-        self.m_ui_ammo_count:SetTextColor(self.m_parent.m_colors.text)
+        self.m_ui_ammo_count:SetTextColor(self.m_parent.m_theme.shared.text)
     end
 
     ammo = clamp(ammo, 0, 999)
@@ -248,7 +248,7 @@ end
 function ui_status:update_ammo_reserve(weapon_obj, weapon_class)
     if not weapon_obj or not weapon_class then
         self.m_ui_ammo_reserve:SetText("---")
-        self.m_ui_ammo_reserve:SetTextColor(self.m_parent.m_colors.text)
+        self.m_ui_ammo_reserve:SetTextColor(self.m_parent.m_theme.shared.text)
         return
     end
 
@@ -256,9 +256,9 @@ function ui_status:update_ammo_reserve(weapon_obj, weapon_class)
     local mag_size = weapon_class:GetAmmoMagSize()
 
     if ammo_reserve <= mag_size * self.m_ammo_reserve_low_threshold then
-        self.m_ui_ammo_reserve:SetTextColor(self.m_parent.m_colors.red)
+        self.m_ui_ammo_reserve:SetTextColor(self.m_parent.m_theme.shared.alert)
     else
-        self.m_ui_ammo_reserve:SetTextColor(self.m_parent.m_colors.text)
+        self.m_ui_ammo_reserve:SetTextColor(self.m_parent.m_theme.shared.text)
     end
 
     ammo_reserve = clamp(ammo_reserve, 0, 999)
