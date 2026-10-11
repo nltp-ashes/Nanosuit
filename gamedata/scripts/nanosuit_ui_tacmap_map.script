@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 11/09/2026                                                                                             ---
+---    Date : 07/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map background map UI.                                            ---
@@ -42,6 +42,7 @@ function ui_tacmap_map:__init(parent) super()
     -- Build UI
     self.m_ui_map = self.m_parent.m_xml:InitStatic("map", self)
     self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map")
+    self.m_ui_map:SetTextureColor(self.m_parent.m_parent.m_theme.tacmap.map_bg)
     nanosuit_utils.scale_ui_element(self.m_ui_map, true, true, "left")
 
     -- FIXME : finish implementing this when I find a way to improve the code's performance
@@ -80,10 +81,12 @@ end
 function ui_tacmap_map:update_map()
     if not self.m_parent:is_enabled() then
         self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map_malfunction")
+        self.m_ui_map:SetTextureColor(self.m_parent.m_parent.m_theme.shared.background)
         return
     end
 
     self.m_ui_map:InitTexture("ui_nanosuit_tacmap_map")
+    self.m_ui_map:SetTextureColor(self.m_parent.m_parent.m_theme.tacmap.map_bg)
 end
 
 function ui_tacmap_map:update_icons()

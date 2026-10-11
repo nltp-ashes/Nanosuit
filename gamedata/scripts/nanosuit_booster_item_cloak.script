@@ -1,0 +1,59 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 11/10/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the logic of a cloaking booster usable by a Nanosuit mode.                              ---
+---                                                                                                                  ---
+---    The booster picks which items are cloaked, and the core's m_cloak swaps them. An item leaving its slot is     ---
+---    restored right away. When the booster is removed, its items are handed over instead, to fade out with the     ---
+---    suit.                                                                                                         ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+actor_slots_enum        = nanosuit_utils.actor_slots_enum
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Cloak booster class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "cloak" (nanosuit_booster_item.abstract_item_booster)
+
+function cloak:__init(core, name) super(core, name)
+    -- Cache
+    self.m_cache[actor_slots_enum.knife] = { enabled = true, obj_id = nil }
+    self.m_cache[actor_slots_enum.pistol] = { enabled = true, obj_id = nil }
+    self.m_cache[actor_slots_enum.rifle] = { enabled = true, obj_id = nil }
+    self.m_cache[actor_slots_enum.grenade] = { enabled = true, obj_id = nil }
+    self.m_cache[actor_slots_enum.binoculars] = { enabled = true, obj_id = nil }
+    self.m_cache[actor_slots_enum.bolt] = { enabled = true, obj_id = nil }
+    self.m_cache[actor_slots_enum.outfit] = { enabled = true, obj_id = nil }
+    self.m_cache[actor_slots_enum.pda] = { enabled = true, obj_id = nil }
+    self.m_cache[actor_slots_enum.detector] = { enabled = true, obj_id = nil }
+    self.m_cache[actor_slots_enum.torch] = { enabled = true, obj_id = nil }
+    self.m_cache[actor_slots_enum.artefact] = { enabled = true, obj_id = nil }
+    self.m_cache[actor_slots_enum.helmet] = { enabled = true, obj_id = nil }
+    self.m_cache[actor_slots_enum.backpack] = { enabled = true, obj_id = nil }
+    self.m_cache[actor_slots_enum.animation] = { enabled = true, obj_id = nil }
+end
+
+function cloak:set(obj, slot)
+    nanosuit_booster_item.abstract_item_booster.set(self, obj, slot)
+
+    self.m_core.m_cloak:add_object(obj)
+end
+
+function cloak:unset(obj, slot, is_removing)
+    if not is_removing then
+        self.m_core.m_cloak:remove_object(obj:id())
+    end
+
+    nanosuit_booster_item.abstract_item_booster.unset(self, obj, slot, is_removing)
+end

@@ -18,7 +18,7 @@ actor_slots_enum          = nanosuit_utils.actor_slots_enum
 energy_drain_enum         = nanosuit_utils.energy_drain_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Defibrillator class
+-- Binoculars class
 -- ---------------------------------------------------------------------------------------------------------------------
 
 class "binoculars"

@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 03/09/2025                                                                                            -->
+<!--    Date : 07/10/2026                                                                                           -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    UI template for the Nanosuit auxiliary systems.                                                              -->
@@ -30,4 +30,12 @@
             <texture>ui_nanosuit_auxiliaries_nv_energy_bar</texture>
         </progress>
     </nv_energy_bar>
+
+    <!-- Halloween theme -->
+    <halloween_cobweb x="8" y="9" width="36" height="28" stretch="1">
+        <texture>ui_nanosuit_halloween_cobweb</texture>
+    </halloween_cobweb>
+    <halloween_skeleton x="8" y="9" width="44" height="104" stretch="1">
+        <texture>ui_nanosuit_halloween_skeleton</texture>
+    </halloween_skeleton>
 </w>

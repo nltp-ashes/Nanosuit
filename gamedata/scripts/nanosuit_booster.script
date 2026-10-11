@@ -2,22 +2,18 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 05/09/2026                                                                                             ---
+---    Date : 19/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract booster usable by a Nanosuit mode.                             ---
 ---                                                                                                                  ---
+---    A booster is an effect a mode turns on when it is applied and off when it is removed. This class only         ---
+---    carries that lifecycle.                                                                                       ---
+---                                                                                                                  ---
 ---==================================================================================================================---
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Constants, global variables and imported functions
--- ---------------------------------------------------------------------------------------------------------------------
-
--- Imports
-actor_slots_enum        = nanosuit_utils.actor_slots_enum
-
--- ---------------------------------------------------------------------------------------------------------------------
--- Speed mode class
+-- Booster class
 -- ---------------------------------------------------------------------------------------------------------------------
 
 class "abstract_booster"
@@ -25,22 +21,6 @@ class "abstract_booster"
 function abstract_booster:__init(core, name)
     self.m_core = core
     self.m_name = name
-    self.m_cache = {
-        [actor_slots_enum.knife] = { enabled = false, obj_id = nil },
-        [actor_slots_enum.pistol] = { enabled = false, obj_id = nil },
-        [actor_slots_enum.rifle] = { enabled = false, obj_id = nil },
-        [actor_slots_enum.grenade] = { enabled = false, obj_id = nil },
-        [actor_slots_enum.binoculars] = { enabled = false, obj_id = nil },
-        [actor_slots_enum.bolt] = { enabled = false, obj_id = nil },
-        [actor_slots_enum.outfit] = { enabled = false, obj_id = nil },
-        [actor_slots_enum.pda] = { enabled = false, obj_id = nil },
-        [actor_slots_enum.detector] = { enabled = false, obj_id = nil },
-        [actor_slots_enum.torch] = { enabled = false, obj_id = nil },
-        [actor_slots_enum.artefact] = { enabled = false, obj_id = nil },
-        [actor_slots_enum.helmet] = { enabled = false, obj_id = nil },
-        [actor_slots_enum.backpack] = { enabled = false, obj_id = nil },
-        [actor_slots_enum.animation] = { enabled = false, obj_id = nil }
-    }
 end
 
 function abstract_booster:__eq(other)
@@ -52,74 +32,7 @@ function abstract_booster:destroy()
 end
 
 function abstract_booster:apply()
-    for slot, _ in pairs(self.m_cache) do
-        local obj = db.actor:item_in_slot(slot)
-        if obj and self:filter(obj, slot) then
-            self:set(obj, slot)
-        end
-    end
-
-    RegisterScriptCallback("actor_item_to_slot", self)
-    RegisterScriptCallback("actor_item_to_ruck", self)
-    RegisterScriptCallback("actor_on_item_drop", self)
 end
 
 function abstract_booster:remove()
-    for slot, _ in pairs(self.m_cache) do
-        local obj = db.actor:item_in_slot(slot)
-        if obj and self:filter(obj, slot) then
-            self:unset(obj, slot)
-        end
-    end
-
-    UnregisterScriptCallback("actor_item_to_slot", self)
-    UnregisterScriptCallback("actor_item_to_ruck", self)
-    UnregisterScriptCallback("actor_on_item_drop", self)
-end
-
-function abstract_booster:filter(obj, slot)
-    return self.m_cache[slot].enabled
-end
-
-function abstract_booster:set(obj, slot)
-    printf("[NS] Abstract Booster | Setting effect %s to object %s in slot %s", self.m_name, obj:name(), slot)
-    self.m_cache[slot].obj_id = obj:id()
-end
-
-function abstract_booster:unset(obj, slot)
-    printf("[NS] Abstract Booster | Unsetting effect %s to object %s in slot %s", self.m_name, obj:name(), slot)
-    self.m_cache[slot].obj_id = nil
-end
-
-function abstract_booster:actor_item_to_slot(obj)
-    for slot, cache in pairs(self.m_cache) do
-        if cache.obj_id == obj:id() and self:filter(obj, slot) then
-            self:unset(obj, slot)
-        end
-    end
-    for slot, _ in pairs(self.m_cache) do
-        local item_in_slot = db.actor:item_in_slot(slot)
-        if item_in_slot and item_in_slot:id() == obj:id() and self:filter(obj, slot) then
-            self:set(obj, slot)
-            return
-        end
-    end
-end
-
-function abstract_booster:actor_item_to_ruck(obj)
-    for slot, cache in pairs(self.m_cache) do
-        if cache.obj_id == obj:id() and self:filter(obj, slot) then
-            self:unset(obj, slot)
-            return
-        end
-    end
-end
-
-function abstract_booster:actor_on_item_drop(obj)
-    for slot, cache in pairs(self.m_cache) do
-        if cache.obj_id == obj:id() and self:filter(obj, slot) then
-            self:unset(obj, slot)
-            return
-        end
-    end
 end

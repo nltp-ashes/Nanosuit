@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 23/08/2026                                                                                             ---
+---    Date : 21/09/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map icon UI.                                                      ---
@@ -110,23 +110,23 @@ end
 function ui_tacmap_icon:get_color(obj)
     if IsStalker(obj) and obj:alive() then
         local relation = obj:relation(db.actor)
-        return self.m_parent.m_parent.m_parent.m_colors.icon_per_relation[relation]
+        return self.m_parent.m_parent.m_parent.m_theme.tacmap.icon_per_relation[relation]
     end
     if (IsStalker(obj) or IsMonster(obj)) and not obj:alive() then
         local is_stalker_looted = se_load_var(obj:id(), obj:name(), "death_dropped")
         local is_mutant_looted = se_load_var(obj:id(), obj:name(), "looted")
         if is_stalker_looted or is_mutant_looted then
-            return self.m_parent.m_parent.m_parent.m_colors.icon_looted
+            return self.m_parent.m_parent.m_parent.m_theme.tacmap.icon_looted
         end
     end
-    return self.m_parent.m_parent.m_parent.m_colors.icon_default
+    return self.m_parent.m_parent.m_parent.m_theme.tacmap.icon_default
 end
 
 function ui_tacmap_icon:get_task_color(task_target_info)
     if task_target_info and task_target_info.primary then
-        return self.m_parent.m_parent.m_parent.m_colors.icon_primary_task
+        return self.m_parent.m_parent.m_parent.m_theme.tacmap.icon_primary_task
     end
-    return self.m_parent.m_parent.m_parent.m_colors.icon_secondary_task
+    return self.m_parent.m_parent.m_parent.m_theme.tacmap.icon_secondary_task
 end
 
 function ui_tacmap_icon:get_size(obj)

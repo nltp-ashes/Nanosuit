@@ -1,40 +1,27 @@
-## **v0.13.0 - 13/09/2026 - Beta Build**
+## **v0.14.0 - 11/10/2026 - Beta Build**
 
-[![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.13.0/total?label=Downloads)]()
+[![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.14.0/total?label=Downloads)]()
 
 **• Additions :**
-> - Added a new suit : the CryNet Systems Nanosuit 2.0, with custom hands model and improved stats;
-> - Added locations in the world where mysterious interferences disturb the Nanosuit;
-> - Added ability to customize energy use and energy regen in MCM;
-> - The active Nanosuit mode is now persisted through save-loads;
-> - Added the Nanosuit to Nimble, Meeker, Spore, Hermann, Monolith and UNISG traders;
-> - Added custom icon for weapons that use fire mode "0" (safe);
-> - Added back `repair_type` property because other mods wrongly expect it to be defined and CTD if absent;
-> - Added a custom ammo type icon when using grenade launchers or under-barrel grenade launchers;
-> - Added a custom texture for the ammo wheel while wearing the Nanosuit;
-> - Added a custom texture for the timer (often seen in labs) while wearing the Nanosuit;
-> - Added a custom texture for the companion command wheel while wearing the Nanosuit;
-> - Added a custom texture for the companion list while wearing the Nanosuit;
+> - Added a new shader to make the Nanosuit 1.0 and the Korean Nanosuit glow red and yellow respectively in strength and speed modes;
+> - Added an option in MCM to select a "UI theme" for each Nanosuit, and a new section in MCM customize every color of each theme;
+> - Added rare Ceph grunts and horns when wearing the Nanosuit and being low on psy-health;
+> - Added an option in MCM to select the cloak mode shader for each Nanosuit (default, LVutner edition, or DX8/9 compatible, which DirectX 8 & 9 users must select);
+> - Using speed mode now increases reload speed (Thanks @oxi-astra);
 
 **• Changes :**
-> - The suits can now either use night-vision or nano-vision, but not both at the same time (configurable in MCM);
-> - Changed price of the Nanosuit 1.0 from 419k RUB to 220k RUB;
-> - Changed price of the Korean Nanosuit from 419k RUB to 190k RUB;
-> - Changed the nano-vision energy consumption : it now consumes 5% once when activated;
-> - Reduced the suit's built-in night-vision energy consumption by half (now 1% every second, was 2%);
-> - Removed a part of the patch for SWM First Person Visible Body that was left over;
+> - Changed how sound effects play when coming out of cloak mode;
+> - Made the suit voice MCM option per-suit instead of global to the entire addon;
+> - Replaced the default cloak mode shader with a port of Crysis' own cloak shader (refraction, hex pattern, chromatic aberration, and occasional sparks);
 
 **• Bug fixes :**
-> - Fixed moving a weapon from one slot to another while a suit mode is active causing the weapon to keep the effects after disabling the mode;
-> - Fixed detector not being hidden when using the suit's built-in binoculars;
-> - Fixed Nanosuit HUD being frame locked at 1FPS instead of 60FPS when the player is dead;
-> - Fixed binoculars being available when the suit is in malfunction state;
-> - Fixed nightvision energy bar not displaying properly when the suit is in malfunction state;
-> - Fixed some broken translations in Russian;
-> - Fixed tactical map refreshing its object pool even when it is disabled;
-> - Fixed the player's Nanosuit entering malfunction state when an NPC gets vaporized;
-> - Fixed CTD when the player's current weapon's fire mode is not recognized by the Nanosuit HUD;
-> - Fixed CTD when the game task points to an ID that does not exist in the world;
-> - Fixed CTD when the player is looting an NPC that is being vaporized;
+> - Fixed addon causing MCM errors in console/logs;
+> - Fixed indicators not using each suit's UI theme and instead always been green like the default Nanosuit 1.0 HUD colors;
+> - Fixed cloak mode not applying cloak shader to items of HUD animations;
+> - Fixed cloak mode not applying cloak shader to the player legs (from modded exes);
+> - Fixed cloak mode not hiding the player from mutant's vision;
+> - Fixed cloak mode not hiding the player from stalker's vision if the mode was activated in the line of sight of the NPC;
 
-**Note :** This build requires [Modded Exes version 12.09.2026 (or newer)](https://github.com/themrdemonized/xray-monolith/releases/tag/2026.9.12) for the custom texture of the companion command wheel to work.
+**Note :** It is recommended to reset the MCM options for this update, as some options were swapped around and using old values might cause UIs to look weird.
+
+**Note :** This build requires [Modded Exes version 11.10.2026 (or newer)](https://github.com/themrdemonized/xray-monolith/releases/tag/2026.10.11) for various new features to work.
