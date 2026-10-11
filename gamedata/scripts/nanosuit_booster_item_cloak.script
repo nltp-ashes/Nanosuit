@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 04/10/2026                                                                                             ---
+---    Date : 11/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a cloaking booster usable by a Nanosuit mode.                              ---
@@ -24,7 +24,7 @@ actor_slots_enum        = nanosuit_utils.actor_slots_enum
 -- Cloak booster class
 -- ---------------------------------------------------------------------------------------------------------------------
 
-class "cloak" (nanosuit_booster.abstract_booster)
+class "cloak" (nanosuit_booster_item.abstract_item_booster)
 
 function cloak:__init(core, name) super(core, name)
     -- Cache
@@ -45,7 +45,7 @@ function cloak:__init(core, name) super(core, name)
 end
 
 function cloak:set(obj, slot)
-    nanosuit_booster.abstract_booster.set(self, obj, slot)
+    nanosuit_booster_item.abstract_item_booster.set(self, obj, slot)
 
     self.m_core.m_cloak:add_object(obj)
 end
@@ -55,5 +55,5 @@ function cloak:unset(obj, slot, is_removing)
         self.m_core.m_cloak:remove_object(obj:id())
     end
 
-    nanosuit_booster.abstract_booster.unset(self, obj, slot, is_removing)
+    nanosuit_booster_item.abstract_item_booster.unset(self, obj, slot, is_removing)
 end

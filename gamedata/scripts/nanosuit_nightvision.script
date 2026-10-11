@@ -19,7 +19,7 @@ energy_drain_enum         = nanosuit_utils.energy_drain_enum
 vision_perk_enum          = nanosuit_utils.vision_perk_enum
 
 -- ---------------------------------------------------------------------------------------------------------------------
--- Defibrillator class
+-- Nightvision class
 -- ---------------------------------------------------------------------------------------------------------------------
 
 class "nightvision"
