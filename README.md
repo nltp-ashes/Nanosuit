@@ -38,8 +38,9 @@ Armor mode :
 Speed mode :
 - Increases walk speed, does not consume energy
 - Increases run speed, consumes energy
-- Decreases time to aim down sights, does not consume energy
-- When low on energy, the bonuses get disabled
+- When low on energy, the movement speed bonuses get disabled
+- Decreases time to aim down sights
+- Increases reload speed
 - In this mode, the suit gets a yellow glow
 
 Strength mode :
@@ -110,7 +111,7 @@ Nightvision :
 
 These addons are **absolutely required** in order for the addon to work :
 1. [S.T.A.L.K.E.R. Anomaly 1.5.3](https://www.moddb.com/mods/stalker-anomaly/downloads/stalker-anomaly-153).
-2. [S.T.A.L.K.E.R. Anomaly Modded Exes 12.09.2026 (or newer)](https://github.com/themrdemonized/xray-monolith)
+2. [S.T.A.L.K.E.R. Anomaly Modded Exes 11.10.2026 (or newer)](https://github.com/themrdemonized/xray-monolith)
 
 The addon natively integrates[^native_integrations] with the following addons, but they **aren't required** :
 1. [Mod Configuration Menu v1.7](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu) (customizable options for the addon);
