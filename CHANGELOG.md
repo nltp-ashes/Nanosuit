@@ -17,6 +17,8 @@
 **• Bug fixes :**
 > - Fixed addon causing MCM errors in console/logs;
 > - Fixed indicators not using each suit's UI theme and instead always been green like the default Nanosuit 1.0 HUD colors;
+> - Fixed cloak mode not applying cloak shader to items of HUD animations;
+> - Fixed cloak mode not applying cloak shader to the player legs (from modded exes);
 > - Fixed cloak mode not hiding the player from mutant's vision;
 > - Fixed cloak mode not hiding the player from stalker's vision if the mode was activated in the line of sight of the NPC;
 
