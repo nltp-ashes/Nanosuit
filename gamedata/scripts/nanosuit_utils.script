@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/10/2026                                                                                             ---
+---    Date : 10/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -38,7 +38,7 @@ actor_status_types_enum = { indicator = "state", booster = "booster" }
 energy_drain_enum       = { nightvision = "nightvision", nanovision = "nanovision", sprint = "sprint", cloak = "cloak" }
 vision_perk_enum        = { nightvision = "nightvision", nanovision = "nanovision"}
 color_anm_flags_enum    = { cyclic = 1, only_alpha = 2, text_color = 4, texture_color = 8 }
-themes_enum             = { nanosuit_1 = "nanosuit_1", nanosuit_korean = "nanosuit_korean", nanosuit_2 = "nanosuit_2" }
+themes_enum             = { nanosuit_1 = "nanosuit_1", nanosuit_korean = "nanosuit_korean", nanosuit_2 = "nanosuit_2", halloween = "halloween" }
 cloak_shaders_enum      = { crysis = "crysis", lv = "lv", legacy = "legacy" }
 log_levels_enum         = { debug = "DEBUG", info = "INFO", warning = "WARNING", error = "ERROR" }
 log_levels_prefix_enum  = { [log_levels_enum.debug] = "+", [log_levels_enum.info] = "", [log_levels_enum.warning] = "~", [log_levels_enum.error] = "!" }
@@ -261,6 +261,15 @@ function string_pad_l(var, char, length)
         end
     end
     return ret
+end
+
+--- Function used to turn a "major.minor.patch" version string into a number that sorts like the version.
+--- @param version string
+--- @return number
+function version_to_number(version)
+    local major, minor, patch = version:match("^(%d+)%.(%d+)%.(%d+)$")
+    assert(major, "[NS] Invalid version string '" .. tostring(version) .. "'")
+    return tonumber(major) * 1000000 + tonumber(minor) * 1000 + tonumber(patch)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------

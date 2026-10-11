@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/10/2026                                                                                             ---
+---    Date : 10/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -18,9 +18,16 @@ localized_and_genderized_sound_object  = nanosuit_utils.localized_and_genderized
 actor_slots_enum                       = nanosuit_utils.actor_slots_enum
 armor_modes_enum                       = nanosuit_utils.armor_modes_enum
 
+-- Constants
+VERSION                                = "0.14.0"
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- General functions
 -- ---------------------------------------------------------------------------------------------------------------------
+
+function on_game_load()
+    nanosuit_utils.print_i("Nanosuit version %s", VERSION)
+end
 
 function bind(obj)
     obj:bind_object(nanosuit_binder(obj))
@@ -376,4 +383,12 @@ function core:actor_on_update()
         self.m_sounds.energy_on:stop()
         self.m_energy_on_voiced = false
     end
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Callbacks registration
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function on_game_start()
+    RegisterScriptCallback("on_game_load", on_game_load)
 end

@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 04/10/2026                                                                                            -->
+<!--    Date : 07/10/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -351,6 +351,10 @@
         <text>Thème coréen</text>
     </string>
 
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_theme_halloween">
+        <text>Thème Halloween</text>
+    </string>
+
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_general">
         <text>Général</text>
     </string>
@@ -385,14 +389,6 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_alert_desc">
         <text>Couleur que prennent les interfaces du Nanosuit lorsque la combinaison est en panne, et que prennent les barres d'état lorsqu'elles sont au plus bas.</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background">
-        <text>Couleur de fond</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background_desc">
-        <text>Teinte appliquée aux panneaux opaques derrière les indicateurs, les roues de munitions et de compagnons, et la liste des compagnons.</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status">
@@ -441,6 +437,10 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_map">
         <text>Couleur de la texture de la carte</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_map_bg">
+        <text>Couleur du fond de la carte</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_visibility_bg">

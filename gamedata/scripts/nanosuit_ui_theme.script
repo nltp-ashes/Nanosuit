@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 21/09/2026                                                                                             ---
+---    Date : 07/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to give every Nanosuit UI the colors of the theme the equipped outfit wears.                      ---
@@ -24,12 +24,13 @@ function get_theme()
     local theme = nanosuit_mcm.get_outfit_config("theme", themes_enum.nanosuit_1)
 
     return {
+        is_halloween = theme == themes_enum.halloween,
         shared = {
             text = get_color(theme, "text"),
             outline = get_color(theme, "outline"),
             accent = get_color(theme, "accent"),
             alert = get_color(theme, "alert"),
-            background = get_color(theme, "background")
+            background = GetARGB(200, 255, 255, 255)
         },
         status = {
             energy = get_color(theme, "status_energy"),
@@ -44,6 +45,7 @@ function get_theme()
         },
         tacmap = {
             map = get_color(theme, "tacmap_map"),
+            map_bg = get_color(theme, "tacmap_map_bg"),
             visibility_bg = get_color(theme, "tacmap_visibility_bg"),
             visibility_very_low = get_color(theme, "tacmap_visibility_very_low"),
             visibility_low = get_color(theme, "tacmap_visibility_low"),

@@ -4,7 +4,7 @@
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
 <!--    Edited : Russian translation (VodoXleb - 21/08/2026)                                                         -->
-<!--    Date : 04/10/2026                                                                                            -->
+<!--    Date : 07/10/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -352,6 +352,10 @@
         <text>Корейская тема</text>
     </string>
 
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_theme_halloween">
+        <text>Тема Хэллоуина</text>
+    </string>
+
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_general">
         <text>Общее</text>
     </string>
@@ -386,14 +390,6 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_alert_desc">
         <text>Цвет, в который окрашиваются интерфейсы Нанокостюма при сбое костюма, а также шкалы состояния при низких значениях.</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background">
-        <text>Цвет фона</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_background_desc">
-        <text>Оттенок непрозрачных панелей за индикаторами, колесами боеприпасов и напарников, и списком напарников.</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status">
@@ -442,6 +438,10 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_map">
         <text>Цвет текстуры карты</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_map_bg">
+        <text>Цвет фона карты</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_visibility_bg">

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 21/09/2026                                                                                             ---
+---    Date : 07/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit status hub (energy, health, ammo, etc) UI.                                 ---
@@ -102,6 +102,20 @@ function ui_status:__init(parent) super()
     self.m_ui_fire_mode = self.m_xml:InitStatic("fire_mode", self)
     self.m_ui_fire_mode:SetTextureColor(self.m_parent.m_theme.shared.outline)
     nanosuit_utils.scale_ui_element(self.m_ui_fire_mode, true, true, "right")
+
+    if self.m_parent.m_theme.is_halloween then
+        self.m_ui_halloween_house = self.m_xml:InitStatic("halloween_house", self)
+        nanosuit_utils.scale_ui_element(self.m_ui_halloween_house, true, true, "right")
+
+        self.m_ui_halloween_bat = self.m_xml:InitStatic("halloween_bat", self)
+        nanosuit_utils.scale_ui_element(self.m_ui_halloween_bat, true, true, "right")
+
+        self.m_ui_halloween_ghost = self.m_xml:InitStatic("halloween_ghost", self)
+        nanosuit_utils.scale_ui_element(self.m_ui_halloween_ghost, true, true, "right")
+
+        self.m_ui_halloween_web = self.m_xml:InitStatic("halloween_web", self)
+        nanosuit_utils.scale_ui_element(self.m_ui_halloween_web, true, true, "right")
+    end
 end
 
 function ui_status:__finalize()

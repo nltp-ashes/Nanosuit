@@ -23,6 +23,10 @@ Paths below are written as `$KEY\…` and resolve against that file.
 | `VANILLA_GAMEDATA_DIR` | **Unpacked vanilla gamedata**                                            |
 | `ENGINE_SOURCE_DIR`    | **Engine source** (the modded exes)                                      |
 | `LUAC_PATH`            | `luac` 5.1.5, used by the edit hook                                      |
+| `PYTHON_PATH`          | Python 3 with Pillow and numpy, for generating and editing textures      |
+| `TEXCONV_PATH`         | DirectXTex `texconv`, for PNG ↔ DDS conversion (BC1/BC3/BC7, mipmaps)    |
+| `FFMPEG_PATH`          | `ffmpeg` (`ffprobe` beside it), for audio/video conversion and probing   |
+| `RENDERDOC_CMD_PATH`   | `renderdoccmd`, RenderDoc's CLI, for converting and inspecting captures  |
 
 Not every machine has every key. A key is left out when that machine lacks the tool or folder — no
 `LUAC_PATH` where luac is not installed, no `ENGINE_SOURCE_DIR` where the engine is not checked
