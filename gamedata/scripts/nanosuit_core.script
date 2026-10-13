@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 11/10/2026                                                                                             ---
+---    Date : 14/10/2026                                                                                       ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
@@ -277,10 +277,22 @@ end
 
 function core:load(storage)
     self.m_energy.m_level = storage.energy or self.m_energy.m_level
-    self.m_energy_low_voiced = storage.energy_low_voiced or self.m_energy_low_voiced
-    self.m_energy_very_low_voiced = storage.energy_very_low_voiced or self.m_energy_very_low_voiced
-    self.m_energy_off_voiced = storage.energy_off_voiced or self.m_energy_off_voiced
-    self.m_energy_on_voiced = storage.energy_on_voiced or self.m_energy_on_voiced
+
+    if storage.energy_low_voiced ~= nil then
+        self.m_energy_low_voiced = storage.energy_low_voiced
+    end
+
+    if storage.energy_very_low_voiced ~= nil then
+        self.m_energy_very_low_voiced = storage.energy_very_low_voiced
+    end
+
+    if storage.energy_off_voiced ~= nil then
+        self.m_energy_off_voiced = storage.energy_off_voiced
+    end
+
+    if storage.energy_on_voiced ~= nil then
+        self.m_energy_on_voiced = storage.energy_on_voiced
+    end
 
     for name, mode in pairs(self.m_modes) do
         if storage.modes and storage.modes[name] and mode.load then
