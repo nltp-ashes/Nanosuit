@@ -59,11 +59,11 @@ function cloak:apply(play_voice, play_on)
     self.m_core.m_cloak:engage()
 
     -- Boosters
-    self:apply_booster(nanosuit_booster_cloak_actor.cloak_actor, "cloak_actor")
-    self:apply_booster(nanosuit_booster_cloak_hud.cloak_hud, "cloak_hud")
-    self:apply_booster(nanosuit_booster_cloak_legs.cloak_legs, "cloak_legs")
-    self:apply_booster(nanosuit_booster_item_cloak.cloak, "cloak_items")
-    self:apply_booster(nanosuit_booster_stealth.stealth, "stealth")
+    self:apply_booster(nanosuit_booster_cloak_actor.cloak_actor)
+    self:apply_booster(nanosuit_booster_cloak_hud.cloak_hud)
+    self:apply_booster(nanosuit_booster_cloak_legs.cloak_legs)
+    self:apply_booster(nanosuit_booster_item_cloak.cloak)
+    self:apply_booster(nanosuit_booster_stealth.stealth)
 end
 
 function cloak:remove(is_destroying)
@@ -80,11 +80,11 @@ function cloak:remove(is_destroying)
     UnregisterScriptCallback("actor_on_weapon_fired", self)
 
     -- Boosters
-    self:remove_booster("cloak_actor")
-    self:remove_booster("cloak_hud")
-    self:remove_booster("cloak_legs")
-    self:remove_booster("cloak_items")
-    self:remove_booster("stealth")
+    self:remove_booster(nanosuit_booster_cloak_actor.cloak_actor)
+    self:remove_booster(nanosuit_booster_cloak_hud.cloak_hud)
+    self:remove_booster(nanosuit_booster_cloak_legs.cloak_legs)
+    self:remove_booster(nanosuit_booster_item_cloak.cloak)
+    self:remove_booster(nanosuit_booster_stealth.stealth)
 
     -- Reset player visibility
     if not is_destroying then

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 11/10/2026                                                                                             ---
+---    Date : 17/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract booster applying an effect to the items of the actor.          ---
@@ -26,7 +26,7 @@ actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 class "abstract_item_booster" (nanosuit_booster.abstract_booster)
 
-function abstract_item_booster:__init(core, name) super(core, name)
+function abstract_item_booster:__init(core) super(core)
     self.m_cache = {
         [actor_slots_enum.knife] = { enabled = false, obj_id = nil },
         [actor_slots_enum.pistol] = { enabled = false, obj_id = nil },
@@ -80,12 +80,12 @@ function abstract_item_booster:filter(obj, slot)
 end
 
 function abstract_item_booster:set(obj, slot)
-    nanosuit_utils.print_dbg("Setting effect %s to object %s in slot %s", self.m_name, obj:name(), slot)
+    nanosuit_utils.print_dbg("Setting effect to object %s in slot %s", obj:name(), slot)
     self.m_cache[slot].obj_id = obj:id()
 end
 
 function abstract_item_booster:unset(obj, slot, is_removing)
-    nanosuit_utils.print_dbg("Unsetting effect %s to object %s in slot %s", self.m_name, obj:name(), slot)
+    nanosuit_utils.print_dbg("Unsetting effect to object %s in slot %s", obj:name(), slot)
     self.m_cache[slot].obj_id = nil
 end
 

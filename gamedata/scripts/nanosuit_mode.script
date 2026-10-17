@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/10/2026                                                                                             ---
+---    Date : 17/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract suit mode of the Nanosuit addon.                               ---
@@ -86,18 +86,18 @@ function abstract_mode:remove(is_destroying)
     level.remove_pp_effector(153951)
 end
 
-function abstract_mode:apply_booster(booster, name)
-    if not self.m_boosters[name] then
-        self.m_boosters[name] = booster(self.m_core, name)
-        self.m_boosters[name]:apply()
+function abstract_mode:apply_booster(booster)
+    if not self.m_boosters[booster] then
+        self.m_boosters[booster] = booster(self.m_core)
+        self.m_boosters[booster]:apply()
     end
 end
 
-function abstract_mode:remove_booster(name)
-    if self.m_boosters[name] then
-        self.m_boosters[name]:remove()
-        self.m_boosters[name]:destroy()
-        self.m_boosters[name] = nil
+function abstract_mode:remove_booster(booster)
+    if self.m_boosters[booster] then
+        self.m_boosters[booster]:remove()
+        self.m_boosters[booster]:destroy()
+        self.m_boosters[booster] = nil
     end
 end
 

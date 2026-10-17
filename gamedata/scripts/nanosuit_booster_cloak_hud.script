@@ -20,7 +20,7 @@
 
 class "cloak_hud" (nanosuit_booster.abstract_booster)
 
-function cloak_hud:__init(core, name) super(core, name)
+function cloak_hud:__init(core) super(core)
 end
 
 function cloak_hud:apply()

@@ -18,7 +18,7 @@
 
 class "cloak_actor" (nanosuit_booster.abstract_booster)
 
-function cloak_actor:__init(core, name) super(core, name)
+function cloak_actor:__init(core) super(core)
 end
 
 function cloak_actor:apply()

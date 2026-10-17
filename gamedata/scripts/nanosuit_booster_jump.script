@@ -21,7 +21,7 @@
 
 class "jump" (nanosuit_booster.abstract_booster)
 
-function jump:__init(core, name) super(core, name)
+function jump:__init(core) super(core)
     -- Energy related variables
     self.m_energy_use = 20
 

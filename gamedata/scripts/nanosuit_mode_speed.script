@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/10/2026                                                                                           ---
+---    Date : 17/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of speed mode of the Nanosuit addon.                                          ---
@@ -44,8 +44,8 @@ function speed:apply(play_voice, play_on)
     RegisterScriptCallback("actor_on_update", self)
 
     -- Boosters
-    self:apply_booster(nanosuit_booster_item_ads.ads, "ads")
-    self:apply_booster(nanosuit_booster_reload.reload, "reload")
+    self:apply_booster(nanosuit_booster_item_ads.ads)
+    self:apply_booster(nanosuit_booster_reload.reload)
 end
 
 function speed:remove(is_destroying)
@@ -65,9 +65,9 @@ function speed:remove(is_destroying)
     UnregisterScriptCallback("actor_on_update", self)
 
     -- Boosters
-    self:remove_booster("ads")
-    self:remove_booster("reload")
-    self:remove_booster("movement")
+    self:remove_booster(nanosuit_booster_item_ads.ads)
+    self:remove_booster(nanosuit_booster_reload.reload)
+    self:remove_booster(nanosuit_booster_movement.movement)
 end
 
 function speed:actor_on_update()
@@ -98,8 +98,8 @@ function speed:actor_on_update()
 
     -- Boosters
     if has_enough_energy_low then
-        self:apply_booster(nanosuit_booster_movement.movement, "movement")
+        self:apply_booster(nanosuit_booster_movement.movement)
     else
-        self:remove_booster("movement")
+        self:remove_booster(nanosuit_booster_movement.movement)
     end
 end

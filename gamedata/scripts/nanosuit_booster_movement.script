@@ -18,7 +18,7 @@
 
 class "movement" (nanosuit_booster.abstract_booster)
 
-function movement:__init(core, name) super(core, name)
+function movement:__init(core) super(core)
     self.m_run_coef = 1.25
     self.m_sprint_coef = 1.25
 end
