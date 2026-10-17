@@ -19,7 +19,7 @@ actor_slots_enum                       = nanosuit_utils.actor_slots_enum
 armor_modes_enum                       = nanosuit_utils.armor_modes_enum
 
 -- Constants
-VERSION                                = "0.14.1"
+VERSION                                = "0.15.0"
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- General functions
