@@ -1,0 +1,44 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 17/10/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the logic of a booster cloaking the actor's first person legs, usable by a Nanosuit     ---
+---    mode.                                                                                                         ---
+---                                                                                                                  ---
+---    The core's m_cloak swaps the shaders. The legs are a fresh copy of their visual, loaded anew every time they  ---
+---    show again, so each copy is swapped as it is created. When the booster is removed, the current copy is handed ---
+---    over instead of restored, to fade out with the suit.                                                          ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Cloak legs booster class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "cloak_legs" (nanosuit_booster.abstract_booster)
+
+function cloak_legs:__init(core, name) super(core, name)
+end
+
+function cloak_legs:apply()
+    nanosuit_booster.abstract_booster.apply(self)
+
+    if not self.m_core.m_cloak.m_legs_cloaked then
+        self.m_core.m_cloak:add_actor_legs()
+    end
+
+    RegisterScriptCallback("actor_on_create_legs", self)
+end
+
+function cloak_legs:remove()
+    nanosuit_booster.abstract_booster.remove(self)
+
+    UnregisterScriptCallback("actor_on_create_legs", self)
+end
+
+function cloak_legs:actor_on_create_legs(section)
+    self.m_core.m_cloak:add_actor_legs()
+end

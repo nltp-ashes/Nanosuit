@@ -1,0 +1,60 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 17/10/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the logic of an NPC visibility booster usable by a Nanosuit mode.                       ---
+---                                                                                                                  ---
+---    The engine adds get_visible_value() to a per-NPC accumulator clamped to [0, visibility_threshold], and the    ---
+---    actor stays seen while it sits at the threshold. Beyond the see distance, the hook returns a negative value   ---
+---    on the gain's scale, so the NPC loses the actor about as fast as it would have spotted it; 0 would only       ---
+---    freeze the accumulator. The value must stay finite : the engine multiplies it by the NPC's vision speed,      ---
+---    which can be 0, and a NaN accumulator never recovers.                                                         ---
+---                                                                                                                  ---
+---    The hook is installed once, when this script loads, and finds the booster through the current mode of the     ---
+---    core, passing the engine's value through while that mode has none. It is never put back, so a hook another    ---
+---    addon wraps around it is never discarded.                                                                     ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- General functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+visual_memory_manager_get_visible_value = visual_memory_manager.get_visible_value
+visual_memory_manager.get_visible_value = function(npc, who, time_delta, time_quant, luminosity, velocity_factor, velocity, distance, object_distance, always_visible_distance)
+    local value = visual_memory_manager_get_visible_value(npc, who, time_delta, time_quant, luminosity, velocity_factor, velocity, distance, object_distance, always_visible_distance)
+    if not npc or not who or who:id() ~= AC_ID then
+        return value
+    end
+
+    local instance = nanosuit_core.get_instance()
+    local booster = instance and instance.m_current_mode.m_boosters["stealth"]
+    if not booster then
+        return value
+    end
+
+    return booster:get_visible_value(value, time_delta, time_quant, object_distance)
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Stealth booster class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "stealth" (nanosuit_booster.abstract_booster)
+
+function stealth:__init(core, name) super(core, name)
+    self.m_npc_see_distance = 5
+end
+
+function stealth:get_visible_value(original_value, time_delta, time_quant, object_distance)
+    if object_distance > self.m_npc_see_distance then
+        return -time_delta / time_quant
+    end
+
+    local distance_factor = 1 - (object_distance / self.m_npc_see_distance)
+
+    return original_value * distance_factor
+end

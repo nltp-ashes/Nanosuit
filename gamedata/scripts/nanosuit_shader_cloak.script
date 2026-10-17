@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 11/10/2026                                                                                             ---
+---    Date : 17/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract cloak shader, swapping the surfaces the cloak covers.          ---
@@ -10,11 +10,10 @@
 ---    Subclasses provide each surface's shader and texture, and the textures to prefetch. A subclass that fades     ---
 ---    out can hold finish() back after disengage(), as the Crysis cloak does.                                       ---
 ---                                                                                                                  ---
----    Every surface is swapped once and restored once, so the saved shaders are always the surface's own.           ---
+---    The surfaces are picked by the cloak boosters, applied after engage() and removed before disengage(). A       ---
+---    booster hands its surfaces over when it is removed, and finish() restores them once the fade is over.         ---
 ---                                                                                                                  ---
----    The item model a game.play_hud_motion() animation creates and the first person legs are fresh copies of their ---
----    visual, loaded anew by every animation and every time the legs show again, so each copy is swapped as it is   ---
----    created.                                                                                                      ---
+---    Every surface is swapped once and restored once, so the saved shaders are always the surface's own.           ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -71,17 +70,6 @@ function abstract_cloak:destroy()
 end
 
 function abstract_cloak:engage()
-    self:add_object(db.actor)
-
-    if not self.m_hud_motion_item_cloaked then
-        self:add_actor_hud_motion_item()
-    end
-    RegisterScriptCallback("actor_on_create_hud_motion_item", self)
-
-    if not self.m_legs_cloaked then
-        self:add_actor_legs()
-    end
-    RegisterScriptCallback("actor_on_create_legs", self)
 end
 
 function abstract_cloak:disengage()
@@ -93,14 +81,6 @@ function abstract_cloak:finish()
     self:remove_actor_objects()
     self:remove_actor_legs()
     self:remove_actor_hud_motion_item()
-end
-
-function abstract_cloak:actor_on_create_hud_motion_item(section)
-    self:add_actor_hud_motion_item()
-end
-
-function abstract_cloak:actor_on_create_legs(section)
-    self:add_actor_legs()
 end
 
 function abstract_cloak:remove_actor_objects()
@@ -159,8 +139,6 @@ function abstract_cloak:add_actor_hud_motion_item()
 end
 
 function abstract_cloak:remove_actor_hud_motion_item()
-    UnregisterScriptCallback("actor_on_create_hud_motion_item", self)
-
     if self.m_hud_motion_item_cloaked then
         self.m_hud_motion_item_cloaked = false
         db.actor:reset_hud_motion_item_shader(-1)
@@ -177,8 +155,6 @@ function abstract_cloak:add_actor_legs()
 end
 
 function abstract_cloak:remove_actor_legs()
-    UnregisterScriptCallback("actor_on_create_legs", self)
-
     if self.m_legs_cloaked then
         self.m_legs_cloaked = false
         db.actor:reset_legs_shader(-1)
