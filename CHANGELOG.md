@@ -1,27 +1,7 @@
-## **v0.14.0 - 11/10/2026 - Beta Build**
+## **v0.14.1 - 17/10/2026 - Beta Build**
 
-[![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.14.0/total?label=Downloads)]()
-
-**• Additions :**
-> - Added a new shader to make the Nanosuit 1.0 and the Korean Nanosuit glow red and yellow respectively in strength and speed modes;
-> - Added an option in MCM to select a "UI theme" for each Nanosuit, and a new section in MCM customize every color of each theme;
-> - Added rare Ceph grunts and horns when wearing the Nanosuit and being low on psy-health;
-> - Added an option in MCM to select the cloak mode shader for each Nanosuit (default, LVutner edition, or DX8/9 compatible, which DirectX 8 & 9 users must select);
-> - Using speed mode now increases reload speed (Thanks @oxi-astra);
-
-**• Changes :**
-> - Changed how sound effects play when coming out of cloak mode;
-> - Made the suit voice MCM option per-suit instead of global to the entire addon;
-> - Replaced the default cloak mode shader with a port of Crysis' own cloak shader (refraction, hex pattern, chromatic aberration, and occasional sparks);
+[![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.14.1/total?label=Downloads)]()
 
 **• Bug fixes :**
-> - Fixed addon causing MCM errors in console/logs;
-> - Fixed indicators not using each suit's UI theme and instead always been green like the default Nanosuit 1.0 HUD colors;
-> - Fixed cloak mode not applying cloak shader to items of HUD animations;
-> - Fixed cloak mode not applying cloak shader to the player legs (from modded exes);
-> - Fixed cloak mode not hiding the player from mutant's vision;
-> - Fixed cloak mode not hiding the player from stalker's vision if the mode was activated in the line of sight of the NPC;
-
-**Note :** It is recommended to reset the MCM options for this update, as some options were swapped around and using old values might cause UIs to look weird.
-
-**Note :** This build requires [Modded Exes version 11.10.2026 (or newer)](https://github.com/themrdemonized/xray-monolith/releases/tag/2026.10.11) for various new features to work.
+> - Fixed some variables being improperly reloaded causing pending energy voice line to never be played after loading;
+> - Fixed a CTD when using the tactical map on a level not present in vanilla Anomaly (Thanks Frost2468);

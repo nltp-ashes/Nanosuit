@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 10/10/2026                                                                                             ---
+---    Date : 17/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -378,8 +378,15 @@ function get_true_task_target(tsk_id)
         local obj_lid = game_graph():vertex(se_obj.m_game_vertex_id):level_id()
         local tgt_level = obj_lid and obj_lid < 50 and alife():level_name(obj_lid)
 
+        -- Levels added by addons that did not register in txr_routes have no route to plan through
+        local src_map = txr_routes.sec_to_map[src_level]
+        local tgt_map = txr_routes.sec_to_map[tgt_level]
+        if not src_map or not tgt_map then
+            return nil
+        end
+
         -- Calculate travel plan
-        local plan = this.get_route_plan_to_target(txr_routes.sec_to_map[src_level], txr_routes.sec_to_map[tgt_level], {})
+        local plan = this.get_route_plan_to_target(src_map, tgt_map, {})
 
         -- Get level changers between source level and next level in plan
         local lcs = plan and txr_routes.get_route(plan[1], plan[2])
