@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 18/10/2026                                                                                             ---
+---    Date : 19/10/2026                                                                                            ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to stylize the ammo wheel UI like the rest of the Nanosuit HUD.                                   ---
@@ -40,6 +40,15 @@ function ui_ammo_wheel:__init(parent) super()
     -- Override background
     item_weapon.GUI.background:InitTexture("ui_nanosuit_wheel_background")
     item_weapon.GUI.background:SetTextureColor(self.m_parent.m_theme.shared.background)
+
+    -- Override info box background
+    item_weapon.GUI.extended:InitTexture("ui_nanosuit_wheel_info_background")
+    item_weapon.GUI.extended:SetTextureColor(self.m_parent.m_theme.shared.background)
+
+    -- Create info box outline
+    item_weapon.GUI.extended_outline = item_weapon.GUI.xml:InitStatic("wheel:extended", item_weapon.GUI.extended)
+    item_weapon.GUI.extended_outline:SetWndPos(vector2():set(0, 0))
+    item_weapon.GUI.extended_outline:InitTexture("ui_nanosuit_wheel_info_outline")
 end
 
 function ui_ammo_wheel:destroy()
@@ -50,6 +59,10 @@ function ui_ammo_wheel:destroy()
     -- Destroy outline
     item_weapon.GUI.dialog:DetachChild(item_weapon.GUI.outline)
     item_weapon.GUI.outline = nil
+
+    -- Destroy info box outline
+    item_weapon.GUI.extended:DetachChild(item_weapon.GUI.extended_outline)
+    item_weapon.GUI.extended_outline = nil
 
     -- Reset UI
     item_weapon.GUI:InitControls()
@@ -64,7 +77,9 @@ function ui_ammo_wheel:Update(force)
 
     if self.m_parent.m_core.m_malfunctor.m_enabled then
         item_weapon.GUI.outline:SetTextureColor(self.m_parent.m_theme.shared.alert)
+        item_weapon.GUI.extended_outline:SetTextureColor(self.m_parent.m_theme.shared.alert)
     else
         item_weapon.GUI.outline:SetTextureColor(self.m_parent.m_theme.shared.outline)
+        item_weapon.GUI.extended_outline:SetTextureColor(self.m_parent.m_theme.shared.outline)
     end
 end
