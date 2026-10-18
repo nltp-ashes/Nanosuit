@@ -1,0 +1,36 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 19/10/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the logic of a carry weight booster usable by a Nanosuit mode.                          ---
+---                                                                                                                  ---
+---    The actor's carry weight belongs to weight.script, which rewrites it from all of its modifiers whenever one   ---
+---    changes, so the booster registers as one of those modifiers. weight.script derives the walk weight from the   ---
+---    carry weight, which raises the walk weight by about 1.4 times the bonus.                                      ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Carry weight booster class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "carry_weight" (nanosuit_booster.abstract_booster)
+
+function carry_weight:__init(core) super(core, "carry_weight")
+    self.m_carry_weight_bonus = 25
+end
+
+function carry_weight:apply()
+    nanosuit_booster.abstract_booster.apply(self)
+
+    weight.add_weight(script_name(), self.m_carry_weight_bonus)
+end
+
+function carry_weight:remove()
+    nanosuit_booster.abstract_booster.remove(self)
+
+    weight.remove_weight(script_name())
+end

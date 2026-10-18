@@ -4,8 +4,10 @@
 
 **• Additions :**
 > - Added Arti's `speed.script`, which speed mode now uses for its run and sprint boost;
+> - Added demonized's `weight.script`, which strength mode now uses for its carry weight boost;
 
 **• Changes :**
+> - Strength mode's carry weight boost now also raises the walk weight by about 35kg instead of 25kg;
 
 **• Bug fixes :**
 > - Fixed CTD when removing the suit, changing level or quitting while nanovision is active;
