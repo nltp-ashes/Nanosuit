@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/10/2026                                                                                             ---
+---    Date : 18/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract suit mode of the Nanosuit addon.                               ---
@@ -117,7 +117,7 @@ function abstract_mode:on_before_hit_after_calcs(scripted_hit, target, bone_id)
 
     -- Get amount of damage suit can absorb (if any)
     local max_absorb_power = self.m_protection_map[scripted_hit.type]
-    if not max_absorb_power then
+    if not max_absorb_power or max_absorb_power <= 0 then
         return
     end
 
