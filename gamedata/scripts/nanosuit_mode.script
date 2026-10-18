@@ -34,11 +34,7 @@ function abstract_mode:__init(core, name)
     self.m_protection_map = {}
     self.m_glow_settings = nil
 
-    -- Color the weave glows
-    
-    for hit_name, hit_id in pairs(hit_types_enum) do
-        self.m_protection_map[hit_id] = nanosuit_mcm.get_outfit_config("protection_" .. name .. "_" .. hit_name, nil)
-    end
+    self:load_protection_map()
 
     -- Register callbacks
     RegisterScriptCallback("on_option_change", self)
@@ -101,8 +97,15 @@ function abstract_mode:remove_booster(booster)
     end
 end
 
+function abstract_mode:load_protection_map()
+    for hit_name, hit_id in pairs(hit_types_enum) do
+        self.m_protection_map[hit_id] = nanosuit_mcm.get_outfit_config("protection_" .. self.m_name .. "_" .. hit_name, nil)
+    end
+end
+
 function abstract_mode:on_option_change()
     self.m_sounds.voice = localized_and_genderized_sound_object([[nanosuit\voice]], "mode_" .. self.m_name .. "_voice")
+    self:load_protection_map()
 end
 
 function abstract_mode:on_before_hit_after_calcs(scripted_hit, target, bone_id)
