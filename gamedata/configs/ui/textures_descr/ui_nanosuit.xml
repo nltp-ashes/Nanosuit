@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 07/10/2026                                                                                           -->
+<!--    Date : 20/10/2026                                                                                          -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Texture description file for the Nanosuit addon's UI textures.                                               -->
@@ -28,138 +28,113 @@
         <texture id="ui_nanosuit_asian_portrait_1"             x="330"     y="0"      width="165"     height="108" />
     </file>
 
-    <!-- Menu UI -->
-    <file name="nanosuit\ui\hud\menu\cursor.dds">
-        <texture id="ui_nanosuit_menu_cursor"                  x="0"       y="0"      width="600"     height="300" />
-    </file>
-    <file name="nanosuit\ui\hud\menu\modes.dds">
-        <texture id="ui_nanosuit_menu_armor"                   x="0"       y="0"      width="128"     height="128" />
-        <texture id="ui_nanosuit_menu_speed"                   x="128"     y="0"      width="128"     height="128" />
-        <texture id="ui_nanosuit_menu_power"                   x="256"     y="0"      width="128"     height="128" />
-        <texture id="ui_nanosuit_menu_cloak"                   x="384"     y="0"      width="128"     height="128" />
-    </file>
-
     <!-- Status UI -->
-    <file name="nanosuit\ui\hud\status\background.dds">
-        <texture id="ui_nanosuit_status_background"            x="0"       y="0"      width="987"     height="562" />
-    </file>
-    <file name="nanosuit\ui\hud\status\outline.dds">
-        <texture id="ui_nanosuit_status_outline"               x="0"       y="0"      width="987"     height="562" />
-    </file>
-    <file name="nanosuit\ui\hud\status\energy.dds">
-        <texture id="ui_nanosuit_status_energy_bar"            x="0"       y="0"      width="495"     height="65" />
-        <texture id="ui_nanosuit_status_energy_icon"           x="0"       y="80"     width="50"      height="50" />
-    </file>
-    <file name="nanosuit\ui\hud\status\health.dds">
-        <texture id="ui_nanosuit_status_health_bar"            x="0"       y="0"      width="495"     height="65" />
-        <texture id="ui_nanosuit_status_health_icon"           x="0"       y="80"     width="50"      height="50" />
-    </file>
-    <file name="nanosuit\ui\hud\status\stamina.dds">
-        <texture id="ui_nanosuit_status_stamina_bar"           x="0"       y="0"      width="495"     height="65" />
-        <texture id="ui_nanosuit_status_stamina_icon"          x="0"       y="80"     width="50"      height="50" />
-    </file>
-    <file name="nanosuit\ui\hud\status\suit_modes.dds">
-        <texture id="ui_nanosuit_status_armor"                 x="0"       y="0"      width="1024"    height="1024" />
-        <texture id="ui_nanosuit_status_speed"                 x="1024"    y="0"      width="1024"    height="1024" />
-        <texture id="ui_nanosuit_status_power"                 x="2048"    y="0"      width="1024"    height="1024" />
-        <texture id="ui_nanosuit_status_cloak"                 x="3072"    y="0"      width="1024"    height="1024" />
-    </file>
-    <file name="nanosuit\ui\hud\status\fire_modes.dds">
-        <texture id="ui_nanosuit_status_auto"                  x="0"       y="0"      width="128"     height="128" />
-        <texture id="ui_nanosuit_status_burst_3"               x="128"     y="0"      width="128"     height="128" />
-        <texture id="ui_nanosuit_status_burst_2"               x="256"     y="0"      width="128"     height="128" />
-        <texture id="ui_nanosuit_status_single"                x="384"     y="0"      width="128"     height="128" />
-        <texture id="ui_nanosuit_status_safe"                  x="0"       y="128"    width="128"     height="128" />
-        <texture id="ui_nanosuit_status_grenade"               x="128"     y="128"    width="128"     height="128" />
+    <file name="nanosuit\ui\hud\status\status.dds">
+        <texture id="ui_nanosuit_status_background"            x="0"       y="0"      width="984"     height="560" />
+        <texture id="ui_nanosuit_status_outline"               x="988"     y="0"      width="984"     height="560" />
+        <texture id="ui_nanosuit_status_energy_bar"            x="1440"    y="564"    width="488"     height="64" />
+        <texture id="ui_nanosuit_status_health_bar"            x="1440"    y="632"    width="488"     height="64" />
+        <texture id="ui_nanosuit_status_stamina_bar"           x="816"     y="668"    width="488"     height="64" />
+        <texture id="ui_nanosuit_status_energy_icon"           x="1976"    y="0"      width="60"      height="48" />
+        <texture id="ui_nanosuit_status_health_icon"           x="1976"    y="52"     width="60"      height="48" />
+        <texture id="ui_nanosuit_status_stamina_icon"          x="1976"    y="104"    width="60"      height="48" />
+        <texture id="ui_nanosuit_status_armor"                 x="0"       y="564"    width="200"     height="200" />
+        <texture id="ui_nanosuit_status_speed"                 x="204"     y="564"    width="200"     height="200" />
+        <texture id="ui_nanosuit_status_power"                 x="408"     y="564"    width="200"     height="200" />
+        <texture id="ui_nanosuit_status_cloak"                 x="612"     y="564"    width="200"     height="200" />
+        <texture id="ui_nanosuit_status_auto"                  x="816"     y="564"    width="100"     height="100" />
+        <texture id="ui_nanosuit_status_burst_3"               x="920"     y="564"    width="100"     height="100" />
+        <texture id="ui_nanosuit_status_burst_2"               x="1024"    y="564"    width="100"     height="100" />
+        <texture id="ui_nanosuit_status_single"                x="1128"    y="564"    width="100"     height="100" />
+        <texture id="ui_nanosuit_status_safe"                  x="1232"    y="564"    width="100"     height="100" />
+        <texture id="ui_nanosuit_status_grenade"               x="1336"    y="564"    width="100"     height="100" />
     </file>
 
     <!-- Tactical map UI -->
-    <file name="nanosuit\ui\hud\tacmap\background.dds">
-        <texture id="ui_nanosuit_tacmap_bg"                    x="0"       y="0"      width="998"     height="782" />
+    <file name="nanosuit\ui\hud\tacmap\tacmap.dds">
+        <texture id="ui_nanosuit_tacmap_bg"                    x="0"       y="0"      width="996"     height="780" />
+        <texture id="ui_nanosuit_tacmap_outline"               x="0"       y="784"    width="996"     height="780" />
+        <texture id="ui_nanosuit_tacmap_map"                   x="0"       y="1568"   width="996"     height="780" />
+        <texture id="ui_nanosuit_tacmap_visibility_bar"        x="0"       y="2352"   width="48"      height="340" />
+        <texture id="ui_nanosuit_tacmap_object"                x="52"      y="2352"   width="40"      height="40" />
+        <texture id="ui_nanosuit_tacmap_body"                  x="96"      y="2352"   width="40"      height="40" />
+        <texture id="ui_nanosuit_tacmap_vehicle"               x="140"     y="2352"   width="40"      height="40" />
+        <texture id="ui_nanosuit_tacmap_task_point"            x="184"     y="2352"   width="40"      height="40" />
+        <texture id="ui_nanosuit_tacmap_task_arrow"            x="228"     y="2352"   width="40"      height="40" />
     </file>
-    <file name="nanosuit\ui\hud\tacmap\outline.dds">
-        <texture id="ui_nanosuit_tacmap_outline"               x="0"       y="0"      width="998"     height="782" />
-    </file>
-    <file name="nanosuit\ui\hud\tacmap\map.dds">
-        <texture id="ui_nanosuit_tacmap_map"                   x="0"       y="0"      width="998"     height="782" />
-    </file>
-    <file name="nanosuit\ui\hud\tacmap\visibility.dds">
-        <texture id="ui_nanosuit_tacmap_visibility_bar"        x="0"       y="0"      width="45"      height="341" />
-    </file>
-    <file name="nanosuit\ui\hud\tacmap\map_malfunction.dds">
-        <texture id="ui_nanosuit_tacmap_map_malfunction"       x="0"       y="0"      width="998"     height="782" />
-    </file>
-    <file name="nanosuit\ui\hud\tacmap\icons.dds">
-        <texture id="ui_nanosuit_tacmap_object"                x="0"       y="0"      width="64"      height="64" />
-        <texture id="ui_nanosuit_tacmap_body"                  x="64"      y="0"      width="64"      height="64" />
-        <texture id="ui_nanosuit_tacmap_vehicle"               x="128"     y="0"      width="64"      height="64" />
-        <texture id="ui_nanosuit_tacmap_task_point"            x="192"     y="0"      width="64"      height="64" />
-        <texture id="ui_nanosuit_tacmap_task_arrow"            x="0"       y="64"     width="64"      height="64" />
+    <file name="nanosuit\ui\hud\tacmap\map_malfunction.dds"> <!-- .seq file -->
+        <texture id="ui_nanosuit_tacmap_map_malfunction"       x="0"       y="0"      width="996"     height="780" />
     </file>
 
     <!-- Auxiliaries UI -->
-    <file name="nanosuit\ui\hud\auxiliaries\outline.dds">
-        <texture id="ui_nanosuit_auxiliaries_tlc_outline"      x="0"       y="0"      width="116"     height="33" />
-        <texture id="ui_nanosuit_auxiliaries_trc_outline"      x="908"     y="0"      width="116"     height="33" />
-        <texture id="ui_nanosuit_auxiliaries_nv_outline"       x="454"     y="0"      width="436"     height="60" />
-        <texture id="ui_nanosuit_auxiliaries_nv_energy_bar"    x="0"       y="33"     width="400"     height="53" />
-    </file>
-
-    <!-- Binoculars UI -->
-    <file name="nanosuit\ui\hud\binoculars\background.dds">
-        <texture id="ui_nanosuit_binoculars_background"        x="0"       y="0"      width="1290"    height="1080" />
-    </file>
-    <file name="nanosuit\ui\hud\binoculars\text.dds">
-        <texture id="ui_nanosuit_binoculars_text"              x="0"       y="0"      width="1290"    height="1080" />
-    </file>
-
-    <!-- Indicators UI -->
-    <file name="nanosuit\ui\hud\indicators\backgrounds.dds">
-        <texture id="ui_nanosuit_ind_booster_outline"          x="0"       y="0"      width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_indicator_outline"        x="0"       y="100"    width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_booster_background"       x="100"     y="0"      width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_indicator_background"     x="100"     y="100"    width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_indicator_overweight"     x="200"     y="0"      width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_indicator_sleep"          x="300"     y="0"      width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_indicator_hunger"         x="400"     y="0"      width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_indicator_thirst"         x="500"     y="0"      width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_booster_ext_rad"          x="600"     y="0"      width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_booster_power"            x="700"     y="0"      width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_booster_carry_weight"     x="200"     y="100"    width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_booster_bleed"            x="300"     y="100"    width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_booster_rad"              x="400"     y="100"    width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_booster_health"           x="500"     y="100"    width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_booster_psi"              x="600"     y="100"    width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_booster_chem"             x="700"     y="100"    width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_booster_cf"               x="800"     y="0"      width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_booster_cf_heal"          x="900"     y="0"      width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_booster_cf_save"          x="800"     y="100"    width="100"     height="100" />
-        <texture id="ui_nanosuit_ind_booster_cf_healsave"      x="900"     y="100"    width="100"     height="100" />
-    </file>
-
-    <!-- Wheel UIs (ammo & companion) -->
-    <file name="nanosuit\ui\hud\wheels\wheels.dds">
-        <texture id="ui_nanosuit_wheel_background"             x="0"       y="0"      width="440"     height="420" />
-        <texture id="ui_nanosuit_wheel_outline"                x="440"     y="0"      width="440"     height="420" />
-        <texture id="ui_nanosuit_wheel_info_background"        x="0"       y="420"    width="341"     height="112" />
-        <texture id="ui_nanosuit_wheel_info_outline"           x="341"     y="420"    width="341"     height="112" />
-    </file>
-
-    <!-- Companion list UI -->
-    <file name="nanosuit\ui\hud\companion_list\companion_list.dds">
-        <texture id="ui_nanosuit_companion_list_background"    x="0"       y="0"      width="128"     height="95" />
-        <texture id="ui_nanosuit_companion_list_outline"       x="128"     y="0"      width="128"     height="95" />
+    <file name="nanosuit\ui\hud\auxiliaries\auxiliaries.dds">
+        <texture id="ui_nanosuit_auxiliaries_tlc_outline"      x="1794"    y="0"      width="155"     height="32" />
+        <texture id="ui_nanosuit_auxiliaries_trc_outline"      x="1794"    y="36"     width="155"     height="32" />
+        <texture id="ui_nanosuit_auxiliaries_nv_outline"       x="873"     y="0"      width="917"     height="60" />
+        <texture id="ui_nanosuit_auxiliaries_nv_energy_bar"    x="0"       y="0"      width="869"     height="64" />
     </file>
 
     <!-- Timer UI -->
-    <file name="nanosuit\ui\hud\timer\background.dds">
-        <texture id="ui_nanosuit_timer_background"             x="0"       y="0"      width="564"     height="480" />
+    <file name="nanosuit\ui\hud\timer\timer.dds">
+        <texture id="ui_nanosuit_timer_background"             x="0"       y="0"      width="1099"    height="440" />
+        <texture id="ui_nanosuit_timer_outline"                x="1103"    y="0"      width="1099"    height="440" />
+        <texture id="ui_nanosuit_timer_clock"                  x="2206"    y="0"      width="160"     height="160" />
     </file>
-    <file name="nanosuit\ui\hud\timer\outline.dds">
-        <texture id="ui_nanosuit_timer_outline"                x="0"       y="0"      width="564"     height="480" />
+
+    <!-- Menu UI -->
+    <file name="nanosuit\ui\hud\menu\menu.dds">
+        <texture id="ui_nanosuit_menu_armor"                   x="0"       y="0"      width="240"     height="240" />
+        <texture id="ui_nanosuit_menu_speed"                   x="244"     y="0"      width="240"     height="240" />
+        <texture id="ui_nanosuit_menu_power"                   x="0"       y="244"    width="240"     height="240" />
+        <texture id="ui_nanosuit_menu_cloak"                   x="244"     y="244"    width="240"     height="240" />
+        <texture id="ui_nanosuit_menu_cursor"                  x="0"       y="488"    width="400"     height="200" />
     </file>
-    <file name="nanosuit\ui\hud\timer\icons.dds">
-        <texture id="ui_nanosuit_timer_clock"                  x="0"       y="0"      width="256"     height="256" />
+
+    <!-- Indicators UI -->
+    <file name="nanosuit\ui\hud\indicators\indicators.dds">
+        <texture id="ui_nanosuit_ind_booster_outline"          x="0"       y="0"      width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_booster_background"       x="164"     y="0"      width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_indicator_outline"        x="328"     y="0"      width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_indicator_background"     x="0"       y="164"    width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_indicator_overweight"     x="164"     y="164"    width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_indicator_sleep"          x="328"     y="164"    width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_indicator_hunger"         x="0"       y="328"    width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_indicator_thirst"         x="164"     y="328"    width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_booster_ext_rad"          x="328"     y="328"    width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_booster_power"            x="0"       y="492"    width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_booster_carry_weight"     x="164"     y="492"    width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_booster_bleed"            x="328"     y="492"    width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_booster_rad"              x="0"       y="656"    width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_booster_health"           x="164"     y="656"    width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_booster_psi"              x="328"     y="656"    width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_booster_chem"             x="0"       y="820"    width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_booster_cf"               x="164"     y="820"    width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_booster_cf_heal"          x="328"     y="820"    width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_booster_cf_save"          x="0"       y="984"    width="160"     height="160" />
+        <texture id="ui_nanosuit_ind_booster_cf_healsave"      x="164"     y="984"    width="160"     height="160" />
+    </file>
+
+    <!-- Wheel UIs (ammo & companion) and companion list UI -->
+    <file name="nanosuit\ui\hud\wheels\wheels.dds">
+        <texture id="ui_nanosuit_wheel_background"             x="0"       y="0"      width="1760"    height="1680" />
+        <texture id="ui_nanosuit_wheel_outline"                x="1764"    y="0"      width="1760"    height="1680" />
+        <texture id="ui_nanosuit_wheel_info_background"        x="0"       y="1684"   width="1364"    height="448" />
+        <texture id="ui_nanosuit_wheel_info_outline"           x="1368"    y="1684"   width="1364"    height="448" />
+        <texture id="ui_nanosuit_companion_list_background"    x="3528"    y="0"      width="360"     height="268" />
+        <texture id="ui_nanosuit_companion_list_outline"       x="3528"    y="272"    width="360"     height="268" />
+    </file>
+
+    <!-- Binoculars UI -->
+    <file name="nanosuit\ui\hud\binoculars\binoculars.dds">
+        <texture id="ui_nanosuit_binoculars_top"               x="0"       y="1524"   width="3669"    height="256" />
+        <texture id="ui_nanosuit_binoculars_bottom"            x="0"       y="1784"   width="3669"    height="256" />
+        <texture id="ui_nanosuit_binoculars_left"              x="0"       y="0"      width="544"     height="1520" />
+        <texture id="ui_nanosuit_binoculars_right"             x="548"     y="0"      width="544"     height="1520" />
+        <texture id="ui_nanosuit_binoculars_frame_top"         x="1264"    y="308"    width="1685"    height="272" />
+        <texture id="ui_nanosuit_binoculars_frame_bottom"      x="1264"    y="0"      width="1685"    height="304" />
+        <texture id="ui_nanosuit_binoculars_reticle"           x="3673"    y="0"      width="245"     height="224" />
+        <texture id="ui_nanosuit_binoculars_text_left"         x="1096"    y="0"      width="80"      height="1352" />
+        <texture id="ui_nanosuit_binoculars_text_right"        x="1180"    y="0"      width="80"      height="1352" />
     </file>
 
     <!-- Halloween theme decorations -->
