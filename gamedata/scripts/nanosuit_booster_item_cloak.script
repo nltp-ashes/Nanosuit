@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/10/2026                                                                                             ---
+---    Date : 18/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a cloaking booster usable by a Nanosuit mode.                              ---
@@ -26,7 +26,7 @@ actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 class "cloak" (nanosuit_booster_item.abstract_item_booster)
 
-function cloak:__init(core) super(core)
+function cloak:__init(core) super(core, "cloak")
     -- Cache
     self.m_cache[actor_slots_enum.knife] = { enabled = true, obj_id = nil }
     self.m_cache[actor_slots_enum.pistol] = { enabled = true, obj_id = nil }

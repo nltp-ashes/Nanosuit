@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/10/2026                                                                                             ---
+---    Date : 18/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a reload speed booster usable by a Nanosuit mode.                          ---
@@ -20,7 +20,7 @@
 
 class "reload" (nanosuit_booster.abstract_booster)
 
-function reload:__init(core) super(core)
+function reload:__init(core) super(core, "reload")
     self.m_reload_speed_coef = 1.25
     self.m_anim_prefixes = {
         "anm_reload",

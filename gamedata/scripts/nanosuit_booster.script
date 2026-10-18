@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/10/2026                                                                                             ---
+---    Date : 18/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract booster usable by a Nanosuit mode.                             ---
@@ -18,8 +18,9 @@
 
 class "abstract_booster"
 
-function abstract_booster:__init(core)
+function abstract_booster:__init(core, name)
     self.m_core = core
+    self.m_name = name
 end
 
 function abstract_booster:destroy()
@@ -27,9 +28,9 @@ function abstract_booster:destroy()
 end
 
 function abstract_booster:apply()
-    nanosuit_utils.print_dbg("Applying booster")
+    nanosuit_utils.print_dbg("Applying booster %s", self.m_name)
 end
 
 function abstract_booster:remove()
-    nanosuit_utils.print_dbg("Removing booster")
+    nanosuit_utils.print_dbg("Removing booster %s", self.m_name)
 end

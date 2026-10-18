@@ -56,7 +56,8 @@ Indentation is 4 spaces.
 constructor argument and keeps it as `m_core`, which is how they reach each other.
 
 - Modes derive `nanosuit_mode.abstract_mode`
-- Boosters derive `nanosuit_booster.abstract_booster` — `__init`, `destroy`, `apply`, `remove`
+- Boosters derive `nanosuit_booster.abstract_booster` — `__init`, `destroy`, `apply`, `remove`.
+  Each booster names itself after its class (`super(core, "jump")`)
 - Item boosters derive `nanosuit_booster_item.abstract_item_booster`, which adds the slot cache,
   `filter`/`set`/`unset`, and keeps the effect on the items as they move in and out of their slot
 

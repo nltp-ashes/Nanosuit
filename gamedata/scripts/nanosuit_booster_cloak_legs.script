@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/10/2026                                                                                             ---
+---    Date : 18/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a booster cloaking the actor's first person legs, usable by a Nanosuit     ---
@@ -20,7 +20,7 @@
 
 class "cloak_legs" (nanosuit_booster.abstract_booster)
 
-function cloak_legs:__init(core) super(core)
+function cloak_legs:__init(core) super(core, "cloak_legs")
 end
 
 function cloak_legs:apply()
