@@ -1,4 +1,4 @@
-## **v0.15.0 - 17/10/2026 - Beta Build**
+## **v0.15.0 - 18/10/2026 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.15.0/total?label=Downloads)]()
 
@@ -7,5 +7,14 @@
 **• Changes :**
 
 **• Bug fixes :**
+> - Fixed CTD when removing the suit, changing level or quitting while nanovision is active;
+> - Fixed CTD when removing the suit while it is in malfunction state;
+> - Fixed memory leak caused by the built-in nightvision code;
+> - Fixed setting protection values to a certain hit type to 0 in MCM causing the suit to deplete all of its energy instead of just not absorbing damage;
+> - Fixed setting protection values in MCM requiring the player to reequip the suit/reload a save for changes to take effect;
+> - Fixed binoculars being accessible while a UI or the PDA was active;
+> - Fixed ammo wheel, companion wheel and companion list UIs not changing color when the suit malfunctions;
+> - Fixed vaporization sound effect always playing as a 3D sound instead of a 2D when in first-person;
+> - Fixed speed and strength modes discarding weapon upgrades' stats if the upgrade is applied while the mode is active;
 > - Fixed speed and strength modes potentially discarding other addon's changes to actor walk/run speeds and jump height;
 > - Fixed cloak mode potentially unplugging other addons' code to manipulate NPC visibility;
