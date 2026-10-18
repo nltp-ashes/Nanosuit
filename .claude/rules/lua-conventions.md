@@ -5,7 +5,8 @@ paths:
 
 # Lua conventions
 
-Some scripts like `arm.script` and `ui_mcm_argb_input.script` are vendored and follow none of this.
+Some scripts like `arm.script`, `ui_mcm_argb_input.script` and `speed.script` are vendored and follow none of
+this. Other addons ship them under the same filename, so they stay unmodified.
 
 ## File layout
 

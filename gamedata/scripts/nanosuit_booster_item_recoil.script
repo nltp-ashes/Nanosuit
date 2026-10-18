@@ -7,8 +7,8 @@
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a recoil lowering booster usable by a Nanosuit mode.                       ---
 ---                                                                                                                  ---
----    Weapon upgrades add to the current dispersion, even while the booster is set. The boost is therefore          ---
----    removed as the offset it applied, rather than by restoring the value read when it was set.                    ---
+---    Weapon upgrades add to the current dispersion, even while the booster is set, so the boost is removed by      ---
+---    subtracting the offsets it applied.                                                                           ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 

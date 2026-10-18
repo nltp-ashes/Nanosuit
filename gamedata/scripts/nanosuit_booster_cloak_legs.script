@@ -9,8 +9,8 @@
 ---    mode.                                                                                                         ---
 ---                                                                                                                  ---
 ---    The core's m_cloak swaps the shaders. The legs are a fresh copy of their visual, loaded anew every time they  ---
----    show again, so each copy is swapped as it is created. When the booster is removed, the current copy is handed ---
----    over instead of restored, to fade out with the suit.                                                          ---
+---    show again, so each copy is swapped as it is created. When the booster is removed, the current copy stays     ---
+---    swapped and is handed over to m_cloak, which restores it once the suit has faded out.                         ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 

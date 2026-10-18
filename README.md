@@ -185,6 +185,7 @@ Credit goes to these people for their work contained in this addon :
 
 |                                Name                                 |                                                    Motive                                                    |                           License                            |
 |:-------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------:|
+|                **[Arti](https://github.com/ahuyn)**                 |                       Reused their speed modifiers script from "Anomaly Dependencies"                        |                         Proprietary                          |
 |         **[Crepis](https://www.moddb.com/members/cr3pis)**          |                          Created inventory and upgrade icon for the US Nanosuit 2.0                          |                         Proprietary                          |
 |     **[Blackgrowl](https://www.moddb.com/members/strogglet15)**     |                 Improved the texture quality of the first person models of the Nanosuit 2.0                  |                   See [LICENSE](#license)                    |
 |                          **Kyne's Peace**                           |                      Ported the Nanosuit 2.0 hands and third person models from Crysis                       |                         Proprietary                          |

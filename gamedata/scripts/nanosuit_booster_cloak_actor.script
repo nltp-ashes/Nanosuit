@@ -7,8 +7,8 @@
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a booster cloaking the actor's world model, usable by a Nanosuit mode.     ---
 ---                                                                                                                  ---
----    The core's m_cloak swaps the shaders. When the booster is removed, the model is handed over instead of        ---
----    restored, to fade out with the suit.                                                                          ---
+---    The core's m_cloak swaps the shaders. When the booster is removed, the model stays swapped and is handed over ---
+---    to m_cloak, which restores it once the suit has faded out.                                                    ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 

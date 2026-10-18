@@ -7,8 +7,9 @@
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a movement speed booster usable by a Nanosuit mode.                        ---
 ---                                                                                                                  ---
----    The run and sprint coefficients are multiplied in when the booster is applied and divided back out when it is ---
----    removed, so a change made to them by anything else in between survives the removal.                           ---
+---    The run and sprint coefficients belong to speed.script, which rewrites them from all of its modifiers         ---
+---    whenever one changes, so the booster registers as one of those modifiers. Run modifiers also apply to running ---
+---    backwards.                                                                                                    ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -26,13 +27,12 @@ end
 function movement:apply()
     nanosuit_booster.abstract_booster.apply(self)
 
-    db.actor:set_actor_run_coef(db.actor:get_actor_run_coef() * self.m_run_coef)
-    db.actor:set_actor_sprint_koef(db.actor:get_actor_sprint_koef() * self.m_sprint_coef)
+    speed.add_speed(script_name(), self.m_run_coef, false)
+    speed.add_speed(script_name(), self.m_sprint_coef, true)
 end
 
 function movement:remove()
     nanosuit_booster.abstract_booster.remove(self)
 
-    db.actor:set_actor_run_coef(db.actor:get_actor_run_coef() / self.m_run_coef)
-    db.actor:set_actor_sprint_koef(db.actor:get_actor_sprint_koef() / self.m_sprint_coef)
+    speed.remove_speed(script_name())
 end

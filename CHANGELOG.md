@@ -3,6 +3,7 @@
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.15.0/total?label=Downloads)]()
 
 **• Additions :**
+> - Added Arti's `speed.script`, which speed mode now uses for its run and sprint boost;
 
 **• Changes :**
 

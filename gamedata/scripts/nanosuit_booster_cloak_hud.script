@@ -10,7 +10,8 @@
 ---                                                                                                                  ---
 ---    The core's m_cloak swaps the shaders. The item model a game.play_hud_motion() animation creates is a fresh    ---
 ---    copy of its visual, loaded anew by every animation, so each copy is swapped as it is created. When the        ---
----    booster is removed, the current copy is handed over instead of restored, to fade out with the suit.           ---
+---    booster is removed, the current copy stays swapped and is handed over to m_cloak, which restores it once the  ---
+---    suit has faded out.                                                                                           ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
