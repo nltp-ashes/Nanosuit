@@ -56,7 +56,8 @@ Indentation is 4 spaces.
 constructor argument and keeps it as `m_core`, which is how they reach each other.
 
 - Modes derive `nanosuit_mode.abstract_mode`
-- Boosters derive `nanosuit_booster.abstract_booster` — name, `__init`, `destroy`, `apply`, `remove`
+- Boosters derive `nanosuit_booster.abstract_booster` — `__init`, `destroy`, `apply`, `remove`.
+  Each booster names itself after its class (`super(core, "jump")`)
 - Item boosters derive `nanosuit_booster_item.abstract_item_booster`, which adds the slot cache,
   `filter`/`set`/`unset`, and keeps the effect on the items as they move in and out of their slot
 
@@ -68,11 +69,35 @@ is not, which is why `nanosuit_booster_reload.script` sits on the plain base.
 `__init` / `destroy` bracket the object, `apply` / `remove` bracket the effect. Callbacks are
 registered in `apply` and unregistered in `remove`, never in the constructor. Overrides call the
 base implementation explicitly — `nanosuit_mode.abstract_mode.apply(self, play_voice, play_on, "yellow")` —
-and modes attach their boosters through `apply_booster` / `remove_booster`.
+and modes attach their boosters through `apply_booster` / `remove_booster`, keyed by the booster
+class itself (`self:apply_booster(nanosuit_booster_jump.jump)`), so a mode holds one instance per class.
 
 Tuning constants live in `__init` as `m_`-fields (`m_ads_factor`, `m_recoil_factor`,
 `m_reload_speed_coef`); only player-facing options go through
 `nanosuit_mcm.get_config(section, key)` and `nanosuit_mcm.get_outfit_config(key, default)`.
+
+## Locality of behaviour
+
+> The behaviour of a unit of code should be as obvious as possible by looking only at that unit of
+> code. — [Locality of Behaviour](https://htmx.org/essays/locality-of-behaviour/)
+
+This holds at every scale :
+- Reading a booster is enough to know what it turns on and off, without opening the mode that
+  applies it or the core.
+- Reading the core is enough to know that it creates its subsystems and handles their lifecycle,
+  without knowing what each of them does.
+- Reading a function is enough to know what it does, without reading the functions around it.
+
+In practice :
+- An effect lives whole in one place. The jump booster carries its callback, energy cost, sound and
+  tuning constants; the mode only applies and removes it. When an effect moves into a booster,
+  everything that only serves that effect moves with it.
+- A hook on someone else's code sits in the script whose behaviour it serves : the NPC visibility
+  hook in `nanosuit_booster_stealth.script`, the anomaly hooks in `nanosuit_malfunctor.script`.
+  `nanosuit_patches.script` is only for compatibility with other addons.
+- Duplication against indirection is weighed case by case. A shared helper or base class keeps the
+  logic in one place but sends the reader elsewhere to follow it; duplicated code reads on its own
+  but has to be kept in sync. Neither wins by default.
 
 ## Named values
 

@@ -7,3 +7,5 @@
 **• Changes :**
 
 **• Bug fixes :**
+> - Fixed speed and strength modes potentially discarding other addon's changes to actor walk/run speeds and jump height;
+> - Fixed cloak mode potentially unplugging other addons' code to manipulate NPC visibility;

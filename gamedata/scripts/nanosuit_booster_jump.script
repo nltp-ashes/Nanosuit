@@ -1,0 +1,68 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 18/10/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the logic of a jump height booster usable by a Nanosuit mode.                           ---
+---                                                                                                                  ---
+---    actor_on_jump fires before the engine hands the jump speed over to the physics, so the speed set there        ---
+---    applies to the jump being made. The boost scales with the energy left once the jump is paid for.              ---
+---                                                                                                                  ---
+---    The jump speed is scaled relative to its current value and divided back out when the booster is removed, so a ---
+---    change made to it by anything else in between survives the removal.                                           ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Jump booster class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "jump" (nanosuit_booster.abstract_booster)
+
+function jump:__init(core) super(core, "jump")
+    -- Energy related variables
+    self.m_energy_use = 20
+
+    -- Variables
+    self.m_jump_coef = 1
+
+    -- Sound effects
+    self.m_sounds = {
+        jump = sound_object([[nanosuit\modes\power\mode_power_jump]])
+    }
+end
+
+function jump:apply()
+    nanosuit_booster.abstract_booster.apply(self)
+
+    RegisterScriptCallback("actor_on_jump", self)
+end
+
+function jump:remove()
+    nanosuit_booster.abstract_booster.remove(self)
+
+    UnregisterScriptCallback("actor_on_jump", self)
+
+    self:set_jump_coef(1)
+end
+
+function jump:actor_on_jump()
+    -- Play sounds
+    if self.m_core.m_energy.m_level >= self.m_energy_use then
+        self.m_sounds.jump:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+    end
+
+    -- Use energy
+    self.m_core.m_energy:use_energy(self.m_energy_use)
+
+    -- Scale jump speed with the energy left
+    self:set_jump_coef(1 + self.m_core.m_energy.m_level / 100)
+end
+
+function jump:set_jump_coef(coef)
+    local jump_speed = db.actor:get_actor_jump_speed()
+    db.actor:set_actor_jump_speed(jump_speed / self.m_jump_coef * coef)
+    self.m_jump_coef = coef
+end

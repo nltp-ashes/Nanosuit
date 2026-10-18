@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 11/10/2026                                                                                             ---
+---    Date : 18/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a recoil lowering booster usable by a Nanosuit mode.                       ---
@@ -22,7 +22,7 @@ actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 class "recoil" (nanosuit_booster_item.abstract_item_booster)
 
-function recoil:__init(core, name) super(core, name)
+function recoil:__init(core) super(core, "recoil")
     self.m_recoil_factor = 0.1
     self.m_low_energy = self.m_core.m_energy.m_level <= self.m_core.m_energy_low_threshold
 

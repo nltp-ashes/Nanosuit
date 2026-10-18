@@ -1,0 +1,44 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 18/10/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the logic of a booster cloaking the item model of hud motions, usable by a Nanosuit     ---
+---    mode.                                                                                                         ---
+---                                                                                                                  ---
+---    The core's m_cloak swaps the shaders. The item model a game.play_hud_motion() animation creates is a fresh    ---
+---    copy of its visual, loaded anew by every animation, so each copy is swapped as it is created. When the        ---
+---    booster is removed, the current copy is handed over instead of restored, to fade out with the suit.           ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Cloak HUD booster class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "cloak_hud" (nanosuit_booster.abstract_booster)
+
+function cloak_hud:__init(core) super(core, "cloak_hud")
+end
+
+function cloak_hud:apply()
+    nanosuit_booster.abstract_booster.apply(self)
+
+    if not self.m_core.m_cloak.m_hud_motion_item_cloaked then
+        self.m_core.m_cloak:add_actor_hud_motion_item()
+    end
+
+    RegisterScriptCallback("actor_on_create_hud_motion_item", self)
+end
+
+function cloak_hud:remove()
+    nanosuit_booster.abstract_booster.remove(self)
+
+    UnregisterScriptCallback("actor_on_create_hud_motion_item", self)
+end
+
+function cloak_hud:actor_on_create_hud_motion_item(section)
+    self.m_core.m_cloak:add_actor_hud_motion_item()
+end

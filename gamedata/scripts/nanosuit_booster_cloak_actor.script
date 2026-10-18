@@ -1,0 +1,28 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 18/10/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the logic of a booster cloaking the actor's world model, usable by a Nanosuit mode.     ---
+---                                                                                                                  ---
+---    The core's m_cloak swaps the shaders. When the booster is removed, the model is handed over instead of        ---
+---    restored, to fade out with the suit.                                                                          ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Cloak actor booster class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "cloak_actor" (nanosuit_booster.abstract_booster)
+
+function cloak_actor:__init(core) super(core, "cloak_actor")
+end
+
+function cloak_actor:apply()
+    nanosuit_booster.abstract_booster.apply(self)
+
+    self.m_core.m_cloak:add_object(db.actor)
+end

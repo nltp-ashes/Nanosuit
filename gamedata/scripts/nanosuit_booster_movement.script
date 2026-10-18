@@ -1,0 +1,38 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 18/10/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the logic of a movement speed booster usable by a Nanosuit mode.                        ---
+---                                                                                                                  ---
+---    The run and sprint coefficients are multiplied in when the booster is applied and divided back out when it is ---
+---    removed, so a change made to them by anything else in between survives the removal.                           ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Movement booster class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "movement" (nanosuit_booster.abstract_booster)
+
+function movement:__init(core) super(core, "movement")
+    self.m_run_coef = 1.25
+    self.m_sprint_coef = 1.25
+end
+
+function movement:apply()
+    nanosuit_booster.abstract_booster.apply(self)
+
+    db.actor:set_actor_run_coef(db.actor:get_actor_run_coef() * self.m_run_coef)
+    db.actor:set_actor_sprint_koef(db.actor:get_actor_sprint_koef() * self.m_sprint_coef)
+end
+
+function movement:remove()
+    nanosuit_booster.abstract_booster.remove(self)
+
+    db.actor:set_actor_run_coef(db.actor:get_actor_run_coef() / self.m_run_coef)
+    db.actor:set_actor_sprint_koef(db.actor:get_actor_sprint_koef() / self.m_sprint_coef)
+end
