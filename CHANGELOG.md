@@ -8,6 +8,7 @@
 
 **• Changes :**
 > - Strength mode's carry weight boost now also raises the walk weight by about 35kg instead of 25kg;
+> - Remade every HUD texture from vector sources, at the same pixel density across the whole HUD, and packed them into one texture atlas per UI;
 
 **• Bug fixes :**
 > - Fixed CTD when removing the suit, changing level or quitting while nanovision is active;

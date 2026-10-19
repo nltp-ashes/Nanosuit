@@ -2,48 +2,83 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 27/02/2026                                                                                            -->
+<!--    Date : 20/10/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    UI template for the Nanosuit binoculars UI.                                                                  -->
 <!--                                                                                                                 -->
 <!--=================================================================================================================-->
 <w>
-    <!-- Background -->
-    <background x="168" y="0" width="688" height="768" stretch="1">
-        <texture>ui_nanosuit_binoculars_background</texture>
-    </background>
+    <!-- Lines -->
+    <lines>
+        <top x="168" y="0" width="688" height="64" stretch="1">
+            <texture>ui_nanosuit_binoculars_top</texture>
+        </top>
+        <bottom x="168" y="704" width="688" height="64" stretch="1">
+            <texture>ui_nanosuit_binoculars_bottom</texture>
+        </bottom>
+        <left x="252" y="180" width="102" height="380" stretch="1">
+            <texture>ui_nanosuit_binoculars_left</texture>
+        </left>
+        <right x="670" y="180" width="102" height="380" stretch="1">
+            <texture>ui_nanosuit_binoculars_right</texture>
+        </right>
+        <frame_top x="354" y="180" width="316" height="68" stretch="1">
+            <texture>ui_nanosuit_binoculars_frame_top</texture>
+        </frame_top>
+        <frame_bottom x="354" y="484" width="316" height="76" stretch="1">
+            <texture>ui_nanosuit_binoculars_frame_bottom</texture>
+        </frame_bottom>
+        <reticle x="489" y="356" width="46" height="56" stretch="1">
+            <texture>ui_nanosuit_binoculars_reticle</texture>
+        </reticle>
+    </lines>
 
-    <!-- Text -->
-    <text x="168" y="0" width="688" height="768" stretch="1">
-        <texture>ui_nanosuit_binoculars_text</texture>
+    <!-- Text (elevation scales) -->
+    <text>
+        <left x="327" y="212" width="15" height="338" stretch="1">
+            <texture>ui_nanosuit_binoculars_text_left</texture>
+        </left>
+        <right x="682.5" y="212" width="15" height="338" stretch="1">
+            <texture>ui_nanosuit_binoculars_text_right</texture>
+        </right>
     </text>
 
-    <mode_label x="724" y="357" width="50" height="20" stretch="1">
-        <text complex_mode="1" r="129" g="183" b="135" align="c" vert_align="c" font="letterica16"/>
-    </mode_label>
+    <!-- Vision mode (right) -->
+    <mode x="724" y="357" width="50" height="38" stretch="1">
+        <label x="0" y="0" width="50" height="20" stretch="1">
+            <text complex_mode="1" r="129" g="183" b="135" align="c" vert_align="c" font="letterica16"/>
+        </label>
 
-    <mode x="724" y="375" width="50" height="20" stretch="1">
-        <text complex_mode="1" r="129" g="183" b="135" align="c" vert_align="c" font="letterica16"/>
+        <value x="0" y="18" width="50" height="20" stretch="1">
+            <text complex_mode="1" r="129" g="183" b="135" align="c" vert_align="c" font="letterica16"/>
+        </value>
     </mode>
 
-    <zoom_label x="250" y="357" width="50" height="20" stretch="1">
-        <text complex_mode="1" r="129" g="183" b="135" align="c" vert_align="c" font="letterica16"/>
-    </zoom_label>
+    <!-- Zoom (left) -->
+    <zoom x="250" y="357" width="50" height="38" stretch="1">
+        <label x="0" y="0" width="50" height="20" stretch="1">
+            <text complex_mode="1" r="129" g="183" b="135" align="c" vert_align="c" font="letterica16"/>
+        </label>
 
-    <zoom x="250" y="375" width="50" height="20" stretch="1">
-        <text complex_mode="1" r="129" g="183" b="135" align="c" vert_align="c" font="letterica16"/>
+        <value x="0" y="18" width="50" height="20" stretch="1">
+            <text complex_mode="1" r="129" g="183" b="135" align="c" vert_align="c" font="letterica16"/>
+        </value>
     </zoom>
 
+    <!-- Coordinates (top) -->
+    <coordinates x="447" y="178" width="130" height="20" stretch="1">
+        <north x="0" y="0" width="50" height="20" stretch="1">
+            <text complex_mode="1" r="129" g="183" b="135" align="r" vert_align="c" font="letterica18"/>
+        </north>
+
+        <west x="80" y="0" width="50" height="20" stretch="1">
+            <text complex_mode="1" r="129" g="183" b="135" align="l" vert_align="c" font="letterica18"/>
+        </west>
+    </coordinates>
+
+    <!-- Range (bottom) -->
     <range x="462" y="530" width="100" height="40" stretch="1">
         <text complex_mode="1" r="129" g="183" b="135" align="c" vert_align="c" font="letterica25"/>
     </range>
-
-    <coordinates_n x="447" y="178" width="50" height="20" stretch="1">
-        <text complex_mode="1" r="129" g="183" b="135" align="r" vert_align="c" font="letterica18"/>
-    </coordinates_n>
-
-    <coordinates_w x="527" y="178" width="50" height="20" stretch="1">
-        <text complex_mode="1" r="129" g="183" b="135" align="l" vert_align="c" font="letterica18"/>
-    </coordinates_w>
 </w>
