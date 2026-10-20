@@ -1,10 +1,11 @@
-## **v0.15.0 - 19/10/2026 - Beta Build**
+## **v0.15.0 - 20/10/2026 - Beta Build**
 
 [![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.15.0/total?label=Downloads)]()
 
 **• Additions :**
 > - Added Arti's `speed.script`, which speed mode now uses for its run and sprint boost;
 > - Added demonized's `weight.script`, which strength mode now uses for its carry weight boost;
+> - Added a new “Gobo” UI theme, painting the HUD and every Nanosuit UI in a pink palette;
 
 **• Changes :**
 > - Strength mode's carry weight boost now also raises the walk weight by about 35kg instead of 25kg;

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : RavenAscendant                                                                           ---
 ---    Edited : NLTP_ASHES                                                                                           ---
----    Date : 11/10/2026                                                                                             ---
+---    Date : 20/10/2026                                                                                          ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define the options in MCM.                                                                     ---
@@ -255,6 +255,44 @@ defaults = {
     ["halloween/indicators_warning_low"] = "255,255,220,60",
     ["halloween/indicators_warning_medium"] = "255,255,140,30",
     ["halloween/indicators_warning_high"] = "255,255,35,35",
+    -- gobo theme, General
+    ["gobo/text"] = "255,235,125,170",
+    ["gobo/outline"] = "200,190,70,115",
+    ["gobo/accent"] = "200,255,170,205",
+    ["gobo/alert"] = "255,255,0,0",
+    -- gobo theme, Status UI
+    ["gobo/status_energy"] = "255,230,100,150",
+    ["gobo/status_energy_bg"] = "200,52,22,36",
+    ["gobo/status_energy_off_bg"] = "200,24,24,24",
+    ["gobo/status_health"] = "255,255,150,185",
+    ["gobo/status_health_bg"] = "200,58,32,44",
+    ["gobo/status_health_off_bg"] = "200,24,24,24",
+    ["gobo/status_stamina"] = "255,200,60,110",
+    ["gobo/status_stamina_bg"] = "200,46,18,30",
+    ["gobo/status_stamina_off_bg"] = "200,24,24,24",
+    -- gobo theme, Tactical map UI
+    ["gobo/tacmap_map"] = "127,255,255,255",
+    ["gobo/tacmap_map_bg"] = "100,190,80,125",
+    ["gobo/tacmap_visibility_bg"] = "200,100,100,100",
+    ["gobo/tacmap_visibility_very_low"] = "255,0,255,0",
+    ["gobo/tacmap_visibility_low"] = "255,255,192,0",
+    ["gobo/tacmap_visibility_high"] = "255,255,128,0",
+    ["gobo/tacmap_visibility_very_high"] = "255,255,0,0",
+    ["gobo/tacmap_icon_default"] = "255,255,255,255",
+    ["gobo/tacmap_icon_looted"] = "255,150,150,150",
+    ["gobo/tacmap_icon_friend"] = "255,0,255,0",
+    ["gobo/tacmap_icon_neutral"] = "255,255,255,0",
+    ["gobo/tacmap_icon_enemy"] = "255,255,0,0",
+    ["gobo/tacmap_icon_primary_task"] = "255,0,255,0",
+    ["gobo/tacmap_icon_secondary_task"] = "255,255,255,0",
+    -- gobo theme, Auxiliaries UI
+    ["gobo/auxiliaries_nv_energy"] = "255,255,170,205",
+    ["gobo/auxiliaries_nv_energy_bg"] = "200,100,40,65",
+    ["gobo/auxiliaries_nv_energy_off_bg"] = "200,24,24,24",
+    -- gobo theme, Indicators UI
+    ["gobo/indicators_warning_low"] = "255,255,255,50",
+    ["gobo/indicators_warning_medium"] = "255,255,125,50",
+    ["gobo/indicators_warning_high"] = "255,255,50,50",
     -- Technical
     ["debug_mode"] = false
 }
@@ -378,6 +416,12 @@ function on_mcm_load()
                         text = "ui_mcm_nanosuit_nanosuit_hud_ui_theme_halloween",
                         sh = true,
                         gr = build_theme_page(themes_enum.halloween)
+                    },
+                    {
+                        id = themes_enum.gobo,
+                        text = "ui_mcm_nanosuit_nanosuit_hud_ui_theme_gobo",
+                        sh = true,
+                        gr = build_theme_page(themes_enum.gobo)
                     }
                 }
             },
@@ -406,7 +450,7 @@ function build_outfit_page(section, name)
         { type = "track", val = mcm_types_enum.number, id = "energy_use_factor", def = defaults[section .. "/energy_use_factor"], hint = "nanosuit_nanosuit_configuration_energy_use_factor", min = 0, max = defaults[section .. "/energy_use_factor"] * 2, step = 0.1 },
         { type = "track", val = mcm_types_enum.number, id = "energy_regen_factor", def = defaults[section .. "/energy_regen_factor"], hint = "nanosuit_nanosuit_configuration_energy_regen_factor", min = 0, max = defaults[section .. "/energy_regen_factor"] * 2, step = 0.1 },
         { type = "list", val = mcm_types_enum.string, id = "vision_perk", def = defaults[section .. "/vision_perk"], hint = "nanosuit_nanosuit_configuration_vision_perk", no_str = true, content = { {vision_perk_enum.nightvision,"ui_mcm_nanosuit_nanosuit_configuration_vision_perk_lst_nightvision"}, {vision_perk_enum.nanovision,"ui_mcm_nanosuit_nanosuit_configuration_vision_perk_lst_nanovision"} } },
-        { type = "list", val = mcm_types_enum.string, id = "theme", def = defaults[section .. "/theme"], hint = "nanosuit_nanosuit_configuration_theme", no_str = true, content = { {themes_enum.nanosuit_1,"ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_1"}, {themes_enum.nanosuit_2,"ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_2"}, {themes_enum.nanosuit_korean,"ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_korean"}, {themes_enum.halloween,"ui_mcm_nanosuit_nanosuit_hud_ui_theme_halloween"} } },
+        { type = "list", val = mcm_types_enum.string, id = "theme", def = defaults[section .. "/theme"], hint = "nanosuit_nanosuit_configuration_theme", no_str = true, content = { {themes_enum.nanosuit_1,"ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_1"}, {themes_enum.nanosuit_2,"ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_2"}, {themes_enum.nanosuit_korean,"ui_mcm_nanosuit_nanosuit_hud_ui_theme_nanosuit_korean"}, {themes_enum.halloween,"ui_mcm_nanosuit_nanosuit_hud_ui_theme_halloween"}, {themes_enum.gobo,"ui_mcm_nanosuit_nanosuit_hud_ui_theme_gobo"} } },
         { type = "list", val = mcm_types_enum.string, id = "suit_gender", def = defaults[section .. "/suit_gender"], hint = "nanosuit_nanosuit_configuration_suit_gender", no_str = true, content = { {gender_enum.male,"ui_mcm_nanosuit_nanosuit_configuration_suit_gender_lst_male"}, {gender_enum.female,"ui_mcm_nanosuit_nanosuit_configuration_suit_gender_lst_female"} } },
         { type = "line" },
         { type = "desc", text = "ui_mcm_nanosuit_nanosuit_configuration_armor" },

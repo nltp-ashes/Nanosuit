@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 07/10/2026                                                                                            -->
+<!--    Date : 20/10/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -353,6 +353,10 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_theme_halloween">
         <text>Halloween theme</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_theme_gobo">
+        <text>Gobo theme</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_general">
