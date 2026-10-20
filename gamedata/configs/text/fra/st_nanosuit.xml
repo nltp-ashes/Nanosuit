@@ -125,7 +125,7 @@
     </string>
 
     <string id="ui_mcm_menu_nanosuit_hud_ui">
-        <text>ATH/UI</text>
+        <text>UI/ATH</text>
     </string>
 
     <string id="ui_mcm_menu_nanosuit_technical">
@@ -228,11 +228,11 @@
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_theme">
-        <text>Thème de l'ATH/UI</text>
+        <text>Thème de l'UI/ATH</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_theme_desc">
-        <text>Sélectionne le jeu de couleurs avec lequel la combinaison peint son ATH et ses interfaces. Les thèmes se personnalisent dans 'Nanosuit > ATH/UI'.</text>
+        <text>Sélectionne le jeu de couleurs avec lequel la combinaison peint son ATH et ses interfaces. Les thèmes se personnalisent dans 'Nanosuit > UI/ATH'.</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_suit_gender">
@@ -327,6 +327,15 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_customize_companion_wheel_desc">
         <text>Styliser la roue des companions pour la faire ressembler au style du rest de l'ATH de la Nano-combinaison quand celle-ci est équipée.</text>
+    </string>
+
+    <!-- Minimap -->
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_show_minimap">
+        <text>Activer la carte tactique</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_show_minimap_desc">
+        <text>Activer la carte tactique. Synchronisé avec l'option de base Visuel > Interface/ATH > Afficher la minicarte.</text>
     </string>
 
     <!-- Companion list customization -->

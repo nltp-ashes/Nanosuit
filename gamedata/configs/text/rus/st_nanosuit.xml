@@ -330,6 +330,15 @@
         <text>Переключатель, позволяющий изменить внешний вид интерфейса кругового меню спутника так, чтобы он соответствовал остальным элементам HUD нанокостюма при его ношении.</text>
     </string>
 
+    <!-- Minimap -->
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_show_minimap">
+        <text>Включить тактическую карту</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_show_minimap_desc">
+        <text>Включить тактическую карту. Синхронизировано со стандартной опцией «Миникарта».</text>
+    </string>
+
     <!-- Companion list customization -->
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_customize_companion_list">
         <text>Настройте интерфейс списка спутников</text>

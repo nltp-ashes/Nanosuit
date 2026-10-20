@@ -125,7 +125,7 @@
     </string>
 
     <string id="ui_mcm_menu_nanosuit_hud_ui">
-        <text>HUD/UI</text>
+        <text>UI/HUD</text>
     </string>
 
     <string id="ui_mcm_menu_nanosuit_technical">
@@ -228,11 +228,11 @@
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_theme">
-        <text>HUD/UI theme</text>
+        <text>UI/HUD theme</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_theme_desc">
-        <text>Select the set of colors the suit paints its HUD and its UIs with. Themes are customized under 'Nanosuit > HUD/UI'.</text>
+        <text>Select the set of colors the suit paints its HUD and its UIs with. Themes are customized under 'Nanosuit > UI/HUD'.</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_suit_gender">
@@ -327,6 +327,15 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_customize_companion_wheel_desc">
         <text>Toggle to override the appearance of the companion wheel UI to make it look like the rest of the Nanosuit HUD when wearing the suit.</text>
+    </string>
+
+    <!-- Minimap -->
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_show_minimap">
+        <text>Enable tactical map</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_show_minimap_desc">
+        <text>Enable the tactical map. Synchronized with the vanilla option Visual > UI/HUD > Show Minimap.</text>
     </string>
 
     <!-- Companion list customization -->

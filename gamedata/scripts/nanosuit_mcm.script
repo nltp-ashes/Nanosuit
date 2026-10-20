@@ -99,6 +99,7 @@ defaults = {
     ["outfit_nanosuit_asian/protection_power_strike"] = 0.5,
     ["outfit_nanosuit_asian/protection_speed_radiation"] = 0.5,
     -- HUD/UI
+    ["general/show_minimap"] = true,
     ["general/customize_ammo_wheel"] = true,
     ["general/customize_companion_wheel"] = true,
     ["general/customize_companion_list"] = true,
@@ -326,6 +327,18 @@ function set_config(category, key, value)
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
+-- Other functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+function get_vanilla_minimap()
+    return ui_options.get("video/hud/show_minimap")
+end
+
+function set_vanilla_minimap(value)
+    ui_options.set("video/hud/show_minimap", value)
+end
+
+-- ---------------------------------------------------------------------------------------------------------------------
 -- MCM UI definition
 -- ---------------------------------------------------------------------------------------------------------------------
 
@@ -388,6 +401,7 @@ function on_mcm_load()
                         gr = {
                             { type = "slide", text = "ui_mcm_menu_nanosuit", link = "ui_nanosuit_mcm_banner", spacing = 20, size = { 512, 50 } },
                             { type = "title", text = "ui_mcm_menu_nanosuit_hud_ui" },
+                            { type = "check", val = mcm_types_enum.boolean, id = "show_minimap", def = defaults["general/show_minimap"], hint = "nanosuit_nanosuit_hud_ui_show_minimap", curr = { nanosuit_mcm.get_vanilla_minimap }, functor = { nanosuit_mcm.set_vanilla_minimap } },
                             { type = "check", val = mcm_types_enum.boolean, id = "customize_ammo_wheel", def = defaults["general/customize_ammo_wheel"], hint = "nanosuit_nanosuit_hud_ui_customize_ammo_wheel" },
                             { type = "check", val = mcm_types_enum.boolean, id = "customize_companion_wheel", def = defaults["general/customize_companion_wheel"], hint = "nanosuit_nanosuit_hud_ui_customize_companion_wheel" },
                             { type = "check", val = mcm_types_enum.boolean, id = "customize_companion_list", def = defaults["general/customize_companion_list"], hint = "nanosuit_nanosuit_hud_ui_customize_companion_list" },
