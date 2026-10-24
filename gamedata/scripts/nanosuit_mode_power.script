@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 19/10/2026                                                                                             ---
+---    Date : 24/10/2026                                                                                            ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of strength mode of the Nanosuit addon.                                       ---
@@ -44,6 +44,7 @@ function power:apply(play_voice, play_on)
     self:apply_booster(nanosuit_booster_carry_weight.carry_weight)
     self:apply_booster(nanosuit_booster_item_melee.melee)
     self:apply_booster(nanosuit_booster_jump.jump)
+    self:apply_booster(nanosuit_booster_throw.throw)
 end
 
 function power:remove(is_destroying)
@@ -57,6 +58,7 @@ function power:remove(is_destroying)
     self:remove_booster(nanosuit_booster_carry_weight.carry_weight)
     self:remove_booster(nanosuit_booster_item_melee.melee)
     self:remove_booster(nanosuit_booster_jump.jump)
+    self:remove_booster(nanosuit_booster_throw.throw)
 end
 
 function power:actor_on_weapon_fired()
