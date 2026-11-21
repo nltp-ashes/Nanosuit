@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : RavenAscendant                                                                           ---
 ---    Edited : NLTP_ASHES                                                                                           ---
----    Date : 20/10/2026                                                                                          ---
+---    Date : 25/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define the options in MCM.                                                                     ---
@@ -109,6 +109,9 @@ defaults = {
     ["nanosuit_1/outline"] = "200,99,125,102",
     ["nanosuit_1/accent"] = "200,250,173,44",
     ["nanosuit_1/alert"] = "255,255,0,0",
+    ["nanosuit_1/relation_friend"] = "255,0,255,0",
+    ["nanosuit_1/relation_neutral"] = "255,255,255,0",
+    ["nanosuit_1/relation_enemy"] = "255,255,0,0",
     -- nanosuit_1 theme, Status UI
     ["nanosuit_1/status_energy"] = "255,0,145,189",
     ["nanosuit_1/status_energy_bg"] = "200,18,40,46",
@@ -129,9 +132,6 @@ defaults = {
     ["nanosuit_1/tacmap_visibility_very_high"] = "255,255,0,0",
     ["nanosuit_1/tacmap_icon_default"] = "255,255,255,255",
     ["nanosuit_1/tacmap_icon_looted"] = "255,150,150,150",
-    ["nanosuit_1/tacmap_icon_friend"] = "255,0,255,0",
-    ["nanosuit_1/tacmap_icon_neutral"] = "255,255,255,0",
-    ["nanosuit_1/tacmap_icon_enemy"] = "255,255,0,0",
     ["nanosuit_1/tacmap_icon_primary_task"] = "255,0,255,0",
     ["nanosuit_1/tacmap_icon_secondary_task"] = "255,255,255,0",
     -- nanosuit_1 theme, Auxiliaries UI
@@ -147,6 +147,9 @@ defaults = {
     ["nanosuit_korean/outline"] = "200,125,125,102",
     ["nanosuit_korean/accent"] = "200,250,173,44",
     ["nanosuit_korean/alert"] = "255,255,0,0",
+    ["nanosuit_korean/relation_friend"] = "255,0,255,0",
+    ["nanosuit_korean/relation_neutral"] = "255,255,255,0",
+    ["nanosuit_korean/relation_enemy"] = "255,255,0,0",
     -- nanosuit_korean theme, Status UI
     ["nanosuit_korean/status_energy"] = "255,0,59,99",
     ["nanosuit_korean/status_energy_bg"] = "200,18,40,46",
@@ -167,9 +170,6 @@ defaults = {
     ["nanosuit_korean/tacmap_visibility_very_high"] = "255,255,0,0",
     ["nanosuit_korean/tacmap_icon_default"] = "255,255,255,255",
     ["nanosuit_korean/tacmap_icon_looted"] = "255,150,150,150",
-    ["nanosuit_korean/tacmap_icon_friend"] = "255,0,255,0",
-    ["nanosuit_korean/tacmap_icon_neutral"] = "255,255,255,0",
-    ["nanosuit_korean/tacmap_icon_enemy"] = "255,255,0,0",
     ["nanosuit_korean/tacmap_icon_primary_task"] = "255,0,255,0",
     ["nanosuit_korean/tacmap_icon_secondary_task"] = "255,255,255,0",
     -- nanosuit_korean theme, Auxiliaries UI
@@ -185,6 +185,9 @@ defaults = {
     ["nanosuit_2/outline"] = "200,210,255,210",
     ["nanosuit_2/accent"] = "200,250,173,44",
     ["nanosuit_2/alert"] = "255,255,0,0",
+    ["nanosuit_2/relation_friend"] = "255,0,255,0",
+    ["nanosuit_2/relation_neutral"] = "255,255,255,0",
+    ["nanosuit_2/relation_enemy"] = "255,255,0,0",
     -- nanosuit_2 theme, Status UI
     ["nanosuit_2/status_energy"] = "255,210,255,210",
     ["nanosuit_2/status_energy_bg"] = "200,18,40,46",
@@ -205,9 +208,6 @@ defaults = {
     ["nanosuit_2/tacmap_visibility_very_high"] = "255,255,0,0",
     ["nanosuit_2/tacmap_icon_default"] = "255,255,255,255",
     ["nanosuit_2/tacmap_icon_looted"] = "255,150,150,150",
-    ["nanosuit_2/tacmap_icon_friend"] = "255,0,255,0",
-    ["nanosuit_2/tacmap_icon_neutral"] = "255,255,255,0",
-    ["nanosuit_2/tacmap_icon_enemy"] = "255,255,0,0",
     ["nanosuit_2/tacmap_icon_primary_task"] = "255,0,255,0",
     ["nanosuit_2/tacmap_icon_secondary_task"] = "255,255,255,0",
     -- nanosuit_2 theme, Auxiliaries UI
@@ -223,6 +223,9 @@ defaults = {
     ["halloween/outline"] = "200,235,115,20",
     ["halloween/accent"] = "200,175,95,235",
     ["halloween/alert"] = "255,255,35,35",
+    ["halloween/relation_friend"] = "255,125,205,35",
+    ["halloween/relation_neutral"] = "255,255,200,0",
+    ["halloween/relation_enemy"] = "255,255,35,35",
     -- halloween theme, Status UI
     ["halloween/status_energy"] = "255,255,128,0",
     ["halloween/status_energy_bg"] = "200,58,30,8",
@@ -243,9 +246,6 @@ defaults = {
     ["halloween/tacmap_visibility_very_high"] = "255,255,35,35",
     ["halloween/tacmap_icon_default"] = "255,255,225,190",
     ["halloween/tacmap_icon_looted"] = "255,150,130,120",
-    ["halloween/tacmap_icon_friend"] = "255,125,205,35",
-    ["halloween/tacmap_icon_neutral"] = "255,255,200,0",
-    ["halloween/tacmap_icon_enemy"] = "255,255,35,35",
     ["halloween/tacmap_icon_primary_task"] = "255,125,205,35",
     ["halloween/tacmap_icon_secondary_task"] = "255,255,200,0",
     -- halloween theme, Auxiliaries UI
@@ -261,6 +261,9 @@ defaults = {
     ["gobo/outline"] = "200,190,70,115",
     ["gobo/accent"] = "200,255,170,205",
     ["gobo/alert"] = "255,255,0,0",
+    ["gobo/relation_friend"] = "255,0,255,0",
+    ["gobo/relation_neutral"] = "255,255,255,0",
+    ["gobo/relation_enemy"] = "255,255,0,0",
     -- gobo theme, Status UI
     ["gobo/status_energy"] = "255,230,100,150",
     ["gobo/status_energy_bg"] = "200,52,22,36",
@@ -281,9 +284,6 @@ defaults = {
     ["gobo/tacmap_visibility_very_high"] = "255,255,0,0",
     ["gobo/tacmap_icon_default"] = "255,255,255,255",
     ["gobo/tacmap_icon_looted"] = "255,150,150,150",
-    ["gobo/tacmap_icon_friend"] = "255,0,255,0",
-    ["gobo/tacmap_icon_neutral"] = "255,255,255,0",
-    ["gobo/tacmap_icon_enemy"] = "255,255,0,0",
     ["gobo/tacmap_icon_primary_task"] = "255,0,255,0",
     ["gobo/tacmap_icon_secondary_task"] = "255,255,255,0",
     -- gobo theme, Auxiliaries UI
@@ -501,6 +501,9 @@ function build_theme_page(theme)
         { type = "input", val = mcm_types_enum.string, id = "outline", def = defaults[theme .. "/outline"], hint = "nanosuit_nanosuit_hud_ui_outline", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
         { type = "input", val = mcm_types_enum.string, id = "accent", def = defaults[theme .. "/accent"], hint = "nanosuit_nanosuit_hud_ui_accent", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
         { type = "input", val = mcm_types_enum.string, id = "alert", def = defaults[theme .. "/alert"], hint = "nanosuit_nanosuit_hud_ui_alert", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+        { type = "input", val = mcm_types_enum.string, id = "relation_friend", def = defaults[theme .. "/relation_friend"], hint = "nanosuit_nanosuit_hud_ui_relation_friend", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+        { type = "input", val = mcm_types_enum.string, id = "relation_neutral", def = defaults[theme .. "/relation_neutral"], hint = "nanosuit_nanosuit_hud_ui_relation_neutral", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
+        { type = "input", val = mcm_types_enum.string, id = "relation_enemy", def = defaults[theme .. "/relation_enemy"], hint = "nanosuit_nanosuit_hud_ui_relation_enemy", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
         { type = "line" },
         { type = "desc", text = "ui_mcm_nanosuit_nanosuit_hud_ui_status" },
         { type = "input", val = mcm_types_enum.string, id = "status_energy", def = defaults[theme .. "/status_energy"], hint = "nanosuit_nanosuit_hud_ui_status_energy", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
@@ -523,9 +526,6 @@ function build_theme_page(theme)
         { type = "input", val = mcm_types_enum.string, id = "tacmap_visibility_very_high", def = defaults[theme .. "/tacmap_visibility_very_high"], hint = "nanosuit_nanosuit_hud_ui_tacmap_visibility_very_high", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
         { type = "input", val = mcm_types_enum.string, id = "tacmap_icon_default", def = defaults[theme .. "/tacmap_icon_default"], hint = "nanosuit_nanosuit_hud_ui_tacmap_icon_default", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
         { type = "input", val = mcm_types_enum.string, id = "tacmap_icon_looted", def = defaults[theme .. "/tacmap_icon_looted"], hint = "nanosuit_nanosuit_hud_ui_tacmap_icon_looted", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
-        { type = "input", val = mcm_types_enum.string, id = "tacmap_icon_friend", def = defaults[theme .. "/tacmap_icon_friend"], hint = "nanosuit_nanosuit_hud_ui_tacmap_icon_friend", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
-        { type = "input", val = mcm_types_enum.string, id = "tacmap_icon_neutral", def = defaults[theme .. "/tacmap_icon_neutral"], hint = "nanosuit_nanosuit_hud_ui_tacmap_icon_neutral", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
-        { type = "input", val = mcm_types_enum.string, id = "tacmap_icon_enemy", def = defaults[theme .. "/tacmap_icon_enemy"], hint = "nanosuit_nanosuit_hud_ui_tacmap_icon_enemy", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
         { type = "input", val = mcm_types_enum.string, id = "tacmap_icon_primary_task", def = defaults[theme .. "/tacmap_icon_primary_task"], hint = "nanosuit_nanosuit_hud_ui_tacmap_icon_primary_task", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
         { type = "input", val = mcm_types_enum.string, id = "tacmap_icon_secondary_task", def = defaults[theme .. "/tacmap_icon_secondary_task"], hint = "nanosuit_nanosuit_hud_ui_tacmap_icon_secondary_task", ui_hook_functor = { ui_mcm_argb_input.init_mcm_argb_control } },
         { type = "line" },

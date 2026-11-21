@@ -2,7 +2,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 20/10/2026                                                                                          -->
+<!--    Date : 25/10/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Texture description file for the Nanosuit addon's UI textures.                                               -->
@@ -130,11 +130,14 @@
         <texture id="ui_nanosuit_binoculars_bottom"            x="0"       y="1784"   width="3669"    height="256" />
         <texture id="ui_nanosuit_binoculars_left"              x="0"       y="0"      width="544"     height="1520" />
         <texture id="ui_nanosuit_binoculars_right"             x="548"     y="0"      width="544"     height="1520" />
-        <texture id="ui_nanosuit_binoculars_frame_top"         x="1264"    y="308"    width="1685"    height="272" />
-        <texture id="ui_nanosuit_binoculars_frame_bottom"      x="1264"    y="0"      width="1685"    height="304" />
+        <texture id="ui_nanosuit_binoculars_frame_top"         x="1096"    y="308"    width="1685"    height="272" />
+        <texture id="ui_nanosuit_binoculars_frame_bottom"      x="1096"    y="0"      width="1685"    height="304" />
         <texture id="ui_nanosuit_binoculars_reticle"           x="3673"    y="0"      width="245"     height="224" />
-        <texture id="ui_nanosuit_binoculars_text_left"         x="1096"    y="0"      width="80"      height="1352" />
-        <texture id="ui_nanosuit_binoculars_text_right"        x="1180"    y="0"      width="80"      height="1352" />
+        <texture id="ui_nanosuit_binoculars_tick"              x="3922"    y="36"     width="32"      height="6" />
+        <texture id="ui_nanosuit_binoculars_target_lt"         x="3922"    y="0"      width="32"      height="32" />
+        <texture id="ui_nanosuit_binoculars_target_rt"         x="3958"    y="0"      width="32"      height="32" />
+        <texture id="ui_nanosuit_binoculars_target_lb"         x="3994"    y="0"      width="32"      height="32" />
+        <texture id="ui_nanosuit_binoculars_target_rb"         x="4030"    y="0"      width="32"      height="32" />
     </file>
 
     <!-- Halloween theme decorations -->

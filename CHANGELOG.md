@@ -6,12 +6,15 @@
 > - Added Arti's `speed.script`, which speed mode now uses for its run and sprint boost;
 > - Added demonized's `weight.script`, which strength mode now uses for its carry weight boost;
 > - Added a new “Gobo” UI theme, painting the HUD and every Nanosuit UI in a pink palette;
+> - Added target tagging to the binoculars, framing the stalkers and mutants in sight in the color of their relation to the player;
+> - Added an elevation scale to the binoculars, moving with the camera's pitch;
 > - Added an option to turn the tactical map on or off, linked to vanilla Anomaly's "Show Minimap" option;
 > - Added a grenade and bolt throw force boost to strength mode, consuming energy depending on the thrown item's weight;
 
 **• Changes :**
 > - Strength mode's carry weight boost now also raises the walk weight by about 35kg instead of 25kg;
 > - Remade every HUD texture from vector sources, at the same pixel density across the whole HUD, and packed them into one texture atlas per UI;
+> - The friendly, neutral and hostile colors in MCM now apply to both the tactical map and the binoculars targets (custom tactical map icon colors are reset to the theme's defaults);
 
 **• Bug fixes :**
 > - Fixed CTD when removing the suit, changing level or quitting while nanovision is active;

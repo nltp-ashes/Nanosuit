@@ -4,7 +4,7 @@
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
 <!--    Edited : Russian translation (VodoXleb - 21/08/2026)                                                         -->
-<!--    Date : 20/10/2026                                                                                            -->
+<!--    Date : 25/10/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -405,6 +405,30 @@
         <text>÷вет, в который окрашиваютс€ интерфейсы Ќанокостюма при сбое костюма, а также шкалы состо€ни€ при низких значени€х.</text>
     </string>
 
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_friend">
+        <text>÷вет союзников</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_friend_desc">
+        <text>÷вет союзных сталкеров на тактической карте и союзных целей, обнаруженных в бинокль.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_neutral">
+        <text>÷вет нейтралов</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_neutral_desc">
+        <text>÷вет нейтральных сталкеров на тактической карте и нейтральных целей, обнаруженных в бинокль.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_enemy">
+        <text>÷вет врагов</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_enemy_desc">
+        <text>÷вет враждебных сталкеров на тактической карте и враждебных целей, обнаруженных в бинокль.</text>
+    </string>
+
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status">
         <text>ѕанель состо€ни€</text>
     </string>
@@ -483,18 +507,6 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_looted">
         <text>÷вет значков обысканных тел</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_friend">
-        <text>÷вет значков дружественных сталкеров</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_neutral">
-        <text>÷вет значков нейтральных сталкеров</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_enemy">
-        <text>÷вет значков враждебных сталкеров</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_primary_task">

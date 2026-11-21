@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 18/10/2026                                                                                             ---
+---    Date : 25/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's built-in binoculars system.                                              ---
@@ -37,13 +37,12 @@ function binoculars:__init(core)
         off = sound_object([[nanosuit\binoculars\binocular_off]]),
         loop = sound_object([[nanosuit\binoculars\binocular_loop]]),
         zoom_in = sound_object([[nanosuit\binoculars\binocular_zoom_in]]),
-        zoom_out = sound_object([[nanosuit\binoculars\binocular_zoom_out]]),
-        tagged = sound_object([[nanosuit\binoculars\binocular_tagged]])
+        zoom_out = sound_object([[nanosuit\binoculars\binocular_zoom_out]])
     }
 
     RegisterScriptCallback("on_mouse_wheel", self)
     RegisterScriptCallback("actor_on_update", self)
-    RegisterScriptCallback("on_before_key_press", self)
+    RegisterScriptCallback("on_before_key_press", self) -- Hack : used when input is disabled, on_key_press doesn't fire then
 end
 
 function binoculars:destroy()
@@ -55,12 +54,11 @@ function binoculars:destroy()
 
     UnregisterScriptCallback("on_mouse_wheel", self)
     UnregisterScriptCallback("actor_on_update", self)
-    UnregisterScriptCallback("on_before_key_press", self) -- Hack : used when input is disabled, on_key_press doesn't fire then
+    UnregisterScriptCallback("on_before_key_press", self)
 end
 
 function binoculars:save()
-    return {
-    }
+    return {}
 end
 
 function binoculars:load(m_data)
@@ -131,7 +129,6 @@ function binoculars:deactivate()
 end
 
 function binoculars:can_activate()
-    -- The key is caught before any open inventory, PDA or dialog, and a UI opening while zoomed in closes the binoculars
     return not self.m_core.m_malfunctor.m_enabled and actor_menu.is_hud_free()
 end
 

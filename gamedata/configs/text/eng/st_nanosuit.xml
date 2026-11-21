@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 20/10/2026                                                                                            -->
+<!--    Date : 25/10/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -404,6 +404,30 @@
         <text>Color every Nanosuit UI turns to when the suit malfunctions, and that the status bars turn to when they run low.</text>
     </string>
 
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_friend">
+        <text>Friendly color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_friend_desc">
+        <text>Color of friendly stalkers on the tactical map, and of friendly targets spotted through the binoculars.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_neutral">
+        <text>Neutral color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_neutral_desc">
+        <text>Color of neutral stalkers on the tactical map, and of neutral targets spotted through the binoculars.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_enemy">
+        <text>Hostile color</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_enemy_desc">
+        <text>Color of hostile stalkers on the tactical map, and of hostile targets spotted through the binoculars.</text>
+    </string>
+
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status">
         <text>Status UI</text>
     </string>
@@ -482,18 +506,6 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_looted">
         <text>Looted body icon color</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_friend">
-        <text>Friendly stalker icon color</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_neutral">
-        <text>Neutral stalker icon color</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_enemy">
-        <text>Hostile stalker icon color</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_primary_task">
