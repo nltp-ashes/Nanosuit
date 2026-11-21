@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 08/10/2026                                                                                             ---
+---    Date : 21/11/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit's vaporization process.                                                    ---
@@ -237,11 +237,12 @@ function evaluator_nanosuit_vaporize:evaluate()
         db.storage[self.object:id()] = {}
     end
 
-    if not nanosuit_core.get_instance() then
+    local core = nanosuit_core.get_instance()
+    if not core then
         return false
     end
 
-    local sequence = nanosuit_core.get_instance().m_vaporizer.m_storage[self.object:name()]
+    local sequence = core.m_vaporizer.m_storage[self.object:name()]
     if not sequence then
         return false
     end
