@@ -2,10 +2,14 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 17/10/2026                                                                                             ---
+---    Date : 21/11/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
+---                                                                                                                  ---
+---    get_instance() runs on hot paths, the NPC visibility hook among them, so it reads the core from a module      ---
+---    variable instead of looking up the worn outfit. The binder sets it once the core is loaded, and clears it     ---
+---    before destroying the core.                                                                                   ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -15,11 +19,13 @@
 
 -- Imports
 localized_and_genderized_sound_object  = nanosuit_utils.localized_and_genderized_sound_object
-actor_slots_enum                       = nanosuit_utils.actor_slots_enum
 armor_modes_enum                       = nanosuit_utils.armor_modes_enum
 
 -- Constants
 VERSION                                = "0.15.0"
+
+-- Globals
+instance                               = nil
 
 -- ---------------------------------------------------------------------------------------------------------------------
 -- General functions
@@ -34,15 +40,7 @@ function bind(obj)
 end
 
 function get_instance()
-    local outfit = db.actor:item_in_slot(actor_slots_enum.outfit)
-    if not outfit then
-        return nil
-    end
-    local binder = outfit:binded_object()
-    if not binder then
-        return nil
-    end
-    return binder.m_instance
+    return instance
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -102,6 +100,7 @@ function nanosuit_binder:create_instance_if_not_exists()
             self.m_loaded_storage = nil
             nanosuit_utils.print_i("Loaded variables")
         end
+        instance = self.m_instance
         nanosuit_utils.print_i("Core initialized")
     end
 end
@@ -109,6 +108,10 @@ end
 function nanosuit_binder:destroy_instance_if_exists()
     if self.m_instance ~= nil then
         nanosuit_utils.print_i("Core destroying")
+        -- Swapping suits can create the new core before this one is destroyed
+        if instance == self.m_instance then
+            instance = nil
+        end
         self.m_instance:destroy()
         self.m_instance = nil
         nanosuit_utils.print_i("Core destroyed")
