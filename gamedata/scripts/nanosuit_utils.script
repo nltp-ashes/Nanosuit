@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 20/10/2026                                                                                             ---
+---    Date : 21/11/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define various common functions defined in the scripts of the Nanosuit addon.                  ---
@@ -624,7 +624,7 @@ function is_nanosuit(obj)
     end
     local sec = obj:section()
     local script_binding = ini_sys:r_string_ex(sec, "script_binding")
-    return script_binding == "nanosuit_core.bind"
+    return script_binding == "nanosuit_binder.bind"
 end
 
 function is_quest_item(obj)
