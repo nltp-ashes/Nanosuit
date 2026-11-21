@@ -10,7 +10,13 @@ Fend off the Zone's dangers with the Nanosuit, a powerful and extremely versatil
 
 ### ABOUT
 
-This addon adds a fully operational both US 1.0 and 2.0 Nanosuits, as well as the Korean Nanosuit from the Crysis series.
+This addon adds fully operational US 1.0 and 2.0 Nanosuits, as well as the Korean Nanosuit from the Crysis series.
+
+[![Nanosuit 0.6.0 Demo](https://img.youtube.com/vi/KS8VIalUrUY/hqdefault.jpg)](https://www.youtube.com/watch?v=KS8VIalUrUY)
+[![New shader for the Nanosuit's cloak mode](https://img.youtube.com/vi/sSc8MpC65fE/hqdefault.jpg)](https://www.youtube.com/watch?v=sSc8MpC65fE)
+[![Nanosuit built-in defibrillator](https://img.youtube.com/vi/6v-LODrhdH0/hqdefault.jpg)](https://www.youtube.com/watch?v=6v-LODrhdH0)
+[![Nanosuit malfunction](https://img.youtube.com/vi/iyz466oPs3c/hqdefault.jpg)](https://www.youtube.com/watch?v=iyz466oPs3c)
+[![Nanosuit menu improvements](https://img.youtube.com/vi/r1ZTBpznK6w/hqdefault.jpg)](https://www.youtube.com/watch?v=r1ZTBpznK6w)
 
 **Important :** Expect soft-conflicts (aka it will work, but it won't look nice) with UI mods. Please report as many UI related issues as you can.
 
@@ -18,7 +24,7 @@ Miscellaneous :
 - The addon features an MCM menu, allowing you to change some settings on the fly
 - The suit can be bought from Nimble, Meeker, Spore, Hermann, Monolith and UNISG traders
 - The suit comes with third person, first person and world models; inventory icons and character portraits
-- The suit voice-lines are available in English, French and Russian, depending on the game language
+- The suit's voice lines are available in English, French and Russian, depending on the game language
 - The suit has built-in binoculars, with x2 and x4 zoom levels, that tag the stalkers and mutants in sight
 - When traveling through the Zone with the Nanosuit, the player might experience mysterious interferences...
 - Using DirectX 11 or DirectX 10 is highly recommended, although it isn't required
@@ -33,7 +39,7 @@ Armor mode :
 - Absorbs all incoming damage as long as the suit has energy
 - The more powerful is the impact, the more energy it consumes
 - Some damage types consume more energy than others
-- The mode does not protect against psi-emissions and blunt force (fall-damage, poltergeist throws, etc.)
+- The mode does not protect against psi-emissions and blunt force (fall damage, poltergeist throws, etc.)
 
 Speed mode :
 - Increases walk speed, does not consume energy
@@ -58,13 +64,13 @@ Cloak mode :
 - Visually cloaks the player's hands and items while active
 - Moving while in cloak mode consumes energy. The faster you move the faster the energy gets consumed
 - Shooting while in cloak mode completely depletes the suit's energy
-- The player is cloaked from NPC's vision while cloak mode is active
+- The player is cloaked from NPCs' vision while cloak mode is active
 - When getting too close to an NPC while in cloak mode, they will start to notice you
 - The cloak mode shader can be selected per suit in MCM : a port of Crysis' cloak shader (default), LVutner's shader, or a DX8/9 compatible one, which DirectX 8 & 9 users must select
 
 HUD :
 - Added a custom HUD when wearing the suit. HUD dynamically switches from vanilla HUD to the Nanosuit's and back
-- HUD is divided in 3 parts : the menu, the left side shows a minimap, the right side shows the suit's status
+- HUD is divided into 3 parts : the menu, the left side shows a minimap, the right side shows the suit's status
 - The menu (opened by pressing V, configurable in MCM) allows you to switch from one mode to another
 - The minimap shows humans (colored by relation), mutants and vehicles, as well as task targets
 - A gauge next to the minimap shows the player's visibility from enemy NPCs and mutants
@@ -77,8 +83,8 @@ Defibrillator :
 - The defibrillator can only be used when dying from certain damage types (fall damage, radiation, lacerations)
 - A defibrillator powerbank is required for the defibrillator to activate
 - Powerbanks are single use, and need to be replaced after being revived
-- Powerbanks are the only item that can be attached the player's belt when wearing the suit
-- During the defibrillator sequence, the player has a 3 seconds window to press Space (configurable in MCM), after which the player dies
+- Powerbanks are the only item that can be attached to the player's belt when wearing the suit
+- During the defibrillator sequence, the player has a 3-second window to press Space (configurable in MCM), after which the player dies
 
 Malfunctions :
 - The suit can malfunction, turning it off (protection and bonuses are removed) and disabling the HUD (turns red and some HUD elements are offline)
@@ -94,14 +100,14 @@ Vaporization :
 Nanovision :
 - If [HeatVision v1.3](https://www.moddb.com/mods/stalker-anomaly/addons/heatvision-v02-extension-for-beefs-nvg-dx11engine-mod) is installed, the suit will have built-in nanovision
 - Consumes some energy once when activated
-- Consumes energy at a fix rate when active
+- Consumes energy at a fixed rate when active
 - When out of energy, nanovision will be disabled automatically
 - Uses the suit's main energy pool
 - Having any device equipped in the night-vision slot will make the nanovision unavailable
 
 Nightvision :
 - The suit comes with built-in nightvision
-- Consumes energy at a fix rate when active
+- Consumes energy at a fixed rate when active
 - When out of energy, nightvision will be disabled automatically
 - Uses its own source of energy, separate from the suit's main energy pool
 - Having any device equipped in the night-vision slot will make the nightvision unavailable
@@ -116,13 +122,13 @@ These addons are **absolutely required** in order for the addon to work :
 
 The addon natively integrates[^native_integrations] with the following addons, but they **aren't required** :
 1. [Mod Configuration Menu v1.7](https://www.moddb.com/mods/stalker-anomaly/addons/anomaly-mod-configuration-menu) (customizable options for the addon);
-2. [Hunger, thirst, sleepiness bars v1.01](https://www.moddb.com/mods/stalker-anomaly/addons/hunger-thirst-sleepiness-bars) (custom Nanosuit styling for hunger, thirst and sleepiness indicator);
+2. [Hunger, thirst, sleepiness bars v1.01](https://www.moddb.com/mods/stalker-anomaly/addons/hunger-thirst-sleepiness-bars) (custom Nanosuit styling for hunger, thirst and sleepiness indicators);
 3. [Campfire Healing And Designated Savepoint indicator v2.1](https://www.moddb.com/mods/stalker-anomaly/addons/campfire-healing-and-designated-savepoint-indicator) (custom Nanosuit styling for campfire indicators);
 4. [Body Health System Redux v2.0.2](https://www.moddb.com/mods/stalker-anomaly/addons/100-groks-body-health-system-redux-for-151) (built-in compatibility, to prevent UI overlaps);
 5. [HeatVision v1.3](https://www.moddb.com/mods/stalker-anomaly/addons/heatvision-v02-extension-for-beefs-nvg-dx11engine-mod) (adds nanovision to the suit, if installed);
 6. [Faction Identification UI v1.2.2](https://www.moddb.com/mods/stalker-anomaly/addons/crooks-faction-identification-ui) (built-in compatibility, to prevent UI overlaps);
 
-[^native_integrations]: Native integration are similar to compatibility patches, except they are built-into the addon. If the other addon is installed, the features will be available, if not, they will be disabled, all without requiring any extra steps from the user.
+[^native_integrations]: Native integrations are similar to compatibility patches, except they are built into the addon. If the other addon is installed, the features will be available, if not, they will be disabled, all without requiring any extra steps from the user.
 
 ---
 
@@ -161,11 +167,11 @@ For past updates, please refer to the description of each release, in the [relea
 
 You can find a list of features planned as well as known issues [here](https://github.com/nltp-ashes/Nanosuit/issues).
 
-**A note on BHS :** Given the tentacular nature of BHS and its suite of addons, and how terrible its code is, I will not further improve the compatibility patch for it. I am open to take contributions if someone comes up with a better patch than mine, given mine is essentially just removing BHS's UI if it exists.
+**A note on BHS :** Given the tentacular nature of BHS and its suite of addons, and how terrible its code is, I will not further improve the compatibility patch for it. I am open to taking contributions if someone comes up with a better patch than mine, given mine is essentially just removing BHS's UI if it exists.
 
 If you would like to help development for future updates, you can :
 1. Check out [good first issues or issues where help is wanted](https://github.com/nltp-ashes/Nanosuit/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22help%20wanted%22%20OR%20label%3A%22good%20first%20issue%22) and contribute to the addon, either by [getting in touch with me](https://github.com/nltp-ashes/Nanosuit#support--suggestions) or by [creating a fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) and [creating a pull-request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request);
-2. Help by play-testing updates by [getting Release Candidates builds](https://github.com/nltp-ashes/Nanosuit/releases/) on the addon's GitHub repository.
+2. Help by playtesting updates by [getting Release Candidate builds](https://github.com/nltp-ashes/Nanosuit/releases/) on the addon's GitHub repository.
 
 If you believe you have found a bug in the addon, please open an issue [on the addon's GitHub page](https://github.com/nltp-ashes/Nanosuit/issues/new).
 
@@ -213,10 +219,10 @@ Special thanks to these people for their help in the making of this addon :
 
 |                      Name                      |                                                     Motive                                                     |
 |:----------------------------------------------:|:--------------------------------------------------------------------------------------------------------------:|
-|                    **Sark**                    |                                      Help with playtesting and bug report                                      |
+|                    **Sark**                    |                                      Help with playtesting and bug reports                                     |
 |                    **mrrp**                    |                        Help with testing the Nanosuit HUD on 21:9 3440x1440 resolution                         |
 |                    **MFB**                     |                        Tips about invisible walls and how they work in the X-Ray engine                        |
-|                 **Vanquisher**                 |                             For extensive play-testing and all the feedback given                              |
+|                 **Vanquisher**                 |                             For extensive playtesting and all the feedback given                              |
 |                 **Medialuna**                  |    For all the tips and tricks with modeling/textures that objectively made my life a little less miserable    |
 | **[Lucy](https://www.moddb.com/members/r3zy)** | For adding engine support to change, at runtime and using scripts, the textures and shaders of any game_object |
 
