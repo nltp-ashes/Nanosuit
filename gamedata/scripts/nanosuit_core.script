@@ -7,9 +7,8 @@
 ---                                                                                                                  ---
 ---    Script used to handle the core logic of the Nanosuit addon.                                                   ---
 ---                                                                                                                  ---
----    get_instance() runs on hot paths, the NPC visibility hook among them, so it reads the core from a module      ---
----    variable instead of looking up the worn outfit. The binder sets it once the core is loaded, and clears it     ---
----    before destroying the core.                                                                                   ---
+---    Other scripts reach the core through nanosuit_core.instance, nil while no Nanosuit is worn. Only the binder   ---
+---    writes it : set once the core is loaded, cleared before it is destroyed.                                      ---
 ---                                                                                                                  ---
 ---    The default mode is applied last in core:__init : a mode and the boosters it applies may reach any            ---
 ---    subsystem of the core from apply().                                                                           ---
@@ -35,10 +34,6 @@ instance                               = nil
 
 function on_game_load()
     nanosuit_utils.print_i("Nanosuit version %s", VERSION)
-end
-
-function get_instance()
-    return instance
 end
 
 -- ---------------------------------------------------------------------------------------------------------------------

@@ -8,8 +8,8 @@
 ---    Script used to bind the Nanosuit outfits, creating the core while the suit is worn and saving its state.      ---
 ---                                                                                                                  ---
 ---    Outfits reach it through script_binding = nanosuit_binder.bind. The core is created and destroyed on the      ---
----    tick after the suit moves, and published through nanosuit_core.instance for get_instance() : set once it is   ---
----    loaded, cleared before it is destroyed, and left alone when another suit's core has already replaced it.      ---
+---    tick after the suit moves, and published as nanosuit_core.instance : set once it is loaded, cleared before it ---
+---    is destroyed, and left alone when another suit's core has already replaced it.                                ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 

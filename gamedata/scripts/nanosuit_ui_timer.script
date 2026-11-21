@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 21/09/2026                                                                                             ---
+---    Date : 21/11/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to stylize the timer (from sr_timer.script) UI like the rest of the Nanosuit HUD.                 ---
@@ -21,7 +21,7 @@ sr_timer_set_scheme = sr_timer.set_scheme
 sr_timer.set_scheme = function(obj, ini, scheme, section, gulag_name)
     sr_timer_set_scheme(obj, ini, scheme, section, gulag_name)
 
-    local instance = nanosuit_core.get_instance()
+    local instance = nanosuit_core.instance
     if instance then
         instance.m_hud.m_ui_timer:activate(db.storage[obj:id()][scheme])
     end
@@ -31,7 +31,7 @@ sr_timer_action_timer_update = sr_timer.action_timer.update
 sr_timer.action_timer.update = function(self, delta)
     sr_timer_action_timer_update(self, delta)
 
-    local instance = nanosuit_core.get_instance()
+    local instance = nanosuit_core.instance
     if instance then
         instance.m_hud.m_ui_timer:activate(self.st)
     end
@@ -41,7 +41,7 @@ sr_timer_action_timer_deactivate = sr_timer.action_timer.deactivate
 sr_timer.action_timer.deactivate = function(self, delta)
     sr_timer_action_timer_deactivate(self, delta)
 
-    local instance = nanosuit_core.get_instance()
+    local instance = nanosuit_core.instance
     if instance then
         instance.m_hud.m_ui_timer:deactivate(self.st)
     end

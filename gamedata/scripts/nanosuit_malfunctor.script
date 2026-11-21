@@ -32,7 +32,7 @@ bind_anomaly_field.pulse_anomaly_hit = function(particle_pos)
     local ret = bind_anomaly_field_pulse_anomaly_hit(particle_pos)
 
     nextTick(function()
-        local instance = nanosuit_core.get_instance()
+        local instance = nanosuit_core.instance
         local is_in_range = distance_2d_sqr(db.actor:position(), particle_pos) <= pulse_anomaly_malfunction_dist_sqr
         if instance and is_in_range then
             instance.m_malfunctor:enable_malfunction(pulse_anomaly_off_time)
@@ -48,7 +48,7 @@ psi_storm_manager.CPsiStormManager.vortex_actor_hit = function(self, vortex)
     local ret = psi_storm_manager_CPsiStormManager_vortex_actor_hit(self, vortex)
 
     nextTick(function()
-        local instance = nanosuit_core.get_instance()
+        local instance = nanosuit_core.instance
         local is_in_range = distance_2d_sqr(db.actor:position(), vortex.particle_pos) <= psi_storm_malfunction_dist_sqr
         if instance and is_in_range then
             instance.m_malfunctor:enable_malfunction(psi_storm_off_time)
@@ -64,7 +64,7 @@ function actor_on_hit_callback(obj, amount, local_direction, who, bone_index)
         return
     end
     nextTick(function()
-        local instance = nanosuit_core.get_instance()
+        local instance = nanosuit_core.instance
         if instance then
             instance.m_malfunctor:enable_malfunction(electric_shock_off_time)
         end

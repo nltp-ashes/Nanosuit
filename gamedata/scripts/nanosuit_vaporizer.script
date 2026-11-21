@@ -237,7 +237,7 @@ function evaluator_nanosuit_vaporize:evaluate()
         db.storage[self.object:id()] = {}
     end
 
-    local core = nanosuit_core.get_instance()
+    local core = nanosuit_core.instance
     if not core then
         return false
     end

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 18/10/2026                                                                                             ---
+---    Date : 21/11/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an NPC visibility booster usable by a Nanosuit mode.                       ---
@@ -30,7 +30,7 @@ visual_memory_manager.get_visible_value = function(npc, who, time_delta, time_qu
         return value
     end
 
-    local instance = nanosuit_core.get_instance()
+    local instance = nanosuit_core.instance
     local booster = instance and instance.m_current_mode.m_boosters[stealth]
     if not booster then
         return value
