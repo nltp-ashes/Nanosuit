@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : RavenAscendant                                                                           ---
 ---    Edited : NLTP_ASHES                                                                                           ---
----    Date : 25/10/2026                                                                                             ---
+---    Date : 21/11/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to define the options in MCM.                                                                     ---
@@ -99,7 +99,7 @@ defaults = {
     ["outfit_nanosuit_asian/protection_power_strike"] = 0.5,
     ["outfit_nanosuit_asian/protection_speed_radiation"] = 0.5,
     -- HUD/UI
-    ["general/show_minimap"] = true,
+    ["general/show_minimap"] = false,
     ["general/customize_ammo_wheel"] = true,
     ["general/customize_companion_wheel"] = true,
     ["general/customize_companion_list"] = true,
