@@ -28,7 +28,7 @@ jobs:
       with:
         type: 'zip'
         filename: 'Nanosuit.${{ github.event.inputs.build-ver }}.zip'
-        exclusions: '*.git* *.claude* CLAUDE.md'
+        custom: '-x@.releaseignore'
 
     - name: Release
       id: release
