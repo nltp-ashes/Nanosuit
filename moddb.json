@@ -1,0 +1,15 @@
+{
+    "repoUrl": "https://github.com/nltp-ashes/Nanosuit",
+    "branch": "master",
+    "bannerUrl": "https://media.moddb.com/images/members/5/4575/4574850/profile",
+    "banners": {
+        "ABOUT": "moddb_about.png",
+        "REQUIREMENTS": "moddb_requirements.png",
+        "INSTALLATION": "moddb_installation.png",
+        "CHANGELOG": "moddb_changelog.png",
+        "FUTURE WORKS & KNOWN ISSUES": "moddb_future_works.png",
+        "SUPPORT & SUGGESTIONS": "moddb_support_suggestions.png",
+        "SPECIAL THANKS & CREDITS": "moddb_special_thanks_credits.png",
+        "LICENSE": "moddb_license.png"
+    }
+}

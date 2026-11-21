@@ -2,10 +2,13 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 11/10/2026                                                                                             ---
+---    Date : 18/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a ADS (Aim Down Sights) booster usable by a Nanosuit mode.                 ---
+---                                                                                                                  ---
+---    Weapon upgrades add to the current zoom rotate time, even while the booster is set, so the boost is removed   ---
+---    by subtracting the offset it applied.                                                                         ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -22,13 +25,13 @@ actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 class "ads" (nanosuit_booster_item.abstract_item_booster)
 
-function ads:__init(core, name) super(core, name)
+function ads:__init(core) super(core, "ads")
     self.m_ads_factor = 0.6
 
     -- Cache
-    self.m_cache[actor_slots_enum.knife] = { enabled = true, obj_id = nil, ads_time = nil }
-    self.m_cache[actor_slots_enum.pistol] = { enabled = true, obj_id = nil, ads_time = nil }
-    self.m_cache[actor_slots_enum.rifle] = { enabled = true, obj_id = nil, ads_time = nil }
+    self.m_cache[actor_slots_enum.knife] = { enabled = true, obj_id = nil, ads_time_offset = nil }
+    self.m_cache[actor_slots_enum.pistol] = { enabled = true, obj_id = nil, ads_time_offset = nil }
+    self.m_cache[actor_slots_enum.rifle] = { enabled = true, obj_id = nil, ads_time_offset = nil }
 end
 
 function ads:filter(obj, slot)
@@ -42,13 +45,15 @@ function ads:set(obj, slot)
     nanosuit_booster_item.abstract_item_booster.set(self, obj, slot)
 
     local wpn_obj = obj:cast_Weapon()
-    self.m_cache[slot].ads_time = wpn_obj:GetZoomRotateTime()
-    wpn_obj:SetZoomRotateTime(self.m_cache[slot].ads_time * self.m_ads_factor)
+    local ads_time = wpn_obj:GetZoomRotateTime()
+    self.m_cache[slot].ads_time_offset = ads_time * (self.m_ads_factor - 1)
+    wpn_obj:SetZoomRotateTime(ads_time + self.m_cache[slot].ads_time_offset)
 end
 
 function ads:unset(obj, slot, is_removing)
     local wpn_obj = obj:cast_Weapon()
-    wpn_obj:SetZoomRotateTime(self.m_cache[slot].ads_time)
+    wpn_obj:SetZoomRotateTime(wpn_obj:GetZoomRotateTime() - self.m_cache[slot].ads_time_offset)
+    self.m_cache[slot].ads_time_offset = nil
 
     nanosuit_booster_item.abstract_item_booster.unset(self, obj, slot, is_removing)
 end

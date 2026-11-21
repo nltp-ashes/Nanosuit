@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 21/09/2026                                                                                             ---
+---    Date : 25/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map icon UI.                                                      ---
@@ -110,7 +110,7 @@ end
 function ui_tacmap_icon:get_color(obj)
     if IsStalker(obj) and obj:alive() then
         local relation = obj:relation(db.actor)
-        return self.m_parent.m_parent.m_parent.m_theme.tacmap.icon_per_relation[relation]
+        return self.m_parent.m_parent.m_parent.m_theme.shared.relations[relation]
     end
     if (IsStalker(obj) or IsMonster(obj)) and not obj:alive() then
         local is_stalker_looted = se_load_var(obj:id(), obj:name(), "death_dropped")

@@ -3,7 +3,7 @@
 <!--                                                                                                                 -->
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : N/A                                                                                                 -->
-<!--    Date : 07/10/2026                                                                                            -->
+<!--    Date : 25/10/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -125,7 +125,7 @@
     </string>
 
     <string id="ui_mcm_menu_nanosuit_hud_ui">
-        <text>ATH/UI</text>
+        <text>UI/ATH</text>
     </string>
 
     <string id="ui_mcm_menu_nanosuit_technical">
@@ -228,11 +228,11 @@
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_theme">
-        <text>Thème de l'ATH/UI</text>
+        <text>Thème de l'UI/ATH</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_theme_desc">
-        <text>Sélectionne le jeu de couleurs avec lequel la combinaison peint son ATH et ses interfaces. Les thèmes se personnalisent dans 'Nanosuit > ATH/UI'.</text>
+        <text>Sélectionne le jeu de couleurs avec lequel la combinaison peint son ATH et ses interfaces. Les thèmes se personnalisent dans 'Nanosuit > UI/ATH'.</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_configuration_suit_gender">
@@ -329,6 +329,15 @@
         <text>Styliser la roue des companions pour la faire ressembler au style du rest de l'ATH de la Nano-combinaison quand celle-ci est équipée.</text>
     </string>
 
+    <!-- Minimap -->
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_show_minimap">
+        <text>Activer la carte tactique</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_show_minimap_desc">
+        <text>Activer la carte tactique. Synchronisé avec l'option de base Visuel > Interface/ATH > Afficher la minicarte.</text>
+    </string>
+
     <!-- Companion list customization -->
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_customize_companion_list">
         <text>Styliser la liste des companions</text>
@@ -353,6 +362,10 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_theme_halloween">
         <text>Thème Halloween</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_theme_gobo">
+        <text>Thème Gobo</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_general">
@@ -389,6 +402,30 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_alert_desc">
         <text>Couleur que prennent les interfaces du Nanosuit lorsque la combinaison est en panne, et que prennent les barres d'état lorsqu'elles sont au plus bas.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_friend">
+        <text>Couleur alliée</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_friend_desc">
+        <text>Couleur des stalkers alliés sur la carte tactique, et des cibles alliées repérées aux jumelles.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_neutral">
+        <text>Couleur neutre</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_neutral_desc">
+        <text>Couleur des stalkers neutres sur la carte tactique, et des cibles neutres repérées aux jumelles.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_enemy">
+        <text>Couleur hostile</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_enemy_desc">
+        <text>Couleur des stalkers hostiles sur la carte tactique, et des cibles hostiles repérées aux jumelles.</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status">
@@ -469,18 +506,6 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_looted">
         <text>Couleur des icônes de corps fouillé</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_friend">
-        <text>Couleur des icônes de stalker allié</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_neutral">
-        <text>Couleur des icônes de stalker neutre</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_enemy">
-        <text>Couleur des icônes de stalker hostile</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_primary_task">

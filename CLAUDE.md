@@ -27,6 +27,7 @@ Paths below are written as `$KEY\…` and resolve against that file.
 | `TEXCONV_PATH`         | DirectXTex `texconv`, for PNG ↔ DDS conversion (BC1/BC3/BC7, mipmaps)    |
 | `FFMPEG_PATH`          | `ffmpeg` (`ffprobe` beside it), for audio/video conversion and probing   |
 | `RENDERDOC_CMD_PATH`   | `renderdoccmd`, RenderDoc's CLI, for converting and inspecting captures  |
+| `TOOL_MODDB_PATH`      | `tool_moddb`'s `moddb.ts`, generates the ModDB description from README   |
 
 Not every machine has every key. A key is left out when that machine lacks the tool or folder — no
 `LUAC_PATH` where luac is not installed, no `ENGINE_SOURCE_DIR` where the engine is not checked
@@ -85,3 +86,11 @@ files (syntax only — it will not catch a bad callback name or a nil index; ski
 `LUAC_PATH`), bare-LF line endings
 (the working tree is CRLF under `core.autocrlf=true`), and a header `Date` that is not today. It
 does not see Bash edits, so never use `sed -i` on tracked files — it strips the CRs.
+
+The ModDB description is generated from README.md by `node $TOOL_MODDB_PATH README.md`, which
+reads `moddb.json` and writes the git-ignored `moddb.html`. Never edit the ModDB page by hand:
+change the README. A new `###` section needs a banner before the tool will run.
+
+Files kept out of the release zips are listed in `.releaseignore`, which the workflows pass to `zip`
+as `-x@.releaseignore`. These are zip wildcards, not gitignore rules: `*` crosses folders, a folder
+needs `name/*`, and there is no `!` negation and no comments.

@@ -1,0 +1,38 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 18/10/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the logic of a movement speed booster usable by a Nanosuit mode.                        ---
+---                                                                                                                  ---
+---    The run and sprint coefficients belong to speed.script, which rewrites them from all of its modifiers         ---
+---    whenever one changes, so the booster registers as one of those modifiers. Run modifiers also apply to running ---
+---    backwards.                                                                                                    ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Movement booster class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "movement" (nanosuit_booster.abstract_booster)
+
+function movement:__init(core) super(core, "movement")
+    self.m_run_coef = 1.25
+    self.m_sprint_coef = 1.25
+end
+
+function movement:apply()
+    nanosuit_booster.abstract_booster.apply(self)
+
+    speed.add_speed(script_name(), self.m_run_coef, false)
+    speed.add_speed(script_name(), self.m_sprint_coef, true)
+end
+
+function movement:remove()
+    nanosuit_booster.abstract_booster.remove(self)
+
+    speed.remove_speed(script_name())
+end

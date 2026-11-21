@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 07/10/2026                                                                                             ---
+---    Date : 21/11/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit tactical map UI.                                                           ---
@@ -24,6 +24,7 @@ function ui_tacmap:__init(parent) super()
     self.m_parent = parent
     self.m_last_update = 0
     self.m_update_rate = 1 / 30 * 1000 -- 30 Hz
+    self.m_show_minimap = ui_options.get([[video/hud/show_minimap]])
 
     -- Build UI
     self.m_xml = CScriptXmlInit()
@@ -111,5 +112,5 @@ function ui_tacmap:update_visibility()
 end
 
 function ui_tacmap:is_enabled()
-    return not self.m_parent.m_core.m_malfunctor.m_enabled and ui_options.get([[video/hud/show_minimap]])
+    return not self.m_parent.m_core.m_malfunctor.m_enabled and self.m_show_minimap
 end

@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 21/09/2026                                                                                             ---
+---    Date : 25/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the Nanosuit binoculars UI.                                                             ---
@@ -15,6 +15,21 @@
 
 VIGNETTE_EDG = 1 - (1 / math.sqrt(2))
 
+OUTLINES_SLICES = { "top", "bottom", "left", "right", "frame_top", "frame_bottom", "reticle" }
+
+-- Degrees covered by the height of the elevation window, whose middle is 0°
+ELEVATION_SPAN = 76
+
+-- step : degrees between two marks
+ELEVATION_COLUMNS = {
+    { name = "fine_left", step = 2 },
+    { name = "fine_right", step = 2 },
+    { name = "mid_left", step = 10 },
+    { name = "mid_right", step = 10 },
+    { name = "label_left", step = 10, is_label = true },
+    { name = "label_right", step = 10, is_label = true },
+}
+
 -- ---------------------------------------------------------------------------------------------------------------------
 -- Binoculars UI class
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -25,48 +40,75 @@ function ui_binoculars:__init(parent) super()
     -- Variables
     self.m_parent = parent
     self.m_is_active = false
+    self.m_targets_lock_speed = 8 -- share of the remaining distance closed per second
 
     -- Build UI
     self.m_xml = CScriptXmlInit()
     self.m_xml:ParseFile("ui_nanosuit_binoculars.xml")
 
-    self.m_ui_background = self.m_xml:InitStatic("background", self)
-    self.m_ui_background:SetTextureColor(self.m_parent.m_theme.shared.outline)
-    self.m_ui_background:Show(false)
+    self.m_ui_outlines = {}
+    for _, name in ipairs(OUTLINES_SLICES) do
+        self.m_ui_outlines[name] = self.m_xml:InitStatic("outlines:" .. name, self)
+        self.m_ui_outlines[name]:SetTextureColor(self.m_parent.m_theme.shared.outline)
+    end
 
-    self.m_ui_text = self.m_xml:InitStatic("text", self)
-    self.m_ui_text:SetTextureColor(self.m_parent.m_theme.shared.text)
-    self.m_ui_text:Show(false)
+    self.m_ui_elevation = self.m_xml:InitStatic("elevation", self)
+    self.m_ui_elevation_columns = {}
+    for _, column in ipairs(ELEVATION_COLUMNS) do
+        local marks = {}
+        for i = 1, math.floor(ELEVATION_SPAN / column.step) + 1 do
+            if column.is_label then
+                marks[i] = self.m_xml:InitTextWnd("elevation:" .. column.name, self.m_ui_elevation)
+                marks[i]:SetTextColor(self.m_parent.m_theme.shared.text)
+            else
+                marks[i] = self.m_xml:InitStatic("elevation:" .. column.name, self.m_ui_elevation)
+                marks[i]:SetTextureColor(self.m_parent.m_theme.shared.outline)
+            end
+        end
+        table.insert(self.m_ui_elevation_columns, {
+            step = column.step,
+            is_label = column.is_label,
+            marks = marks,
+        })
+    end
 
-    self.m_ui_mode_label = self.m_xml:InitTextWnd("mode_label", self)
+    local relations = self.m_parent.m_theme.shared.relations
+    self.m_ui_targets = self.m_xml:InitBinocularsVision("vision", self)
+    self.m_ui_targets:SetFrameColor(self.m_parent.m_theme.shared.outline)
+    self.m_ui_targets:SetRelationColors(relations[game_object.friend], relations[game_object.neutral], relations[game_object.enemy])
+    self.m_ui_targets:SetSpeed(self.m_targets_lock_speed)
+    self.m_ui_targets:SetCatchSound([[nanosuit\binoculars\binocular_tagged]])
+
+    self.m_ui_mode = self.m_xml:InitStatic("mode", self)
+
+    self.m_ui_mode_label = self.m_xml:InitTextWnd("mode:label", self.m_ui_mode)
     self.m_ui_mode_label:SetTextColor(self.m_parent.m_theme.shared.text)
     self.m_ui_mode_label:SetText(game.translate_string("st_nanosuit_binoculars_mode"))
-    self.m_ui_mode_label:Show(false)
 
-    self.m_ui_mode = self.m_xml:InitTextWnd("mode", self)
-    self.m_ui_mode:SetTextColor(self.m_parent.m_theme.shared.text)
-    self.m_ui_mode:Show(false)
+    self.m_ui_mode_value = self.m_xml:InitTextWnd("mode:value", self.m_ui_mode)
+    self.m_ui_mode_value:SetTextColor(self.m_parent.m_theme.shared.text)
 
-    self.m_ui_zoom_label = self.m_xml:InitTextWnd("zoom_label", self)
+    self.m_ui_zoom = self.m_xml:InitStatic("zoom", self)
+
+    self.m_ui_zoom_label = self.m_xml:InitTextWnd("zoom:label", self.m_ui_zoom)
     self.m_ui_zoom_label:SetTextColor(self.m_parent.m_theme.shared.text)
     self.m_ui_zoom_label:SetText(game.translate_string("st_nanosuit_binoculars_zoom"))
-    self.m_ui_zoom_label:Show(false)
 
-    self.m_ui_zoom = self.m_xml:InitTextWnd("zoom", self)
-    self.m_ui_zoom:SetTextColor(self.m_parent.m_theme.shared.text)
-    self.m_ui_zoom:Show(false)
+    self.m_ui_zoom_value = self.m_xml:InitTextWnd("zoom:value", self.m_ui_zoom)
+    self.m_ui_zoom_value:SetTextColor(self.m_parent.m_theme.shared.text)
 
     self.m_ui_range = self.m_xml:InitTextWnd("range", self)
     self.m_ui_range:SetTextColor(self.m_parent.m_theme.shared.text)
-    self.m_ui_range:Show(false)
 
-    self.m_ui_coordinates_n = self.m_xml:InitTextWnd("coordinates_n", self)
+    self.m_ui_coordinates = self.m_xml:InitStatic("coordinates", self)
+
+    self.m_ui_coordinates_n = self.m_xml:InitTextWnd("coordinates:north", self.m_ui_coordinates)
     self.m_ui_coordinates_n:SetTextColor(self.m_parent.m_theme.shared.text)
-    self.m_ui_coordinates_n:Show(false)
 
-    self.m_ui_coordinates_w = self.m_xml:InitTextWnd("coordinates_w", self)
+    self.m_ui_coordinates_w = self.m_xml:InitTextWnd("coordinates:west", self.m_ui_coordinates)
     self.m_ui_coordinates_w:SetTextColor(self.m_parent.m_theme.shared.text)
-    self.m_ui_coordinates_w:Show(false)
+
+    self:show_overlay(false)
 end
 
 function ui_binoculars:__finalize()
@@ -84,11 +126,15 @@ function ui_binoculars:Update(force)
         self:deactivate()
     end
 
+    if not self.m_is_active then
+        return
+    end
+
     local mode = self:get_mode()
-    self.m_ui_mode:SetText(mode)
+    self.m_ui_mode_value:SetText(mode)
 
     local zoom = self:get_zoom() -- zoom = 2 -> display X02, zoom = 16 -> display X16
-    self.m_ui_zoom:SetText("X" .. string.format("%02d", zoom))
+    self.m_ui_zoom_value:SetText("X" .. string.format("%02d", zoom))
 
     local range = self:get_range()
     self.m_ui_range:SetText(tostring(range) .. "M")
@@ -96,40 +142,61 @@ function ui_binoculars:Update(force)
     local coordinates = self:get_coordinates()
     self.m_ui_coordinates_n:SetText(tostring(coordinates.y) .. "N")
     self.m_ui_coordinates_w:SetText(tostring(coordinates.x) .. "W")
+
+    self:update_elevation()
+end
+
+function ui_binoculars:update_elevation()
+    local elevation = self:get_elevation()
+    local lowest = elevation - ELEVATION_SPAN / 2
+    local scale_height = self.m_ui_elevation:GetHeight()
+    local units_per_deg = scale_height / ELEVATION_SPAN
+
+    for _, column in ipairs(self.m_ui_elevation_columns) do
+        local value = math.ceil(lowest / column.step) * column.step
+
+        for _, mark in ipairs(column.marks) do
+            local y = scale_height / 2 - (value - elevation) * units_per_deg
+            mark:Show(y >= 0)
+
+            if mark:IsShown() then
+                mark:SetWndPos(vector2():set(mark:GetWndPos().x, y - mark:GetHeight() / 2))
+
+                if column.is_label then
+                    mark:SetText(string.format("%02d", self:get_elevation_label(value)))
+                end
+            end
+
+            value = value + column.step
+        end
+    end
 end
 
 function ui_binoculars:activate()
-    self.m_is_active = true
-
-    -- FIXME : This shader doesn't work, don't know why
-    -- exec_console_cmd(string.format("vignette_control %s,0.0,%s,0.0", 1, VIGNETTE_EDG))
-
-    self.m_ui_background:Show(true)
-    self.m_ui_text:Show(true)
-    self.m_ui_mode_label:Show(true)
-    self.m_ui_mode:Show(true)
-    self.m_ui_zoom_label:Show(true)
-    self.m_ui_zoom:Show(true)
-    self.m_ui_range:Show(true)
-    self.m_ui_coordinates_n:Show(true)
-    self.m_ui_coordinates_w:Show(true)
+    self:show_overlay(true)
 end
 
 function ui_binoculars:deactivate()
-    self.m_ui_background:Show(false)
-    self.m_ui_text:Show(false)
-    self.m_ui_mode_label:Show(false)
-    self.m_ui_mode:Show(false)
-    self.m_ui_zoom_label:Show(false)
-    self.m_ui_zoom:Show(false)
-    self.m_ui_range:Show(false)
-    self.m_ui_coordinates_n:Show(false)
-    self.m_ui_coordinates_w:Show(false)
+    self:show_overlay(false)
+end
+
+function ui_binoculars:show_overlay(visible)
+    self.m_is_active = visible
 
     -- FIXME : This shader doesn't work, don't know why
-    -- exec_console_cmd(string.format("vignette_control %s,0.0,%s,0.0", 0, VIGNETTE_EDG))
+    -- local vignette_power = visible and 1 or 0
+    -- exec_console_cmd(string.format("vignette_control %s,0.0,%s,0.0", vignette_power, VIGNETTE_EDG))
 
-    self.m_is_active = false
+    for _, slice in pairs(self.m_ui_outlines) do
+        slice:Show(visible)
+    end
+
+    self.m_ui_elevation:Show(visible)
+    self.m_ui_targets:Show(visible)
+    self.m_ui_mode:Show(visible)
+    self.m_ui_zoom:Show(visible)
+    self.m_ui_range:Show(visible)
+    self.m_ui_coordinates:Show(visible)
 end
 
 function ui_binoculars:get_mode()
@@ -146,6 +213,20 @@ end
 
 function ui_binoculars:get_range()
     return math.floor(level.get_target_dist())
+end
+
+function ui_binoculars:get_elevation()
+    return math.deg(math.asin(device().cam_dir.y))
+end
+
+function ui_binoculars:get_elevation_label(value)
+    -- Past the zenith or nadir the scale counts back down : 100° reads 80°, -100° reads -80°
+    if value > 90 then
+        return 180 - value
+    elseif value < -90 then
+        return -180 - value
+    end
+    return value
 end
 
 function ui_binoculars:get_coordinates()

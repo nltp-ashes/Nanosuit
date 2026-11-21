@@ -1,0 +1,49 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 24/10/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to handle the logic of a throw force booster usable by a Nanosuit mode.                           ---
+---                                                                                                                  ---
+---    The throw force sets the missile's launch speed, so its range grows with the square of the force factor.      ---
+---    The energy cost scales with the missile's weight, which covers missiles added by other addons without a list. ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Throw booster class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "throw" (nanosuit_booster.abstract_booster)
+
+function throw:__init(core) super(core, "throw")
+    -- Energy related variables
+    self.m_energy_use_per_kg = 15
+
+    -- Variables
+    self.m_force_factor = 1.5
+end
+
+function throw:apply()
+    nanosuit_booster.abstract_booster.apply(self)
+
+    RegisterScriptCallback("actor_on_missile_throw_force", self)
+end
+
+function throw:remove()
+    nanosuit_booster.abstract_booster.remove(self)
+
+    UnregisterScriptCallback("actor_on_missile_throw_force", self)
+end
+
+function throw:actor_on_missile_throw_force(missile, base_force, flags)
+    local energy_use = missile:weight() * self.m_energy_use_per_kg
+    if self.m_core.m_energy.m_level < energy_use then
+        return
+    end
+
+    self.m_core.m_energy:use_energy(energy_use)
+    flags.ret_value = flags.ret_value * self.m_force_factor
+end

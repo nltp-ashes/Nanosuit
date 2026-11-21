@@ -2,10 +2,13 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 11/10/2026                                                                                             ---
+---    Date : 21/11/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of a recoil lowering booster usable by a Nanosuit mode.                       ---
+---                                                                                                                  ---
+---    Weapon upgrades add to the current dispersion, even while the booster is set, so the boost is removed by      ---
+---    subtracting the offsets it applied.                                                                           ---
 ---                                                                                                                  ---
 ---==================================================================================================================---
 
@@ -22,14 +25,14 @@ actor_slots_enum        = nanosuit_utils.actor_slots_enum
 
 class "recoil" (nanosuit_booster_item.abstract_item_booster)
 
-function recoil:__init(core, name) super(core, name)
+function recoil:__init(core) super(core, "recoil")
     self.m_recoil_factor = 0.1
-    self.m_low_energy = self.m_core.m_energy.m_level <= self.m_core.m_energy_low_threshold
+    self.m_low_energy = self.m_core.m_energy.m_level <= self.m_core.m_energy.m_low_threshold
 
     -- Cache
-    self.m_cache[actor_slots_enum.knife] = { enabled = true, obj_id = nil, dispersion = nil, dispersion_zoom = nil }
-    self.m_cache[actor_slots_enum.pistol] = { enabled = true, obj_id = nil, dispersion = nil, dispersion_zoom = nil }
-    self.m_cache[actor_slots_enum.rifle] = { enabled = true, obj_id = nil, dispersion = nil, dispersion_zoom = nil }
+    self.m_cache[actor_slots_enum.knife] = { enabled = true, obj_id = nil, dispersion_offset = nil, dispersion_zoom_offset = nil }
+    self.m_cache[actor_slots_enum.pistol] = { enabled = true, obj_id = nil, dispersion_offset = nil, dispersion_zoom_offset = nil }
+    self.m_cache[actor_slots_enum.rifle] = { enabled = true, obj_id = nil, dispersion_offset = nil, dispersion_zoom_offset = nil }
 end
 
 function recoil:apply()
@@ -56,12 +59,14 @@ function recoil:set(obj, slot)
         nanosuit_booster_item.abstract_item_booster.set(self, obj, slot)
 
         local wpn_obj = obj:cast_Weapon()
+        local dispersion = wpn_obj:GetCamDispersion()
+        local dispersion_zoom = wpn_obj:GetZoomCamDispersion()
 
-        self.m_cache[slot].dispersion = wpn_obj:GetCamDispersion()
-        self.m_cache[slot].dispersion_zoom = wpn_obj:GetZoomCamDispersion()
+        self.m_cache[slot].dispersion_offset = dispersion * (self.m_recoil_factor - 1)
+        self.m_cache[slot].dispersion_zoom_offset = dispersion_zoom * (self.m_recoil_factor - 1)
 
-        wpn_obj:SetCamDispersion(self.m_cache[slot].dispersion * self.m_recoil_factor)
-        wpn_obj:SetZoomCamDispersion(self.m_cache[slot].dispersion_zoom * self.m_recoil_factor)
+        wpn_obj:SetCamDispersion(dispersion + self.m_cache[slot].dispersion_offset)
+        wpn_obj:SetZoomCamDispersion(dispersion_zoom + self.m_cache[slot].dispersion_zoom_offset)
     end
 end
 
@@ -69,18 +74,18 @@ function recoil:unset(obj, slot, is_removing)
     if not self.m_low_energy then
         local wpn_obj = obj:cast_Weapon()
 
-        wpn_obj:SetCamDispersion(self.m_cache[slot].dispersion)
-        wpn_obj:SetZoomCamDispersion(self.m_cache[slot].dispersion_zoom)
+        wpn_obj:SetCamDispersion(wpn_obj:GetCamDispersion() - self.m_cache[slot].dispersion_offset)
+        wpn_obj:SetZoomCamDispersion(wpn_obj:GetZoomCamDispersion() - self.m_cache[slot].dispersion_zoom_offset)
 
-        self.m_cache[slot].dispersion = nil
-        self.m_cache[slot].dispersion_zoom = nil
+        self.m_cache[slot].dispersion_offset = nil
+        self.m_cache[slot].dispersion_zoom_offset = nil
 
         nanosuit_booster_item.abstract_item_booster.unset(self, obj, slot, is_removing)
     end
 end
 
 function recoil:actor_on_update()
-    local has_enough_energy = self.m_core.m_energy.m_level >= self.m_core.m_energy_low_threshold
+    local has_enough_energy = self.m_core.m_energy.m_level >= self.m_core.m_energy.m_low_threshold
 
     local should_set = has_enough_energy and self.m_low_energy
     local should_unset = not has_enough_energy and not self.m_low_energy

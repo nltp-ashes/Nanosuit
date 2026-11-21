@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 07/10/2026                                                                                             ---
+---    Date : 25/10/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to give every Nanosuit UI the colors of the theme the equipped outfit wears.                      ---
@@ -30,7 +30,12 @@ function get_theme()
             outline = get_color(theme, "outline"),
             accent = get_color(theme, "accent"),
             alert = get_color(theme, "alert"),
-            background = GetARGB(200, 255, 255, 255)
+            background = GetARGB(200, 255, 255, 255),
+            relations = {
+                [game_object.friend] = get_color(theme, "relation_friend"),
+                [game_object.neutral] = get_color(theme, "relation_neutral"),
+                [game_object.enemy] = get_color(theme, "relation_enemy")
+            }
         },
         status = {
             energy = get_color(theme, "status_energy"),
@@ -54,12 +59,7 @@ function get_theme()
             icon_default = get_color(theme, "tacmap_icon_default"),
             icon_looted = get_color(theme, "tacmap_icon_looted"),
             icon_primary_task = get_color(theme, "tacmap_icon_primary_task"),
-            icon_secondary_task = get_color(theme, "tacmap_icon_secondary_task"),
-            icon_per_relation = {
-                [game_object.friend] = get_color(theme, "tacmap_icon_friend"),
-                [game_object.neutral] = get_color(theme, "tacmap_icon_neutral"),
-                [game_object.enemy] = get_color(theme, "tacmap_icon_enemy")
-            }
+            icon_secondary_task = get_color(theme, "tacmap_icon_secondary_task")
         },
         auxiliaries = {
             nv_energy = get_color(theme, "auxiliaries_nv_energy"),

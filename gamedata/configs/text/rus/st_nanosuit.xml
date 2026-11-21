@@ -4,7 +4,7 @@
 <!--    Original Author(s) : NLTP_ASHES                                                                              -->
 <!--    Edited : Russian translation (Stalker_Boss - 27/04/2025)                                                     -->
 <!--    Edited : Russian translation (VodoXleb - 21/08/2026)                                                         -->
-<!--    Date : 07/10/2026                                                                                            -->
+<!--    Date : 25/10/2026                                                                                            -->
 <!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
 <!--                                                                                                                 -->
 <!--    Translation file for the Nanosuit addon.                                                                     -->
@@ -330,6 +330,15 @@
         <text>Переключатель, позволяющий изменить внешний вид интерфейса кругового меню спутника так, чтобы он соответствовал остальным элементам HUD нанокостюма при его ношении.</text>
     </string>
 
+    <!-- Minimap -->
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_show_minimap">
+        <text>Включить тактическую карту</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_show_minimap_desc">
+        <text>Включить тактическую карту. Синхронизировано со стандартной опцией «Миникарта».</text>
+    </string>
+
     <!-- Companion list customization -->
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_customize_companion_list">
         <text>Настройте интерфейс списка спутников</text>
@@ -354,6 +363,10 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_theme_halloween">
         <text>Тема Хэллоуина</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_theme_gobo">
+        <text>Gobo theme</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_general">
@@ -390,6 +403,30 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_alert_desc">
         <text>Цвет, в который окрашиваются интерфейсы Нанокостюма при сбое костюма, а также шкалы состояния при низких значениях.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_friend">
+        <text>Цвет союзников</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_friend_desc">
+        <text>Цвет союзных сталкеров на тактической карте и союзных целей, обнаруженных в бинокль.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_neutral">
+        <text>Цвет нейтралов</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_neutral_desc">
+        <text>Цвет нейтральных сталкеров на тактической карте и нейтральных целей, обнаруженных в бинокль.</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_enemy">
+        <text>Цвет врагов</text>
+    </string>
+
+    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_relation_enemy_desc">
+        <text>Цвет враждебных сталкеров на тактической карте и враждебных целей, обнаруженных в бинокль.</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_status">
@@ -470,18 +507,6 @@
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_looted">
         <text>Цвет значков обысканных тел</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_friend">
-        <text>Цвет значков дружественных сталкеров</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_neutral">
-        <text>Цвет значков нейтральных сталкеров</text>
-    </string>
-
-    <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_enemy">
-        <text>Цвет значков враждебных сталкеров</text>
     </string>
 
     <string id="ui_mcm_nanosuit_nanosuit_hud_ui_tacmap_icon_primary_task">

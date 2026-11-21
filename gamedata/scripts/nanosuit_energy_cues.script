@@ -1,0 +1,121 @@
+---==================================================================================================================---
+---                                                                                                                  ---
+---    Original Author(s) : NLTP_ASHES                                                                               ---
+---    Edited : N/A                                                                                                  ---
+---    Date : 21/11/2026                                                                                             ---
+---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
+---                                                                                                                  ---
+---    Script used to play the sound cues of the suit's energy level : low voice, very low alarm, off and on.        ---
+---                                                                                                                  ---
+---    The cues follow the suit's pool, m_core.m_energy, at the thresholds it defines. They live apart from the      ---
+---    energy class because other pools reuse it without cues, such as the nightvision battery.                      ---
+---                                                                                                                  ---
+---==================================================================================================================---
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Constants, global variables and imported functions
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Imports
+localized_and_genderized_sound_object  = nanosuit_utils.localized_and_genderized_sound_object
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Energy cues class
+-- ---------------------------------------------------------------------------------------------------------------------
+
+class "energy_cues"
+
+function energy_cues:__init(core)
+    self.m_core = core
+
+    -- Variables
+    self.m_low_voiced = true
+    self.m_very_low_voiced = true
+    self.m_off_voiced = true
+    self.m_on_voiced = true
+
+    -- Sound effects
+    self.m_sounds = {
+        low_voice = localized_and_genderized_sound_object([[nanosuit\voice]], [[energy_low_voice]]),
+        very_low = sound_object([[nanosuit\energy\energy_very_low]]),
+        on = sound_object([[nanosuit\energy\energy_on]]),
+        off = sound_object([[nanosuit\energy\energy_off]])
+    }
+
+    -- Register callbacks
+    RegisterScriptCallback("actor_on_update", self)
+    RegisterScriptCallback("actor_on_death", self)
+    RegisterScriptCallback("on_option_change", self)
+end
+
+function energy_cues:destroy()
+    self:stop_sounds()
+
+    self.m_core = nil
+
+    UnregisterScriptCallback("actor_on_update", self)
+    UnregisterScriptCallback("actor_on_death", self)
+    UnregisterScriptCallback("on_option_change", self)
+end
+
+function energy_cues:stop_sounds()
+    for _, sfx in pairs(self.m_sounds) do
+        if sfx:playing() then
+            sfx:stop()
+        end
+    end
+end
+
+function energy_cues:actor_on_update()
+    local energy = self.m_core.m_energy
+    local malfunction = self.m_core.m_malfunctor.m_enabled
+
+    -- Energy low voice
+    if energy.m_level <= energy.m_low_threshold and not self.m_low_voiced and not malfunction then
+        self.m_sounds.low_voice:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+        self.m_low_voiced = true
+    end
+    if (malfunction or energy.m_level > energy.m_low_threshold) and self.m_low_voiced then
+        self.m_sounds.low_voice:stop()
+        self.m_low_voiced = false
+    end
+
+    -- Energy very low
+    if energy.m_level <= energy.m_very_low_threshold and not self.m_very_low_voiced and not malfunction then
+        self.m_sounds.very_low:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d + sound_object.looped)
+        self.m_very_low_voiced = true
+    end
+    if (malfunction or energy.m_level > energy.m_very_low_threshold) and self.m_very_low_voiced then
+        self.m_sounds.very_low:stop()
+        self.m_very_low_voiced = false
+    end
+
+    -- Energy off
+    if energy.m_level <= energy.m_off_threshold and not self.m_off_voiced then
+        self.m_sounds.off:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+        self.m_off_voiced = true
+    end
+    if energy.m_level > energy.m_off_threshold and self.m_off_voiced then
+        self.m_sounds.off:stop()
+        self.m_off_voiced = false
+    end
+
+    -- Energy on
+    if energy.m_level > energy.m_on_threshold and not self.m_on_voiced then
+        self.m_sounds.on:play_at_pos(db.actor, VEC_ZERO, 0, sound_object.s2d)
+        self.m_on_voiced = true
+    end
+    if energy.m_level <= energy.m_on_threshold and self.m_on_voiced then
+        self.m_sounds.on:stop()
+        self.m_on_voiced = false
+    end
+end
+
+function energy_cues:actor_on_death()
+    self:stop_sounds()
+end
+
+function energy_cues:on_option_change()
+    -- Refresh voice gender/language
+    self.m_sounds.low_voice = localized_and_genderized_sound_object([[nanosuit\voice]], [[energy_low_voice]])
+end

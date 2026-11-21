@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 10/10/2026                                                                                             ---
+---    Date : 21/11/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to run one-off changes when the addon is installed or upgraded to a newer version.                ---
@@ -33,6 +33,15 @@ MIGRATIONS = {
             local outfit_section = key:match("^(outfit_[%w_]+)/theme$")
             if outfit_section then
                 nanosuit_mcm.set_config("configuration", outfit_section .. "/theme", themes_enum.halloween)
+            end
+        end
+    end,
+    ["0.15.0"] = function()
+        -- Every Nanosuit still wearing the Halloween theme goes back to its own
+        for key, default in pairs(nanosuit_mcm.defaults) do
+            local is_theme = key:match("^outfit_[%w_]+/theme$")
+            if is_theme and nanosuit_mcm.get_config("configuration", key, default) == themes_enum.halloween then
+                nanosuit_mcm.set_config("configuration", key, default)
             end
         end
     end,
