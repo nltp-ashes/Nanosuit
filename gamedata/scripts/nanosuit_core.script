@@ -23,7 +23,7 @@
 armor_modes_enum                       = nanosuit_utils.armor_modes_enum
 
 -- Constants
-VERSION                                = "0.15.0"
+VERSION                                = "0.16.0"
 
 -- Globals
 instance                               = nil

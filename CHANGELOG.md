@@ -1,35 +1,9 @@
-## **v0.15.0 - 21/11/2026 - Beta Build**
+## **v0.16.0 - 21/11/2026 - Beta Build**
 
-[![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.15.0/total?label=Downloads)]()
+[![Downloads](https://img.shields.io/github/downloads/nltp-ashes/Nanosuit/v0.16.0/total?label=Downloads)]()
 
 **• Additions :**
-> - Added Arti's `speed.script`, which speed mode now uses for its run and sprint boost;
-> - Added demonized's `weight.script`, which strength mode now uses for its carry weight boost;
-> - Added a new “Gobo” UI theme, painting the HUD and every Nanosuit UI in a pink palette;
-> - Added target tagging to the binoculars, framing the stalkers and mutants in sight in the color of their relation to the player;
-> - Added an elevation scale to the binoculars, moving with the camera's pitch;
-> - Added an option to turn the tactical map on or off, linked to vanilla Anomaly's "Show Minimap" option;
-> - Added a grenade and bolt throw force boost to strength mode, consuming energy depending on the thrown item's weight;
 
 **• Changes :**
-> - Strength mode's carry weight boost now also raises the walk weight by about 35kg instead of 25kg;
-> - Remade every HUD texture from vector sources, at the same pixel density across the whole HUD, and packed them into one texture atlas per UI;
-> - The friendly, neutral and hostile colors in MCM now apply to both the tactical map and the binoculars targets (custom tactical map icon colors are reset to the theme's defaults);
 
 **• Bug fixes :**
-> - Fixed CTD when removing the suit, changing level or quitting while nanovision is active;
-> - Fixed CTD when removing the suit while it is in malfunction state;
-> - Fixed memory leak caused by the built-in nightvision code;
-> - Fixed setting protection values to a certain hit type to 0 in MCM causing the suit to deplete all of its energy instead of just not absorbing damage;
-> - Fixed setting protection values in MCM requiring the player to reequip the suit/reload a save for changes to take effect;
-> - Fixed binoculars being accessible while a UI or the PDA was active;
-> - Fixed ammo wheel, companion wheel and companion list UIs not changing color when the suit malfunctions;
-> - Fixed ammo wheel UI not having its extended window customized to the Nanosuit HUD style;
-> - Fixed vaporization sound effect always playing as a 3D sound instead of a 2D when in first-person;
-> - Fixed speed and strength modes discarding weapon upgrades' stats if the upgrade is applied while the mode is active;
-> - Fixed speed and strength modes potentially discarding other addon's changes to actor walk/run speeds and jump height;
-> - Fixed cloak mode potentially unplugging other addons' code to manipulate NPC visibility;
-
-**Note :** This build requires [Modded Exes version 21.11.2026 (or newer)](https://github.com/themrdemonized/xray-monolith/releases/tag/2026.11.21) for various new features to work.
-
-**Note :** For addon authors, `nanosuit_core.get_instance()` was replaced by `nanosuit_core.instance`, and the Nanosuit outfits now bind through `nanosuit_binder.bind`.
