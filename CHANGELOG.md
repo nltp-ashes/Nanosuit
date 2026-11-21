@@ -29,3 +29,7 @@
 > - Fixed speed and strength modes discarding weapon upgrades' stats if the upgrade is applied while the mode is active;
 > - Fixed speed and strength modes potentially discarding other addon's changes to actor walk/run speeds and jump height;
 > - Fixed cloak mode potentially unplugging other addons' code to manipulate NPC visibility;
+
+**Note :** This build requires [Modded Exes version 21.11.2026 (or newer)](https://github.com/themrdemonized/xray-monolith/releases/tag/2026.11.21) for various new features to work.
+
+**Note :** For addon authors, `nanosuit_core.get_instance()` was replaced by `nanosuit_core.instance`, and the Nanosuit outfits now bind through `nanosuit_binder.bind`.
