@@ -2,7 +2,7 @@
 ---                                                                                                                  ---
 ---    Original Author(s) : NLTP_ASHES                                                                               ---
 ---    Edited : N/A                                                                                                  ---
----    Date : 18/10/2026                                                                                             ---
+---    Date : 21/11/2026                                                                                             ---
 ---    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)           ---
 ---                                                                                                                  ---
 ---    Script used to handle the logic of an abstract booster applying an effect to the items of the actor.          ---
@@ -65,7 +65,7 @@ function abstract_item_booster:remove()
 
     for slot, _ in pairs(self.m_cache) do
         local obj = db.actor:item_in_slot(slot)
-        if obj and self:filter(obj, slot) then
+        if obj and self.m_cache[slot].obj_id == obj:id() and self:filter(obj, slot) then
             self:unset(obj, slot, true)
         end
     end
