@@ -11,6 +11,9 @@
 ---    variable instead of looking up the worn outfit. The binder sets it once the core is loaded, and clears it     ---
 ---    before destroying the core.                                                                                   ---
 ---                                                                                                                  ---
+---    The default mode is applied last in core:__init : a mode and the boosters it applies may reach any            ---
+---    subsystem of the core from apply().                                                                           ---
+---                                                                                                                  ---
 ---==================================================================================================================---
 
 -- ---------------------------------------------------------------------------------------------------------------------
@@ -60,7 +63,6 @@ function core:__init()
     -- Default mode initialization
     self.m_default_mode = armor_modes_enum.armor
     self.m_current_mode = self.m_modes[self.m_default_mode]
-    self.m_current_mode:apply(false, true)
 
     -- UIs
     self.m_hud = nanosuit_ui_hud.ui_hud(self)
@@ -80,6 +82,9 @@ function core:__init()
 
     -- Register callbacks
     RegisterScriptCallback("on_option_change", self)
+
+    -- Default mode application
+    self.m_current_mode:apply(false, true)
 end
 
 function core:__finalize()
